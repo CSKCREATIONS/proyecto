@@ -1,7 +1,9 @@
 import React from 'react'
 import '../App.css'
 import Fijo from '../components/Fijo'
-import ContenedorModulo from '../components/ContenedorModulo'
+import ContenedorModuloUsuarios from '../components/ContenedorModuloUsuarios'
+import ContenedorModuloSIG from '../components/ContenedorModuloSIG'
+
 
 export default function Home() {
   return (
@@ -9,15 +11,9 @@ export default function Home() {
       <Fijo />
       <div class="content">
 
-        <ContenedorModulo 
-          modulo = 'Usuarios'
+        <ContenedorModuloUsuarios
         />
-        <ContenedorModulo 
-          modulo = 'SIG'
-        />
-        <ContenedorModulo 
-          modulo = 'Ventas'
-        />
+        <ContenedorModuloSIG/>
         <iframe
           src="/propuesta_tecnica.pdf"
           width="80%"
