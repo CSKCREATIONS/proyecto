@@ -1,6 +1,5 @@
 import React from 'react'
 import { toggleSubMenu } from '../funciones/animaciones'
-import { openModal } from '../funciones/animaciones'
 import { closeModal } from '../funciones/animaciones'
 
 export default function EditarUsuario() {

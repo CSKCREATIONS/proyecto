@@ -9,7 +9,7 @@ export default function PedidosCancelados() {
     <div>
       <Fijo />
       <div className="content">
-        <NavVentas/>
+        <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo
             titulo='Pedidos cancelados'
@@ -19,30 +19,34 @@ export default function PedidosCancelados() {
               <table>
                 <thead>
                   <tr>
-                    <th>Documento</th>
-                    <th>Nombre completo</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Username</th>
+                    <th colSpan="6">Pedido</th>
+                    <th colSpan="3">Cliente</th>
+                  </tr>
+                  <tr>
+                    <th>No</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>F. Agendamiento</th>
+                    <th>F. Cancelacion</th>
+                    <th>Nombre / Razón Social</th>
+                    <th>Ciudad</th>
                     <th>Teléfono</th>
-                    <th>Estado</th>
-                    <th>Creado</th>
+                    <th>Correo</th>
+                    <th>Observaciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>105323234</td>
-                    <td>Natalia Maria</td>
-                    <td>Admin</td>
-                    <td>Nat@gmail.com</td>
-                    <td>Natalia.Mar</td>
-                    <td>30204342</td>
-                    <td>Habilitado</td>
-                    <td>20/03/2025</td>
-                    <td>
-                      <button className='btn' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}></button>
-                      <button className='btn' style={{ height: '30px', width: '50px' }} ></button>
-                    </td>
+                    <td>1</td>
+                    <td>Salchipapa</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>Me trajeron pizza</td>
                   </tr>
                 </tbody>
               </table>

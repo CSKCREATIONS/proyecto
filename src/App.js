@@ -24,7 +24,7 @@ import Proceso from './pages/Proceso';
 import ProcesoEdit from './pages/ProcesoEdit';
 import ProcesoAdicionar from './pages/ProcesoAdicionar';
 import DocumentacionAdicionar from './pages/DocumentacionAdicionar';
-
+import Perfil from './pages/Perfil';
 
 const App = () => {
   return (
@@ -37,6 +37,7 @@ const App = () => {
           <Route path='/RecuperarContraseña' element = {<RecuperarContraseña/>}/>
 
           <Route path='/Home' element ={<Home/>}/>
+          <Route path='/Perfil' element = {<Perfil/>}/>
           <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
           <Route path='/AñadirUsuario' element={<AñadirUsuario/>}/>
           <Route path='/AñadirRol' element={<AñadirRol/>}/>

@@ -502,20 +502,7 @@ button {
   margin-top: 20px;
 }
 
-.button {
-  padding: 10px 15px;
-  border: 2px solid black;
-  background-color: white;
-  cursor: pointer;
-}
 
-.button.accept {
-  background-color: white;
-}
-
-.button.cancel {
-  background-color: white;
-}
 
 .input-boxTD, .textarea-box {
   padding: 8px;
@@ -641,8 +628,82 @@ legend {
 
 
 
+
+
+
+
+/****perfil****/
+.containerPerfil {
+  background: white;
+  display: grid;
+  place-content: center;
+  padding: 20px;
+  border-radius: 10px;
+  width: 70vw;
+  max-width: 850px;
+  margin: 40px auto;
+  display: flex;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  width: 80vw;
+  max-width: 950px;
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.edit-profile {
+  background: none;
+  border: none;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-profile:hover {
+  text-decoration: underline;
+}
+
+.user-info {
+  display: grid;
+  place-content: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 9rem;
+}
+
+.logout-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: left;
+}
+
+.logout-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid black;
+  background: none;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background: #e0e0e0;
+}
+
+
+/********Estilos para vista mobile**********/
 @media (max-width: 600px) {
   .permissions .group {
     width: 100%;
+  }
+  .user-info{
+    gap: 2rem 4rem;
   }
 }

@@ -32,24 +32,21 @@ export default function AgendarVenta() {
                 </thead>
                 <tbody>
                   <tr >
-                    <td><input></input></td>
-                    <td><input></input></td>
+                    <td><input type='number'></input></td>
+                    <td><input type='text'></input></td>
                     <td><input></input></td>
                     <td><input></input></td>
                     <td><input></input></td>
                     <td><input></input></td>
                     <td><input></input></td>
                     <td ><input></input></td>
-
-                    
-
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+            <button style={{margin:'20px auto', textAlign:'center', display:'block'}} className='btn btn-primary'>Agendar venta</button>
         </div>
-
       </div>
     </div>
   )

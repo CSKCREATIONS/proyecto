@@ -19,8 +19,8 @@ export default function Fijo() {
             <Link as={Link} to="/Home"><span id='empresa-nombre'>JLA Global Company </span></Link>
           </div>
           <div className="user">
-            <span>Pepito</span>
-            <img src="../images/gatico.jpg" alt="logo usuario" />
+            <Link as={Link} to="/Perfil"><span>Pepito</span>
+            <img src="" alt="logo usuario" /></Link>
           </div>
         </header>
 
@@ -28,13 +28,13 @@ export default function Fijo() {
         <div id='menu' className="menu">
           <div className="usuarioYModulos">
 
-            <div className="preview-usuario">
+            <Link as={Link} to="/Perfil"><div className="preview-usuario">
               <img src="../images/gatico.jpg" alt="" style={{ width: "80px" }} />
               <div className="datos-usuario">
                 <span className="usuario-nombre">Pepito Perez</span>
                 <span className="usuario-rol">Administrador</span>
               </div>
-            </div>
+            </div></Link>
 
             <div className="modulos-menu">
               <nav>
