@@ -1,0 +1,52 @@
+@startuml
+node "Computadora del Cliente" {
+  node "Navegador Web" {
+    component "Aplicación React"
+  }
+}
+
+node "Servidor Web" {
+  node "Frontend" {
+    component "Build de React"
+  }
+
+  node "Backend (Express)" {
+    component "API REST - Node.js/Express" {
+      [Gestión de Pedidos]
+      [Gestión de Productos]
+      [Gestión de Clientes]
+      [Gestión de Cotizaciones]
+      [Gestión de Documentos_SIG]
+      [Gestión de Procesos_SIG]
+      [Gestión de Usuarios]
+      [Gestión de Roles]
+      [Gestión de Tipos de Documento]
+      [Gestión de Reportes]
+    }
+  }
+}
+
+node "Base de Datos NoSQL" {
+  database "MongoDB" {
+    [Colección Pedidos]
+    [Colección Productos]
+    [Colección Clientes]
+    [Colección Cotizaciones]
+    [Colección Documentos_SIG]
+    [Colección Procesos_SIG]
+    [Colección Usuarios]
+    [Colección Roles]
+    [Colección Tipos_Documento]
+    [Colección Pedidos_Devueltos]
+    [Colección Pedidos_Entregados]
+    [Colección Pedidos_Cancelados]
+    [Colección Productos_en_Pedido]
+    [Colección Reportes]
+  }
+}
+
+'-- Conexiones --
+"Aplicación React" --> "API REST - Node.js/Express" : HTTP/HTTPS
+"Aplicación React" --> "Build de React" : Entrega de Assets (JS/CSS/HTML)
+"API REST - Node.js/Express" --> "MongoDB" : Conexión Mongoose (puerto 27017)
+@enduml
