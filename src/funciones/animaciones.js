@@ -45,6 +45,8 @@ export function cerrarMenu(){
 
 
 
+
+
 export function openModal(modalId) {
     const targetModal = document.getElementById(modalId);
     targetModal.style.display = 'block'

@@ -2,11 +2,26 @@ import React from 'react'
 import Fijo from '../components/Fijo'
 import NavDocumentacion from '../components/NavDocumentacion'
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2'
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 
 
 
 export default function ProcesoEdit() {
+
+    const handleClick = () => 
+      Swal.fire({
+      text: 'El Proceso ha sido editado correctamente',
+      icon: 'success',
+      showCancelButton: false,
+      showCloseButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar'
+    })
+
   return (
     <div >
       <Fijo />
@@ -22,28 +37,28 @@ export default function ProcesoEdit() {
                 
                           <form className="form">
                             <label className="label">Código</label>
-                            <input type="text" className="input-box" />
-                            <br />
+                            <input type="text" className= "textDOCS" />
                             <label className="label">Nombre</label>
                             <input
                               type="text"
-                              className="input-box"
-                              
+                              className= "textDOCS"                              
                             />
                 
                             <label className="label">Responsable</label>
                             <textarea
-                              className="textarea-box"
-                              
+                            className= "textDOCS"                              
                             ></textarea>
+                            <br />
+                            <br />
                 
                             {/* Botones */}
-                            <div className="button-group">
-                              <button className="button accept">Editar</button>
-                              <Link to={`/Proceso`}>
-                                <button className="button cancel">Cancelar</button>
+                              <Link to={`/Proceso`} className="icons"  onClick={handleClick}>
+                              <button className="btn">Editar</button>
                               </Link>
-                            </div>
+                              
+                              <Link to={`/Proceso`}>
+                                <button style={{ marginLeft: "1rem" }} className="btn">Cancelar</button>
+                              </Link>
                           </form>
                         </div>
 

@@ -5,6 +5,7 @@ import ContenedorModuloUsuarios from '../components/ContenedorModuloUsuarios'
 import ContenedorModuloSIG from '../components/ContenedorModuloSIG'
 import ContenedorModuloVentas from '../components/ContenedorModuloVentas'
 
+
 export default function Home() {
   return (
     <div>
@@ -15,12 +16,7 @@ export default function Home() {
         />
         <ContenedorModuloSIG/>
         <ContenedorModuloVentas/>
-        <iframe
-          src="/propuesta_tecnica.pdf"
-          width="80%"
-          height="600px"
-          title="PDF Viewer"
-        />
+        
 
       </div>
 

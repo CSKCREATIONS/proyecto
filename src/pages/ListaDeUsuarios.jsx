@@ -4,9 +4,32 @@ import NavUsuarios from '../components/NavUsuarios'
 import EncabezadoModulo from '../components/EncabezadoModulo'
 import { openModal } from '../funciones/animaciones'
 import EditarUsuario from '../components/EditarUsuario'
-import ConfirmarAccion from '../components/ConfirmarAccion'
+import Swal from 'sweetalert2';
+import { Link } from "react-router-dom";
+
 
 export default function ListaDeUsuarios() {
+
+  const handleClick = () => 
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, continuar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: '¡Listo!',
+          text: 'El usuario ha sido borrado.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+
+
   return (
     <div >
       <Fijo />
@@ -44,8 +67,9 @@ export default function ListaDeUsuarios() {
                     <td >20/03/2025</td>
 
                     <button className='btn' style={{ marginLeft: '1rem', height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}></button>
-                    <button className='btn' style={{ marginLeft: '1rem', height: '30px', width: '50px' }} onClick={() => openModal('deleteUser')}></button>
-
+                    <Link to={`/ListaDeUsuarios`} className="icons" onClick={handleClick}>
+                    <button className="btn" style={{ marginLeft: '1rem', height: '30px', width: '50px' }} type="button" onClick={() => console.log("Cancelado")}></button>
+                      </Link>
                   </tr>
                 </tbody>
               </table>
@@ -54,10 +78,7 @@ export default function ListaDeUsuarios() {
         </div>
 
         <EditarUsuario />
-        <ConfirmarAccion
-          idItem='deleteUser'
-          pregunta='¿Seguro que quieres eliminar a "salchipapa"?'
-        />
+       
 
 
       </div>

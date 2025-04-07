@@ -1,6 +1,6 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
-import EncabezadoModulo from '../components/EncabezadoModulo'
+import EncabezadoModuloSIG from '../components/EncabezadoModuloSIG'
 import NavDocumentacion from '../components/NavDocumentacion'
 import { Link } from "react-router-dom";
 
@@ -11,18 +11,18 @@ export default function InformacionDeFuente() {
       <div className="content">
         <NavDocumentacion />
         <div className="contenido-modulo">
-          <EncabezadoModulo
+          <EncabezadoModuloSIG
             titulo='Información de fuente'
           />
           <br />
 
           <div style={{paddingLeft:'3rem'}}>
             <Link to="/TipoDocumento" className="icons">
-              <button className="button">Tipo de Documento</button><br />
+              <button className="btn">Tipo de Documento</button><br />
             </Link>
             <br />
             <Link to="/Proceso" className="icons">
-              <button className="button">Proceso</button><br />
+              <button className="btn">Proceso</button><br />
             </Link>
           </div>
         </div>

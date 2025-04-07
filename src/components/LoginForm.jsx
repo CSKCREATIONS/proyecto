@@ -1,4 +1,4 @@
-import React from 'react'
+ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function LoginForm(props) {
@@ -6,7 +6,7 @@ export default function LoginForm(props) {
     <div className='container'>
 
       <h1 className="Titulo">Portal JLA Global Company</h1>
-      <div className="container-form">
+      
         <div className="login-container">
           <div className="input-container">
             <input type="email" id="email" required placeholder=" " />
@@ -24,15 +24,15 @@ export default function LoginForm(props) {
           </Link>
         </div>
         <div className="recuperar-contraseña">
-          <p>{props.pregunta}</p>
-          <Link
+          <p style={{color:'white'}}>{props.pregunta}</p>
+          <Link style={{color:'grey'}}
             as={Link}
-            to={props.enlace}>
-            {props.ruta}
+            to={props.enlace}><u>
+              {props.ruta}
+            </u>
+            
           </Link>
         </div>
       </div>
-
-    </div>
   )
 }

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
-import Fijo from "../components/Fijo";
 
 
-export default function AñadirDocumento() {
+
+export default function EditarDocumento() {
 
   const handleClick = () => 
     Swal.fire({
-    text: 'Documento añadido correctamente',
+    text: 'Documento Editado correctamente',
     icon: 'success',
     showCancelButton: false,
     showCloseButton: true,
@@ -21,13 +21,8 @@ export default function AñadirDocumento() {
  
 
   return (
-    <div >
-          <Fijo />
-          <div className="content">
-
-    
     <div className="form-container">
-      <h3>Añadir Documento</h3>
+      <h3>Editar Documento</h3>
       <form>
         <label className="labelDOCS">Código</label>
         <input className= "textDOCS" type="text" name="codigo"/>
@@ -102,22 +97,19 @@ export default function AñadirDocumento() {
         <input className= "textDOCS" type="text" name="proceso"/>
 
         <label className="labelDOCS">Activo</label>
-        <input  type="checkbox" name="activo"/>
+        <input type="checkbox" name="activo"/>
 
         <br />
         <br />
         
         <Link to={`/Documentacion`} onClick={handleClick}>
-        <button className="btn">Adicionar</button>
+        <button className="btn">Editar</button>
         </Link>
         <Link to={`/Documentacion`}>
         <button style={{ marginLeft: "1rem" }} className="btn" type="button" >Cancelar</button>
         </Link>
         
       </form>
-    </div>
-    </div>
-
     </div>
   );
 }

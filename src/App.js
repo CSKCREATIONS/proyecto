@@ -24,7 +24,12 @@ import Proceso from './pages/Proceso';
 import ProcesoEdit from './pages/ProcesoEdit';
 import ProcesoAdicionar from './pages/ProcesoAdicionar';
 import DocumentacionAdicionar from './pages/DocumentacionAdicionar';
+import DocumentacionEdit from './pages/DocumentacionEdit';
+import Trazabilidad from './pages/Trazabilidad';
 import Perfil from './pages/Perfil';
+import Error404 from './pages/Error404';
+import Error504 from './pages/Error504';
+
 
 const App = () => {
   return (
@@ -37,7 +42,6 @@ const App = () => {
           <Route path='/RecuperarContraseña' element = {<RecuperarContraseña/>}/>
 
           <Route path='/Home' element ={<Home/>}/>
-          <Route path='/Perfil' element = {<Perfil/>}/>
           <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
           <Route path='/AñadirUsuario' element={<AñadirUsuario/>}/>
           <Route path='/AñadirRol' element={<AñadirRol/>}/>
@@ -59,6 +63,12 @@ const App = () => {
           <Route path='/Proceso' element={<Proceso/>}/>
           <Route path='/ProcesoEdit' element={<ProcesoEdit/>}/>
           <Route path='/ProcesoAdicionar' element={<ProcesoAdicionar/>}/>
+          <Route path='/DocumentacionEdit' element={<DocumentacionEdit/>}/>
+          <Route path='/Trazabilidad' element={<Trazabilidad/>}/>
+          <Route path='/Perfil' element={<Perfil/>}/>
+          <Route path='Login' element={<Login/>}/>
+          <Route path="/error504" element={<Error504 />} />
+          <Route path="*" element={<Error404 />} />
 
           
            

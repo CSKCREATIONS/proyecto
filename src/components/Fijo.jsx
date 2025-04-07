@@ -1,11 +1,38 @@
 import React from 'react'
 import '../App.css'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { mostrarMenu } from '../funciones/animaciones.js'
 import { toggleSubMenu } from '../funciones/animaciones.js'
 import { cerrarMenu } from '../funciones/animaciones.js'
+import Swal from 'sweetalert2'
 
 export default function Fijo() {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Seguro que quieres cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      // Aquí podrías limpiar el estado o el token, si lo usas
+      // Por ejemplo: localStorage.clear();
+
+      await Swal.fire({
+        title: '¡Sesión cerrada!',
+        text: 'Has salido correctamente.',
+        icon: 'success'
+      });
+
+      navigate('/Login');
+    }
+  };
   return (
     <div>
       <div className="fijo">
@@ -20,7 +47,7 @@ export default function Fijo() {
           </div>
           <div className="user">
             <Link as={Link} to="/Perfil"><span>Pepito</span>
-            <img src="" alt="logo usuario" /></Link>
+              <img src="" alt="logo usuario" /></Link>
           </div>
         </header>
 
@@ -29,9 +56,10 @@ export default function Fijo() {
           <div className="usuarioYModulos">
 
             <Link as={Link} to="/Perfil"><div className="preview-usuario">
-              <img src="../images/gatico.jpg" alt="" style={{ width: "80px" }} />
+              <img src="pangea/public/perfil.jpg" alt="" style={{ width: "80px" }} />
               <div className="datos-usuario">
                 <span className="usuario-nombre">Pepito Perez</span>
+                <br />
                 <span className="usuario-rol">Administrador</span>
               </div>
             </div></Link>
@@ -55,8 +83,8 @@ export default function Fijo() {
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuSIG')}>SIG</li>
                 <ul id="submenuSIG" className="dropdown">
-                  <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
                   <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
+                  <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
                 </ul>
               </nav>
 
@@ -76,8 +104,9 @@ export default function Fijo() {
               </nav>
             </div>
           </div>
+
           <div className="logout">
-            <img src=" ../images/gatico.jpg" alt="Cerrar sesion" style={{ width: "70px" }} />
+              <img onClick={handleClick} src="" alt="Cerrar sesion" style={{ width: "70px" }} />
           </div>
 
         </div>

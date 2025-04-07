@@ -1,9 +1,32 @@
 import React, { useState } from "react";
 import Fijo from "../components/Fijo";
 import NavDocumentacion from "../components/NavDocumentacion";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from 'react-router-dom';
+import Swal from 'sweetalert2'
+
+
 
 export default function Proceso() {
+
+
+    const handleClick = () => 
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, continuar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: '¡Listo!',
+            text: 'El proceso ha sido borrado.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
 
 
   return (
@@ -11,12 +34,13 @@ export default function Proceso() {
       <Fijo />
       <div className="content">
         <NavDocumentacion />
-        <div>
+        <div className="contenido-modulo">
           {/* Botón de Adicionar */}
+          <br />
           <Link to={`/ProcesoAdicionar`} className="icons">
-            <button className="button">Adicionar</button>
+            <button className="btn">Adicionar</button>
           </Link>
-
+          <br />
           {/* Tabla de Procesos */}
           <div className="container-tabla">
             <div className="table-container">
@@ -41,10 +65,13 @@ export default function Proceso() {
                       </Link>
 
                       {/* Botón de Eliminar con Modal */}
-                      <i
-                        className="fa-solid fa-trash icons"
-                        style={{ cursor: "pointer", marginLeft: "10px" }}
-                      ></i>
+                      <Link to={`/Proceso`} className="icons" onClick={handleClick}>
+                      <i className="fa-solid fa-trash icons" style={{ cursor: "pointer", marginLeft: "10px" }}
+                      >
+                        tralalero
+                      </i>
+                      </Link>
+                                        
                     </td>
                   </tr>
                 </tbody>
