@@ -46,8 +46,8 @@ export default function Fijo() {
             <Link as={Link} to="/Home"><span id='empresa-nombre'>JLA Global Company </span></Link>
           </div>
           <div className="user">
-            <Link as={Link} to="/Perfil"><span>Pepito</span>
-              <img src="" alt="logo usuario" /></Link>
+            <Link as={Link} to="/Perfil"><span>Pepito</span></Link>
+            <Link as={Link} to="/Perfil"><img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className='icono'/></Link>  
           </div>
         </header>
 
@@ -56,7 +56,7 @@ export default function Fijo() {
           <div className="usuarioYModulos">
 
             <Link as={Link} to="/Perfil"><div className="preview-usuario">
-              <img src="pangea/public/perfil.jpg" alt="" style={{ width: "80px" }} />
+              <img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" style={{ width: "80px" }} />
               <div className="datos-usuario">
                 <span className="usuario-nombre">Pepito Perez</span>
                 <br />
@@ -105,9 +105,10 @@ export default function Fijo() {
             </div>
           </div>
 
-          <div className="logout">
-              <img onClick={handleClick} src="" alt="Cerrar sesion" style={{ width: "70px" }} />
-          </div>
+          <button className="logout-btn" onClick={handleClick}>
+            Cerrar sesión
+          </button>
+
 
         </div>
 

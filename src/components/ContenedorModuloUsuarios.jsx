@@ -10,7 +10,7 @@ export default function ContenedorModuloUsuarios() {
           <div className="botones-container">
             <Link as={Link} to="/ListaDeUsuarios" >
               <button className="boton">
-                <img src="" alt="" className="icono" />
+                <img src="https://cdn-icons-png.freepik.com/256/7169/7169774.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className="icono" />
                 <span>Lista de usuarios</span>
               </button>
             </Link>
@@ -22,7 +22,7 @@ export default function ContenedorModuloUsuarios() {
             </Link>
             <Link as={Link} to="/AñadirUsuario" >
               <button className="boton">
-                <img src="" alt="" className="icono" />
+                <img src="https://cdn-icons-png.freepik.com/256/5507/5507771.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className="icono" />
                 <span>Añadir rol</span>
               </button>
             </Link>

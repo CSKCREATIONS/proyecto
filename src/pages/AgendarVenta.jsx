@@ -2,8 +2,27 @@ import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
+import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function AgendarVenta() {
+  // Coloca useNavigate directamente dentro del componente
+  const navigate = useNavigate();
+
+  // Agendar venta
+  const handleAgendado = () => {
+    Swal.fire({
+      title: 'Venta agendada',
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: 'green',
+    }).then(() => {
+      // Una vez que se confirma la alerta, navegas a otra página
+      navigate('/PedidosAgendados');
+    });
+  };
+
   return (
     <div>
       <Fijo />
@@ -41,15 +60,21 @@ export default function AgendarVenta() {
                     <td><input></input></td>
                     <td ><input></input></td>
 
-                    
+
 
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="buttons">
-              <button className='btn btn-primary'>Agendar venta</button>
-              </div>
+            <button
+              className="btn btn-primary"
+              onClick={handleAgendado}
+            >
+              Agendar Venta
+            </button>
+            </div>
+            
           </div>
         </div>
 

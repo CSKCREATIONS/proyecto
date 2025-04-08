@@ -11,11 +11,13 @@ export default function Home() {
     <div>
       <Fijo />
       <div class="content">
-
-        <ContenedorModuloUsuarios
-        />
+        <div className="contenido-modulo">
+        <ContenedorModuloUsuarios/>
         <ContenedorModuloSIG/>
         <ContenedorModuloVentas/>
+        </div>
+
+        
         
 
       </div>

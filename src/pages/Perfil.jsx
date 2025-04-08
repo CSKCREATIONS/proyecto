@@ -39,7 +39,7 @@ export default function Perfil() {
         <div className='contenido-modulo'>
           <div className="header">
             <h1>Pepito Perez </h1>
-            <button onClick={() => openModal('editUserModal')} style={{background:'transparent'}}>◀ Editar</button>
+            <button onClick={() => openModal('editUserModal')} style={{background:'transparent', cursor:'pointer'}}>◀ Editar</button>
           </div>
 
           <div className="containerPerfil">

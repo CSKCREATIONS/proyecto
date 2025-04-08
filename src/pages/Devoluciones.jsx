@@ -2,8 +2,49 @@ import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
-import { openModal } from '../funciones/animaciones'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import Swal from "sweetalert2";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useNavigate } from 'react-router-dom';
+
+
+/****Funcion para exportar a pdf*** */
+
+const exportarPDF = () => {
+  const input = document.getElementById('tabla_pedidos_devueltos');
+
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const imgWidth = 190;
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura de la imagen
+
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+
+    heightLeft -= pageHeight;
+
+    // Mientras la imagen exceda la altura de la página, agregar nuevas páginas
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage(); // Añadir nueva página
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight; // Resta la altura de la página actual
+    }
+
+    pdf.save('pedidosDevueltos.pdf');// nombre del pdf a descargar
+  });
+};
+
+
+
+
+
 
 // Datos que se mostraran en la gráfica de línea
 const data = [
@@ -23,14 +64,39 @@ const dataCircular = [
 
 const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
+
+
 export default function Devoluciones() {
+  const navigate = useNavigate();
+    //cancelar pedido
+    const handleCancelarPedido = () => {
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Este pedido se cancelará y no podrás revertirlo',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No, mantener',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // texto despues del si
+          Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
+        }
+        navigate('/PedidosCancelados');
+      });
+    };
   return (
     <div>
       <Fijo />
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Pedidos Devueltos" />
+          <EncabezadoModulo
+            titulo="Pedidos Devueltos"
+            exportarPDF={exportarPDF}
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
@@ -51,7 +117,7 @@ export default function Devoluciones() {
               <ResponsiveContainer width={380} height={300}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
-                    data={dataCircular} 
+                    data={dataCircular}
                     cx="50%"
                     cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -59,7 +125,7 @@ export default function Devoluciones() {
                     dataKey="value"
                   > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
                     {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> 
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
                   <Tooltip />
@@ -70,11 +136,11 @@ export default function Devoluciones() {
 
           <div className="container-tabla">
             <div className="table-container">
-              <table>
+              <table id='tabla_pedidos_devueltos'>
                 <thead>
                   <tr>
-                    <th style={{textAlign:'center'}} colSpan="5">Pedido</th>
-                    <th style={{textAlign:'center'}} colSpan="4">Cliente</th>
+                    <th style={{ textAlign: 'center' }} colSpan="5">Pedido</th>
+                    <th style={{ textAlign: 'center' }} colSpan="4">Cliente</th>
                   </tr>
                   <tr>
                     <th>No</th>
@@ -101,9 +167,15 @@ export default function Devoluciones() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-                    <td>
-                      <button className="button" onClick={() => openModal('editUserModal')}>Editar</button>
-                    </td>
+
+                    <button
+                      className=""
+                      style={{ marginLeft: '1rem', height: '30px', width: '50px', background:'transparent' }}
+                      onClick={handleCancelarPedido}
+                    >
+                      ❌
+                    </button>
+
                   </tr>
                 </tbody>
               </table>

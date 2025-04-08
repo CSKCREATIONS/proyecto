@@ -112,7 +112,7 @@ a, li{
   border-bottom: 1px solid rgb(179, 179, 179);
 }
 .preview-usuario:hover,.menu li:hover{
-  background-color: #324458;
+  background-color: #215f5b;
   cursor: pointer;
 }
 
@@ -132,6 +132,21 @@ a, li{
   font-size: 14px;
   font-weight: 200;
 }
+
+/**boton cerrar sesion**/
+
+.logout-btn {
+  background-color: #3d8a7f;
+  color: white;
+  border: none;
+  padding: 10px 60px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+
 
 /*clase agregada con js*/
 .visible{
@@ -266,9 +281,19 @@ a, li{
   gap: 5rem;
 }
 
+.export-text {
+  margin-left: 6px;
+}
+
+@media (max-width: 600px) {
+  .export-text {
+    display: none !important;
+  }
+}
+
 .contenido-modulo{
   padding: 1.5rem ;
-  background-color: #cacaca;
+  background-color: #cfcfcf;
   border-radius: 40px 40px 0 0;
 }
 
@@ -385,87 +410,6 @@ td {
 
 
 
-
-
-
-/**Estilos tabla añadir usuarios*/
-/*.container-añadirU {
-  width: 90%;
-  max-width: 600px;
-  margin: auto;
-  border: 2px solid black;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  font-weight: bold;
-  margin-right: 10px;
-  width: 120px;
-  text-align: right;
-}
-.form-group input, .form-group select {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid black;
-
-}
-.double, .triple {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.double .form-group, .triple .form-group {
-  width: 48%;
-}
-.triple .form-group:last-child {
-  width: 48%;
-}
-.button-container {
-  border: 1px solid black;
-  display: inline-block; 
-  padding: 5px;
-  text-align: center;
-}
-
-button {
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  background-color: white;
-  border: none;
-  text-align: center;
-}*/
-/***responsive de la tabla añadir Usuarios **/
-/*@media (max-width: 600px) {
-  .double, .triple {
-      flex-direction: column;
-  }
-  .double .form-group, .triple .form-group {
-      width: 100%;
-  }
-  .form-group {
-      flex-direction: column;
-      align-items: flex-start;
-  }
-  .form-group label {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 5px;
-  }
-} */
-
-
-
-
-
 /**********Estilos para informacion de fuente**********/
 
 .form-container {
@@ -564,13 +508,16 @@ legend {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
-  width: 8rem;
+  text-align: center; 
+  gap: 0.5rem;
+  width: 7rem;
+  height: 7rem; 
   padding: 10px;
-  background: #fff;
+  background: #e7e7e7;
   cursor: pointer;
   border-radius: 5px;
   transition: 0.3s;
+  box-sizing: border-box; 
 }
 
 .boton:hover {

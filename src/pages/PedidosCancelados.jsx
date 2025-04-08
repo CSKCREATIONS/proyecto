@@ -4,6 +4,50 @@ import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
 import { openModal } from '../funciones/animaciones'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+
+
+/****Funcion para exportar a pdf*** */
+
+const exportarPDF = () => {
+  const input = document.getElementById('tabla_pedidos_cancelados');
+
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const imgWidth = 190;
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura de la imagen
+
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+
+    heightLeft -= pageHeight;
+
+    // Mientras la imagen exceda la altura de la página, agregar nuevas páginas
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage(); // Añadir nueva página
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight; // Resta la altura de la página actual
+    }
+
+    pdf.save('pedidosCancelados.pdf');// nombre del pdf a descargar
+  });
+};
+
+
+
+
+
+
+
+
 
 // Datos que se mostraran en la gráfica de línea
 const data = [
@@ -30,7 +74,8 @@ export default function PedidosCancelados() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Pedidos Cancelados" />
+          <EncabezadoModulo titulo="Pedidos Cancelados"
+            exportarPDF = {exportarPDF} />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
@@ -70,7 +115,7 @@ export default function PedidosCancelados() {
 
           <div className="container-tabla">
             <div className="table-container">
-              <table>
+              <table id='tabla_pedidos_cancelados'>
                 <thead>
                   <tr>
                     <th style={{textAlign:'center'}} colSpan="5">Pedido</th>
@@ -101,9 +146,6 @@ export default function PedidosCancelados() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-                    <td>
-                      <button className="button" onClick={() => openModal('editUserModal')}>Editar</button>
-                    </td>
                   </tr>
                 </tbody>
               </table>

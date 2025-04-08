@@ -4,6 +4,48 @@ import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Link } from 'react-router-dom';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+
+
+/****Funcion para exportar a pdf*** */
+
+const exportarPDF = () => {
+  const input = document.getElementById('tabla_prospectos');
+
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const imgWidth = 190;
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura de la imagen
+
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+
+    heightLeft -= pageHeight;
+
+    // Mientras la imagen exceda la altura de la página, agregar nuevas páginas
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage(); // Añadir nueva página
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight; // Resta la altura de la página actual
+    }
+
+    pdf.save('listaProspectos.pdf');// nombre del pdf a descargar
+  });
+};
+
+
+
+
+
+
 
 // Datos que se mostraran en la gráfica de línea
 const data = [
@@ -30,7 +72,10 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Lista de clientes" />
+          <EncabezadoModulo 
+          titulo="Prospectos de clientes" 
+          exportarPDF = {exportarPDF}
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
@@ -70,7 +115,7 @@ export default function ListaDeClientes() {
 
           <div className="container-tabla">
             <div className="table-container">
-              <table>
+              <table id='tabla_prospectos'>
                 <thead>
                   <tr>
                     <th>Nombre / Razón Social</th>
@@ -89,9 +134,6 @@ export default function ListaDeClientes() {
                     <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Agenda</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>80</u></Link></td>
-
-                    <button className="button">Editar</button>
-
                   </tr>
                 </tbody>
               </table>

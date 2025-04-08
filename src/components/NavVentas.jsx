@@ -25,7 +25,7 @@ export default function NavVentas(props) {
                             <li>Lista de cotizaciones</li></Link>
                         <Link as={Link} to="/ListaDeClientes">
                             <li>Lista de clientes</li></Link>
-                        <Link as={Link} to="/ProspectosDeCliente">
+                        <Link as={Link} to="/ProspectosDeClientes">
                             <li>Prospectos de cliente</li></Link>
                     </nav>
         </div>

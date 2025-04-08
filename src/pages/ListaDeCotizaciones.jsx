@@ -2,8 +2,48 @@ import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
-import { openModal } from '../funciones/animaciones'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import Swal from 'sweetalert2';
+
+
+
+/****Funcion para exportar a pdf*** */
+
+const exportarPDF = () => {
+  const input = document.getElementById('tabla_cotizaciones');
+
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const imgWidth = 190;
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura de la imagen
+
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+
+    heightLeft -= pageHeight;
+
+    // Mientras la imagen exceda la altura de la página, agregar nuevas páginas
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage(); // Añadir nueva página
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight; // Resta la altura de la página actual
+    }
+
+    pdf.save('listaCotizaciones.pdf');// nombre del pdf a descargar
+  });
+};
+
+
+
+
 
 // Datos que se mostraran en la gráfica de línea
 const data = [
@@ -24,13 +64,37 @@ const dataCircular = [
 const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
 export default function ListaDeCotizaciones() {
+
+  
+  //cancelar pedido
+  const handleEliminarCotizacion = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta Cotizacion se cancelará y no podrás revertirlo',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // texto despues del si
+        Swal.fire('Perfecto', 'Se ha eliminado la cotización.', 'success');
+      }
+    });
+  };
+
   return (
     <div>
       <Fijo />
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Lista de cotizaciones" />
+          <EncabezadoModulo
+            titulo="Lista de cotizaciones"
+            exportarPDF={exportarPDF}
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
@@ -51,7 +115,7 @@ export default function ListaDeCotizaciones() {
               <ResponsiveContainer width={380} height={300}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
-                    data={dataCircular} 
+                    data={dataCircular}
                     cx="50%"
                     cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -59,7 +123,7 @@ export default function ListaDeCotizaciones() {
                     dataKey="value"
                   > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
                     {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> 
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
                   <Tooltip />
@@ -70,7 +134,7 @@ export default function ListaDeCotizaciones() {
 
           <div className="container-tabla">
             <div className="table-container">
-              <table>
+              <table id='tabla_cotizaciones'>
                 <thead>
                   <tr>
                     <th>Nombre / Razón Social</th>
@@ -90,10 +154,14 @@ export default function ListaDeCotizaciones() {
                     <td>Nataliamaria@gmail</td>
                     <td>Pasto</td>
                     <td>07/04/2027</td>
-                    <td>Lentos tengo hambre</td>
-                    <td>
-                      <button className="button" >Editar</button>
-                    </td>
+                    <td>N/A</td>
+                    <div className="buttons">
+                      <button
+                        onClick={handleEliminarCotizacion}
+                      >
+                        ❌
+                      </button>
+                    </div>
                   </tr>
                 </tbody>
               </table>

@@ -2,9 +2,24 @@ import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom';
 
 
 export default function RegistrarCotizacion() {
+  const navigate = useNavigate();
+  //Agendar venta
+  const handleCotizado = () => {
+    Swal.fire({
+      title: 'Cotización registrada',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#d33',
+    }).then(() => {
+      // Una vez que se confirma la alerta, navegas a otra página
+      navigate('/ListaDeCotizaciones');
+    });
+  };
   return (
     <div>
       <Fijo />
@@ -12,7 +27,7 @@ export default function RegistrarCotizacion() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Registrar cotizacion" />
-          
+
 
           <div className="container-tabla">
             <div className="table-container">
@@ -41,15 +56,21 @@ export default function RegistrarCotizacion() {
                       </select>
                     </td>
                     <td>07/04/2027</td>
-                    <td>Lentos tengo hambre</td>
-                    <td>
-                      <button className="button" >Editar</button>
-                    </td>
+                    <td>N/A</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+          <div className="buttons">
+            <button
+              className="btn btn-primary"
+              onClick={handleCotizado}
+            >
+              Registrar Cotización
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
