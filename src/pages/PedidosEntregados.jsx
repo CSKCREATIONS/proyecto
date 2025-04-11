@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 
 /****Funcion para exportar a pdf*** */
@@ -41,8 +43,21 @@ const exportarPDF = () => {
   });
 };
 
+//Funcion exportar a Excel
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_pedidos_entregados');
+  
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
 
-
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'pedidosEntregados.xlsx');
+};
 
 
 
@@ -98,6 +113,8 @@ export default function PedidosEntregados() {
           <EncabezadoModulo
             titulo="Pedidos Entregados"
             exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel}
+            buscar = 'Buscar pedido'
           />
 
           <div className="grafica-notificaciones">
@@ -173,8 +190,70 @@ export default function PedidosEntregados() {
                     <td>N/A</td>
 
                     <button
-                      className="btn"
-                      style={{ marginLeft: '1rem', height: '30px', width: '50px' }}
+                      className="btnTransparente"
+                      onClick={handleMarcadoDevuelto}
+                    >
+                      🔄
+                    </button>
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Ahhh</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
+                      onClick={handleMarcadoDevuelto}
+                    >
+                      🔄
+                    </button>
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Ahhh</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
+                      onClick={handleMarcadoDevuelto}
+                    >
+                      🔄
+                    </button>
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Ahhh</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
                       onClick={handleMarcadoDevuelto}
                     >
                       🔄

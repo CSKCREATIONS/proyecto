@@ -116,6 +116,7 @@ export default function ListaDeClientes() {
             titulo="Lista de clientes"
             exportarPDF = {exportarPDF}
             exportToExcel={exportToExcel}
+            buscar= 'Buscar cliente'
              />
 
           <div className="grafica-notificaciones">

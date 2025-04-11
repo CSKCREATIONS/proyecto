@@ -159,7 +159,7 @@ export default function ListaDeCotizaciones() {
                         ❌
                       </button>
                     <button onClick={() => openModal('editUserModal')}>
-                        <i className="fa-solid fa-eye" aria-label="Ver"></i>
+                        <i className="fa-solid fa-eye " aria-label="Ver"></i>
                       </button>
                     </td>
                   </tr>

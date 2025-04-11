@@ -56,7 +56,7 @@ export default function ContenedorModuloVentas() {
                 <span>Lista de clientes</span>
               </button>
             </Link>
-            <Link as={Link} to="/ProspectosDeCliente" >
+            <Link as={Link} to="/ProspectosDeClientes" >
               <button className="boton">
                 <img src="https://cdn-icons-png.freepik.com/256/901/901407.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className="icono" />
                 <span>Prospectos de cliente</span>

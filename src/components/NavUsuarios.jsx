@@ -8,7 +8,7 @@ export default function NavUsuarios() {
       <h2 >Usuarios</h2>
       <nav className='nav-modulo' id='usuarios-nav'>
         <Link as={Link} to="/ListaDeUsuarios"><li>Lista de usuarios</li></Link>
-        <Link as={Link} to="/AñadirUsuario"><li>Añadir usuario</li></Link>
+        <Link as={Link} to="/AñadirUsuario"><li>Añadir usuarios</li></Link>
         <Link as={Link} to="/AñadirRol"><li>Añadir Rol</li></Link>
       </nav>
     </div>

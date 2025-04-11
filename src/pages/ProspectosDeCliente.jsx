@@ -90,6 +90,7 @@ export default function ListaDeClientes() {
           titulo="Prospectos de clientes" 
           exportarPDF = {exportarPDF}
           exportToExcel={exportToExcel}
+          buscar = 'Buscar prospecto'
           />
 
           <div className="grafica-notificaciones">

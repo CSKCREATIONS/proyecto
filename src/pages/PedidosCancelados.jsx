@@ -6,7 +6,8 @@ import { openModal } from '../funciones/animaciones'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 
 /****Funcion para exportar a pdf*** */
@@ -42,6 +43,23 @@ const exportarPDF = () => {
 };
 
 
+// Funcion exportar a Excel
+
+
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_pedidos_cancelados');
+
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
+
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'pedidosCancelados.xlsx');
+};
 
 
 
@@ -75,7 +93,10 @@ export default function PedidosCancelados() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Cancelados"
-            exportarPDF = {exportarPDF} />
+            exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel}
+            buscar='Buscar pedido'
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
@@ -96,7 +117,7 @@ export default function PedidosCancelados() {
               <ResponsiveContainer width={380} height={300}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
-                    data={dataCircular} 
+                    data={dataCircular}
                     cx="50%"
                     cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -104,7 +125,7 @@ export default function PedidosCancelados() {
                     dataKey="value"
                   > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
                     {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> 
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
                   <Tooltip />
@@ -118,8 +139,8 @@ export default function PedidosCancelados() {
               <table id='tabla_pedidos_cancelados'>
                 <thead>
                   <tr>
-                    <th style={{textAlign:'center'}} colSpan="5">Pedido</th>
-                    <th style={{textAlign:'center'}} colSpan="4">Cliente</th>
+                    <th style={{ textAlign: 'center' }} colSpan="5">Pedido</th>
+                    <th style={{ textAlign: 'center' }} colSpan="4">Cliente</th>
                   </tr>
                   <tr>
                     <th>No</th>

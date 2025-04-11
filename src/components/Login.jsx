@@ -1,7 +1,6 @@
- import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
 
-export default function LoginForm(props) {
+export default function Login() {
   return (
     <div className='container'>
 
@@ -14,22 +13,13 @@ export default function LoginForm(props) {
           </div>
           <div className="input-container">
             <input type="password" id="password" required placeholder=" " />
-            <label for="password">{props.label}</label>
-
+            <label for="password">Contraseña</label>
           </div>
-          <Link
-              as={Link}
-              to={props.confirm}
-            ><button className='btn btn-secondary'>{props.accion}</button>
-          </Link>
+          <button className='btn-inicio'>Iniciar Sesion</button>
         </div>
         <div className="recuperar-contraseña">
-          <p>{props.pregunta}</p>
-          <Link
-            as={Link}
-            to={props.enlace}>
-            {props.ruta}
-          </Link>
+          <p>¿Has olvidado tu contraseña?</p>
+          <a href="#">Recuperala aquí</a>
         </div>
       </div>
 

@@ -115,6 +115,7 @@ export default function Devoluciones() {
             titulo="Pedidos Devueltos"
             exportToExcel={exportToExcel}
             exportarPDF={exportarPDF}
+            buscar = 'Buscar devolución'
           />
 
           <div className="grafica-notificaciones">
@@ -175,6 +176,87 @@ export default function Devoluciones() {
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
+                      onClick={handleCancelarPedido}
+                    >
+                      ❌
+                    </button>
+                    <button
+                      className="btnTransparente"
+                      onClick={() => openModal('editUserModal')}
+                    >
+                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                    </button>
+
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
+                      onClick={handleCancelarPedido}
+                    >
+                      ❌
+                    </button>
+                    <button
+                      className="btnTransparente"
+                      onClick={() => openModal('editUserModal')}
+                    >
+                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                    </button>
+
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+
+                    <button
+                      className="btnTransparente"
+                      onClick={handleCancelarPedido}
+                    >
+                      ❌
+                    </button>
+                    <button
+                      className="btnTransparente"
+                      onClick={() => openModal('editUserModal')}
+                    >
+                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                    </button>
+
+
+                  </tr>
                   <tr>
                     <td>1</td>
                     <td>Pasto</td>

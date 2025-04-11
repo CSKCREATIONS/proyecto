@@ -54,7 +54,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_pedidos_agendados');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -101,10 +101,11 @@ export default function PedidosAgendados() {
       if (result.isConfirmed) {
         // texto despues del si
         Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
+        navigate('/PedidosCancelados');
       }
-      navigate('/PedidosCancelados');
     });
   };
+
 
 
   //pedido confirmado
@@ -134,8 +135,10 @@ export default function PedidosAgendados() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Agendados"
-            exportarPDF={exportarPDF} 
-            exportToExcel={exportToExcel}/> 
+            exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel}
+            buscar = 'Buscar pedido'
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica */}
@@ -199,34 +202,140 @@ export default function PedidosAgendados() {
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
-                    <button className='btn' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                      <button className='btnTransparente' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                         <i className="fa-solid fa-pen" aria-label="Editar">
-                          
+
 
                         </i>
-                    </button>
-                    <button
-                      className="btn"
-                      style={{ height: '30px', width: '50px' }}
-                      onClick={handleCancelarPedido}
-                    >
-                      ❌
-                    </button>
-                    <button
-                      className='btn'
-                      style={{ height: '30px', width: '50px' }}
-                      onClick={handleConfirmarPedido}
-                    >
-                      ✔️
-                    </button>
-                  </div>
+                      </button>
+                      <button
+                        className="btnTransparente"
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleCancelarPedido}
+                      >
+                        ❌
+                      </button>
+                      <button
+                        className='btnTransparente'
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleConfirmarPedido}
+                      >
+                        ✔️
+                      </button>
+                    </div>
+                  </tr>
 
+
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Sharyk</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>sharyk@gmail</td>
+                    <td>N/A</td>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
+                      <button className='btnTransparente' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen" aria-label="Editar">
+
+
+                        </i>
+                      </button>
+                      <button
+                        className="btnTransparente"
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleCancelarPedido}
+                      >
+                        ❌
+                      </button>
+                      <button
+                        className='btnTransparente'
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleConfirmarPedido}
+                      >
+                        ✔️
+                      </button>
+                    </div>
+
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Jesus</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>yezzu@gmail</td>
+                    <td>N/A</td>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
+                      <button className='btnTransparente' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen" aria-label="Editar">
+
+
+                        </i>
+                      </button>
+                      <button
+                        className="btnTransparente"
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleCancelarPedido}
+                      >
+                        ❌
+                      </button>
+                      <button
+                        className='btnTransparente'
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleConfirmarPedido}
+                      >
+                        ✔️
+                      </button>
+                    </div>
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>cilindros</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Julian</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>juliaan@gmail</td>
+                    <td>N/A</td>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
+                      <button className='btnTransparente' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen" aria-label="Editar">
+
+
+                        </i>
+                      </button>
+                      <button
+                        className="btnTransparente"
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleCancelarPedido}
+                      >
+                        ❌
+                      </button>
+                      <button
+                        className='btnTransparente'
+                        style={{ height: '30px', width: '50px' }}
+                        onClick={handleConfirmarPedido}
+                      >
+                        ✔️
+                      </button>
+                    </div>
 
                   </tr>
                 </tbody>
               </table>
               <EditarPedido />
-              
+
             </div>
           </div>
 

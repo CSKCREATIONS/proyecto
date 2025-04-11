@@ -1,6 +1,4 @@
 import React from 'react'
-import { toggleSubMenu } from '../funciones/animaciones'
-import { openModal } from '../funciones/animaciones'
 import { closeModal } from '../funciones/animaciones'
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
@@ -10,7 +8,7 @@ export default function EditarPedido() {
 
     const handleClick = () => {
         Swal.fire({
-          text: 'Documento Editado correctamente',
+          text: 'Pedido editado correctamente',
           icon: 'success',
           showCancelButton: false,
           showCloseButton: true,

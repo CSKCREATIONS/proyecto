@@ -5,7 +5,6 @@ import EncabezadoModulo from '../components/EncabezadoModulo'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 
-
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
   //Agendar venta

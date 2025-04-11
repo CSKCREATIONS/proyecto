@@ -22,7 +22,6 @@ export default function AñadirUsuario() {
       <Fijo />
       <div className="content">
         <NavUsuarios />
-        <br />
         <div className="contenido-modulo">
           <h3>Añadir usuario</h3>
           <br />
@@ -59,7 +58,7 @@ export default function AñadirUsuario() {
                   <option value="" disabled selected>Seleccione un rol</option>
                   <option value="admin">Administrador</option>
                   <option value="user">Usuario</option>
-                  <option value="salchicha">Salchipapa</option>
+                  <option value="salchicha">agente</option>
                 </select>
               </div>
               <div className="form-group">

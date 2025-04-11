@@ -46,7 +46,7 @@ export default function Fijo() {
             <Link as={Link} to="/Home"><span id='empresa-nombre'>JLA Global Company </span></Link>
           </div>
           <div className="user">
-            <Link as={Link} to="/Perfil"><span>Pepito</span></Link>
+            <Link as={Link} to="/Perfil"><span style={{color:'white'}}>Pepito</span></Link>
             <Link as={Link} to="/Perfil"><img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className='icono'/></Link>  
           </div>
         </header>
