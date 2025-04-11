@@ -7,6 +7,10 @@ import Swal from "sweetalert2";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import ReagnedarPedido from '../components/ReagendarPedido';
+import { openModal } from '../funciones/animaciones'
 
 
 /****Funcion para exportar a pdf*** */
@@ -41,9 +45,23 @@ const exportarPDF = () => {
   });
 };
 
+// Funcion exportar a Excel
 
 
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_pedidos_devueltos');
+  
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
 
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'Devoluciones.xlsx');
+};
 
 
 // Datos que se mostraran en la gráfica de línea
@@ -95,6 +113,7 @@ export default function Devoluciones() {
         <div className="contenido-modulo">
           <EncabezadoModulo
             titulo="Pedidos Devueltos"
+            exportToExcel={exportToExcel}
             exportarPDF={exportarPDF}
           />
 
@@ -169,16 +188,23 @@ export default function Devoluciones() {
                     <td>N/A</td>
 
                     <button
-                      className=""
-                      style={{ marginLeft: '1rem', height: '30px', width: '50px', background:'transparent' }}
+                      className="btnTransparente"
                       onClick={handleCancelarPedido}
                     >
                       ❌
                     </button>
+                    <button
+                      className="btnTransparente"
+                      onClick={() => openModal('editUserModal')}
+                    >
+                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                    </button>
+
 
                   </tr>
                 </tbody>
               </table>
+              <ReagnedarPedido />
             </div>
           </div>
         </div>

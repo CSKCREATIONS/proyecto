@@ -6,10 +6,34 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Link } from 'react-router-dom';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { openModal } from '../funciones/animaciones'
+import Swal from 'sweetalert2'
+import EditarCliente from '../components/EditarCliente';
 
+ 
 
 
 /****Funcion para exportar a pdf*** */
+const handleClick = () => 
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, continuar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: '¡Listo!',
+        text: 'El Cliente ha sido borrado.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    }
+  });
 
 const exportarPDF = () => {
   const input = document.getElementById('tabla_clientes');
@@ -41,6 +65,23 @@ const exportarPDF = () => {
   });
 };
 
+// Funcion exportar a Excel
+
+
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_clientes');
+  
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
+
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'listaClientes.xlsx');
+};
 
 
 
@@ -74,6 +115,7 @@ export default function ListaDeClientes() {
           <EncabezadoModulo 
             titulo="Lista de clientes"
             exportarPDF = {exportarPDF}
+            exportToExcel={exportToExcel}
              />
 
           <div className="grafica-notificaciones">
@@ -133,11 +175,19 @@ export default function ListaDeClientes() {
                     <td>Nataliamaria@gmail</td>
                     <td><Link as={Link} to='/PedidosEntregados'><u>100111</u></Link></td>
                     <td>Entregado</td>
-                    
-                    
+                    <button className='btn' style={{ marginLeft: '1rem', height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}   >
+                    <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                  </button>
+                  <Link to={`/ListaDeClientes`} className="icons" onClick={handleClick}>
+                  <button className="btn" style={{marginLeft: '1rem',height: '30px', width: '50px' }} type="button">
+                    <i className="fa-solid fa-trash icons" style={{ cursor: "pointer" }}></i>
+                  </button>
+                  </Link>
                   </tr>
+                  
                 </tbody>
               </table>
+              <EditarCliente/>
             </div>
           </div>
         </div>

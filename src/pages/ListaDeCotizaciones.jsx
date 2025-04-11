@@ -1,51 +1,53 @@
-import React from 'react'
-import Fijo from '../components/Fijo'
-import NavVentas from '../components/NavVentas'
-import EncabezadoModulo from '../components/EncabezadoModulo'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import React, { useState } from 'react';
+import Fijo from '../components/Fijo';
+import NavVentas from '../components/NavVentas';
+import EncabezadoModulo from '../components/EncabezadoModulo';
+import { openModal } from '../funciones/animaciones';
+import AgendarCotPed from '../components/AgendarCotPed';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
-
-
-
-/****Funcion para exportar a pdf*** */
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell
+} from "recharts";
 
 const exportarPDF = () => {
   const input = document.getElementById('tabla_cotizaciones');
-
   html2canvas(input).then((canvas) => {
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-
     const imgWidth = 190;
-    const pageHeight = 297; // A4 height in mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura de la imagen
-
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
     let heightLeft = imgHeight;
     let position = 10;
 
     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-
     heightLeft -= pageHeight;
 
-    // Mientras la imagen exceda la altura de la página, agregar nuevas páginas
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
-      pdf.addPage(); // Añadir nueva página
+      pdf.addPage();
       pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight; // Resta la altura de la página actual
+      heightLeft -= pageHeight;
     }
 
-    pdf.save('listaCotizaciones.pdf');// nombre del pdf a descargar
+    pdf.save('listaCotizaciones.pdf');
   });
 };
 
+const exportToExcel = () => {
+  const table = document.getElementById('tabla_cotizaciones');
+  if (!table) return;
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'listaCotizaciones.xlsx');
+};
 
-
-
-
-// Datos que se mostraran en la gráfica de línea
 const data = [
   { name: "Enero", pedidos: 20 },
   { name: "Febrero", pedidos: 35 },
@@ -54,7 +56,6 @@ const data = [
   { name: "Mayo", pedidos: 45 },
 ];
 
-// Datos para la gráfica circular
 const dataCircular = [
   { name: "Entregados", value: 60 },
   { name: "Pendientes", value: 30 },
@@ -64,13 +65,12 @@ const dataCircular = [
 const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
 export default function ListaDeCotizaciones() {
+  const [modalVisible, setModalVisible] = useState(false);
 
-  
-  //cancelar pedido
   const handleEliminarCotizacion = () => {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: 'Esta Cotizacion se cancelará y no podrás revertirlo',
+      text: 'Esta Cotización se cancelará y no podrás revertirlo',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, cancelar',
@@ -79,7 +79,6 @@ export default function ListaDeCotizaciones() {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
-        // texto despues del si
         Swal.fire('Perfecto', 'Se ha eliminado la cotización.', 'success');
       }
     });
@@ -94,10 +93,11 @@ export default function ListaDeCotizaciones() {
           <EncabezadoModulo
             titulo="Lista de cotizaciones"
             exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel}
           />
 
+          {/* GRÁFICAS */}
           <div className="grafica-notificaciones">
-            {/* Gráfica de línea */}
             <div className="grafica">
               <ResponsiveContainer width={300} height={150}>
                 <LineChart data={data}>
@@ -109,29 +109,27 @@ export default function ListaDeCotizaciones() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Gráfica circular */}
             <div className="grafica-circular">
               <ResponsiveContainer width={380} height={300}>
-                <PieChart> {/* componente que define que es una grafica circular */}
+                <PieChart>
                   <Pie
                     data={dataCircular}
-                    cx="50%"
-                    cy="50%"
+                    cx="50%" cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     outerRadius={50}
                     dataKey="value"
-                  > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
+                  >
                     {dataCircular.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
+                  </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
+          {/* TABLA */}
           <div className="container-tabla">
             <div className="table-container">
               <table id='tabla_cotizaciones'>
@@ -144,6 +142,7 @@ export default function ListaDeCotizaciones() {
                     <th>Producto</th>
                     <th>Fecha</th>
                     <th>Observaciones</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -155,20 +154,22 @@ export default function ListaDeCotizaciones() {
                     <td>Pasto</td>
                     <td>07/04/2027</td>
                     <td>N/A</td>
-                    <div className="buttons">
-                      <button
-                        onClick={handleEliminarCotizacion}
-                      >
+                    <td>
+                      <button className='btnTransparente' onClick={handleEliminarCotizacion}>
                         ❌
                       </button>
-                    </div>
+                    <button onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-eye" aria-label="Ver"></i>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
+              <AgendarCotPed/>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

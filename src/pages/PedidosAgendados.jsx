@@ -8,6 +8,10 @@ import Swal from "sweetalert2";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { openModal } from '../funciones/animaciones'
+import EditarPedido from "../components/EditarPedido";
 
 
 
@@ -41,6 +45,25 @@ const exportarPDF = () => {
 
     pdf.save('pedidosAgendados.pdf');// nombre del pdf a descargar
   });
+};
+
+
+// Funcion exportar a Excel
+
+
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_pedidos_agendados');
+  
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
+
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'pedidosAgendados.xlsx');
 };
 
 
@@ -111,8 +134,8 @@ export default function PedidosAgendados() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Agendados"
-            exportarPDF={exportarPDF} />
-
+            exportarPDF={exportarPDF} 
+            exportToExcel={exportToExcel}/> 
 
           <div className="grafica-notificaciones">
             {/* Gráfica */}
@@ -175,30 +198,40 @@ export default function PedidosAgendados() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
+                    <button className='btn' style={{ height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen" aria-label="Editar">
+                          
 
-                    <button className='btn' style={{ marginLeft: '1rem', height: '30px', width: '50px' }} ></button>
+                        </i>
+                    </button>
                     <button
                       className="btn"
-                      style={{ marginLeft: '1rem', height: '30px', width: '50px' }}
+                      style={{ height: '30px', width: '50px' }}
                       onClick={handleCancelarPedido}
                     >
                       ❌
                     </button>
                     <button
-                      className="btn"
-                      style={{ marginLeft: '1rem', height: '30px', width: '50px' }}
+                      className='btn'
+                      style={{ height: '30px', width: '50px' }}
                       onClick={handleConfirmarPedido}
                     >
                       ✔️
                     </button>
+                  </div>
+
 
                   </tr>
                 </tbody>
               </table>
+              <EditarPedido />
+              
             </div>
           </div>
 
         </div>
+
       </div>
     </div>
   );

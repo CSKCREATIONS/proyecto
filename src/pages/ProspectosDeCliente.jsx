@@ -6,7 +6,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Link } from 'react-router-dom';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 
 /****Funcion para exportar a pdf*** */
@@ -42,7 +43,20 @@ const exportarPDF = () => {
 };
 
 
+const exportToExcel = () => {
+  // Cambiar el ID a 'tabla_pedidos_agendados'
+  const table = document.getElementById('tabla_prospectos');
+  
+  if (!table) {
+    console.error("Tabla no encontrada");
+    return;
+  }
 
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'listaProspectos.xlsx');
+};
 
 
 
@@ -75,6 +89,7 @@ export default function ListaDeClientes() {
           <EncabezadoModulo 
           titulo="Prospectos de clientes" 
           exportarPDF = {exportarPDF}
+          exportToExcel={exportToExcel}
           />
 
           <div className="grafica-notificaciones">
@@ -119,7 +134,7 @@ export default function ListaDeClientes() {
                 <thead>
                   <tr>
                     <th>Nombre / Razón Social</th>
-                    <th>Ciudad</th>
+                    <th>Ciudadd</th>
                     <th>Teléfono</th>
                     <th>Correo</th>
                     <th>Agenda / Cotiza</th>
@@ -130,8 +145,8 @@ export default function ListaDeClientes() {
                   <tr>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Canchas El Barrio</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Bogotá</u></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>6904883</u></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u></Link></td>
+                    <td ><Link as={Link} to='/PedidosAgendados'><u>6904883</u><br/><img src="https://cdn-icons-png.freepik.com/256/3059/3059561.png?semt=ais_hybrid" alt="Logo" width="20" height="20"/></Link></td>
+                    <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u><br/><img src="https://cdn-icons-png.freepik.com/256/3178/3178158.png?semt=ais_hybrid" alt="Logo" width="20" height="20"/></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Agenda</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>80</u></Link></td>
                   </tr>
