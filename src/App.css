@@ -350,16 +350,6 @@ td {
   font-size: 12px;
 }
 
-
-
-
-
-
-
-
-
-
-
 .modal {
   display: none;
   position: absolute;
@@ -393,7 +383,7 @@ td {
   margin-top: 20px;
 }
 .btn {
-  padding: 8px 12px;
+  padding:  12px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
@@ -606,6 +596,7 @@ legend {
 /* Inputs y select */
 
 input[type="number"],
+
 .textDOCS{
   width: 100%;
   padding: 10px;
@@ -865,5 +856,60 @@ h1 {
   .notificacion {
     width: 100%;
   }
+}
+
+
+/**estilo cuadro ingresar datos en agendar pedido***/
+.cuadroTexto {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.cuadroTexto:focus {
+  border-color: #152b2a;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/**botones de las tablas**/
+.btnTransparente {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="file"],
+
+
+select {
+  padding: 5px 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px; /* redondeado */
+  background-color: #f9f9f9; /* color suave de fondo */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-color: #4d90fe;
+  box-shadow: 0 0 8px rgba(77, 144, 254, 0.5);
 }
 

@@ -29,7 +29,8 @@ import Trazabilidad from './pages/Trazabilidad';
 import Perfil from './pages/Perfil';
 import Error404 from './pages/Error404';
 import Error504 from './pages/Error504';
-
+import Persona from './pages/Persona';
+import Empresa from './pages/Empresa';
 
 const App = () => {
   return (
@@ -69,7 +70,8 @@ const App = () => {
           <Route path='Login' element={<Login/>}/>
           <Route path="/error504" element={<Error504 />} />
           <Route path="*" element={<Error404 />} />
-
+          <Route path="Persona" element={<Persona/>} />
+          <Route path="Empresa" element={<Empresa/>} />
           
            
         </Routes>
