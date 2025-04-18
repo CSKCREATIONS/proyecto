@@ -1,5 +1,5 @@
 @startuml
-node "Computadora del Cliente" {
+node "Computadora del Funcionario de la empresa" {
   node "Navegador Web" {
     component "Aplicación React"
   }
