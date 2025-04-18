@@ -114,7 +114,6 @@ export default function PedidosEntregados() {
             titulo="Pedidos Entregados"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-            buscar = 'Buscar pedido'
           />
 
           <div className="grafica-notificaciones">
@@ -189,74 +188,8 @@ export default function PedidosEntregados() {
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
 
-                    <button
-                      className="btnTransparente"
-                      onClick={handleMarcadoDevuelto}
-                    >
-                      🔄
-                    </button>
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Ahhh</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleMarcadoDevuelto}
-                    >
-                      🔄
-                    </button>
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Ahhh</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleMarcadoDevuelto}
-                    >
-                      🔄
-                    </button>
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Ahhh</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleMarcadoDevuelto}
-                    >
-                      🔄
+                    <button className="btn" onClick={handleMarcadoDevuelto}style={{marginLeft: '1rem',height: '35px', width: '50px' }}>
+                      <i className="fa-solid fa-rotate fa-xl" style={{ color: '#007bff' }}></i>
                     </button>
 
                   </tr>

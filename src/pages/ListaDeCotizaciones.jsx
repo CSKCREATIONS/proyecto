@@ -156,10 +156,11 @@ export default function ListaDeCotizaciones() {
                     <td>N/A</td>
                     <td>
                       <button className='btnTransparente' onClick={handleEliminarCotizacion}>
-                        ❌
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
                       </button>
-                    <button onClick={() => openModal('editUserModal')}>
-                        <i className="fa-solid fa-eye " aria-label="Ver"></i>
+                        &nbsp;&nbsp;
+                      <button className='btnTransparente' onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </button>
                     </td>
                   </tr>

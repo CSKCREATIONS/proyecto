@@ -18,11 +18,11 @@ export default function InformacionDeFuente() {
 
           <div style={{paddingLeft:'3rem'}}>
             <Link to="/TipoDocumento" className="icons">
-              <button className="btn">Tipo de Documento</button><br />
+              <button className="btn btn-primary">Tipo de Documento</button><br />
             </Link>
             <br />
             <Link to="/Proceso" className="icons">
-              <button className="btn">Proceso</button><br />
+              <button className="btn btn-primary">Proceso</button><br />
             </Link>
           </div>
         </div>

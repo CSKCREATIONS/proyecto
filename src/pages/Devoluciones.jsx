@@ -115,7 +115,6 @@ export default function Devoluciones() {
             titulo="Pedidos Devueltos"
             exportToExcel={exportToExcel}
             exportarPDF={exportarPDF}
-            buscar = 'Buscar devolución'
           />
 
           <div className="grafica-notificaciones">
@@ -187,105 +186,20 @@ export default function Devoluciones() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleCancelarPedido}
-                    >
-                      ❌
-                    </button>
-                    <button
-                      className="btnTransparente"
-                      onClick={() => openModal('editUserModal')}
-                    >
-                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
-                    </button>
-
-
+                    <div className="no-export" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '.5rem' }}>
+                        <button className="btn" style={{marginLeft: ".5rem", height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                          <i className="fa-solid fa-cancel fa-xl" style={{ color: '#dc3545' }} />
+                        </button>
+                        <button className="btn" style={{marginLeft: ".2rem", height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')} >
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                        </button>
+                    </div>
                   </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleCancelarPedido}
-                    >
-                      ❌
-                    </button>
-                    <button
-                      className="btnTransparente"
-                      onClick={() => openModal('editUserModal')}
-                    >
-                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
-                    </button>
-
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleCancelarPedido}
-                    >
-                      ❌
-                    </button>
-                    <button
-                      className="btnTransparente"
-                      onClick={() => openModal('editUserModal')}
-                    >
-                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
-                    </button>
-
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-
-                    <button
-                      className="btnTransparente"
-                      onClick={handleCancelarPedido}
-                    >
-                      ❌
-                    </button>
-                    <button
-                      className="btnTransparente"
-                      onClick={() => openModal('editUserModal')}
-                    >
-                      <i className="fa-solid fa-pen" aria-label="Editar"></i>
-                    </button>
-
-
-                  </tr>
+                  
                 </tbody>
+                
               </table>
+              
               <ReagnedarPedido />
             </div>
           </div>

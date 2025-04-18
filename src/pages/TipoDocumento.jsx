@@ -44,7 +44,7 @@ export default function TipoDocumento() {
               <br />
 
               <Link to={`/TipoDocumentoAdicionar`} className="icons">
-                <button className="btn">Adicionar</button>
+                <button className="btn btn-primary">Adicionar</button>
               </Link>
 
               <table>
@@ -52,26 +52,20 @@ export default function TipoDocumento() {
                   <tr>
                     <th>Nombre</th>
                     <th>Acciones</th>
-
-
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Procedimiento(PRO)</td>
-
                     <td>
                       {/* Botón de Editar */}
                       <Link to={`/TipoDocumentoEdit`} className="icons">
-                        <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </Link>
-
+                      &nbsp;&nbsp;&nbsp;
                       {/* Botón de Eliminar con Modal */}
                       <Link to={`/TipoDocumento`} className="icons" onClick={handleClick}>
-                      <i className="fa-solid fa-trash icons" style={{ cursor: "pointer", marginLeft: "10px" }}
-                      >
-                        tralalero
-                      </i>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>                      
                       </Link>
                     </td>
 
@@ -82,15 +76,12 @@ export default function TipoDocumento() {
                     <td>
                       {/* Botón de Editar */}
                       <Link to={`/TipoDocumentoEdit`} className="icons">
-                        <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                      <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </Link>
-
+                      &nbsp;&nbsp;&nbsp;
                       {/* Botón de Eliminar con Modal */}
                       <Link to={`/TipoDocumento`} className="icons" onClick={handleClick}>
-                      <i className="fa-solid fa-trash icons" style={{ cursor: "pointer", marginLeft: "10px" }}
-                      >
-                        tralalero
-                      </i>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>                      
                       </Link>
 
                     </td>

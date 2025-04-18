@@ -31,24 +31,17 @@ export default function TipoDocumentoAdicionar() {
        <section class="">
             <fieldset >
                 <legend>Adicionar Tipo de Documento</legend>
-
-                
                 <label className="label">Nombre</label>
                 <br />
-               <input
-                type="text"
-                className="input-boxTD"
-              
-            />
-            <br />
-
+               <input type="text" className="input-boxTD"/>
+                <br />
             </fieldset>
             <Link to={`/TipoDocumento`} className="icons" onClick={handleClick} > 
-            <button className="btn">Aceptar</button>
+            <button className="btn btn-primary">Aceptar</button>
             </Link>
 
             <Link to={`/TipoDocumento`} className="icons" > 
-              <button style={{ marginLeft: "1rem" }}className="btn">Cancelar</button>
+              <button style={{ marginLeft: "1rem" }}className="btn btn-secondary">Cancelar</button>
             </Link>
              
         </section>

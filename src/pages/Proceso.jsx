@@ -38,7 +38,7 @@ export default function Proceso() {
           {/* Botón de Adicionar */}
           <br />
           <Link to={`/ProcesoAdicionar`} className="icons">
-            <button className="btn">Adicionar</button>
+            <button className="btn btn-primary">Adicionar</button>
           </Link>
           <br />
           {/* Tabla de Procesos */}
@@ -60,16 +60,13 @@ export default function Proceso() {
                     <td>Admin</td>
                     <td>
                       {/* Botón de Editar */}
-                      <Link to={`/ProcesoEdit`} className="icons">
-                        <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                      <Link to={`/ProcesoEdit`} >
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </Link>
-
                       {/* Botón de Eliminar con Modal */}
-                      <Link to={`/Proceso`} className="icons" onClick={handleClick}>
-                      <i className="fa-solid fa-trash icons" style={{ cursor: "pointer", marginLeft: "10px" }}
-                      >
-                        tralalero
-                      </i>
+                      &nbsp;&nbsp;&nbsp;
+                      <Link to={`/Proceso`} onClick={handleClick}>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                       </Link>
                                         
                     </td>

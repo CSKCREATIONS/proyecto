@@ -43,10 +43,10 @@ export default function Proceso() {
 
             {/* Botones */}
               <Link to={`/Proceso`} onClick={handleClick}>
-                <button className="btn">Adicionar</button>
+                <button className="btn btn-primary">Adicionar</button>
                 </Link>
                <Link to={`/Proceso`}>
-                <button style={{ marginLeft: "1rem" }} className="btn">Cancelar</button>
+                <button style={{ marginLeft: "1rem" }} className="btn btn-secondary">Cancelar</button>
               </Link>
           </form>
         </div>

@@ -116,7 +116,6 @@ export default function ListaDeClientes() {
             titulo="Lista de clientes"
             exportarPDF = {exportarPDF}
             exportToExcel={exportToExcel}
-            buscar= 'Buscar cliente'
              />
 
           <div className="grafica-notificaciones">
@@ -176,13 +175,14 @@ export default function ListaDeClientes() {
                     <td>Nataliamaria@gmail</td>
                     <td><Link as={Link} to='/PedidosEntregados'><u>100111</u></Link></td>
                     <td>Entregado</td>
-                    <button className='btn' style={{ marginLeft: '1rem', height: '30px', width: '50px' }} onClick={() => openModal('editUserModal')}   >
-                    <i className="fa-solid fa-pen" aria-label="Editar"></i>
+                    <button className='btn' style={{ marginLeft: '1rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}   >
+                    <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                   </button>
                   <Link to={`/ListaDeClientes`} className="icons" onClick={handleClick}>
-                  <button className="btn" style={{marginLeft: '1rem',height: '30px', width: '50px' }} type="button">
-                    <i className="fa-solid fa-trash icons" style={{ cursor: "pointer" }}></i>
-                  </button>
+                    <button className="btn" style={{marginLeft: '1rem',height: '35px', width: '50px' }} type="button">
+                    <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+     
+                    </button>
                   </Link>
                   </tr>
                   

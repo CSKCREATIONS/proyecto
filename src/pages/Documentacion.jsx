@@ -72,7 +72,7 @@ const handleClick = () =>
   const mostrarPDF2 = () => {
     Swal.fire({
       html: `
-        <iframe src="/diagrama_clases.png" width="5000px" height="500px" style="border:none;"></iframe>
+        <iframe src="/diagrama de clases.pdf" width="5000px" height="500px" style="border:none;"></iframe>
       `,
       width: 800,
       showCloseButton: true,
@@ -103,7 +103,7 @@ const handleClick = () =>
           <div className="container-tabla">
             <div className="table-container"><br />
             <Link to={`/DocumentacionAdicionar`} className="icons">
-              <button className="btn">Adicionar</button>
+              <button className="btn btn-primary">Adicionar</button>
                </Link>
               <table>
                   <thead>
@@ -124,29 +124,18 @@ const handleClick = () =>
                   <tbody>
                     <tr >
                       <td>
-                      <button
-                      className={`btn-toggle ${activo ? '' : 'inactive'}`}
-                      onClick={toggleEstado}
-                     >
-                      {activo ? 'Activo' : 'Inactivo'}
-                    </button>
+                        <button className={`btn-toggle ${activo ? '' : 'inactive'}`} onClick={toggleEstado} >
+                          {activo ? 'Activo' : 'Inactivo'}
+                        </button>
                       </td>
                       <td>
-                      <button
-                        style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
-                        onClick={mostrarPDF}
-                        title="Ver documento"
-                      >
-                        <i className="fa-solid fa-eye fa-2x" style={{ color: '#007bff' }} />
-                      </button>
+                        <button style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}onClick={mostrarPDF} title="Ver documento">
+                          <i className="fa-solid fa-eye fa-2x" style={{ color: '#007bff' }} />
+                        </button>
                       &nbsp;&nbsp;&nbsp;
-                      <a 
-                        href="/propuesta_tecnica.pdf" 
-                        download="propuesta_tecnica.pdf"
-                        title="Descargar documento"
-                      >
-                        <i className="fa-solid fa-file-arrow-down fa-2x" style={{ cursor: 'pointer', color: 'green' }}></i>
-                      </a>
+                        <a href="/propuesta_tecnica.pdf" download="propuesta_tecnica.pdf" title="Descargar documento">
+                          <i className="fa-solid fa-file-arrow-down fa-2x" style={{ cursor: 'pointer', color: 'green' }}></i>
+                        </a>
 
                       </td>
                       <td >DI-PRO-001</td>
@@ -156,32 +145,26 @@ const handleClick = () =>
                       <td>Direccionamiento Estratégico (DE)	 </td>
                       <td >20/03/2025</td>
                       <td> &nbsp;&nbsp;&nbsp;
-                      <button
-                        onClick={handleNuevaVersion}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}
-                        title="Agregar nueva versión"
-                      >
-                        <i className="fa-solid fa-file-circle-plus fa-2x" />
-                      </button>
-
+                        <button onClick={handleNuevaVersion} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }} title="Agregar nueva versión"                      >
+                          <i className="fa-solid fa-file-circle-plus fa-2x" />
+                        </button>
                       </td>
-                      
                       <td> 
-                      <Link to={`/Trazabilidad`} className="icons">
-                      <button className="btn" style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
-                      </Link> 
+                        <Link to={`/Trazabilidad`} className="icons">
+                          <button className="btn btn-secondary " style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
+                        </Link> 
                       </td>
-
                       <td>
-                      
-                      <Link to={`/DocumentacionEdit`} className="icons">
-                      <button className="btn" style={{ height: '30px', width: '60px' }} type="button">Editar</button>
+                      &nbsp;&nbsp;                 
+                        <Link to={`/DocumentacionEdit`} className="icons">
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                         </Link>                      
                         </td>
                       <td>
+                      &nbsp;&nbsp;
                       <Link to={`/Documentacion`} className="icons" onClick={handleClick}>
-                      <button className="btn" style={{height: '30px', width: '60px' }} type="button">Borrar</button>
-                        </Link>
+                      <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
+                      </Link>
                       </td>
                     </tr>
                     {/*desplegable*/}
@@ -204,14 +187,9 @@ const handleClick = () =>
                         <i className="fa-solid fa-eye fa-2x" style={{ color: '#007bff' }} />
                       </button>
                       &nbsp;&nbsp;&nbsp;
-                      <a 
-                        href="/diagrama de despliegue.pdf" 
-                        download="diagrama de despliegue.pdf"
-                        title="Descargar documento"
-                      >
+                      <a href="/diagrama de despliegue.pdf"  download="diagrama de despliegue.pdf" title="Descargar documento">
                         <i className="fa-solid fa-file-arrow-down fa-2x" style={{ cursor: 'pointer', color: 'green' }}></i>
                       </a>
-
                       </td>
                       <td >DI-PRO-002</td>
                       <td>DIAGRAMA DE DESPLIEGUE PANGEA</td>
@@ -220,61 +198,41 @@ const handleClick = () =>
                       <td>Direccionamiento Estratégico (DE)	 </td>
                       <td >20/03/2025</td>
                       <td> &nbsp;&nbsp;&nbsp;
-                      <button
-                        onClick={handleNuevaVersion}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}
-                        title="Agregar nueva versión"
-                      >
-                        <i className="fa-solid fa-file-circle-plus fa-2x" />
-                      </button>
-
+                        <button onClick={handleNuevaVersion} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}title="Agregar nueva versión" >
+                          <i className="fa-solid fa-file-circle-plus fa-2x" />
+                        </button>
                       </td>
-                      
                       <td> 
-                      <Link to={`/Trazabilidad`} className="icons">
-                      <button className="btn" style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
-                      </Link> 
+                        <Link to={`/Trazabilidad`} className="icons">
+                          <button className=" btn btn-secondary" style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
+                        </Link> 
                       </td>
-
-                      <td>
-                      
-                      <Link to={`/DocumentacionEdit`} className="icons">
-                      <button className="btn" style={{ height: '30px', width: '60px' }} type="button">Editar</button>
+                      <td>&nbsp;&nbsp;
+                        <Link to={`/DocumentacionEdit`} className="icons">
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                         </Link>                      
-                        </td>
-                      <td>
-                      <Link to={`/Documentacion`} className="icons" onClick={handleClick}>
-                      <button className="btn" style={{height: '30px', width: '60px' }} type="button">Borrar</button>
+                      </td>
+                      <td>&nbsp;&nbsp;
+                        <Link to={`/Documentacion`} className="icons" onClick={handleClick}>
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                         </Link>
                       </td>
                     </tr>
                     {/*clases*/}
                     <tr>
                     <td>
-                    <button
-                      className={`btn-toggle ${activo ? '' : 'inactive'}`}
-                      onClick={toggleEstado}
-                     >
-                      {activo ? 'Activo' : 'Inactivo'}
-                    </button>
+                      <button className={`btn-toggle ${activo ? '' : 'inactive'}`} onClick={toggleEstado}>
+                        {activo ? 'Activo' : 'Inactivo'}
+                      </button>
                     </td>
                       <td>
-                      <button
-                        style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
-                        onClick={mostrarPDF2}
-                        title="Ver documento"
-                      >
-                        <i className="fa-solid fa-eye fa-2x" style={{ color: '#007bff' }} />
-                      </button>
+                        <button style={{ background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={mostrarPDF2} title="Ver documento">
+                          <i className="fa-solid fa-eye fa-2x" style={{ color: '#007bff' }} />
+                        </button>
                       &nbsp;&nbsp;&nbsp;
-                      <a 
-                        href="/diagrama_clases.png" 
-                        download="diagrama_clases.png"
-                        title="Descargar documento"
-                      >
-                        <i className="fa-solid fa-file-arrow-down fa-2x" style={{ cursor: 'pointer', color: 'green' }}></i>
-                      </a>
-
+                        <a  href="/diagrama de clases.pdf" download="diagrama de clases.pdf" title="Descargar documento" >
+                          <i className="fa-solid fa-file-arrow-down fa-2x" style={{ cursor: 'pointer', color: 'green' }}></i>
+                        </a>
                       </td>
                       <td >DI-PRO-003</td>
                       <td>DIAGRAMA DE CLASES PANGEA</td>
@@ -283,31 +241,24 @@ const handleClick = () =>
                       <td>Direccionamiento Estratégico (DE)	 </td>
                       <td >20/03/2025</td>
                       <td> &nbsp;&nbsp;&nbsp;
-                      <button
-                        onClick={handleNuevaVersion}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}
-                        title="Agregar nueva versión"
+                      <button onClick={handleNuevaVersion} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }} title="Agregar nueva versión"
                       >
                         <i className="fa-solid fa-file-circle-plus fa-2x" />
                       </button>
-
                       </td>
-                      
                       <td> 
-                      <Link to={`/Trazabilidad`} className="icons">
-                      <button className="btn" style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
-                      </Link> 
+                        <Link to={`/Trazabilidad`} className="icons">
+                        <button className="btn btn-secondary" style={{  height: '30px', width: '100px' }} type="button">Trazabilidad</button>
+                        </Link> 
                       </td>
-
-                      <td>
-                      
-                      <Link to={`/DocumentacionEdit`} className="icons">
-                      <button className="btn" style={{ height: '30px', width: '60px' }} type="button">Editar</button>
+                      <td>&nbsp;&nbsp;
+                        <Link to={`/DocumentacionEdit`} className="icons">
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                         </Link>                      
-                        </td>
-                      <td>
-                      <Link to={`/Documentacion`} className="icons" onClick={handleClick}>
-                      <button className="btn" style={{height: '30px', width: '60px' }} type="button">Borrar</button>
+                      </td>
+                      <td>&nbsp;&nbsp;
+                        <Link to={`/Documentacion`} className="icons" onClick={handleClick}>
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                         </Link>
                       </td>
                     </tr>
