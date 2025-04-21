@@ -47,7 +47,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_pedidos_entregados');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -119,11 +119,11 @@ export default function PedidosEntregados() {
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
+              <ResponsiveContainer width={380} height={150}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
+                  <XAxis dataKey="name"  /> {/*eje x. escribir hide para ocultarlo*/}
+                  <YAxis /> {/*eje y. escribir hide para ocultarlo*/}
                   <Tooltip />
                   <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
                 </LineChart>
@@ -188,9 +188,12 @@ export default function PedidosEntregados() {
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
 
-                    <button className="btn" onClick={handleMarcadoDevuelto}style={{marginLeft: '1rem',height: '35px', width: '50px' }}>
-                      <i className="fa-solid fa-rotate fa-xl" style={{ color: '#007bff' }}></i>
-                    </button>
+                    <div className="no-export">
+                      <button className="btnTransparente" onClick={handleMarcadoDevuelto} style={{ marginLeft: '1rem', height: '35px', width: '50px' }}>
+                        <i className="fa-solid fa-rotate fa-xl" style={{ color: '#007bff' }}></i>
+                      </button>
+                    </div>
+
 
                   </tr>
                 </tbody>

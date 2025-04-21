@@ -6,13 +6,13 @@ export default function EncabezadoModulo(props) {
 		<div className='encabezado-modulo'>
 			<div>
 				<h3>{props.titulo}</h3>
-				<button style={{ background: 'transparent' }}  onClick={props.exportToExcel}><i className="fa-solid fa-file-excel"></i> Exportar a Excel</button>
-				<button style={{ background: 'transparent' }} onClick={props.exportarPDF}><i className="fa-solid fa-file-pdf"></i> Exportar a PDF</button>
+				<button style={{ background: 'transparent', cursor: 'pointer'}}  onClick={props.exportToExcel}><i className="fa-solid fa-file-excel"></i> Exportar a Excel</button>
+				<button style={{ background: 'transparent', cursor: 'pointer'}} onClick={props.exportarPDF}><i className="fa-solid fa-file-pdf"></i> Exportar a PDF</button>
 			</div>
 
 			<div className="search-container">
 				<input type="text" className="search-box" placeholder=" " id="search" onChange={props.onSearch}/>
-				<label for="search"><i className="fa-solid fa-magnifying-glass"></i> {props.buscar}</label>
+				<label for="search"><i className="fa-solid fa-magnifying-glass"></i> Buscar usuario</label>
 			</div>
 		</div>
 	)

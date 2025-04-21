@@ -59,7 +59,7 @@ const exportarPDF = () => {
 
 const exportToExcel = () => {
   const table = document.getElementById('tabla_pedidos_agendados');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -115,7 +115,6 @@ export default function PedidosAgendados() {
         // texto despues del si
         Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
       }
-      navigate('/PedidosCancelados');
     });
   };
 
@@ -127,7 +126,7 @@ export default function PedidosAgendados() {
       text: '¿Se ha cumplido con el pedido 011021',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, confirmar',
+      confirmButtonText: 'Sí',
       cancelButtonText: 'No',
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
@@ -136,7 +135,6 @@ export default function PedidosAgendados() {
         // texto despues del si
         Swal.fire('Listo', 'Se ha marcado como cumplido.', 'success');
       }
-      navigate('/PedidosEntregados');
     });
   };
 
@@ -147,17 +145,17 @@ export default function PedidosAgendados() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Agendados"
-            exportarPDF={exportarPDF} 
-            exportToExcel={exportToExcel}/> 
+            exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel} />
 
           <div className="grafica-notificaciones">
             {/* Gráfica */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}> {/* tamaño */}
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
                 <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
                   <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
-                  <XAxis dataKey="name" hide /> {/* define el eje x y con hide se oculta los nombres :)*/}
-                  <YAxis hide /> {/* oculta el eje y */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
                   <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
                   <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
@@ -211,26 +209,26 @@ export default function PedidosAgendados() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '1rem' }}>
-                      <button className='btn' style={{ marginLeft: '.5rem',height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
                         <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </button>
 
-                      <button className="btn" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
-                      <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
+                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
                       </button>
-                    <button className='btn' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
-                    >
-                      <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
-                    </button>
-                  </div>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
+                      >
+                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
+                      </button>
+                    </div>
 
 
                   </tr>
                 </tbody>
               </table>
               <EditarPedido />
-              
+
             </div>
           </div>
 

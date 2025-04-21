@@ -19,13 +19,16 @@ export default function RegistrarCotizacion() {
       navigate('/ListaDeCotizaciones');
     });
   };
+
   return (
     <div>
       <Fijo />
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Registrar cotizacion" />
+          <EncabezadoModulo 
+          titulo="Registrar cotizacion"
+          />
 
 
           <div className="container-tabla">
@@ -44,18 +47,19 @@ export default function RegistrarCotizacion() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
                     <td>
-                      <select>
-                        <option>Pasto</option>
+                      <select className='cuadroTexto'>
+                        <option >Seleccione</option>
+                        <option>Cilindro</option>
                         <option>Grama</option>
                       </select>
                     </td>
-                    <td>07/04/2027</td>
-                    <td>N/A</td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
                   </tr>
                 </tbody>
               </table>

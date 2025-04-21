@@ -35,17 +35,17 @@ export default function LoginForm(props) {
       setError('Usuario o contraseña incorrectos');
     }
   };
- 
+
 
   // En el login, cuando el usuario1 se loguea
-    localStorage.setItem('usuario', 'usuario1');
-    localStorage.setItem('modulo', 'SIG');
+  localStorage.setItem('usuario', 'usuario1');
+  localStorage.setItem('modulo', 'SIG');
   // En el login, cuando el usuario2 se loguea
-    localStorage.setItem('usuario', 'usuario2');
-    localStorage.setItem('modulo', 'ventas');
+  localStorage.setItem('usuario', 'usuario2');
+  localStorage.setItem('modulo', 'ventas');
   // En el login, cuando el admin se loguea
-    localStorage.setItem('usuario', 'admin');
-    localStorage.setItem('modulo', 'admin');
+  localStorage.setItem('usuario', 'admin');
+  localStorage.setItem('modulo', 'admin');
 
 
 
@@ -55,40 +55,47 @@ export default function LoginForm(props) {
 
       <div className="container-form">
         <div className="login-container">
-          <div className="input-container">
-            <input
-              type="email"
-              id="email"
-              required
-              placeholder=" "
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-            />
-            <label htmlFor="email">Usuario</label>
-          </div>
+          <form action="">
+            <div className="input-container">
+              <input
+                type="email"
+                id="email"
+                required
+                placeholder=" "
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+              />
+              <label htmlFor="email">Usuario</label>
+            </div>
 
-          <div className="input-container">
-            <input
-              type="password"
-              id="password"
-              required
-              placeholder=" "
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <label htmlFor="password">{props.label}</label>
-          </div>
+            <div className="input-container">
+              <input
+                type="password"
+                id="password"
+                required
+                placeholder=" "
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label htmlFor="password">{props.label}</label>
+            </div>
 
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-          <button className='btn btn-secondary' onClick={handleLogin}>
-            {props.accion}
-          </button>
+            <div className="buttons">
+            
+              <button className='btn btn-secondary' onClick={handleLogin}>
+                {props.accion}
+              </button>
+            </div>
+
+          </form>
+
         </div>
 
         <div className="recuperar-contraseña">
-          <p>{props.pregunta}</p>
-          <Link to={props.enlace}>{props.ruta}</Link>
+          <p style={{color:'lightgray'}}>{props.pregunta}</p>
+          <Link to={props.enlace} style={{color:'lightgray'}}><u>{props.ruta}</u></Link>
         </div>
       </div>
     </div>

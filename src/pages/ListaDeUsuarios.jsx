@@ -65,11 +65,11 @@ export default function ListaDeUsuarios() {
                     <td>30204342</td>
                     <td>Habilitado</td>
                     <td >20/03/2025</td>
-                    <button className='btn' style={{ marginLeft: '1rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                    <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                       <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                     </button>
-                    <Link to={`/ListaDeUsuarios`} className="icons" onClick={handleClick}>
-                      <button className="btn" style={{ marginLeft: '1rem', height: '35px', width: '50px' }} type="button" onClick={() => console.log("Cancelado")}>
+                    <Link to={`/ListaDeUsuarios`}  onClick={handleClick}>
+                      <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
                         <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                       </button>
                     </Link>

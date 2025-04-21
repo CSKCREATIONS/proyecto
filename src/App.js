@@ -31,6 +31,11 @@ import Error404 from './pages/Error404';
 import Error504 from './pages/Error504';
 import Persona from './pages/Persona';
 import Empresa from './pages/Empresa';
+import Home1 from './pages/Home1';
+import Home2 from './pages/Home2';
+import Perfil1 from './pages/Perfil1';
+import Perfil2 from './pages/Perfil2';
+
 
 const App = () => {
   return (
@@ -72,6 +77,10 @@ const App = () => {
           <Route path="*" element={<Error404 />} />
           <Route path="Persona" element={<Persona/>} />
           <Route path="Empresa" element={<Empresa/>} />
+          <Route path='/Home1' element={<Home1/>}/>
+          <Route path='/Home2' element={<Home2/>}/>
+          <Route path='/Perfil1' element={<Perfil1/>}/>
+          <Route path='/Perfil2' element={<Perfil2/>}/>
           
            
         </Routes>

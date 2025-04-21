@@ -106,7 +106,7 @@ a, li{
 .preview-usuario{
   color: white;
   gap: 10px;
-  padding:5vh 15px 1vh;
+  padding:5vh 15px 2vh;
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgb(179, 179, 179);
@@ -311,13 +311,11 @@ table {
   margin-top: 10px;
 }
 
-th,
-td {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: left;
-}
 
+th, td { 
+  padding: .3rem;
+  border: 1px solid black;
+}
 
 
 .search-container {
@@ -823,10 +821,10 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px; 
-  border: 2px solid black;
+  box-shadow: 0px 2px 7px 2px gray;
   padding: 8px;
   border-radius: 5px;
-  margin-bottom: 5px; 
+  margin-bottom: .5rem; 
   width: 100%;
   box-sizing: border-box;
 }
@@ -859,14 +857,11 @@ h1 {
 }
 
 
-/**estilo cuadro ingresar datos en agendar pedido***/
+/**estilos para los input en agendar pedido***/
 .cuadroTexto {
   width: 100%;
-  max-width: 400px;
   padding: 10px 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
+  background-color: transparent;
   outline: none;
   transition: border-color 0.3s ease;
 }
@@ -887,20 +882,8 @@ h1 {
   transition: color 0.3s ease;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-input[type="number"],
-input[type="date"],
-input[type="time"],
-input[type="file"],
-
-
+input
 select {
-  padding: 5px 5px;
-  border: 1px solid #ccc;
-  border-radius: 10px; /* redondeado */
   background-color: #f9f9f9; /* color suave de fondo */
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   outline: none;

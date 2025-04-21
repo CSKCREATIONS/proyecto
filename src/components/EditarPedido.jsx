@@ -8,7 +8,7 @@ export default function EditarPedido() {
 
     const handleClick = () => {
         Swal.fire({
-          text: 'Pedido editado correctamente',
+          text: 'Pedido Modificado correctamente',
           icon: 'success',
           showCancelButton: false,
           showCloseButton: true,
@@ -16,7 +16,7 @@ export default function EditarPedido() {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Aceptar'
         }).then(() => {
-          closeModal('editUserModal'); // cerrar después de aceptar
+          closeModal('editarPedidoModal'); // cerrar después de aceptar
         });
       };
       
@@ -24,26 +24,26 @@ export default function EditarPedido() {
     
     return (
 
-        <div className="modal" id="editUserModal">
+        <div className="modal" id="editarPedidoModal">
             <div className="modal-content">
                 <div className="form-group">
                     <label>No Pedido</label>
-                    <input type="text" required placeholder='1092'/>
+                    <input className='entrada' type="text" required placeholder='1' disabled/>
                 </div>
                 <div className="form-group">
                     <label>Producto</label>
-                    <select name="" id="" >
+                    <select className='entrada' name="" id="" >
                         <option value="">Grama sintetica</option>
                         <option value="">Cilindros de oxigeno</option>
                     </select>
                 </div>
                 <div className="form-group">
                     <label>Cantidad</label>
-                    <input type="text" />
+                    <input className='entrada' type="text" />
                 </div>
                 <div className="form-group">
                     <label>Fecha de Entrega</label>
-                    <input type="date" required />
+                    <input className='entrada' type="date" required />
                 </div>
                 <div className="form-group">
                     <label>Observación</label>

@@ -17,7 +17,7 @@ export default function AgendarVenta() {
       title: 'Venta agendada',
       icon: 'success',
       confirmButtonText: 'Aceptar',
-      confirmButtonColor: 'green',
+      confirmButtonColor: '#3085d6',
     }).then(() => {
       // Una vez que se confirma la alerta, navegas a otra página
       navigate('/PedidosAgendados');

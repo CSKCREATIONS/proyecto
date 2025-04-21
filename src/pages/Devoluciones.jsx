@@ -120,11 +120,11 @@ export default function Devoluciones() {
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
+              <ResponsiveContainer width={380} height={150}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
+                  <XAxis dataKey="name"  />  {/*eje x. escribir hide para ocultarlo*/}
+                  <YAxis  />  {/*eje y. escribir hide para ocultarlo*/}
                   <Tooltip />
                   <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
                 </LineChart>
@@ -186,11 +186,11 @@ export default function Devoluciones() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingRight: '.5rem' }}>
-                        <button className="btn" style={{marginLeft: ".5rem", height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem'}}>
+                        <button className="btnTransparente" style={{marginLeft: ".5rem", height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
                           <i className="fa-solid fa-cancel fa-xl" style={{ color: '#dc3545' }} />
                         </button>
-                        <button className="btn" style={{marginLeft: ".2rem", height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')} >
+                        <button className="btnTransparente" style={{marginLeft: ".2rem", height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')} >
                           <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                         </button>
                     </div>

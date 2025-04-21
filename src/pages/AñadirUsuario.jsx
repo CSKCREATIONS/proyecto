@@ -30,7 +30,7 @@ export default function AñadirUsuario() {
             <div className="double">
               <div className="form-group">
                 <label>Primer nombre</label>
-                <input className='entrada' type="text" />
+                <input className='entrada' type="text" autoFocus/>
               </div>
               <div className="form-group">
                 <label>Segundo nombre</label>
@@ -58,7 +58,7 @@ export default function AñadirUsuario() {
                   <option value="" disabled selected>Seleccione un rol</option>
                   <option value="admin">Administrador</option>
                   <option value="user">Usuario</option>
-                  <option value="salchicha">agente</option>
+                  <option value="salchicha">Salchipapa</option>
                 </select>
               </div>
               <div className="form-group">
