@@ -27,6 +27,25 @@ class Roles {
   -validarRol()
 }
 
+Roles <|-- Rol_Admin
+Roles <|-- Rol_Ventas
+Roles <|-- Rol_SIG
+
+class Rol_Admin {
+  +GestionarTodo()
+}
+
+class Rol_Ventas {
+  +GestionarClientes()
+  +GestionarCotizaciones()
+  +GestionarPedidos()
+}
+
+class Rol_SIG {
+  +GestionarDocumentosSIG()
+  +GestionarProcesosSIG()
+}
+
 class Clientes {
   +Cliente_ID : int
   +ID_Usuario : int
@@ -39,6 +58,13 @@ class Clientes {
   +eliminar()
   -validarDatos()
 }
+
+class ServicioClientes {
+  +registrarCliente()
+  +actualizarCliente()
+  +eliminarCliente()
+}
+
 
 class Cotizaciones {
   +ID : int
@@ -175,6 +201,9 @@ Usuarios --> Clientes
 Clientes --> Cotizaciones
 Clientes --> Pedidos
 
+Rol_Ventas --> ServicioClientes
+Rol_Admin --> ServicioClientes
+
 Pedidos --> Pedido_Cancelado
 Pedidos --> Pedido_Devolutos
 Pedidos --> Pedidos_entregados
@@ -185,5 +214,28 @@ Productos_en_Pedido --> Pedidos
 
 Documento_SIG --> Tipo_Documento
 Documento_SIG --> Proceso_SIG
+
+' Permisos Rol_Admin (puede hacer todo)
+Rol_Admin --> Usuarios
+Rol_Admin --> Roles
+Rol_Admin --> Clientes
+Rol_Admin --> Cotizaciones
+Rol_Admin --> Pedidos
+Rol_Admin --> Productos
+Rol_Admin --> Productos_en_Pedido
+Rol_Admin --> Documento_SIG
+Rol_Admin --> Proceso_SIG
+Rol_Admin --> Tipo_Documento
+
+' Permisos específicos de los otros roles
+Rol_Ventas --> Clientes
+Rol_Ventas --> Cotizaciones
+Rol_Ventas --> Pedidos
+Rol_Ventas --> Productos
+Rol_Ventas --> Productos_en_Pedido
+
+Rol_SIG --> Documento_SIG
+Rol_SIG --> Proceso_SIG
+Rol_SIG --> Tipo_Documento
 
 @enduml
