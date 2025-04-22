@@ -13,6 +13,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
 } from "recharts";
+import { Navigate } from 'react-router-dom';
 
 const exportarPDF = () => {
   const input = document.getElementById('tabla_cotizaciones');
@@ -99,18 +100,18 @@ export default function ListaDeCotizaciones() {
           {/* GRÁFICAS */}
           <div className="grafica-notificaciones">
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart>
                   <Pie
                     data={dataCircular}
@@ -142,7 +143,6 @@ export default function ListaDeCotizaciones() {
                     <th>Producto</th>
                     <th>Fecha</th>
                     <th>Observaciones</th>
-                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -154,19 +154,19 @@ export default function ListaDeCotizaciones() {
                     <td>Pasto</td>
                     <td>07/04/2027</td>
                     <td>N/A</td>
-                    <td>
+                    
                       <button className='btnTransparente' onClick={handleEliminarCotizacion}>
                         <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
                       </button>
-                        &nbsp;&nbsp;
+                      &nbsp;&nbsp;
                       <button className='btnTransparente' onClick={() => openModal('editUserModal')}>
                         <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </button>
-                    </td>
+                    
                   </tr>
                 </tbody>
               </table>
-              <AgendarCotPed/>
+              <AgendarCotPed />
             </div>
           </div>
         </div>

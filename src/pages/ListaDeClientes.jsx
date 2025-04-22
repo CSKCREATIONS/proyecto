@@ -12,11 +12,11 @@ import { openModal } from '../funciones/animaciones'
 import Swal from 'sweetalert2'
 import EditarCliente from '../components/EditarCliente';
 
- 
+
 
 
 /****Funcion para exportar a pdf*** */
-const handleClick = () => 
+const handleClick = () =>
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción no se puede deshacer.',
@@ -71,7 +71,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_clientes');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -112,32 +112,32 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo 
+          <EncabezadoModulo
             titulo="Lista de clientes"
-            exportarPDF = {exportarPDF}
+            exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-             />
+          />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Gráfica circular */}
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
-                    data={dataCircular} 
+                    data={dataCircular}
                     cx="50%"
                     cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -145,7 +145,7 @@ export default function ListaDeClientes() {
                     dataKey="value"
                   > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
                     {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> 
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
                   <Tooltip />
@@ -175,20 +175,20 @@ export default function ListaDeClientes() {
                     <td>Nataliamaria@gmail</td>
                     <td><Link as={Link} to='/PedidosEntregados'><u>100111</u></Link></td>
                     <td>Entregado</td>
-                    <button className='btn' style={{ marginLeft: '1rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}   >
-                    <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                  </button>
-                  <Link to={`/ListaDeClientes`} className="icons" onClick={handleClick}>
-                    <button className="btn" style={{marginLeft: '1rem',height: '35px', width: '50px' }} type="button">
-                    <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
-     
+                    <button className='btnTransparente' style={{ marginLeft: '1rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}   >
+                      <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                     </button>
-                  </Link>
+                    <Link to={`/ListaDeClientes`} className="icons" onClick={handleClick}>
+                      <button className="btnTransparente" style={{ marginLeft: '1rem', height: '35px', width: '50px' }} type="button">
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+
+                      </button>
+                    </Link>
                   </tr>
-                  
+
                 </tbody>
               </table>
-              <EditarCliente/>
+              <EditarCliente />
             </div>
           </div>
         </div>

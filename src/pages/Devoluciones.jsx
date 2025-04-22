@@ -51,7 +51,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_pedidos_devueltos');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -86,25 +86,25 @@ const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
 export default function Devoluciones() {
   const navigate = useNavigate();
-    //cancelar pedido
-    const handleCancelarPedido = () => {
-      Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Este pedido se cancelará y no podrás revertirlo',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'No, mantener',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // texto despues del si
-          Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
-        }
-        navigate('/PedidosCancelados');
-      });
-    };
+  //cancelar pedido
+  const handleCancelarPedido = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Este pedido se cancelará y no podrás revertirlo',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // texto despues del si
+        Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
+      }
+      navigate('/PedidosCancelados');
+    });
+  };
   return (
     <div>
       <Fijo />
@@ -120,20 +120,20 @@ export default function Devoluciones() {
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={380} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name"  />  {/*eje x. escribir hide para ocultarlo*/}
-                  <YAxis  />  {/*eje y. escribir hide para ocultarlo*/}
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Gráfica circular */}
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
                     data={dataCircular}
@@ -186,20 +186,20 @@ export default function Devoluciones() {
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
                     <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem'}}>
-                        <button className="btnTransparente" style={{marginLeft: ".5rem", height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
-                          <i className="fa-solid fa-cancel fa-xl" style={{ color: '#dc3545' }} />
-                        </button>
-                        <button className="btnTransparente" style={{marginLeft: ".2rem", height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')} >
-                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                        </button>
+                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button className="btnTransparente" style={{ marginLeft: ".5rem", height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                        <i className="fa-solid fa-cancel fa-xl" style={{ color: '#dc3545' }} />
+                      </button>
+                      <button className="btnTransparente" style={{ marginLeft: ".2rem", height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')} >
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                      </button>
                     </div>
                   </tr>
-                  
+
                 </tbody>
-                
+
               </table>
-              
+
               <ReagnedarPedido />
             </div>
           </div>

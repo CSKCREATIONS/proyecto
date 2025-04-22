@@ -46,7 +46,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_prospectos');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -86,29 +86,28 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo 
-          titulo="Prospectos de clientes" 
-          exportarPDF = {exportarPDF}
-          exportToExcel={exportToExcel}
+          <EncabezadoModulo
+            titulo="Prospectos de clientes"
+            exportarPDF={exportarPDF}
+            exportToExcel={exportToExcel}
           />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
-
             {/* Gráfica circular */}
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
                     data={dataCircular}
@@ -145,8 +144,8 @@ export default function ListaDeClientes() {
                   <tr>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Canchas El Barrio</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Bogotá</u></Link></td>
-                    <td ><Link as={Link} to='/PedidosAgendados'><u>6904883</u><br/><img src="https://cdn-icons-png.freepik.com/256/3059/3059561.png?semt=ais_hybrid" alt="Logo" width="20" height="20"/></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u><br/><img src="https://cdn-icons-png.freepik.com/256/3178/3178158.png?semt=ais_hybrid" alt="Logo" width="20" height="20"/></Link></td>
+                    <td ><Link as={Link} to='/PedidosAgendados'><u>6904883</u><br /><img src="https://cdn-icons-png.freepik.com/256/3059/3059561.png?semt=ais_hybrid" alt="Logo" width="20" height="20" /></Link></td>
+                    <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u><br /><img src="https://cdn-icons-png.freepik.com/256/3178/3178158.png?semt=ais_hybrid" alt="Logo" width="20" height="20" /></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>Agenda</u></Link></td>
                     <td><Link as={Link} to='/PedidosAgendados'><u>80</u></Link></td>
                   </tr>

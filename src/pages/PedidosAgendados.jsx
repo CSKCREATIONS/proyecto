@@ -114,6 +114,7 @@ export default function PedidosAgendados() {
       if (result.isConfirmed) {
         // texto despues del si
         Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
+        navigate('/PedidosCancelados')
       }
     });
   };
@@ -134,6 +135,7 @@ export default function PedidosAgendados() {
       if (result.isConfirmed) {
         // texto despues del si
         Swal.fire('Listo', 'Se ha marcado como cumplido.', 'success');
+        navigate('/PedidosEntregados')
       }
     });
   };

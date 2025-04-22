@@ -1,8 +1,8 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
-import EncabezadoModulo from '../components/EncabezadoModulo'
 import NavAgendar from '../components/NavAgendar';
+import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
 
 export default function AgendarVenta() {
@@ -15,7 +15,7 @@ export default function AgendarVenta() {
 
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo
+          <EncabezadoModulo2
             titulo='Agendar pedido'
           />
           <NavAgendar/>

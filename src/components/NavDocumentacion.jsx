@@ -8,8 +8,8 @@ export default function NavUsuarios() {
       <h2 >SIG</h2>
 
       <nav className='nav-modulo' id='usuarios-nav'>
-        <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
-        <Link as={Link} to="/InformacionDeFuente"><li>Informacion De Fuente</li></Link>
+        <Link as={Link} to="/Documentacion"><li className='item-truncado'>Documentacion</li></Link>
+        <Link as={Link} to="/InformacionDeFuente"><li className='item-truncado'>Informacion De Fuente</li></Link>
       </nav>
 
     </div>

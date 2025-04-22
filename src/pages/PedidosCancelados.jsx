@@ -49,7 +49,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_pedidos_cancelados');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -93,29 +93,29 @@ export default function PedidosCancelados() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Cancelados"
-            exportarPDF = {exportarPDF}
+            exportarPDF={exportarPDF}
             exportToExcel={exportToExcel} />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={300} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" /> {/*eje x. escribir hide para ocultarlo*/}
-                  <YAxis /> {/*eje y. escribir hide para ocultarlo*/}
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Gráfica circular */}
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
-                    data={dataCircular} 
+                    data={dataCircular}
                     cx="50%"
                     cy="50%"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -123,7 +123,7 @@ export default function PedidosCancelados() {
                     dataKey="value"
                   > {/* data circular pasa los datos para la grafica, el cx y cy posiscionan la grafica dentro del contenedor, con el label se muestra como se van a definirl las etiquetas, el outerRadius es para el radio, el data ya es la propiedad  */}
                     {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> 
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie> {/* el data.. recore el array y hace que se efectuen los colores */}
                   <Tooltip />
@@ -137,8 +137,8 @@ export default function PedidosCancelados() {
               <table id='tabla_pedidos_cancelados'>
                 <thead>
                   <tr>
-                    <th style={{textAlign:'center'}} colSpan="5">Pedido</th>
-                    <th style={{textAlign:'center'}} colSpan="4">Cliente</th>
+                    <th style={{ textAlign: 'center' }} colSpan="5">Pedido</th>
+                    <th style={{ textAlign: 'center' }} colSpan="4">Cliente</th>
                   </tr>
                   <tr>
                     <th>No</th>

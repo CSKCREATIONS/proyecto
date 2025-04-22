@@ -1,7 +1,7 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
-import EncabezadoModulo from '../components/EncabezadoModulo'
+import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
 import NavAgendar from '../components/NavAgendar';
@@ -31,7 +31,7 @@ export default function AgendarVenta() {
 
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo
+          <EncabezadoModulo2
             titulo='Agendar pedido'
           />
           <NavAgendar/>

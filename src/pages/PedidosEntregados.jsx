@@ -88,7 +88,7 @@ export default function PedidosEntregados() {
   const handleMarcadoDevuelto = () => {
     Swal.fire({
       title: 'Marcar como devuelto',
-      text: '¿Se ha recibido una devolucion del pedido 110211? ',
+      text: '¿Se ha recibido una devolucion del pedido 110211?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí',
@@ -97,13 +97,12 @@ export default function PedidosEntregados() {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
-        // texto despues del si
-        Swal.fire('Ya quedo', 'Enlistado como devuelto.', 'success');
+        Swal.fire('Ya quedo', 'Enlistado como devuelto.', 'success').then(() => {
+          navigate('/Devoluciones');
+        });
       }
-      navigate('/Devoluciones');
     });
-  };
-
+  }
   return (
     <div>
       <Fijo />
@@ -119,20 +118,20 @@ export default function PedidosEntregados() {
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}
             <div className="grafica">
-              <ResponsiveContainer width={380} height={150}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name"  /> {/*eje x. escribir hide para ocultarlo*/}
-                  <YAxis /> {/*eje y. escribir hide para ocultarlo*/}
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} />
+              <ResponsiveContainer width={350} height={150}> {/* tamaño */}
+                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
+                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
+                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
+                  <YAxis /> {/* oculta el eje y */}
+                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
+                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Gráfica circular */}
             <div className="grafica-circular">
-              <ResponsiveContainer width={380} height={300}>
+              <ResponsiveContainer width={390} height={240}>
                 <PieChart> {/* componente que define que es una grafica circular */}
                   <Pie
                     data={dataCircular}

@@ -10,23 +10,23 @@ export default function NavVentas(props) {
             <h2>Ventas</h2>
                     <nav className='nav-modulo' id='ventas-nav'>
                         <Link as={Link} to="/AgendarVenta">
-                            <li>Agendar venta</li></Link>
+                            <li className='item-truncado'>Agendar venta</li></Link>
                         <Link as={Link} to="/PedidosAgendados">
-                            <li>Pedidos agendados</li></Link>
+                            <li className='item-truncado'>Pedidos agendados</li></Link>
                         <Link as={Link} to="/PedidosEntregados">
-                            <li>Pedidos entregados</li></Link>
+                            <li className='item-truncado'>Pedidos entregados</li></Link>
                         <Link as={Link} to="/Devoluciones">
-                            <li>Devoluciones</li></Link>
+                            <li className='item-truncado'>Devoluciones</li></Link>
                         <Link as={Link} to="/PedidosCancelados">
-                            <li>Pedidos cancelados</li></Link>
+                            <li className='item-truncado'>Pedidos cancelados</li></Link>
                         <Link as={Link} to="/RegistrarCotizacion">
-                            <li>Registrar cotizacion</li></Link>
+                            <li className='item-truncado'>Registrar cotizacion</li></Link>
                         <Link as={Link} to="/ListaDeCotizaciones">
-                            <li>Lista de cotizaciones</li></Link>
+                            <li className='item-truncado'>Lista de cotizaciones</li></Link>
                         <Link as={Link} to="/ListaDeClientes">
-                            <li>Lista de clientes</li></Link>
+                            <li className='item-truncado'>Lista de clientes</li></Link>
                         <Link as={Link} to="/ProspectosDeClientes">
-                            <li>Prospectos de cliente</li></Link>
+                            <li className='item-truncado'>Prospectos de clientes</li></Link>
                     </nav>
         </div>
     )

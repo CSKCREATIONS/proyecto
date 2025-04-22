@@ -348,6 +348,7 @@ th, td {
   font-size: 12px;
 }
 
+
 .modal {
   display: none;
   position: absolute;
@@ -733,6 +734,42 @@ h1 {
     gap: 2rem 4rem;
   }
 }
+
+
+/**Desplazamiento en los nav **/
+.nav-modulo {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.nav-modulo::-webkit-scrollbar {
+  height: 10px;
+}
+
+.nav-modulo::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.nav-modulo::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.item-truncado {
+  max-width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+  list-style: none;
+  margin-right: 1rem;
+  cursor: pointer;
+  -ms-overflow-style: none;
+}
+
+
+
+
  /*Errores 404 y 504*/ 
  .error-page {
   height: 100vh;
@@ -800,10 +837,12 @@ h1 {
   align-items: center;
   justify-content: space-evenly; 
   gap: 20px;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
+  margin-top: 3%;
 }
 
 .grafica {
+  margin-top: 1.5%;
   width: 300px;
   height: 150px;
   display: flex;
