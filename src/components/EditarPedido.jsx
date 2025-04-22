@@ -52,7 +52,7 @@ export default function EditarPedido() {
 
                 </div>
                 <div className="buttons">
-                    <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')}>Cancelar</button>
+                <button className="btn btn-secondary" onClick={() => closeModal('editarPedidoModal')}>Cancelar</button>
                     <Link to={`/PedidosAgendados`}>
                     <button className="btn btn-primary" onClick={handleClick}>Guardar Cambios</button>
                     </Link>
