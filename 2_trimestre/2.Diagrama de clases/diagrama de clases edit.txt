@@ -196,7 +196,6 @@ Usuarios --> Roles
 Usuarios --> Tipo_Documento
 Usuarios --> Documento_SIG
 Usuarios --> Proceso_SIG
-Usuarios --> Clientes
 
 Clientes --> Cotizaciones
 Clientes --> Pedidos
