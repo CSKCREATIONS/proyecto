@@ -23,19 +23,19 @@ export default function EditarUsuario() {
             <div className="modal-content">
                 <div className="form-group">
                     <label>Nombre / Razón Social</label>
-                    <input type="text" required />
+                    <input className='entrada' type="text" required />
                     </div>
                 <div className="form-group">
                     <label>Ciudad</label>
-                    <input type="text" required />
+                    <input className='entrada' type="text" required />
                 </div>
                 <div className="form-group">
                     <label>Telefono</label>
-                    <input type="text" required />
+                    <input className='entrada' type="text" required />
                 </div>
                 <div className="form-group">
                     <label>Correo</label>
-                    <input type="text" required />
+                    <input className='entrada' type="text" required />
                 </div>
                 
                 <div className="buttons">

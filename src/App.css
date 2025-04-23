@@ -260,9 +260,11 @@ a, li{
   font-size: .9em;
 }
 .nav-modulo li{
-  padding: 8px 12px;
+  padding: 8px 0px;
   white-space: nowrap;
-  border-radius: 10px 10px 0 0;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nav-modulo li:hover{
   color:#7c8e99;
