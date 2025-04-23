@@ -11,7 +11,7 @@ export default function AgendarCotPed() {
     Swal.fire({
       text: 'La cotización fue agendada correctamente',
       icon: 'success',
-      confirmButtonText: 'Aceptar'
+      confirmButtonText: 'Acepta'
     }).then(() => {
       closeModal('editUserModal');
       navigate('/PedidosAgendados');
