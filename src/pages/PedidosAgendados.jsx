@@ -148,7 +148,9 @@ export default function PedidosAgendados() {
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Agendados"
             exportarPDF={exportarPDF}
-            exportToExcel={exportToExcel} />
+            exportToExcel={exportToExcel}
+            buscar = 'Buscar pedido'
+            />
 
           <div className="grafica-notificaciones">
             {/* Gráfica */}
@@ -200,6 +202,60 @@ export default function PedidosAgendados() {
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                      </button>
+
+                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
+                      </button>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
+                      >
+                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
+                      </button>
+                    </div>
+
+
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Pasto</td>
+                    <td>5</td>
+                    <td>10/04/2025</td>
+                    <td>15/04/2025</td>
+                    <td>Natalia</td>
+                    <td>Bogotá</td>
+                    <td>3153234</td>
+                    <td>Nataliamaria@gmail</td>
+                    <td>N/A</td>
+                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                      </button>
+
+                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
+                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
+                      </button>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
+                      >
+                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
+                      </button>
+                    </div>
+
+
+                  </tr>
                   <tr>
                     <td>1</td>
                     <td>Pasto</td>

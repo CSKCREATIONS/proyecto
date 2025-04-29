@@ -95,6 +95,7 @@ export default function ListaDeCotizaciones() {
             titulo="Lista de cotizaciones"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
+            buscar = 'Buscar cotización'
           />
 
           {/* GRÁFICAS */}

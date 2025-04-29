@@ -94,7 +94,9 @@ export default function PedidosCancelados() {
         <div className="contenido-modulo">
           <EncabezadoModulo titulo="Pedidos Cancelados"
             exportarPDF={exportarPDF}
-            exportToExcel={exportToExcel} />
+            exportToExcel={exportToExcel} 
+            buscar = 'Buscar pedido'
+            />
 
           <div className="grafica-notificaciones">
             {/* Gráfica de línea */}

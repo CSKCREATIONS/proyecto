@@ -115,6 +115,7 @@ export default function Devoluciones() {
             titulo="Pedidos Devueltos"
             exportToExcel={exportToExcel}
             exportarPDF={exportarPDF}
+            buscar = 'Buscar pedido'
           />
 
           <div className="grafica-notificaciones">

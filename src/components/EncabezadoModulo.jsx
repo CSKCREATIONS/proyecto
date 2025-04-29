@@ -12,7 +12,7 @@ export default function EncabezadoModulo(props) {
 
 			<div className="search-container">
 				<input type="text" className="search-box" placeholder=" " id="search" onChange={props.onSearch}/>
-				<label for="search"><i className="fa-solid fa-magnifying-glass"></i> Buscar usuario</label>
+				<label for="search"><i className="fa-solid fa-magnifying-glass"></i> {props.buscar}</label>
 			</div>
 		</div>
 	)

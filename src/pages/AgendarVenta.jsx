@@ -17,6 +17,7 @@ export default function AgendarVenta() {
         <div className="contenido-modulo">
           <EncabezadoModulo2
             titulo='Agendar pedido'
+            
           />
           <NavAgendar/>
 

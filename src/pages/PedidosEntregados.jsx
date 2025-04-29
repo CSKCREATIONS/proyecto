@@ -113,6 +113,7 @@ export default function PedidosEntregados() {
             titulo="Pedidos Entregados"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
+            buscar = 'Buscar pedido'
           />
 
           <div className="grafica-notificaciones">

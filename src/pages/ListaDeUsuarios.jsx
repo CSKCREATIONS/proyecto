@@ -97,6 +97,7 @@ export default function ListaDeUsuarios() {
             titulo='Lista de usuarios'
             exportarPDF = {exportarPDF}
             exportToExcel={exportToExcel}
+            buscar = 'Buscar usuario'
           />
 
           <div className="container-tabla">
