@@ -3,7 +3,7 @@ import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import NavAgendar from '../components/NavAgendar';
 import EncabezadoModulo2 from '../components/EncabezadoModulo2';
-
+import Persona from '../components/Persona'
 
 export default function AgendarVenta() {
   
@@ -20,7 +20,7 @@ export default function AgendarVenta() {
             
           />
           <NavAgendar/>
-
+          <Persona/>
           
            
             

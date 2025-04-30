@@ -29,7 +29,6 @@ import Trazabilidad from './pages/Trazabilidad';
 import Perfil from './pages/Perfil';
 import Error404 from './pages/Error404';
 import Error504 from './pages/Error504';
-import Persona from './pages/Persona';
 import Empresa from './pages/Empresa';
 import Home1 from './pages/Home1';
 import Home2 from './pages/Home2';
@@ -75,7 +74,6 @@ const App = () => {
           <Route path='Login' element={<Login/>}/>
           <Route path="/error504" element={<Error504 />} />
           <Route path="*" element={<Error404 />} />
-          <Route path="Persona" element={<Persona/>} />
           <Route path="Empresa" element={<Empresa/>} />
           <Route path='/Home1' element={<Home1/>}/>
           <Route path='/Home2' element={<Home2/>}/>

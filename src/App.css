@@ -54,6 +54,8 @@ header{
   cursor: pointer;
 }
 
+
+
 .fijo .izquierda #btn-menu .palito{
   background-color: whitesmoke;
   border-radius: 2px;
@@ -71,10 +73,12 @@ header{
   background-color:#174643;
   position: fixed;
   top: 0;
-  bottom: 0;
+  height: 100vh;
   left: -260px;
   transition: left .3s;
-  overflow-y: auto;
+  overflow-y: scroll;
+  scrollbar-width: none; /* no se ve la barra de scroll*/
+  -ms-overflow-style: none;
 }
 
 /*boton de cerrar menu lateral*/

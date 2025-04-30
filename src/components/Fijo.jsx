@@ -131,6 +131,19 @@ export default function Fijo() {
                     </ul>
                   </nav>
                 )}
+                <nav>
+                    <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuReportes')}>Reportes</li>
+                    <ul id="submenuReportes" className="dropdown">
+                      <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
+                      <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
+                      <Link as={Link} to="/Devoluciones"><li>Devoluciones</li></Link>
+                      <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
+                      <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
+                      <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
+                      <Link as={Link} to="/ListaDeClientes"><li>Clientes</li></Link>
+                      <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
+                    </ul>
+                  </nav>
             </div>
           </div>
 
