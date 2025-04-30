@@ -1,0 +1,47 @@
+Reportes de Ventas por Período: (Diario, semanal, mensual, anual)
+
+Ventas totales
+
+Ventas por producto/servicio
+
+Ventas por categoría
+
+Ventas por cliente
+
+Ventas por vendedor
+
+Reportes de Rendimiento de Productos:
+
+Productos más vendidos
+
+Productos menos vendidos
+
+Márgenes de ganancia por producto
+
+Reportes de Rendimiento de Vendedores:
+
+Ventas por vendedor
+
+Número de clientes captados
+
+Valor promedio de venta por vendedor
+
+Reportes de Clientes:
+
+Nuevos clientes
+
+Clientes recurrentes
+
+Clientes con mayor volumen de compra
+
+Análisis de segmentación de clientes
+
+Reportes de Inventario: (Si aplica)
+
+Niveles de stock
+
+Productos con bajo stock
+
+Productos sin stock
+
+Reportes Personalizados: Permitir a los usuarios crear sus propios reportes basados en diferentes criterios.
