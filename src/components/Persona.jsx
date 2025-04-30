@@ -21,8 +21,6 @@ export default function AgendarVenta() {
 
   return (
     <div>
-      
-
         <div className="container-tabla">
           <div className="table-container">
             <table>
