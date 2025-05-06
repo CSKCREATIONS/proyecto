@@ -117,6 +117,8 @@ export default function Fijo() {
 
                 {(permisos.includes('Ventas') || permisos.includes('admin')) && (
                   <nav>
+
+                    
                     <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
                     <ul id="submenuVentas" className="dropdown">
                       <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
