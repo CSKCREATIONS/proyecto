@@ -14,7 +14,6 @@ import EditarCliente from '../components/EditarCliente';
 
 
 
-
 /****Funcion para exportar a pdf*** */
 const handleClick = () =>
   Swal.fire({
