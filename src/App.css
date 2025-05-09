@@ -77,7 +77,7 @@ header{
   left: -260px;
   transition: left .3s;
   overflow-y: scroll;
-  scrollbar-width: none; /* no se ve la barra de scroll*/
+  scrollbar-width: none; 
   -ms-overflow-style: none;
 }
 
@@ -749,6 +749,23 @@ h1 {
   white-space: nowrap;
   scrollbar-width: thin;
   max-width: 90vw;
+
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+}
+
+.nav-modulo::-webkit-scrollbar {
+  height: 10px;
+}
+
+.nav-modulo::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.nav-modulo::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .item-truncado {
@@ -759,6 +776,23 @@ h1 {
   margin-right: 1rem;
   cursor: pointer;
   -ms-overflow-style: none;
+}
+
+
+.nav-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-item:hover {
+  background-color: #d6d3d3;
+}
+
+.nav-item.active {
+  background-color: #9e96e6; 
+  color: white;
 }
 
 

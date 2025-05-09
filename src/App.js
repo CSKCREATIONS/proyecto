@@ -34,6 +34,7 @@ import Home1 from './pages/Home1';
 import Home2 from './pages/Home2';
 import Perfil1 from './pages/Perfil1';
 import Perfil2 from './pages/Perfil2';
+import GestionProductos from './pages/GestionProductos';
 
 
 const App = () => {
@@ -79,7 +80,8 @@ const App = () => {
           <Route path='/Home2' element={<Home2/>}/>
           <Route path='/Perfil1' element={<Perfil1/>}/>
           <Route path='/Perfil2' element={<Perfil2/>}/>
-          
+          <Route path='/GestionProductos' element={<GestionProductos/>}/>
+
            
         </Routes>
       </BrowserRouter>

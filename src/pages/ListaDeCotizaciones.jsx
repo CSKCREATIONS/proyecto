@@ -49,21 +49,6 @@ const exportToExcel = () => {
   saveAs(data, 'listaCotizaciones.xlsx');
 };
 
-const data = [
-  { name: "Enero", pedidos: 20 },
-  { name: "Febrero", pedidos: 35 },
-  { name: "Marzo", pedidos: 40 },
-  { name: "Abril", pedidos: 50 },
-  { name: "Mayo", pedidos: 45 },
-];
-
-const dataCircular = [
-  { name: "Entregados", value: 60 },
-  { name: "Pendientes", value: 30 },
-  { name: "Cancelados", value: 10 },
-];
-
-const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
 export default function ListaDeCotizaciones() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -98,52 +83,17 @@ export default function ListaDeCotizaciones() {
             buscar = 'Buscar cotización'
           />
 
-          {/* GRÁFICAS */}
-          <div className="grafica-notificaciones">
-            <div className="grafica">
-              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
-                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
-                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
-                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
-                  <YAxis /> {/* oculta el eje y */}
-                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grafica-circular">
-              <ResponsiveContainer width={390} height={240}>
-                <PieChart>
-                  <Pie
-                    data={dataCircular}
-                    cx="50%" cy="50%"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={50}
-                    dataKey="value"
-                  >
-                    {dataCircular.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
 
           {/* TABLA */}
-          <div className="container-tabla">
+          <div className="container-tabla"><br/>
             <div className="table-container">
               <table id='tabla_cotizaciones'>
                 <thead>
                   <tr>
-                    <th>Nombre / Razón Social</th>
-                    <th>Ciudad</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Producto</th>
-                    <th>Fecha</th>
-                    <th>Observaciones</th>
+                    <th>Comprobante</th>
+                    <th>Fecha elaboración</th>
+                    <th>Cliente</th>
+                    <th>Enviado por correo</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -152,9 +102,6 @@ export default function ListaDeCotizaciones() {
                     <td>Bogotá</td>
                     <td>3153234</td>
                     <td>Nataliamaria@gmail</td>
-                    <td>Pasto</td>
-                    <td>07/04/2027</td>
-                    <td>N/A</td>
                     
                       <button className='btnTransparente' onClick={handleEliminarCotizacion}>
                         <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />

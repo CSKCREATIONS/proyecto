@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+
 
 /*Este componente es el titulo del modulo Usuarios y el navegable del mismo*/
 export default function NavUsuarios() {
@@ -7,9 +8,15 @@ export default function NavUsuarios() {
     <div>
       <h2 >Usuarios</h2>
       <nav className='nav-modulo' id='usuarios-nav'>
-        <Link as={Link} to="/ListaDeUsuarios"><li className='item-truncado'>Lista de usuarios</li></Link>
-        <Link as={Link} to="/AñadirUsuario"><li className='item-truncado'>Añadir usuarios</li></Link>
-        <Link as={Link} to="/AñadirRol"><li className='item-truncado'>Añadir Rol</li></Link>
+        <NavLink to="/ListaDeUsuarios" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          Lista de usuarios
+        </NavLink>
+        <NavLink to="/AñadirUsuario" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          Añadir usuarios
+        </NavLink>
+        <NavLink to="/AñadirRol" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          Añadir Rol
+        </NavLink>
       </nav>
     </div>
   )
