@@ -258,10 +258,11 @@ a, li{
 /***Barra de navegacion de los modulos**/
 .nav-modulo{
   display: flex;
+  white-space: nowrap;
+  scrollbar-width: thin;
   margin: 1rem 0 0 1rem;
   overflow: auto;
-  scrollbar-width: none;
-  font-size: .9em;
+  font-size: .8em;
 }
 .nav-modulo li{
   padding: 8px 0px;
@@ -743,17 +744,7 @@ h1 {
 
 
 /**Desplazamiento en los nav **/
-.nav-modulo {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: thin;
-  max-width: 90vw;
 
-  display: flex;
-  padding: 10px;
-  gap: 10px;
-}
 
 .nav-modulo::-webkit-scrollbar {
   height: 10px;
@@ -768,22 +759,13 @@ h1 {
   background: #555;
 }
 
-.item-truncado {
-  max-width: 180px;
-  overflow: hidden;
-  white-space: nowrap;
-  list-style: none;
-  margin-right: 1rem;
-  cursor: pointer;
-  -ms-overflow-style: none;
-}
+
 
 
 .nav-item {
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 8px 8px 0 0;
   text-decoration: none;
-  transition: background 0.2s;
 }
 
 .nav-item:hover {
@@ -791,10 +773,9 @@ h1 {
 }
 
 .nav-item.active {
-  background-color: #9e96e6; 
+  background-color: #174643c0; 
   color: white;
 }
-
 
 
 

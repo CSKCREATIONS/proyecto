@@ -5,6 +5,7 @@ import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
+import { openModal } from '../funciones/animaciones'
 
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
@@ -37,63 +38,8 @@ export default function RegistrarCotizacion() {
           }
         });
   };
-  const handleGuardarYEnviar = () => {
-    const htmlPreview = `
-      <div style="text-align: left; font-family: Arial; padding: 10px; border: 1px solid #ccc;">
-        <h2 style="text-align: left;">Cotización C-1-321</h2>
-        <label><strong>Cliente:</strong> <p>Empresa XYZ</p></label> 
-        <label><strong>Ciudad:</label> Medellín</p>
-        <p><strong>Teléfono:</strong> 3000000000</p>
-        <p><strong>Correo:</strong> cliente@ejemplo.com</p>
-        <p><strong>Responsable:</strong> Pepito</p>
-        <p><strong>Fecha:</strong> 2025-05-08</p>
   
-        <h3>Productos</h3>
-        <table style="width: 100%; border-collapse: collapse;" border="1">
-          <thead>
-            <tr>
-              <th style="padding: 5px;">Producto</th>
-              <th style="padding: 5px;">Descripción</th>
-              <th style="padding: 5px;">Cantidad</th>
-              <th style="padding: 5px;">Valor unitario</th>
-              <th style="padding: 5px;">% Descuento</th>
-              <th style="padding: 5px;">Valor total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding: 5px;">Producto A</td>
-              <td style="padding: 5px;">Descripción breve</td>
-              <td style="padding: 5px;">2</td>
-              <td style="padding: 5px;">$100.000</td>
-              <td style="padding: 5px;">10%</td>
-              <td style="padding: 5px;">$180.000</td>
-            </tr>
-          </tbody>
-        </table>
-  
-        <h3>Condiciones de pago</h3>
-        <p>El pago se realizará 30 días después de la entrega del producto.</p>
-      </div>
-    `;
-  
-    Swal.fire({
-      title: 'Vista previa de la cotización',
-      html: htmlPreview,
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Volver a editar',
-      width: '800px',
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#aaa',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire('¡Enviada!', 'La cotización ha sido enviada exitosamente.', 'success');
-        navigate('/ListaDeCotizaciones');
-      }
-    });
-  };
-  
+
 
   return (
     <div>
@@ -237,7 +183,7 @@ export default function RegistrarCotizacion() {
             </button>
             <button
               className="btn btn-primary"
-              onClick={handleGuardarYEnviar}
+              onClick={()=> openModal("cotizacionPreview")}
             >
               Guardar & Enviar
             </button>

@@ -42,12 +42,8 @@ export function cerrarMenu(){
 
 
 
-
-
-
-
-
-export function openModal(modalId) {
+/**Funcion para abrir los popup */
+export function openModal(modalId)/*Recibe el Id del popup a abrir */ {
     const targetModal = document.getElementById(modalId);
     targetModal.style.display = 'block'
 }
