@@ -1,4 +1,5 @@
 # Esta es la rama principal del codigo fuente del proyecto
+# Por favor no subir los cambios directamente a esta rama. En su defecto subirlos a una rama diferente para luego hacer el merge
 ## Para clonar esta rama
 * Crear una carpeta en su dispositivo local
 * Dentro de la carpeta abrir Git Bash y ejecutar 'git init'
