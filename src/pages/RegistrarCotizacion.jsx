@@ -23,22 +23,22 @@ export default function RegistrarCotizacion() {
   };
   const handleCancelado = () => {
     Swal.fire({
-          title: '¿Estás seguro?',
-          text: '¿Deseas borrar el contenido de esta corización?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'No, mantener',
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // texto despues del si
-            Swal.fire('Borrada', 'Registro borrado exitosamente.', 'success');
-          }
-        });
+      title: '¿Estás seguro?',
+      text: '¿Deseas borrar el contenido de esta corización?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'No, mantener',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // texto despues del si
+        Swal.fire('Borrada', 'Registro borrado exitosamente.', 'success');
+      }
+    });
   };
-  
+
 
 
   return (
@@ -112,6 +112,7 @@ export default function RegistrarCotizacion() {
                 <table>
                   <thead>
                     <tr>
+                      <th>#</th>
                       <th>Producto</th>
                       <th>Descripción</th>
                       <th>Cantidad</th>
@@ -122,11 +123,10 @@ export default function RegistrarCotizacion() {
                   </thead>
                   <tbody>
                     <tr>
+                      <td></td>
                       <td><div style={{ display: 'flex', alignItems: 'center' }}>
-                          <input type="text" className="cuadroTexto" placeholder="Buscar producto..." />
-                          <button style={{ marginLeft: '5px', cursor: 'pointer' }} title="Buscar cliente">
-                          </button>
-                        </div></td>
+                        <input type="text" className="cuadroTexto" placeholder="Buscar producto..." />
+                      </div></td>
                       <td><input type="text" className='cuadroTexto' /></td>
                       <td><input type="text" className='cuadroTexto' /></td>
                       <td><input type="text" className='cuadroTexto' /></td>
@@ -175,15 +175,19 @@ export default function RegistrarCotizacion() {
             >
               Cancelar
             </button>
+
+            {/**Debe enlistar a ListaDeCotizaciones unicamente */}
             <button
               className="btn btn-primary"
               onClick={handleCotizado}
             >
               Guardar
             </button>
+
+            {/**Debe enlistar a ListaDeCotizaciones y abrir el popup de enviarCotizacion */}
             <button
               className="btn btn-primary"
-              onClick={()=> openModal("cotizacionPreview")}
+              onClick={() => openModal("cotizacionPreview")}
             >
               Guardar & Enviar
             </button>

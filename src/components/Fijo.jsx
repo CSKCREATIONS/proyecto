@@ -12,7 +12,7 @@ const permisosPorUsuario = {
   usuario1: ['SIG'], // verá solo el módulo "SIG"
   usuario2: ['Ventas'], // verá solo el módulo "Ventas" 
   admin: ['Usuarios', 'SIG', 'Ventas'], // verá todo
-  admin: ['Usuarios', 'proveedoresYCompras', 'Ventas', 'productos'], // verá todo
+  admin: ['Usuarios', 'Compras', 'Ventas', 'productos'], // verá todo
 };
 
 export default function Fijo() {
@@ -107,12 +107,12 @@ export default function Fijo() {
                 </nav>
               )}
 
-              {(permisos.includes('proveedoresYCompras') || permisos.includes('admin')) && (
+              {(permisos.includes('Compras') || permisos.includes('admin')) && (
                 <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuproveedoresYCompras')}>Proveedores & Compras</li>
-                  <ul id="submenuproveedoresYCompras" className="dropdown">
-                    <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
-                    <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
+                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
+                  <ul id="Compras" className="dropdown">
+                    <Link as={Link} to="/Documentacion"><li>Proveedores</li></Link>
+                    <Link as={Link} to="/InformacionDeFuente"><li>Historial de compras</li></Link>
                   </ul>
                 </nav>
               )}
@@ -137,7 +137,6 @@ export default function Fijo() {
                     <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
                     <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
                     <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
-                    <Link as={Link} to="/Devoluciones"><li>Devoluciones</li></Link>
                     <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
                     <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
                     <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>

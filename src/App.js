@@ -9,7 +9,6 @@ import Documentacion from './pages/Documentacion';
 import AgendarVenta from './pages/AgendarVenta';
 import PedidosAgendados from './pages/PedidosAgendados';
 import PedidosEntregados from './pages/PedidosEntregados';
-import Devoluciones from './pages/Devoluciones';
 import PedidosCancelados from './pages/PedidosCancelados';
 import RegistrarCotizacion from './pages/RegistrarCotizacion';
 import ListaDeCotizaciones from './pages/ListaDeCotizaciones';
@@ -57,7 +56,6 @@ const App = () => {
           <Route path='/AgendarVenta' element={<AgendarVenta/>}/>
           <Route path='/PedidosAgendados' element={<PedidosAgendados/>}/>
           <Route path='/PedidosEntregados' element={<PedidosEntregados/>}/>
-          <Route path='/Devoluciones' element={<Devoluciones/>}/>
           <Route path='/PedidosCancelados' element={<PedidosCancelados/>}/>
           <Route path='/RegistrarCotizacion' element={<RegistrarCotizacion/>}/>
           <Route path='/ListaDeCotizaciones' element={<ListaDeCotizaciones/>}/>
