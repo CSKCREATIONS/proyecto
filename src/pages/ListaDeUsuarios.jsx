@@ -52,7 +52,7 @@ const exportarPDF = () => {
 const exportToExcel = () => {
   // Cambiar el ID a 'tabla_pedidos_agendados'
   const table = document.getElementById('tabla_lista_usuarios');
-  
+
   if (!table) {
     console.error("Tabla no encontrada");
     return;
@@ -67,7 +67,7 @@ const exportToExcel = () => {
 
 export default function ListaDeUsuarios() {
 
-  const handleClick = () => 
+  const handleClick = () =>
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción no se puede deshacer.',
@@ -95,40 +95,54 @@ export default function ListaDeUsuarios() {
         <div className="contenido-modulo">
           <EncabezadoModulo
             titulo='Lista de usuarios'
-            exportarPDF = {exportarPDF}
+            exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-            buscar = 'Buscar usuario'
+            buscar='Buscar usuario'
           />
-
+          <br />
           <div className="container-tabla">
             <div className="table-container">
               <table id='tabla_lista_usuarios'>
                 <thead>
                   <tr>
-                    <th>Documento</th>
+                    <th>#</th>
                     <th>Nombre completo</th>
                     <th>Rol</th>
                     <th>Correo</th>
-                    <th>Username</th>
-                    <th>Teléfono</th>
+                    <th>Nombre de usuario</th>
                     <th>Estado</th>
                     <th>Creado</th>
                   </tr>
                 </thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th><select name="" id="">
+                    <option >admin</option>
+                    <option >gerencia</option>
+                    <option >Administracion</option>
+                  </select></th>
+                  <th></th>
+                  <th></th>
+                  <th><select name="" id="">
+                    <option >Habilitado</option>
+                    <option >Inhabilitado</option>
+                  </select></th>
+                  <th><input type="date" /></th>
+                </tr>
                 <tbody>
                   <tr >
-                    <td>105323234</td>
+                    <td>1</td>
                     <td>Natalia Maria</td>
                     <td>Admin</td>
                     <td>Nat@gmail.com</td>
                     <td>Natalia.Mar</td>
-                    <td>30204342</td>
                     <td>Habilitado</td>
                     <td >20/03/2025</td>
                     <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                       <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                     </button>
-                    <Link to={`/ListaDeUsuarios`}  onClick={handleClick}>
+                    <Link to={`/ListaDeUsuarios`} onClick={handleClick}>
                       <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
                         <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                       </button>
@@ -141,7 +155,7 @@ export default function ListaDeUsuarios() {
         </div>
 
         <EditarUsuario />
-       
+
 
 
       </div>

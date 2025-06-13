@@ -12,7 +12,7 @@ export default function NavUsuarios() {
           Lista de usuarios
         </NavLink>
         <NavLink to="/AñadirUsuario" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          Añadir usuarios
+          Añadir usuario
         </NavLink>
         <NavLink to="/AñadirRol" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
           Añadir Rol

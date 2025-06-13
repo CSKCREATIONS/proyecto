@@ -44,12 +44,10 @@ export default function Perfil() {
 
           <div className="containerPerfil">
             <div className="user-info">
-              <div className="info-item"><strong>No documento</strong><p>1034567829</p></div>
-              <div className="info-item"><strong>Nombre completo</strong><p>Pepito Pérez Camargo</p></div>
-              <div className="info-item"><strong>No teléfono</strong><p>3034567829</p></div>
+              <div className="info-item"><strong>Nombre(s)</strong><p>Pepito</p></div>
+              <div className="info-item"><strong>Apellidos</strong><p> Pérez Camargo</p></div>
               <div className="info-item"><strong>Correo electrónico</strong><p>pepa@gmail.com</p></div>
               <div className="info-item"><strong>Nombre de usuario</strong><p>el pepe</p></div>
-              <div className="info-item"><strong>Contraseña</strong><p>******</p></div>
               <div className="info-item"><strong>Rol</strong><p>admin</p></div>
               
               <button className="btn btn-primary" onClick={handleClick}>

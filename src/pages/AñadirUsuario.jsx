@@ -49,10 +49,6 @@ export default function AñadirUsuario() {
             </div>
             <div className="triple">
               <div className="form-group">
-                <label># Documento</label>
-                <input className='entrada' type="text" />
-              </div>
-              <div className="form-group">
                 <label>Rol</label>
                 <select className='entrada'>
                   <option value="" disabled selected>Seleccione un rol</option>
@@ -62,8 +58,8 @@ export default function AñadirUsuario() {
                 </select>
               </div>
               <div className="form-group">
-                <label>No teléfono</label>
-                <input className='entrada' type="text" />
+                <label>Correo</label>
+                <input className='entrada' type="email" />
               </div>
             </div>
             <div className="buttons">

@@ -26,12 +26,6 @@ export default function ContenedorModuloVentas() {
                 <span>Pedidos entregados</span>
               </button>
             </Link>
-            <Link as={Link} to="/Devoluciones" >
-              <button className="boton">
-                <img src="https://cdn-icons-png.freepik.com/256/11153/11153370.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className="icono" />
-                <span>Devoluciones</span>
-              </button>
-            </Link>
             <Link as={Link} to="/PedidosCancelados" >
               <button className="boton">
                 <img src="https://cdn-icons-png.freepik.com/256/1136/1136923.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className="icono" />

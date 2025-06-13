@@ -21,56 +21,45 @@ export default function AgendarVenta() {
 
   return (
     <div>
-        <div className="container-tabla">
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Primer nombre</th>
-                  <th>Segundo nombre</th>
-                  <th>Primer apellido</th>
-                  <th>Segundo apellido</th>
-                  <th>ciudad</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Fecha entrega</th>
-                  <th>Observación</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td><input type='text' className='cuadroTexto' autoFocus /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td><input className='cuadroTexto' /></td>
-                  <td ><input className='cuadroTexto' /></td>
-                  <td ><input className='cuadroTexto' /></td>
-                  <td ><input className='cuadroTexto' /></td>
-                  <td ><input className='cuadroTexto' /></td>
-
-
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="buttons">
-            <button
-              className="btn btn-primary"
-              onClick={handleAgendado}
-            >
-              Agendar Venta
-            </button>
-          </div>
-
-        </div>
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>ciudad</th>
+              <th>Teléfono</th>
+              <th>Correo</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Fecha entrega</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr >
+              <td><input className='cuadroTexto' /></td>
+              <td><input className='cuadroTexto' /></td>
+              <td><input className='cuadroTexto' /></td>
+              <td><input className='cuadroTexto' /></td>
+              <td ><input className='cuadroTexto' /></td>
+              <td ><input className='cuadroTexto' /></td>
+              <td ><input className='cuadroTexto' /></td>
+              <td ><input className='cuadroTexto' /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="buttons">
+        <button
+          className="btn btn-primary"
+          onClick={handleAgendado}
+        >
+          Agendar Venta
+        </button>
       </div>
 
-      
+    </div>
+
+
   )
 }
