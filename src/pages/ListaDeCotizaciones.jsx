@@ -3,17 +3,12 @@ import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
 import { openModal } from '../funciones/animaciones';
-import AgendarCotPed from '../components/AgendarCotPed';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell
-} from "recharts";
-import { Navigate } from 'react-router-dom';
+
 
 const exportarPDF = () => {
   const input = document.getElementById('tabla_cotizaciones');
@@ -80,41 +75,52 @@ export default function ListaDeCotizaciones() {
             titulo="Lista de cotizaciones"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-            buscar = 'Buscar cotización'
+            buscar='Buscar cotización'
           />
 
-
-          {/* TABLA */}
-          <div className="container-tabla"><br/>
+          <div className="container-tabla"><br />
             <div className="table-container">
               <table id='tabla_cotizaciones'>
                 <thead>
                   <tr>
-                    <th>Comprobante</th>
+                    {/**Al seleccionar el numero de cotizacion debe abrir un popup con el formato de la cotizacion seleccionada */}
+                    <th># Cotizacion</th>
                     <th>Fecha elaboración</th>
                     <th>Cliente</th>
                     <th>Enviado por correo</th>
                   </tr>
                 </thead>
+                <tr>
+                    <th></th>
+                    <th><div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input type="date" className="cuadroTexto" />
+                      </div></th>
+                    <th><div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input type="text" className="cuadroTexto" placeholder="Buscar cliente..." />
+                      </div></th>
+                    <th><select name="" id="">
+                      <option value="">Si</option>
+                      <option value="">No</option></select></th>
+                  </tr>
                 <tbody>
                   <tr>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    
-                      <button className='btnTransparente' onClick={handleEliminarCotizacion}>
-                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
-                      </button>
-                      &nbsp;&nbsp;
-                      <button className='btnTransparente' onClick={() => openModal('editUserModal')}>
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-                    
+                    <td><a onClick={() => openModal('cotizacionPreview')}>C-18839</a></td>
+                    <td>13/06/2025</td>
+                    <td>SDFAF</td>
+                    <td>Si</td>
+
+                    <button className='btnTransparente' onClick={handleEliminarCotizacion}>
+                      <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+                    </button>
+
+                    {/**Debe abrir agendar cotizacion como pedido */}
+                    <button className='btnTransparente' onClick={() => openModal('')}>
+                      <i >logo calendario</i>
+                    </button>
+
                   </tr>
                 </tbody>
               </table>
-              <AgendarCotPed />
             </div>
           </div>
         </div>

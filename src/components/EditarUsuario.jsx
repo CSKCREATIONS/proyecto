@@ -20,10 +20,6 @@ export default function EditarUsuario() {
         <div className="modal" id="editUserModal">
             <div className="modal-content">
                 <div className="form-group">
-                    <label>No documento</label>
-                    <input className='entrada' type="text" required />
-                </div>
-                <div className="form-group">
                     <label>Primer nombre</label>
                     <input className='entrada' type="text" required />
                 </div>
@@ -37,11 +33,7 @@ export default function EditarUsuario() {
                 </div>
                 <div className="form-group">
                     <label>Segundo apellido</label>
-                    <input className='entrada' type="text" required />
-                </div>
-                <div className="form-group">
-                    <label>Teléfono </label>
-                    <input className='entrada' type="text" required />
+                    <input className='entrada' type="text"  />
                 </div>
                 <div className="form-group">
                     <label>Email</label>
@@ -49,13 +41,13 @@ export default function EditarUsuario() {
                 </div>
                 <div className="form-group">
                     <label>Nombre de usuario</label>
-                    <input className='entrada' type="text" disabled />
+                    <input className='entrada' type="text"/>
                 </div>
                 <div className="form-group">
                     <label>Rol</label>
                     <select className='entrada' name="" id="" >
                         <option value="">admin</option>
-                        <option value="">usuarioSIG</option>
+                        <option value="">Gerente general</option>
                     </select>
                 </div>
                 <div className="buttons">
