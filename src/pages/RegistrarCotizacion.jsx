@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo2 from '../components/EncabezadoModulo2'
@@ -6,9 +6,13 @@ import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
 import { openModal } from '../funciones/animaciones'
+import React, { useRef } from 'react';
+import { mostrarPopupCotizacion } from '../funciones/popupEnviarCotizacion';
+
 
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
+  const descripcionRef = useRef(null);
   //Agendar venta
   const handleCotizado = () => {
     Swal.fire({
@@ -82,10 +86,12 @@ export default function RegistrarCotizacion() {
                     </tr>
                   </tbody>
                 </table>
+                <br/>
 
                 <label className="labelDOCS">Descripción cotización</label>
                 <Editor
-                  apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"  // Opcional, usa la versión gratuita
+                  onInit={(evt, editor) => (descripcionRef.current = editor)}
+                  apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
                   textareaName="Descripcion"
                   init={{
                     height: 300,
@@ -95,20 +101,13 @@ export default function RegistrarCotizacion() {
                       'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
                       'media', 'table', 'emoticons', 'help'
                     ],
-
                     toolbar:
                       'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
-
-                    menu: {
-                      favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
-                    },
                     menubar: 'favs file edit view insert format tools table help',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-
                   }}
-
-
                 />
+                <br/>
                 <table>
                   <thead>
                     <tr>
@@ -135,6 +134,7 @@ export default function RegistrarCotizacion() {
                     </tr>
                   </tbody>
                 </table>
+                <br/>
 
 
                 <label className="labelDOCS">Condiciones de pago</label>
@@ -170,7 +170,7 @@ export default function RegistrarCotizacion() {
 
           <div className="buttons">
             <button
-              className="btn btn-primary"
+              className="btn btn-primary-cancel"
               onClick={handleCancelado}
             >
               Cancelar
@@ -178,7 +178,7 @@ export default function RegistrarCotizacion() {
 
             {/**Debe enlistar a ListaDeCotizaciones unicamente */}
             <button
-              className="btn btn-primary"
+              className="btn btn-primary-guardar"
               onClick={handleCotizado}
             >
               Guardar
@@ -186,8 +186,24 @@ export default function RegistrarCotizacion() {
 
             {/**Debe enlistar a ListaDeCotizaciones y abrir el popup de enviarCotizacion */}
             <button
-              className="btn btn-primary"
-              onClick={() => openModal("cotizacionPreview")}
+              className="btn btn-primary-env"
+              onClick={() => {
+                const inputs = document.querySelectorAll('.cuadroTexto');
+                const datos = {
+                  cliente: inputs[0]?.value || '',
+                  ciudad: inputs[1]?.value || '',
+                  telefono: inputs[2]?.value || '',
+                  correo: inputs[3]?.value || '',
+                  responsable: 'Pepito',
+                  fecha: inputs[4]?.value || '',
+                  descripcion: descripcionRef.current?.getContent({ format: 'text' }) || '',
+                  producto: inputs[5]?.value || '',
+                  cantidad: inputs[6]?.value || '',
+                  valorUnitario: inputs[7]?.value || '',
+                  valorTotal: inputs[8]?.value || '',
+                };
+                mostrarPopupCotizacion(datos);
+              }}
             >
               Guardar & Enviar
             </button>
