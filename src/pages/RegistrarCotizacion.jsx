@@ -56,116 +56,118 @@ export default function RegistrarCotizacion() {
           />
 
           <div className="contenido-modulo">
-            <div className="container-tabla">
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Cliente</th>
-                      <th>Ciudad</th>
-                      <th>Teléfono</th>
-                      <th>Correo</th>
-                      <th>Responsable cotización</th>
-                      <th>Fecha</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <input type="text" className="cuadroTexto" placeholder="Buscar..." />
-                          <button style={{ marginLeft: '5px', cursor: 'pointer' }} title="Buscar cliente">
-                          </button>
-                        </div>
-                      </td>
-                      <td><input type="text" className="cuadroTexto" /></td>
-                      <td><input type="text" className="cuadroTexto" /></td>
-                      <td><input type="text" className="cuadroTexto" /></td>
-                      <td><span>Pepito</span></td>
-                      <td><input type="date" className="cuadroTexto" /></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <br/>
-
-                <label className="labelDOCS">Descripción cotización</label>
-                <Editor
-                  onInit={(evt, editor) => (descripcionRef.current = editor)}
-                  apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
-                  textareaName="Descripcion"
-                  init={{
-                    height: 300,
-                    menubar: false,
-                    plugins: [
-                      'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-                      'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
-                      'media', 'table', 'emoticons', 'help'
-                    ],
-                    toolbar:
-                      'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
-                    menubar: 'favs file edit view insert format tools table help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-                  }}
-                />
-                <br/>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Producto</th>
-                      <th>Descripción</th>
-                      <th>Cantidad</th>
-                      <th>Valor unitario</th>
-                      <th>% Descuento</th>
-                      <th>Valor total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td><div style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="text" className="cuadroTexto" placeholder="Buscar producto..." />
-                      </div></td>
-                      <td><input type="text" className='cuadroTexto' /></td>
-                      <td><input type="text" className='cuadroTexto' /></td>
-                      <td><input type="text" className='cuadroTexto' /></td>
-                      <td><input type="text" className='cuadroTexto' /></td>
-                      <td><input type="text" className='cuadroTexto' /></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <br/>
-
-
-                <label className="labelDOCS">Condiciones de pago</label>
-                <Editor
-                  apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"  // Opcional, usa la versión gratuita
-
-                  textareaName="Descripcion"
-                  init={{
-                    height: 300,
-                    menubar: false,
-                    plugins: [
-                      'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-                      'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
-                      'media', 'table', 'emoticons', 'help'
-                    ],
-
-                    toolbar:
-                      'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
-
-                    menu: {
-                      favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
-                    },
-                    menubar: 'favs file edit view insert format tools table help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-
-                  }}
-
-
-                />
-              </div>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Responsable cotización</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input type="text" className="cuadroTexto" placeholder="Buscar..." />
+                        <button style={{ marginLeft: '5px', cursor: 'pointer' }} title="Buscar cliente">
+                        </button>
+                      </div>
+                    </td>
+                    <td><input type="text" className="cuadroTexto" /></td>
+                    <td><input type="text" className="cuadroTexto" /></td>
+                    <td><input type="text" className="cuadroTexto" /></td>
+                    <td><span>Pepito</span></td>
+                    <td><input type="date" className="cuadroTexto" /></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+            <br />
+
+            <label className="labelDOCS">Descripción cotización</label>
+            <Editor
+              onInit={(evt, editor) => (descripcionRef.current = editor)}
+              apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
+              textareaName="Descripcion"
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: [
+                  'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+                  'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+                  'media', 'table', 'emoticons', 'help'
+                ],
+                toolbar:
+                  'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
+                menubar: 'favs file edit view insert format tools table help',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+              }}
+            />
+            <br />
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Valor unitario</th>
+                    <th>% Descuento</th>
+                    <th>Valor total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td><div style={{ display: 'flex', alignItems: 'center' }}>
+                      <input type="text" className="cuadroTexto" placeholder="Buscar producto..." />
+                    </div></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                    <td><input type="text" className='cuadroTexto' /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <br />
+
+
+            <label className="labelDOCS">Condiciones de pago</label>
+            <Editor
+              apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"  // Opcional, usa la versión gratuita
+
+              textareaName="Descripcion"
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: [
+                  'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+                  'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+                  'media', 'table', 'emoticons', 'help'
+                ],
+
+                toolbar:
+                  'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
+
+                menu: {
+                  favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
+                },
+                menubar: 'favs file edit view insert format tools table help',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+
+              }}
+
+
+            />
+
           </div>
 
           <div className="buttons">

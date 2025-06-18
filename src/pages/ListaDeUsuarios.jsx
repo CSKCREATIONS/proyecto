@@ -97,7 +97,7 @@ export default function ListaDeUsuarios() {
             titulo='Lista de usuarios'
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-            buscar='Buscar usuario'
+            descripcionBoton= "Agregar usuario"
           />
           <br />
           <div className="container-tabla">
@@ -116,8 +116,8 @@ export default function ListaDeUsuarios() {
                 </thead>
                 <tr>
                   <th></th>
-                  <th></th>
-                  <th><select name="" id="">
+                  <th><input type="text" className='cuadroTexto' /></th>
+                  <th><select className='cuadroTexto' name="" id="">
                     <option >admin</option>
                     <option >gerencia</option>
                     <option >Administracion</option>
@@ -137,7 +137,7 @@ export default function ListaDeUsuarios() {
                     <td>Admin</td>
                     <td>Nat@gmail.com</td>
                     <td>Natalia.Mar</td>
-                    <td>Habilitado</td>
+                    <td style={{color: 'green'}}>Habilitado</td>
                     <td >20/03/2025</td>
                     <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                       <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>

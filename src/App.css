@@ -277,15 +277,14 @@ a, li{
 }
 
 
-
 .encabezado-modulo{
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .encabezado-modulo div{
   display: flex;
-  align-items: center;
   gap: 5rem;
 }
 
@@ -307,6 +306,9 @@ a, li{
 
 
 
+table{
+  overflow-x: auto;
+}
 
 
 .table-container {
@@ -357,33 +359,11 @@ td {
 
 
 
-.search-container {
-  position: relative;
-}
-
-.search-box {
+.agregar{
   padding: 14px 12px 5px;
   width: 90%;
   border: 1px solid #ccc;
   border-radius: 25px;
-}
-
-.search-container label {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: gray;
-  font-size: 14px;
-  transition: 0.3s ease-in-out;
-  pointer-events: none;
-  padding: 0 5px;
-}
-
-.search-box:focus+label,
-.search-box:not(:placeholder-shown)+label {
-  top: 10px;
-  font-size: 12px;
 }
 
 

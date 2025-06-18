@@ -10,10 +10,7 @@ export default function EncabezadoModulo(props) {
 				<button style={{ background: 'transparent', cursor: 'pointer'}} onClick={props.exportarPDF}><i className="fa-solid fa-file-pdf"></i> Exportar a PDF</button>
 			</div>
 
-			<div className="search-container">
-				<input type="text" className="search-box" placeholder=" " id="search" onChange={props.onSearch}/>
-				<label for="search"><i className="fa-solid fa-magnifying-glass"></i> {props.buscar}</label>
-			</div>
+				<button type='submit'style={{padding:'0.5rem', backgroundColor: '#43805a', borderRadius: '10px', color:'white'}}>{props.descripcionBoton}</button>
 		</div>
 	)
 }
