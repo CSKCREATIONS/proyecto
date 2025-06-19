@@ -87,11 +87,6 @@ const handleClick = () =>
   
   
 
-  
-  
-
-
-
   return (
     <div >
       <Fijo />
