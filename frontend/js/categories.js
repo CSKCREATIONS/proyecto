@@ -203,10 +203,11 @@ async function activateCategory(id) {
     showCancelButton: true,
     confirmButtonText: 'Sí, activar',
     cancelButtonText: 'Cancelar'
+    
   });
 
   if (confirm.isConfirmed) {
-    
+
     try {
       const res = await fetch(`${API_URL}/${id}/activate`, {
         method: 'PATCH',
