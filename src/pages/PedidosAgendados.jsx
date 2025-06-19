@@ -19,36 +19,28 @@ import EditarPedido from "../components/EditarPedido";
 
 const exportarPDF = () => {
   const input = document.getElementById('tabla_pedidos_agendados');
+  const originalWidth = input.style.width; // Guardar ancho original
 
-  // Ocultar elementos con clase 'no-pdf'
-  const elementosNoPdf = input.querySelectorAll('.no-export');
-  elementosNoPdf.forEach(el => el.style.display = 'none');
+  // Forzar un ancho fijo (ej: 100% del contenedor o un valor en px)
+  input.style.width = '100%';
 
-  html2canvas(input).then((canvas) => {
+  html2canvas(input, {
+    scale: 1, // Evita zoom automático
+    width: input.offsetWidth, // Usa el ancho forzado
+    windowWidth: input.scrollWidth // Captura el ancho completo
+  }).then((canvas) => {
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-
+    
+    // Ajustar imagen al ancho del PDF (190mm es el ancho útil de A4)
     const imgWidth = 190;
-    const pageHeight = 297;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 10;
-
-    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
+    
+    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
     pdf.save('pedidosAgendados.pdf');
 
-    // Restaurar visibilidad de los elementos
-    elementosNoPdf.forEach(el => el.style.display = '');
+    // Restaurar el ancho original
+    input.style.width = originalWidth;
   });
 };
 
@@ -59,41 +51,26 @@ const exportarPDF = () => {
 
 const exportToExcel = () => {
   const table = document.getElementById('tabla_pedidos_agendados');
+  if (!table) return;
 
-  if (!table) {
-    console.error("Tabla no encontrada");
-    return;
-  }
-
-  // Ocultar temporalmente los íconos o columnas no deseadas
+  // Ocultar elementos no exportables
   const elementosNoExport = table.querySelectorAll('.no-export');
   elementosNoExport.forEach(el => el.style.display = 'none');
 
-  // Exportar tabla a Excel
-  const workbook = XLSX.utils.table_to_book(table);
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  saveAs(data, 'pedidosAgendados.xlsx');
+  // Convertir tabla a hoja de cálculo
+  const workbook = XLSX.utils.table_to_book(table, { sheet: "Pedidos" });
+  
+  // Ajustar anchos de columna (ejemplo: 20 unidades por columna)
+  workbook.Sheets["Pedidos"]["!cols"] = Array(10).fill({ width: 20 });
 
-  // Restaurar visibilidad
+  // Generar y descargar archivo
+  XLSX.writeFile(workbook, 'pedidosAgendados.xlsx');
+
+  // Restaurar elementos
   elementosNoExport.forEach(el => el.style.display = '');
 };
 
 
-// Datos que se mostraran en la grafica 
-const data = [
-  { name: "Enero", pedidos: 20 },
-  { name: "Febrero", pedidos: 35 },
-  { name: "Marzo", pedidos: 40 },
-  { name: "Abril", pedidos: 50 },
-  { name: "Mayo", pedidos: 45 },
-];
-
-// Mensajes de las notificaciones 
-const notificaciones = [
-  { id: 1, mensaje: "Pedido 111111 próximo a cumplirse" },
-  { id: 2, mensaje: "Pedido 1092 próximo a cumplirse" },
-];
 
 
 
@@ -151,39 +128,12 @@ export default function PedidosAgendados() {
             exportToExcel={exportToExcel}
             buscar = 'Buscar pedido'
             />
-
-          <div className="grafica-notificaciones">
-            {/* Gráfica */}
-            <div className="grafica">
-              <ResponsiveContainer width={380} height={150}> {/* tamaño */}
-                <LineChart data={data}>{/* significa q son datos y una grafica de linea en este caso */}
-                  <CartesianGrid strokeDasharray="3 3" />{/* es para la cuadricula de fondo */}
-                  <XAxis dataKey="name" /> {/* define el eje x y con hide se oculta los nombres :)*/}
-                  <YAxis /> {/* oculta el eje y */}
-                  <Tooltip /> {/* muestra la cantidad de pedidos al pasar el mouse por la grafica */}
-                  <Line type="monotone" dataKey="pedidos" stroke="gray" strokeWidth={2} /> {/* el dataKey es el nombre que aparece en la grafica y el strokeWidth es el grosor de la linea */}
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Notificaciones */}
-            <div className="notificaciones"> {/* proximamente se hace el llado a al const identificandolo por el id donde se mostraran las alertas de los reportes */}
-              {notificaciones.map((notif) => (
-                <div key={notif.id} className="notificacion"> {/* icono de advertencia */}
-                  <FaExclamationTriangle className="icono" />
-                  <a href="#" className="mensaje">
-                    {notif.mensaje}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-
+            
           {/* Tabla */}
           <div className="container-tabla">
             <div className="table-container" >
               <table id="tabla_pedidos_agendados">
-                <thead>
+                <thead><br/>
                   <tr>
                     <th style={{ textAlign: 'center' }} colSpan="5">Pedido</th>
                     <th style={{ textAlign: 'center' }} colSpan="4">Cliente</th>

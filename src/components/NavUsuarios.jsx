@@ -11,11 +11,8 @@ export default function NavUsuarios() {
         <NavLink to="/ListaDeUsuarios" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
           Lista de usuarios
         </NavLink>
-        <NavLink to="/AñadirUsuario" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          Añadir usuario
-        </NavLink>
-        <NavLink to="/AñadirRol" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          Añadir Rol
+        <NavLink to="/RolesYPermisos" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          Roles y permisos
         </NavLink>
       </nav>
     </div>

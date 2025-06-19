@@ -85,12 +85,6 @@ const handleClick = () =>
     setActivo(!activo);
   };
   
-  
-
-  
-  
-
-
 
   return (
     <div >

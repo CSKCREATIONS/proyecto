@@ -2,8 +2,7 @@ import React from 'react';
 import {  Routes, Route, BrowserRouter, } from "react-router-dom";
 import ListaDeUsuarios from './pages/ListaDeUsuarios';
 import Home from './pages/Home';
-import AñadirUsuario from './pages/AñadirUsuario';
-import AñadirRol from './pages/AñadirRol';
+import RolesYPermisos from './pages/RolesYPermisos'
 import InformacionDeFuente from './pages/InformacionDeFuente';
 import Documentacion from './pages/Documentacion';
 import AgendarVenta from './pages/AgendarVenta';
@@ -34,6 +33,7 @@ import Home2 from './pages/Home2';
 import Perfil1 from './pages/Perfil1';
 import Perfil2 from './pages/Perfil2';
 import GestionProductos from './pages/GestionProductos';
+import ReporteVentas from './pages/ReporteVentas';
 
 
 const App = () => {
@@ -48,8 +48,7 @@ const App = () => {
 
           <Route path='/Home' element ={<Home/>}/>
           <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
-          <Route path='/AñadirUsuario' element={<AñadirUsuario/>}/>
-          <Route path='/AñadirRol' element={<AñadirRol/>}/>
+          <Route path='/RolesYPermisos' element={<RolesYPermisos/>}/>
           <Route path='/InformacionDeFuente' element={<InformacionDeFuente/>}/>
           <Route path='/Documentacion' element={<Documentacion/>}/>
           <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar/>}/>
@@ -79,6 +78,7 @@ const App = () => {
           <Route path='/Perfil1' element={<Perfil1/>}/>
           <Route path='/Perfil2' element={<Perfil2/>}/>
           <Route path='/GestionProductos' element={<GestionProductos/>}/>
+          <Route path='/ReporteVentas' element={<ReporteVentas/>}/>
 
            
         </Routes>

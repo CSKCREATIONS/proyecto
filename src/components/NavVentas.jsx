@@ -25,9 +25,6 @@ export default function NavVentas(props) {
           <NavLink to="/PedidosEntregados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Pedidos entregados
           </NavLink>
-          <NavLink to="/Devoluciones" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-            Devoluciones
-          </NavLink>
           <NavLink to="/PedidosCancelados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Pedidos cancelados
           </NavLink>
@@ -36,6 +33,9 @@ export default function NavVentas(props) {
           </NavLink>
           <NavLink to="/ProspectosDeClientes" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Prospectos de clientes
+          </NavLink>
+          <NavLink to="/ReporteVentas" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Dahsboard
           </NavLink>
         </nav>
       </div>

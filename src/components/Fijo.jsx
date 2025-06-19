@@ -101,8 +101,7 @@ export default function Fijo() {
                   </li>
                   <ul className="dropdown" id="submenuUsuarios">
                     <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                    <Link as={Link} to="/AñadirUsuario"><li>Añadir usuario</li></Link>
-                    <Link as={Link} to="/AñadirRol"><li>Añadir rol</li></Link>
+                    <Link as={Link} to="/AñadirRol"><li>Roles y permisos</li></Link>
                   </ul>
                 </nav>
               )}
@@ -138,10 +137,9 @@ export default function Fijo() {
                     <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
                     <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
                     <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
-                    <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
-                    <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
                     <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
                     <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
+                    <Link as={Link} to="/ReporteVentas"><li>Dashboard</li></Link>
                   </ul>
                 </nav>
               )}
