@@ -1,7 +1,7 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
+import AgregarUsuario from '../components/AgregarUsuario'
 import NavUsuarios from '../components/NavUsuarios'
-import EncabezadoModulo from '../components/EncabezadoModulo'
 import { openModal } from '../funciones/animaciones'
 import EditarUsuario from '../components/EditarUsuario'
 import Swal from 'sweetalert2';
@@ -93,12 +93,14 @@ export default function ListaDeUsuarios() {
       <div className="content">
         <NavUsuarios />
         <div className="contenido-modulo">
-          <EncabezadoModulo
-            titulo='Lista de usuarios'
-            exportarPDF={exportarPDF}
-            exportToExcel={exportToExcel}
-            descripcionBoton= "Agregar usuario"
-          />
+          <div className='encabezado-modulo'>
+            <div>
+              <h3>Lista de usuarios</h3>
+              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportToExcel}><i className="fa-solid fa-file-excel"></i> Exportar a Excel</button>
+              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i> Exportar a PDF</button>
+            </div>
+            <button onClick={()=> openModal('agregar-usuario')} type='submit' className='btn-agregar'>+Agregar usuario</button>
+          </div>
           <br />
           <div className="container-tabla">
             <div className="table-container">
@@ -114,22 +116,6 @@ export default function ListaDeUsuarios() {
                     <th>Creado</th>
                   </tr>
                 </thead>
-                <tr>
-                  <th></th>
-                  <th><input type="text" className='cuadroTexto' /></th>
-                  <th><select className='cuadroTexto' name="" id="">
-                    <option >admin</option>
-                    <option >gerencia</option>
-                    <option >Administracion</option>
-                  </select></th>
-                  <th></th>
-                  <th></th>
-                  <th><select name="" id="">
-                    <option >Habilitado</option>
-                    <option >Inhabilitado</option>
-                  </select></th>
-                  <th><input type="date" /></th>
-                </tr>
                 <tbody>
                   <tr >
                     <td>1</td>
@@ -137,7 +123,7 @@ export default function ListaDeUsuarios() {
                     <td>Admin</td>
                     <td>Nat@gmail.com</td>
                     <td>Natalia.Mar</td>
-                    <td style={{color: 'green'}}>Habilitado</td>
+                    <td style={{ color: 'green' }}>Habilitado</td>
                     <td >20/03/2025</td>
                     <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                       <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
@@ -155,7 +141,7 @@ export default function ListaDeUsuarios() {
         </div>
 
         <EditarUsuario />
-
+        <AgregarUsuario/>
 
 
       </div>

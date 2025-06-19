@@ -101,8 +101,7 @@ export default function Fijo() {
                   </li>
                   <ul className="dropdown" id="submenuUsuarios">
                     <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                    <Link as={Link} to="/AñadirUsuario"><li>Añadir usuario</li></Link>
-                    <Link as={Link} to="/AñadirRol"><li>Añadir rol</li></Link>
+                    <Link as={Link} to="/AñadirRol"><li>Roles y permisos</li></Link>
                   </ul>
                 </nav>
               )}

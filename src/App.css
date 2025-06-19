@@ -1,4 +1,4 @@
-*{
+* {
   box-sizing: border-box;
   border: 0;
   padding: 0;
@@ -6,24 +6,23 @@
   font-family: "Inter", sans-serif;
 }
 
-html{
-  min-height: 100vh;
+html {
   overflow-x: hidden;
 }
 
-h2{
+h2 {
   font-size: 2rem;
   font-weight: 400;
-
 }
-h3{
+
+h3 {
   font-size: 1.4rem;
   font-weight: 350;
 }
 
 
 /**********Estilos para el componente Fijo (header y menu lateral)*************/
-header{
+header {
   background-color: #174643;
   display: flex;
   width: 100vw;
@@ -34,20 +33,20 @@ header{
 }
 
 
-.fijo .izquierda{
+.fijo .izquierda {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.fijo .izquierda #empresa-nombre{
+.fijo .izquierda #empresa-nombre {
   font-size: 2em;
   transition: .3s;
   color: white;
 }
 
 /*loguito del menu*/
-.fijo .izquierda #btn-menu{
+.fijo .izquierda #btn-menu {
   display: flex;
   flex-direction: column;
   gap: .5em;
@@ -57,7 +56,7 @@ header{
 
 
 
-.fijo .izquierda #btn-menu .palito{
+.fijo .izquierda #btn-menu .palito {
   background-color: whitesmoke;
   border-radius: 2px;
   width: 2em;
@@ -65,25 +64,25 @@ header{
 }
 
 /*****menu lateral, donde estan las opciones de cada modulo****/
-.menu{
+.menu {
   display: flex;
   flex-direction: column;
-  justify-content:space-between ;
-  align-items:center;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
-  background-color:#174643;
+  background-color: #174643;
   position: fixed;
   top: 0;
   height: 100vh;
   left: -260px;
   transition: left .3s;
   overflow-y: scroll;
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 /*boton de cerrar menu lateral*/
-.close-menu{
+.close-menu {
   position: absolute;
   top: 3rem;
   font-size: 35px;
@@ -93,39 +92,42 @@ header{
   display: none;
 }
 
-.dropdown{
+.dropdown {
   display: none;
 }
 
-.mostrar-menu{
-  left:0px;
+.mostrar-menu {
+  left: 0px;
 }
 
-a, li{
+a,
+li {
   text-decoration: none;
   list-style: none;
 }
 
 
 /*container para la informacion del usuario el menu lateral en el componente 'Fijo'*/
-.preview-usuario{
+.preview-usuario {
   color: white;
   gap: 10px;
-  padding:5vh 15px 2vh;
+  padding: 5vh 15px 2vh;
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgb(179, 179, 179);
 }
-.preview-usuario:hover,.menu li:hover{
+
+.preview-usuario:hover,
+.menu li:hover {
   background-color: #215f5b;
   cursor: pointer;
 }
 
-.datos-usuario{
+.datos-usuario {
   text-align: left;
 }
 
-.modulos-menu nav{
+.modulos-menu nav {
   border-bottom: 1px solid rgb(179, 179, 179);
 }
 
@@ -133,12 +135,14 @@ a, li{
   padding: 4px 0;
   color: white;
 }
-.menu .modulos-menu ul li, .usuario-rol {
+
+.menu .modulos-menu ul li,
+.usuario-rol {
   font-size: 14px;
   font-weight: 200;
 }
 
-/**boton cerrar sesion**/
+/**boton cerrar sesion en el menu lateral**/
 
 .logout-btn {
   background-color: #3d8a7f;
@@ -153,21 +157,23 @@ a, li{
 
 
 
-/*clase agregada con js*/
-.visible{
+/*clase agregada con js para hacer visible los dropdown*/
+.visible {
   display: block;
 }
 
-.logout{
+.logout {
   width: 100%;
-  border-top: 1px solid  rgb(179, 179, 179);
+  border-top: 1px solid rgb(179, 179, 179);
 }
-.user{
+
+.user {
   display: flex;
   align-items: center;
   gap: .5rem;
 }
-.user img{
+
+.user img {
   height: 40px;
 }
 
@@ -182,10 +188,10 @@ a, li{
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color:#0c294e ;
+  background-color: #0c294e;
 }
 
-.Titulo{
+.Titulo {
   font-size: 3em;
   max-width: 800px;
   padding: 0 10px;
@@ -238,7 +244,8 @@ a, li{
   font-size: 12px;
   color: #6e7780;
 }
-.recuperar-contraseña{
+
+.recuperar-contraseña {
   display: flex;
   justify-content: space-around;
   font-size: small
@@ -247,9 +254,9 @@ a, li{
 
 
 
-/***Contenedor universal****/
-.content{
-  padding: 1.5rem ;
+/***Contenedor universal, para ajustar el contenido al abrir el menu lateral****/
+.content {
+  padding: 1.5rem;
   transition: 0.3s;
   min-height: 100vh;
   background-color: #dbdbdb;
@@ -257,7 +264,7 @@ a, li{
 
 
 /***Barra de navegacion de los modulos**/
-.nav-modulo{
+.nav-modulo {
   display: flex;
   white-space: nowrap;
   scrollbar-width: thin;
@@ -265,26 +272,29 @@ a, li{
   overflow: auto;
   font-size: .8em;
 }
-.nav-modulo li{
+
+.nav-modulo li {
   padding: 8px 0px;
   white-space: nowrap;
   max-width: 180px;
   overflow: hidden;
   color: #194d5a;
   text-overflow: ellipsis;
+  /*no funciona hay que arreglarlo*/
 }
-.nav-modulo li:hover{
-  color:#7c8e99;
+
+.nav-modulo li:hover {
+  color: #7c8e99;
 }
 
 
-.encabezado-modulo{
+.encabezado-modulo {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.encabezado-modulo div{
+.encabezado-modulo div {
   display: flex;
   gap: 5rem;
 }
@@ -299,15 +309,14 @@ a, li{
   }
 }
 
-.contenido-modulo{
-  padding: 1.5rem ;
+.contenido-modulo {
+  padding: 1.5rem;
   background-color: #cfcfcf;
   border-radius: 40px 40px 0 0;
 }
 
 
-
-table{
+table {
   overflow-x: auto;
 }
 
@@ -325,7 +334,8 @@ table{
     table-layout: fixed !important;
   }
 
-  th, td {
+  th,
+  td {
     max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -335,7 +345,7 @@ table{
 
 
 th {
-  background-color: #43805a; 
+  background-color: #43805a;
   color: white;
   padding: 12px;
   text-align: center;
@@ -351,22 +361,21 @@ th:last-child {
 }
 
 td {
-  background-color: #f9fafb; /* blanco suave */
+  background-color: #f9fafb;
+  /* blanco suave */
   color: #111827;
   padding: 10px;
   text-align: center;
   border: 1px solid #e5e7eb;
 }
 
-
-
-.agregar{
-  padding: 14px 12px 5px;
-  width: 90%;
-  border: 1px solid #ccc;
-  border-radius: 25px;
+.btn-agregar {
+  cursor: pointer;
+  padding: 0.5rem;
+  background-color: #43805a;
+  border-radius: 10px;
+  color: white
 }
-
 
 .modal {
   display: none;
@@ -374,20 +383,23 @@ td {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 100vmax rgba(0,0,0,.5);
-}
-.modal-content {
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
   background: white;
-  width: 100vw;
-  max-width: 550px;
   padding: 20px 75px;
+  max-width: 600px;
+  width: 100vw;
+  overflow-y: scroll;
+  max-height: 85vh;
 }
+
+
 .form-group {
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
 }
-.entrada{
+
+.entrada {
   flex: 1;
   padding: 5px;
   width: 80%;
@@ -395,26 +407,45 @@ td {
   border: 1px solid #ccc;
   border-radius: 7px;
 }
+
 .buttons {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
 }
+
 .btn {
-  padding:  12px;
+  padding: 12px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  box-shadow: 3px 5px 5px 0px rgba(0,0,0,0.3) ;
+  box-shadow: 3px 5px 5px 0px rgba(0, 0, 0, 0.3);
   transition: all .2s;
 }
-.btn:active{
+
+.btn:active {
   transform: scale(0.9);
 }
-.btn-primary-cancel { background: rgb(231, 59, 59); color: white; }
-.btn-primary-env { background: rgb(43, 99, 57); color: white; }
-.btn-primary-guardar { background: rgb(42, 88, 105); color: white; }
-.btn-secondary { background: gray; color: white; }
+
+.btn-primary-cancel {
+  background: rgb(231, 59, 59);
+  color: white;
+}
+
+.btn-primary-env {
+  background: rgb(43, 99, 57);
+  color: white;
+}
+
+.btn-primary-guardar {
+  background: rgb(42, 88, 105);
+  color: white;
+}
+
+.btn-secondary {
+  background: gray;
+  color: white;
+}
 
 
 
@@ -435,7 +466,8 @@ td {
   margin-top: 10px;
 }
 
-.input-box, .textarea-box {
+.input-box,
+.textarea-box {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -462,7 +494,8 @@ td {
 }
 
 
-.input-boxTD, .textarea-box {
+.input-boxTD,
+.textarea-box {
   padding: 8px;
   margin-bottom: 10px;
   border: 2px solid #ccc;
@@ -518,16 +551,16 @@ legend {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center; 
+  text-align: center;
   gap: 0.5rem;
   width: 7rem;
-  height: 7rem; 
+  height: 7rem;
   padding: 10px;
   background: #e7e7e7;
   cursor: pointer;
   border-radius: 5px;
   transition: 0.3s;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 .boton:hover {
@@ -587,16 +620,17 @@ legend {
   }
 
 
- /*Adicionar docuemento*/ 
+  /*Adicionar docuemento*/
 }
+
 .form-container {
   width: 100%;
-  margin: 40px ;
+  margin: 40px;
   max-width: 1000px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 2px solid #ccc; 
+  border: 2px solid #ccc;
   padding: 20px;
   background: #ffffff;
   border-radius: 10px;
@@ -618,7 +652,7 @@ legend {
 
 input[type="number"],
 
-.textDOCS{
+.textDOCS {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
@@ -633,7 +667,7 @@ input[type="number"],
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 2px solid #ccc; 
+  border: 2px solid #ccc;
   padding: 5px;
   background: #ffffff;
   border-radius: 10px;
@@ -671,17 +705,18 @@ button:hover {
   .form-container {
     width: 90%;
   }
+
   textarea {
     width: 90%;
   }
-    }
+}
 
-  .button-group {
-    flex-direction: column;
-  }
+.button-group {
+  flex-direction: column;
+}
 
 
-  /****perfil****/
+/****perfil****/
 .containerPerfil {
   background: white;
   display: grid;
@@ -752,7 +787,8 @@ h1 {
   .permissions .group {
     width: 100%;
   }
-  .user-info{
+
+  .user-info {
     gap: 2rem 4rem;
   }
 }
@@ -781,6 +817,7 @@ h1 {
   padding: 8px 12px;
   border-radius: 8px 8px 0 0;
   text-decoration: none;
+  color:darkslategray;
 }
 
 .nav-item:hover {
@@ -788,14 +825,14 @@ h1 {
 }
 
 .nav-item.active {
-  background-color: #174643c0; 
+  background-color: #174643c0;
   color: white;
 }
 
 
 
- /*Errores 404 y 504*/ 
- .error-page {
+/*Errores 404 y 504*/
+.error-page {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -837,20 +874,23 @@ h1 {
 .error-page a:hover {
   background-color: #0056b3;
 }
+
 /*Estio boton modsig*/
 .btn-toggle {
   padding: 8px 16px;
   font-size: 14px;
   border: none;
   border-radius: 20px;
-  background-color: #28a745; /* Verde activo */
+  background-color: #28a745;
+  /* Verde activo */
   color: white;
   cursor: pointer;
   transition: 0.3s ease all;
 }
 
 .btn-toggle.inactive {
-  background-color: #dc3545; /* Rojo inactivo */
+  background-color: #dc3545;
+  /* Rojo inactivo */
 }
 
 
@@ -859,7 +899,7 @@ h1 {
 .grafica-notificaciones {
   display: flex;
   align-items: center;
-  justify-content: space-evenly; 
+  justify-content: space-evenly;
   gap: 20px;
   flex-wrap: wrap;
   margin-top: 3%;
@@ -883,24 +923,24 @@ h1 {
 .notificacion {
   display: flex;
   align-items: center;
-  gap: 8px; 
+  gap: 8px;
   box-shadow: 0px 2px 7px 2px gray;
   padding: 8px;
   border-radius: 5px;
-  margin-bottom: .5rem; 
+  margin-bottom: .5rem;
   width: 100%;
   box-sizing: border-box;
 }
 
 .icono {
   color: rgb(0, 0, 0);
-  font-size: 16px; 
+  font-size: 16px;
 }
 
 .mensaje {
   color: rgb(10, 10, 10);
   text-decoration: underline;
-  flex: 1; 
+  flex: 1;
   word-wrap: break-word;
 }
 
@@ -941,7 +981,8 @@ h1 {
 .cuadroTexto:focus {
   outline: none;
   background-color: #ffffff;
-  border-top-color: #2563eb; /* cambia a azul más fuerte */
+  border-top-color: #2563eb;
+  /* cambia a azul más fuerte */
   box-shadow: 0 0 6px rgba(37, 99, 235, 0.2);
 }
 
@@ -957,9 +998,9 @@ h1 {
   transition: color 0.3s ease;
 }
 
-input
-select {
-  background-color: #f9f9f9; /* color suave de fondo */
+input select {
+  background-color: #f9f9f9;
+  /* color suave de fondo */
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   outline: none;
   transition: border 0.3s, box-shadow 0.3s;
@@ -975,44 +1016,48 @@ select:focus {
 /*Diseño filtros de lista de cotizaciones*/
 .filtros-tabla {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+  flex-wrap: wrap;
+  /* Permite que los elementos se envuelvan */
   gap: 15px;
   padding: 15px;
   margin-bottom: 15px;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   border-radius: 8px;
 }
 
 .filtro-grupo {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   gap: 5px;
   min-width: 150px;
-  flex: 1 1 auto;}
+  flex: 1 1 auto;
+}
 
-.filtro-input, .filtro-select {
+.filtro-input,
+.filtro-select {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   background: white;
-  width: 100%; 
-  box-sizing: border-box; 
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.3s ease;
 }
 
-.filtro-input:focus, .filtro-select:focus {
-  border-color: #43805a; 
+.filtro-input:focus,
+.filtro-select:focus {
+  border-color: #43805a;
   outline: none;
 }
 
 @media (max-width: 768px) {
   .filtros-tabla {
-    flex-direction: column; 
-    align-items: stretch; 
+    flex-direction: column;
+    align-items: stretch;
     gap: 10px;
   }
-  
+
   .filtro-grupo {
     width: 100%;
   }
@@ -1020,11 +1065,11 @@ select:focus {
 
 @media (min-width: 992px) {
   .filtros-tabla {
-    justify-content: flex-start; 
+    justify-content: flex-start;
   }
-  
+
   .filtro-grupo {
-    max-width: 220px; 
+    max-width: 220px;
   }
 }
 
@@ -1037,7 +1082,8 @@ select:focus {
 
 
 .p-4 {
-  padding: 1rem; /* ya hace parte de Tailwind, pero lo dejamos por claridad */
+  padding: 1rem;
+  /* ya hace parte de Tailwind, pero lo dejamos por claridad */
   background-color: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -1067,5 +1113,3 @@ select:focus {
   font-size: 0.875rem;
   color: #6b7280;
 }
-
-

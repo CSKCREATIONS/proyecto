@@ -2,8 +2,7 @@ import React from 'react';
 import {  Routes, Route, BrowserRouter, } from "react-router-dom";
 import ListaDeUsuarios from './pages/ListaDeUsuarios';
 import Home from './pages/Home';
-import AñadirUsuario from './pages/AñadirUsuario';
-import AñadirRol from './pages/AñadirRol';
+import RolesYPermisos from './pages/RolesYPermisos'
 import InformacionDeFuente from './pages/InformacionDeFuente';
 import Documentacion from './pages/Documentacion';
 import AgendarVenta from './pages/AgendarVenta';
@@ -49,8 +48,7 @@ const App = () => {
 
           <Route path='/Home' element ={<Home/>}/>
           <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
-          <Route path='/AñadirUsuario' element={<AñadirUsuario/>}/>
-          <Route path='/AñadirRol' element={<AñadirRol/>}/>
+          <Route path='/RolesYPermisos' element={<RolesYPermisos/>}/>
           <Route path='/InformacionDeFuente' element={<InformacionDeFuente/>}/>
           <Route path='/Documentacion' element={<Documentacion/>}/>
           <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar/>}/>
