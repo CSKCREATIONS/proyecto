@@ -1,4 +1,5 @@
 export default function AñadirUsuario() {
+
   const handleClick = () =>
     Swal.fire({
       text: 'Usuario añadido correctamente',
@@ -9,8 +10,8 @@ export default function AñadirUsuario() {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar'
     });
+    
   return (
-
     <div>
       <Fijo />
       <div className="content">
