@@ -278,15 +278,14 @@ a, li{
 }
 
 
-
 .encabezado-modulo{
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .encabezado-modulo div{
   display: flex;
-  align-items: center;
   gap: 5rem;
 }
 
@@ -308,52 +307,64 @@ a, li{
 
 
 
+table{
+  overflow-x: auto;
+}
 
 
 .table-container {
   overflow-x: auto;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+
+
+@media print {
+  table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  th, td {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 
-th, td { 
-  padding: .3rem;
-  border: 1px solid black;
+th {
+  background-color: #43805a; 
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border: none;
+}
+
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+th:last-child {
+  border-top-right-radius: 10px;
+}
+
+td {
+  background-color: #f9fafb; /* blanco suave */
+  color: #111827;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
 }
 
 
-.search-container {
-  position: relative;
-}
 
-.search-box {
+.agregar{
   padding: 14px 12px 5px;
   width: 90%;
   border: 1px solid #ccc;
   border-radius: 25px;
-}
-
-.search-container label {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: gray;
-  font-size: 14px;
-  transition: 0.3s ease-in-out;
-  pointer-events: none;
-  padding: 0 5px;
-}
-
-.search-box:focus+label,
-.search-box:not(:placeholder-shown)+label {
-  top: 10px;
-  font-size: 12px;
 }
 
 
@@ -400,7 +411,9 @@ th, td {
 .btn:active{
   transform: scale(0.9);
 }
-.btn-primary { background: darkblue; color: white; }
+.btn-primary-cancel { background: rgb(231, 59, 59); color: white; }
+.btn-primary-env { background: rgb(43, 99, 57); color: white; }
+.btn-primary-guardar { background: rgb(42, 88, 105); color: white; }
 .btn-secondary { background: gray; color: white; }
 
 
@@ -910,16 +923,28 @@ h1 {
 /**estilos para los input de buscar en los encabezados de las tablas***/
 .cuadroTexto {
   width: 100%;
-  padding: 10px 10px;
-  background-color: transparent;
-  outline: none;
-  transition: border-color 0.3s ease;
+  padding: 10px 12px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.cuadroTexto::placeholder {
+  color: #999;
+  font-style: italic;
 }
 
 .cuadroTexto:focus {
-  border-color: #152b2a;
-  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  outline: none;
+  background-color: #ffffff;
+  border-top-color: #2563eb; /* cambia a azul más fuerte */
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.2);
 }
+
 
 /**botones de las tablas**/
 .btnTransparente {
@@ -945,4 +970,102 @@ select:focus {
   border-color: #4d90fe;
   box-shadow: 0 0 8px rgba(77, 144, 254, 0.5);
 }
+
+
+/*Diseño filtros de lista de cotizaciones*/
+.filtros-tabla {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  align-items: center;
+  justify-content: center; 
+  border-radius: 8px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column; 
+  gap: 5px;
+  min-width: 150px;
+  flex: 1 1 auto;}
+
+.filtro-input, .filtro-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  width: 100%; 
+  box-sizing: border-box; 
+  transition: border-color 0.3s ease;
+}
+
+.filtro-input:focus, .filtro-select:focus {
+  border-color: #43805a; 
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .filtros-tabla {
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 10px;
+  }
+  
+  .filtro-grupo {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .filtros-tabla {
+    justify-content: flex-start; 
+  }
+  
+  .filtro-grupo {
+    max-width: 220px; 
+  }
+}
+
+
+
+
+
+
+
+
+
+.p-4 {
+  padding: 1rem; /* ya hace parte de Tailwind, pero lo dejamos por claridad */
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.p-4:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.p-4 h3 {
+  font-size: 1.125rem;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.p-4 .text-3xl {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.p-4 .text-sm {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
 

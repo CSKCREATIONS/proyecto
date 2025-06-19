@@ -78,30 +78,38 @@ export default function ListaDeCotizaciones() {
             buscar='Buscar cotización'
           />
 
-          <div className="container-tabla"><br />
+          {/* Filtros separados */}
+          <div className="filtros-tabla">
+            <div className="filtro-grupo">
+              <label>Fecha:</label>
+              <input type="date" className="filtro-input" />
+            </div>
+            <div className="filtro-grupo">
+              <label>Cliente:</label>
+              <input type="text" className="filtro-input" placeholder="Buscar cliente..." />
+            </div>
+            <div className="filtro-grupo">
+              <label>Enviado:</label>
+              <select className="filtro-select">
+                <option value="">Todos</option>
+                <option value="Si">Sí</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tabla sin filtros internos */}
+          <div className="container-tabla">
             <div className="table-container">
               <table id='tabla_cotizaciones'>
                 <thead>
                   <tr>
-                    {/**Al seleccionar el numero de cotizacion debe abrir un popup con el formato de la cotizacion seleccionada */}
-                    <th># Cotizacion</th>
+                    <th># Cotización</th>
                     <th>Fecha elaboración</th>
                     <th>Cliente</th>
                     <th>Enviado por correo</th>
                   </tr>
                 </thead>
-                <tr>
-                    <th></th>
-                    <th><div style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="date" className="cuadroTexto" />
-                      </div></th>
-                    <th><div style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="text" className="cuadroTexto" placeholder="Buscar cliente..." />
-                      </div></th>
-                    <th><select name="" id="">
-                      <option value="">Si</option>
-                      <option value="">No</option></select></th>
-                  </tr>
                 <tbody>
                   <tr>
                     <td><a onClick={() => openModal('cotizacionPreview')}>C-18839</a></td>
@@ -115,7 +123,7 @@ export default function ListaDeCotizaciones() {
 
                     {/**Debe abrir agendar cotizacion como pedido */}
                     <button className='btnTransparente' onClick={() => openModal('')}>
-                      <i >logo calendario</i>
+                      <i className="fa-regular fa-calendar fa-xl"></i>
                     </button>
 
                   </tr>
