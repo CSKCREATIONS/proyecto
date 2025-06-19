@@ -17,7 +17,9 @@ const subcategorySchema = new moongose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'Category',
         required:[true, 'La categoria es requerida']
-    }
+    },
+    activo: { type: Boolean, default: true }
+
 },{
     timestamps: true,
     versionKey:false

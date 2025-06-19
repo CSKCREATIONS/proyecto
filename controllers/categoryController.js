@@ -171,3 +171,23 @@ exports.deleteCategory = async (req, res) =>{
         });
     }
 };
+
+exports.deactivateCategory = async (req, res) => {
+  try {
+    const category = await Category.findByIdAndUpdate(req.params.id, { activo: false }, { new: true });
+    if (!category) return res.status(404).json({ message: 'Categoría no encontrada' });
+    res.json({ message: 'Categoría desactivada', category });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al desactivar categoría', error });
+  }
+};
+
+exports.activateCategory = async (req, res) => {
+  try {
+    const category = await Category.findByIdAndUpdate(req.params.id, { activo: true }, { new: true });
+    if (!category) return res.status(404).json({ message: 'Categoría no encontrada' });
+    res.json({ message: 'Categoría activada', category });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al activar categoría', error });
+  }
+};

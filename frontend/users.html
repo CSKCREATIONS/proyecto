@@ -27,10 +27,16 @@
       <thead class="table-dark">
         <tr>
           <th>#</th>
-          <th>Nombre</th>
+          <th>Nombre Completo</th>
+          <th>Nombre de Usuario</th>
           <th>Email</th>
           <th>Rol</th>
+          <th>Fecha de Creacion</th>
+          <th>Estado del Usuario</th>
           <th>Acciones</th>
+          
+
+
         </tr>
       </thead>
       <tbody id="userTableBody"></tbody>
@@ -49,7 +55,11 @@
           <div class="modal-body">
             <input type="hidden" id="userId" />
             <div class="mb-3">
-              <label>Nombre</label>
+              <label>Nombre completo</label>
+              <input type="text" id="fullName" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Nombre de Usuario</label>
               <input type="text" id="username" class="form-control" required />
             </div>
             <div class="mb-3">
@@ -68,6 +78,13 @@
               <label>Contraseña</label>
               <input type="password" id="password" class="form-control" />
             </div>
+            <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="enabled" />
+              <label class="form-check-label" for="enabled">
+              Usuario habilitado
+              </label>
+            </div>
+
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

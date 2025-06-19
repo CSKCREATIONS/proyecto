@@ -11,7 +11,9 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required:[true, 'la descripcion es obligatoria'],
         trim: true
-    }
+    },
+    activo: { type: Boolean, default: true }
+
 },{
     timestamps:true,
     versionKey: false

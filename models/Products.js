@@ -35,7 +35,12 @@ const productSchema = new mongoose.Schema({
     },
     images:[{
         type:String
-    }]
+    }],
+    activo: {
+    type: Boolean,
+    default: true
+    }
+
 },{
     timestamps:true,
     versionKey:false

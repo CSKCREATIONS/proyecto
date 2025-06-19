@@ -169,3 +169,40 @@ exports.deleteSubcategory = async (req,res) =>{
     }
 };
 
+exports.deactivateSubcategory = async (req, res) => {
+  try {
+    const subcategory = await Subcategory.findByIdAndUpdate(
+      req.params.id,
+      { activo: false },
+      { new: true }
+    );
+
+    if (!subcategory) {
+      return res.status(404).json({ message: 'Subcategoría no encontrada' });
+    }
+
+    res.status(200).json({ message: 'Subcategoría desactivada', subcategory });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al desactivar', error });
+  }
+};
+
+exports.activateSubcategory = async (req, res) => {
+  try {
+    const subcategory = await Subcategory.findByIdAndUpdate(
+      req.params.id,
+      { activo: true },
+      { new: true }
+    );
+
+    if (!subcategory) {
+      return res.status(404).json({ message: 'Subcategoría no encontrada' });
+    }
+
+    res.status(200).json({ message: 'Subcategoría activada', subcategory });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al activar', error });
+  }
+};
+
+

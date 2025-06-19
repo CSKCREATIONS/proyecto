@@ -46,5 +46,12 @@ router.delete('/:id',
     checkRole('admin'),
     subcategoryController.deleteSubcategory
 );
+// Acutualizar el estado de las categorias// desactivado
+
+router.patch('/:id/deactivate', verifyToken, checkRole('admin'), subcategoryController.deactivateSubcategory);
+
+//activa
+router.patch('/:id/activate', verifyToken, checkRole('admin'), subcategoryController.activateSubcategory);
+
 
 module.exports = router;

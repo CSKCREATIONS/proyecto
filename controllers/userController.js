@@ -66,13 +66,15 @@ exports.getUserById = async (req, res) => {
 //crear usuario (admin y coordinador)
 exports.createUser = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+    const { fullName, username, email, password, role, enabled = true } = req.body;
 
         const user = new User({
+            fullName,
             username,
             email,
             password: await bcrypt.hash(password, 10),
-            role
+            role,
+            enabled
         });
 
         const savedUser = await user.save();
@@ -82,6 +84,7 @@ exports.createUser = async (req, res) => {
             message: 'usuario creado exitosamente',
             user: {
                 id: savedUser._id,
+                fullName: savedUser.fullName,
                 username: savedUser.username,
                 email: savedUser.email,
                 role: savedUser.role

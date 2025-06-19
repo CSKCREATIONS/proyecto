@@ -233,3 +233,34 @@ exports.deleteProduct = async (req,res) =>{
     }
     
 };
+exports.deactivateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, { activo: false }, { new: true });
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+    res.status(200).json({ message: 'Producto desactivado', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al desactivar producto', error });
+  }
+};
+
+exports.activateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { activo: true },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Producto activado', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al activar el producto', error });
+  }
+};

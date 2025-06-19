@@ -38,5 +38,11 @@ router.delete('/:id',
     checkRole('admin'),
     categoryController.deleteCategory
 );
+// Acutualizar el estado de las categorias// desactivado
+router.patch('/:id/deactivate', verifyToken, checkRole('admin'), categoryController.deactivateCategory);
+
+//activado
+router.patch('/:id/activate', verifyToken, checkRole('admin'), categoryController.activateCategory);
+
 
 module.exports = router;

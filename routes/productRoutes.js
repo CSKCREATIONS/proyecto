@@ -53,6 +53,21 @@ router.delete('/:id',
     productController.deleteProduct
 );
 
+// PATCH /api/products/:id/deactivate - desactivar producto (admin y coordinador)
+router.patch('/:id/deactivate',
+    verifyToken,
+    checkRole('admin', 'coordinador'),
+    productController.deactivateProduct
+);
+
+// PATCH /api/products/:id/activate - activar producto (admin y coordinador)
+router.patch('/:id/activate',
+    verifyToken,
+    checkRole('admin', 'coordinador'),
+    productController.activateProduct
+);
+
+
 module.exports = router;
 
 
