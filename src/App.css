@@ -12,8 +12,9 @@ html{
 }
 
 h2{
-  font-size: 1.8rem;
-  font-weight: 350;
+  font-size: 2rem;
+  font-weight: 400;
+
 }
 h3{
   font-size: 1.4rem;
@@ -573,6 +574,7 @@ legend {
 
 .radio-options {
   width: 100%;
+  padding-top: 0.4rem;
   display: flex;
   justify-content: space-evenly;
 }
@@ -918,7 +920,7 @@ h1 {
 }
 
 
-/**estilos para los input en agendar pedido***/
+/**estilos para los input de buscar en los encabezados de las tablas***/
 .cuadroTexto {
   width: 100%;
   padding: 10px 12px;
