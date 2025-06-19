@@ -206,6 +206,7 @@ async function activateCategory(id) {
   });
 
   if (confirm.isConfirmed) {
+    
     try {
       const res = await fetch(`${API_URL}/${id}/activate`, {
         method: 'PATCH',
