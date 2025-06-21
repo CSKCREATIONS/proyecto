@@ -332,6 +332,7 @@ export default function AgregarRol() {
                         </div>
                     </div>
                 </div>
+                
                 <div className="buttons">
                     <button onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-cancel">Cancelar</button>
                     <Link to={`/RolesYPermisos`} onClick={handleClick}>
