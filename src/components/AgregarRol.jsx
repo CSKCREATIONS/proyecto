@@ -18,7 +18,7 @@ export default function AgregarRol() {
 
         <div class="modal" id="agregar-rol">
 
-            <h4>Agregar rol</h4>
+            <h3>Agregar rol</h3>
             <form action="">
                 <br />
                 <label>Nombre de rol</label>
@@ -34,7 +34,7 @@ export default function AgregarRol() {
                 </div>
                 <br />
                 <div className="section dropdown" id='permisos-usuarios'>
-                    <h3>Permisos módulo usuarios</h3>
+                    <h4>Permisos módulo usuarios</h4>
                     <br />
                     <div class="permissions">
                         <div className="group">
@@ -79,7 +79,7 @@ export default function AgregarRol() {
 
                 </div>
                 <div className="section dropdown" id='permisos-compras'>
-                    <h3>Permisos módulo compras</h3>
+                    <h4>Permisos módulo compras</h4>
                     <br />
                     <div class="permissions">
                         <div className="group">
@@ -111,7 +111,7 @@ export default function AgregarRol() {
 
                 </div>
                 <div className="section dropdown" id='permisos-productos'>
-                    <h3>Permisos módulo productos</h3>
+                    <h4>Permisos módulo productos</h4>
                     <br />
 
                     <div class="permissions">
@@ -215,7 +215,7 @@ export default function AgregarRol() {
                     </div>
                 </div>
                 <div className="section dropdown" id='permisos-ventas'>
-                    <h3>Permisos módulo ventas</h3>
+                    <h4>Permisos módulo ventas</h4>
                     <br />
 
                     <div class="permissions">
@@ -334,9 +334,11 @@ export default function AgregarRol() {
                 </div>
                 
                 <div className="buttons">
-                    <button onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-cancel">Cancelar</button>
-                    <Link to={`/RolesYPermisos`} onClick={handleClick}>
-                        <button className="btn btn-primary-guardar">Crear Rol</button>
+                    <Link to={`/RolesYPermisos`}><button  onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-cancel" >Cancelar</button></Link>
+                    
+                    <Link  onClick={handleClick}>
+                        <button onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-env">Crear Rol</button>
+
                     </Link>
                 </div>
             </form>
