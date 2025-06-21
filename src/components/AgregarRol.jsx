@@ -332,11 +332,13 @@ export default function AgregarRol() {
                         </div>
                     </div>
                 </div>
+                
                 <div className="buttons">
                     <Link to={`/RolesYPermisos`}><button  onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-cancel" >Cancelar</button></Link>
                     
                     <Link  onClick={handleClick}>
                         <button onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-env">Crear Rol</button>
+
                     </Link>
                 </div>
             </form>
