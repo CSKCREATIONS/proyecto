@@ -312,7 +312,6 @@ li {
 .contenido-modulo {
   padding: 1.5rem;
   background-color: #cfcfcf;
-  border-radius: 40px 40px 0 0;
 }
 
 
@@ -817,7 +816,7 @@ h1 {
   padding: 8px 12px;
   border-radius: 8px 8px 0 0;
   text-decoration: none;
-  color:darkslategray;
+  color: darkslategray;
 }
 
 .nav-item:hover {
@@ -825,8 +824,11 @@ h1 {
 }
 
 .nav-item.active {
-  background-color: #174643c0;
-  color: white;
+  border-top: #174643c0 1px solid;
+  border-left: #174643c0 1px solid;
+  border-right: #174643c0 1px solid;
+  background-color: #cfcfcf;
+  font-weight: bold;
 }
 
 

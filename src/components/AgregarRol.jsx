@@ -1,4 +1,4 @@
-import { toggleSubMenu } from "../funciones/animaciones";
+import { closeModal, toggleSubMenu } from "../funciones/animaciones";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
@@ -333,8 +333,9 @@ export default function AgregarRol() {
                     </div>
                 </div>
                 <div className="buttons">
+                    <button onClick={()=> closeModal('agregar-rol')} className="btn btn-primary-cancel">Cancelar</button>
                     <Link to={`/RolesYPermisos`} onClick={handleClick}>
-                        <button className="btn btn-primary">Crear Rol</button>
+                        <button className="btn btn-primary-guardar">Crear Rol</button>
                     </Link>
                 </div>
             </form>
