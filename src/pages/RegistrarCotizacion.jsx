@@ -5,7 +5,6 @@ import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
-import { openModal } from '../funciones/animaciones'
 import React, { useRef } from 'react';
 import { mostrarPopupCotizacion } from '../funciones/popupEnviarCotizacion';
 
@@ -54,8 +53,7 @@ export default function RegistrarCotizacion() {
           <EncabezadoModulo2
             titulo="Registrar cotizacion"
           />
-
-          <div className="contenido-modulo">
+          <br />
             <div className="table-container">
               <table>
                 <thead>
@@ -94,7 +92,7 @@ export default function RegistrarCotizacion() {
               apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
               textareaName="Descripcion"
               init={{
-                height: 300,
+                height: 250,
                 menubar: false,
                 plugins: [
                   'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
@@ -104,7 +102,7 @@ export default function RegistrarCotizacion() {
                 toolbar:
                   'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons',
                 menubar: 'favs file edit view insert format tools table help',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:15px }'
               }}
             />
             <br />
@@ -168,7 +166,7 @@ export default function RegistrarCotizacion() {
 
             />
 
-          </div>
+          
 
           <div className="buttons">
             <button

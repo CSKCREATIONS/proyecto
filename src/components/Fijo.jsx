@@ -11,7 +11,6 @@ import Swal from 'sweetalert2'
 const permisosPorUsuario = {
   usuario1: ['SIG'], // verá solo el módulo "SIG"
   usuario2: ['Ventas'], // verá solo el módulo "Ventas" 
-  admin: ['Usuarios', 'SIG', 'Ventas'], // verá todo
   admin: ['Usuarios', 'Compras', 'Ventas', 'productos'], // verá todo
 };
 
@@ -101,7 +100,7 @@ export default function Fijo() {
                   </li>
                   <ul className="dropdown" id="submenuUsuarios">
                     <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                    <Link as={Link} to="/AñadirRol"><li>Roles y permisos</li></Link>
+                    <Link as={Link} to="/RolesYPermisos"><li>Roles y permisos</li></Link>
                   </ul>
                 </nav>
               )}

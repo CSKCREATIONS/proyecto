@@ -96,10 +96,11 @@ export default function ListaDeUsuarios() {
           <div className='encabezado-modulo'>
             <div>
               <h3>Lista de usuarios</h3>
-              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportToExcel}><i className="fa-solid fa-file-excel"></i> Exportar a Excel</button>
-              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i> Exportar a PDF</button>
+              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportToExcel}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
+              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i><span> Exportar a PDF</span>
+              </button>
             </div>
-            <button onClick={()=> openModal('agregar-usuario')} type='submit' className='btn-agregar'>+Agregar usuario</button>
+            <button onClick={()=> openModal('agregar-usuario')} type='submit' className='btn-agregar'>+ Agregar usuario</button>
           </div>
           <br />
           <div className="container-tabla">
@@ -125,11 +126,11 @@ export default function ListaDeUsuarios() {
                     <td>Natalia.Mar</td>
                     <td style={{ color: 'green' }}>Habilitado</td>
                     <td >20/03/2025</td>
-                    <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                    <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
                       <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                     </button>
                     <Link to={`/ListaDeUsuarios`} onClick={handleClick}>
-                      <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
+                      <button className='btnTransparente' style={{  height: '35px', width: '50px' }} type="button">
                         <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                       </button>
                     </Link>

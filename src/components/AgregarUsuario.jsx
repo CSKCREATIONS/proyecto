@@ -55,7 +55,7 @@ export default function AgregarUsuario() {
         </div>
         <div className="buttons">
           <button onClick={()=> closeModal('agregar-usuario')} className="btn btn-secondary">Cancelar</button>
-          <Link to={`/ListaDeUsuarios`} onClick={ handleClick} >
+          <Link onClick={ handleClick} >
             <button onClick={()=> closeModal('agregar-usuario')} className="btn btn-primary">Crear Usuario</button>
           </Link>
         </div>
