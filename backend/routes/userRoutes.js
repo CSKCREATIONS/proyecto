@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { verifyToken } = require('../middlewares/authJwt');
-const { checkRole } = require('../middlewares/role');
+const { checkPermission } = require('../middlewares/role')
+const { checkDuplicateUsernameOrEmail} = require('../middlewares/verifySignUp')
+const {checkRolesExisted} = require('../middlewares/verifySignUp')
 
 // Middleware de diagnóstico para todas las rutas
 router.use((req, res, next) => {
@@ -19,37 +21,35 @@ router.use((req, res, next) => {
 // GET /api/users - Listar usuarios (admin y coordinador pueden ver todos, auxiliar solo se ve a sí mismo)
 router.get('/',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     userController.getAllUsers
 );
 
-// POST /api/users - Crear usuario (admin y coordinador)
+// POST /api/users - Crear usuario
 router.post('/',
     verifyToken,
-    checkRole('admin', 'coordinador'),
+    checkPermission('usuarios.crear'),
+    checkDuplicateUsernameOrEmail,
+    checkRolesExisted,
     userController.createUser
 );
 
 // GET /api/users/:id - Obtener usuario específico (admin y coordinador pueden ver cualquiera, auxiliar solo se ve a sí mismo)
 router.get('/:id',
     verifyToken,
-    checkRole('admin', 'coordinador', 'auxiliar'),
     userController.getUserById
 );
 
 
-
-// PUT /api/users/:id - Actualizar usuario (admin y coordinador pueden actualizar)
+// PUT /api/users/:id - Actualizar usuario 
 router.put('/:id',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     userController.updateUser
 );
 
-// DELETE /api/users/:id - Eliminar usuario (solo admin)
+// DELETE /api/users/:id - Eliminar usuario
 router.delete('/:id',
     verifyToken,
-    checkRole('admin'),
+    checkPermission('usuarios.eliminar'),
     userController.deleteUser
 );
 

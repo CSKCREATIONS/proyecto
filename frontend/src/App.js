@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Routes, Route, BrowserRouter, } from "react-router-dom";
+import { Routes, Route, BrowserRouter, } from "react-router-dom";
 import ListaDeUsuarios from './pages/ListaDeUsuarios';
 import Home from './pages/Home';
 import RolesYPermisos from './pages/RolesYPermisos'
@@ -35,6 +35,7 @@ import Perfil2 from './pages/Perfil2';
 import GestionProductos from './pages/GestionProductos';
 import ReporteVentas from './pages/ReporteVentas';
 import PrivateRoute from './routes/PrivateRoute';
+import PermisoRoute from './routes/PermisoRoute';
 
 const App = () => {
   return (
@@ -42,45 +43,52 @@ const App = () => {
       <BrowserRouter>
         <Routes>
 
-           {/* Rutas públicas */}
-          <Route index path='/' element = {<Login/>}/>
-          <Route path='/RecuperarContraseña' element = {<RecuperarContraseña/>}/>
+          {/* Rutas públicas */}
+          <Route index path='/' element={<Login />} />
+          <Route path='/RecuperarContraseña' element={<RecuperarContraseña />} />
 
-          <Route path='/Home' element ={<PrivateRoute><Home/></PrivateRoute>}/>
+          <Route path='/Home' element={<PrivateRoute><Home /></PrivateRoute>} />
           <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
-          <Route path='/RolesYPermisos' element={<RolesYPermisos/>}/>
-          <Route path='/InformacionDeFuente' element={<InformacionDeFuente/>}/>
-          <Route path='/Documentacion' element={<Documentacion/>}/>
-          <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar/>}/>
-          <Route path='/AgendarVenta' element={<AgendarVenta/>}/>
-          <Route path='/PedidosAgendados' element={<PedidosAgendados/>}/>
-          <Route path='/PedidosEntregados' element={<PedidosEntregados/>}/>
-          <Route path='/PedidosCancelados' element={<PedidosCancelados/>}/>
-          <Route path='/RegistrarCotizacion' element={<RegistrarCotizacion/>}/>
-          <Route path='/ListaDeCotizaciones' element={<ListaDeCotizaciones/>}/>
-          <Route path='/ListaDeClientes' element={<ListaDeClientes/>}/>
-          <Route path='/ProspectosDeClientes' element={<ProspectosDeCliente/>}/>
-          <Route path='/TipoDocumentoAdicionar' element={<TipoDocumentoAdicionar/>}/>
-          <Route path='/TipoDocumento' element={<TipoDocumento/>}/>
-          <Route path='/TipoDocumentoEdit' element={<TipoDocumentoEdit/>}/>
-          <Route path='/Proceso' element={<Proceso/>}/>
-          <Route path='/ProcesoEdit' element={<ProcesoEdit/>}/>
-          <Route path='/ProcesoAdicionar' element={<ProcesoAdicionar/>}/>
-          <Route path='/DocumentacionEdit' element={<DocumentacionEdit/>}/>
-          <Route path='/Trazabilidad' element={<Trazabilidad/>}/>
-          <Route path='/Perfil' element={<Perfil/>}/>
-          <Route path='Login' element={<Login/>}/>
+          <Route
+            path="/RolesYPermisos"
+            element={
+              <PermisoRoute permiso="roles.ver">
+                <RolesYPermisos />
+              </PermisoRoute>
+            }
+          />
+          <Route path='/InformacionDeFuente' element={<InformacionDeFuente />} />
+          <Route path='/Documentacion' element={<Documentacion />} />
+          <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar />} />
+          <Route path='/AgendarVenta' element={<AgendarVenta />} />
+          <Route path='/PedidosAgendados' element={<PedidosAgendados />} />
+          <Route path='/PedidosEntregados' element={<PedidosEntregados />} />
+          <Route path='/PedidosCancelados' element={<PedidosCancelados />} />
+          <Route path='/RegistrarCotizacion' element={<RegistrarCotizacion />} />
+          <Route path='/ListaDeCotizaciones' element={<ListaDeCotizaciones />} />
+          <Route path='/ListaDeClientes' element={<ListaDeClientes />} />
+          <Route path='/ProspectosDeClientes' element={<ProspectosDeCliente />} />
+          <Route path='/TipoDocumentoAdicionar' element={<TipoDocumentoAdicionar />} />
+          <Route path='/TipoDocumento' element={<TipoDocumento />} />
+          <Route path='/TipoDocumentoEdit' element={<TipoDocumentoEdit />} />
+          <Route path='/Proceso' element={<Proceso />} />
+          <Route path='/ProcesoEdit' element={<ProcesoEdit />} />
+          <Route path='/ProcesoAdicionar' element={<ProcesoAdicionar />} />
+          <Route path='/DocumentacionEdit' element={<DocumentacionEdit />} />
+          <Route path='/Trazabilidad' element={<Trazabilidad />} />
+          <Route path='/Perfil' element={<Perfil />} />
+          <Route path='Login' element={<Login />} />
           <Route path="/error504" element={<Error504 />} />
           <Route path="*" element={<Error404 />} />
-          <Route path="Empresa" element={<Empresa/>} />
-          <Route path='/Home1' element={<Home1/>}/>
-          <Route path='/Home2' element={<Home2/>}/>
-          <Route path='/Perfil1' element={<Perfil1/>}/>
-          <Route path='/Perfil2' element={<Perfil2/>}/>
-          <Route path='/GestionProductos' element={<GestionProductos/>}/>
-          <Route path='/ReporteVentas' element={<ReporteVentas/>}/>
+          <Route path="Empresa" element={<Empresa />} />
+          <Route path='/Home1' element={<Home1 />} />
+          <Route path='/Home2' element={<Home2 />} />
+          <Route path='/Perfil1' element={<Perfil1 />} />
+          <Route path='/Perfil2' element={<Perfil2 />} />
+          <Route path='/GestionProductos' element={<GestionProductos />} />
+          <Route path='/ReporteVentas' element={<ReporteVentas />} />
 
-           
+
         </Routes>
       </BrowserRouter>
 

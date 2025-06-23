@@ -24,15 +24,12 @@ export default function Fijo() {
     });
 
     if (result.isConfirmed) {
-      // Aquí podrías limpiar el estado o el token, si lo usas
-      // Por ejemplo: localStorage.clear();
+      //remueve el token
+      localStorage.removeItem('token');
+      //quita el logueo del usuario
+      localStorage.removeItem('user');
 
-      await Swal.fire({
-        title: '¡Sesión cerrada!',
-        text: 'Has salido correctamente.',
-        icon: 'success'
-      });
-
+      //redirige al login
       navigate('/Login');
     }
   };
@@ -46,12 +43,14 @@ export default function Fijo() {
               <div class="palito"></div>
               <div class="palito"></div>
             </button>
-            <span
-              id='empresa-nombre'
-              style={{ cursor: 'pointer', color: 'white' }}
-            >
-              JLA Global Company
-            </span>
+            <Link as={Link} to='/Home'>
+              <span
+                id='empresa-nombre'
+                style={{ cursor: 'pointer', color: 'white' }}
+              >
+                JLA Global Company
+              </span>
+            </Link>
 
           </div>
           <div className="user">
@@ -74,47 +73,47 @@ export default function Fijo() {
             </div></Link>
 
             <div className="modulos-menu">
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
-                    Usuarios
-                  </li>
-                  <ul className="dropdown" id="submenuUsuarios">
-                    <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                    <Link as={Link} to="/RolesYPermisos"><li>Roles y permisos</li></Link>
-                  </ul>
-                </nav>
+              <nav>
+                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
+                  Usuarios
+                </li>
+                <ul className="dropdown" id="submenuUsuarios">
+                  <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
+                  <Link as={Link} to="/RolesYPermisos"><li>Roles y permisos</li></Link>
+                </ul>
+              </nav>
 
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
-                  <ul id="Compras" className="dropdown">
-                    <Link as={Link} to="/Documentacion"><li>Historial de compras </li></Link>
-                    <Link as={Link} to="/InformacionDeFuente"><li>Catalogo de proveedores</li></Link>
-                  </ul>
-                </nav>
+              <nav>
+                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
+                <ul id="Compras" className="dropdown">
+                  <Link as={Link} to="/Documentacion"><li>Historial de compras </li></Link>
+                  <Link as={Link} to="/InformacionDeFuente"><li>Catalogo de proveedores</li></Link>
+                </ul>
+              </nav>
 
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuproductos')}>Productos</li>
-                  <ul id="submenuproductos" className="dropdown">
-                    <Link as={Link} to="/GestionProductos"><li>Gestion productos</li></Link>
-                    <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
-                    <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
-                  </ul>
-                </nav>
+              <nav>
+                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuproductos')}>Productos</li>
+                <ul id="submenuproductos" className="dropdown">
+                  <Link as={Link} to="/GestionProductos"><li>Gestion productos</li></Link>
+                  <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
+                  <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
+                </ul>
+              </nav>
 
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
-                  <ul id="submenuVentas" className="dropdown">
-                    <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
-                    <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
-                    <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
-                    <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
-                    <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
-                    <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
-                    <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
-                    <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
-                    <Link as={Link} to="/ReporteVentas"><li>Dashboard</li></Link>
-                  </ul>
-                </nav>
+              <nav>
+                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
+                <ul id="submenuVentas" className="dropdown">
+                  <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
+                  <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
+                  <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
+                  <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
+                  <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
+                  <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
+                  <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
+                  <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
+                  <Link as={Link} to="/ReporteVentas"><li>Dashboard</li></Link>
+                </ul>
+              </nav>
             </div>
           </div>
 

@@ -156,7 +156,7 @@ export default function ListaDeUsuarios() {
                   {usuarios.map((usuario, index) => (
                     <tr key={usuario._id}>
                       <td>{index + 1}</td>
-                      <td>{usuario.fullName}</td>
+                      <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
                       <td>{usuario.role}</td>
                       <td>{usuario.email}</td>
                       <td>{usuario.username}</td>

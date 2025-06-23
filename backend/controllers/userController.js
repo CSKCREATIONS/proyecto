@@ -63,42 +63,43 @@ exports.getUserById = async (req, res) => {
 };
 
 
-//crear usuario (admin y coordinador)
+//crear usuario (admin y rol con permiso)
 exports.createUser = async (req, res) => {
-    try {
-    const { fullName, username, email, password, role, enabled = true } = req.body;
+  try {
+    const Role = require('../models/Role');
 
-        const user = new User({
-            fullName,
-            username,
-            email,
-            password: await bcrypt.hash(password, 10),
-            role,
-            enabled
-        });
-
-        const savedUser = await user.save();
-
-        res.status(201).json({
-            success: true,
-            message: 'usuario creado exitosamente',
-            user: {
-                id: savedUser._id,
-                fullName: savedUser.fullName,
-                username: savedUser.username,
-                email: savedUser.email,
-                role: savedUser.role
-            }
-
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'error al crear usuario',
-            error: error.message
-        });
+    const role = await Role.findOne({ name: req.body.role });
+    if (!role) {
+      return res.status(400).json({ success: false, message: 'Rol no encontrado' });
     }
+
+    const User = require('../models/User');
+
+    const user = new User({
+      firstName: req.body.firstName,
+      secondName: req.body.secondName || '',
+      surname: req.body.surname,
+      secondSurname: req.body.secondSurname || '',
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password, // se hashea con el pre('save')
+      role: role.name
+    });
+
+    await user.save(); // ✅ Aquí sí se activa el pre('save')
+
+    res.status(201).json({ 
+        success: true, 
+        message: 'Usuario creado' 
+        
+    });
+
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    res.status(500).json({ success: false, message: 'Error en el servidor' });
+  }
 };
+
 
 //actualizar usuario (admin y Coordinador)
 exports.updateUser = async (req, res) => {

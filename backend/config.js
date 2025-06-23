@@ -12,10 +12,4 @@ module.exports = {
         }
     },
 
-    //3.Roles del sistema (deben coincidir con tu implimentacion)
-    ROLES: {
-        ADMIN:'admin',
-        COORDINADOR:'coordinador',
-        AUXILIAR:'auxiliar'
-    }
 };

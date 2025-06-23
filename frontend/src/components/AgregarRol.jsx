@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function AgregarRol() {
     const handleClick = () =>
         Swal.fire({
-            text: 'Rol añadido correctamente',
+            text: 'Rol creado correctamente',
             icon: 'success',
             showCancelButton: false,
             showCloseButton: true,
@@ -16,11 +16,10 @@ export default function AgregarRol() {
 
 
     return (
-
-
-        <div class="modal" id="agregar-rol">
-
-            <h3>Agregar rol</h3>
+        <form class="modal" id="crear-rol" onSubmit={(e) => {
+            e.preventDefault(); // Previene recarga
+        }}>
+            <h3>Crear rol</h3>
             <form action="">
                 <br />
                 <label>Nombre de rol</label>
@@ -45,24 +44,14 @@ export default function AgregarRol() {
                                 Lista de usuarios
                             </label>
                             <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                                Añadir usuario
-                            </label>
-                            <br />
 
                         </div>
                         <div className="group">
                             <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                                Añadir rol
+                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" onChange={() => toggleSubMenu('roles-y-permisos')} />
+                                Roles y permisos
                             </label>
                             <br />
-
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" />
-                                Todos
-                            </label>
                         </div>
                         <br />
 
@@ -71,11 +60,20 @@ export default function AgregarRol() {
                     <div class="form-group-rol dropdown" id='lista-usuarios'>
                         <label>Permisos para lista de usuarios</label>
                         <div class="radio-options">
-                            <input type="radio" name="usersListPermissions" id="check_ver_lista" /> Solo ver
+                            <input type="checkbox" id="check_editar" /> Crear usuarios
                             <input type="checkbox" id="check_editar" /> Editar usuarios
                             <input type="checkbox" /> Habilitar / Inhabilitar
                             <input type="checkbox" /> Eliminar usuarios
                             <input type="radio" name="usersListPermissions" /> Todos los permisos
+                        </div>
+                    </div>
+                    <div class="form-group-rol dropdown" id='roles-y-permisos'>
+                        <label>Permisos para roles y permisos</label>
+                        <div class="radio-options">
+                            <input type="checkbox" /> Crear roles
+                            <input type="checkbox" /> Editar roles
+                            <input type="checkbox" /> Habilitar / Inhabilitar
+                            <input type="radio" /> Todos los permisos
                         </div>
                     </div>
 
@@ -336,16 +334,14 @@ export default function AgregarRol() {
                 </div>
 
                 <div className="buttons">
-                    <Link to={`/RolesYPermisos`}><button onClick={() => closeModal('agregar-rol')} className="btn btn-primary-cancel" >Cancelar</button></Link>
+                    <button type="button" onClick={() => closeModal('crear-rol')} className="btn btn-primary-cancel" >Cancelar</button>
 
-                    <Link onClick={handleClick}>
-                        <button onClick={() => closeModal('agregar-rol')} className="btn btn-primary-env">Crear Rol</button>
+                    <button type="submit" onClick={() => closeModal('crear-rol')} className="btn btn-primary-env">Crear Rol</button>
 
-                    </Link>
                 </div>
             </form>
 
-        </div>
+        </form>
     )
 
 

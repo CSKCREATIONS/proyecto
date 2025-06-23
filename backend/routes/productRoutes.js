@@ -21,49 +21,42 @@ const validateProduct = [
 // POST /api/products - Crear producto (admin y coordinador)
 router.post('/',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     validateProduct, productController.createProduct
 );
 
 // GET /api/products - obtener todos los productos (todos lo pueden hacer)
 router.get('/',
     verifyToken,
-    checkRole('admin', 'coordinador', 'auxiliar'),
     productController.getProducts
 );
 
 // GET /api/products - obtener producto por id (todos lo pueden hacer)
 router.get('/:id',
     verifyToken,
-    checkRole('admin', 'coordinador', 'auxiliar'),
     productController.getProductById
 );
 
 // PUT /api/products - actualizar producto por id (solo admin y coordinador)
 router.put('/:id',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     validateProduct, productController.updateProduct
 );
 
 // DELETE /api/products - eliminar producto especifico por id (solo admin)
 router.delete('/:id',
     verifyToken,
-    checkRole('admin'),
     productController.deleteProduct
 );
 
 // PATCH /api/products/:id/deactivate - desactivar producto (admin y coordinador)
 router.patch('/:id/deactivate',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     productController.deactivateProduct
 );
 
 // PATCH /api/products/:id/activate - activar producto (admin y coordinador)
 router.patch('/:id/activate',
     verifyToken,
-    checkRole('admin', 'coordinador'),
     productController.activateProduct
 );
 

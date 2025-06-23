@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Fijo from '../components/Fijo'
 import NavUsuarios from '../components/NavUsuarios'
 import AgregarRol from '../components/AgregarRol';
@@ -5,6 +6,18 @@ import { openModal } from '../funciones/animaciones';
 import { Link } from 'react-router-dom';
 
 export default function RolesYPermisos() {
+
+  const [puedeCrearRol, setPuedeCrearRol] = useState(false);
+
+  useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
+
+    if (usuario && usuario.role && usuario.permissions) {
+      setPuedeCrearRol(usuario.permissions.includes('roles.crear'));
+    }
+  }, []);
+
 
   return (
     <div>
@@ -17,7 +30,13 @@ export default function RolesYPermisos() {
             <div>
               <h3>Roles y permisos</h3>
             </div>
-            <button onClick={() => openModal('agregar-rol')} type='submit' className='btn-agregar'>+ Agregar rol</button>
+            {puedeCrearRol && (
+              <button id='agregar-rol' onClick={() => openModal('crear-rol')} className='btn-agregar'>
+                + Crear rol
+              </button>
+            )}
+
+            
           </div>
           <br />
           <div className='table-container'>

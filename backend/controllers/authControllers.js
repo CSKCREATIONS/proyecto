@@ -3,12 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 
-// Roles del sistema
-const ROLES = {
-  ADMIN: 'admin',
-  COORDINADOR: 'coordinador',
-  AUXILIAR: 'auxiliar'
-};
 
 // Función para verificar permisos
 const checkPermission = (userRole, allowedRoles) => {
@@ -29,10 +23,14 @@ exports.signup = async (req, res) => {
 
     // Crear instancia de usuario
     const user = new User({
+      firstName: req.body.firstName.trim(),
+      secondName: req.body.secondName.trim(),
+      surname: req.body.surname.trim(),
+      secondSurname: req.body.secondSurname.trim(),
       username: req.body.username.trim(),
       email: req.body.email.toLowerCase().trim(),
       password: req.body.password,
-      role: req.body.role || 'auxiliar'
+      role: req.body.role 
     });
 
     // Guardar usuario en la base de datos
@@ -104,23 +102,23 @@ exports.signin = async (req, res) => {
       });
     }
 
-    
+
 
     // 2. Buscar usuario incluyendo el password (que normalmente está oculto)
     const user = await User.findOne({ username }).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Usuario no encontrado"
+      });
+    }
 
     // valida si en usuario esta inhabilitado 
     if (!user.enabled) {
       return res.status(403).json({
         success: false,
         message: "Usuario inhabilitado"
-      });
-    }
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Usuario no encontrado"
       });
     }
 
@@ -135,15 +133,35 @@ exports.signin = async (req, res) => {
     }
 
     // 4. Generar token JWT
+
+
+    ///AGREGADO CON GPT
+    const Role = require('../models/Role'); // importar
+
+    // buscar el rol completo con permisos
+    const roleDoc = await Role.findOne({ name: user.role });
+
+    if (!roleDoc) {
+      return res.status(500).json({ success: false, message: "Rol no encontrado" });
+    }
+
+    // generar el token con permisos
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      {
+        id: user._id,
+        role: user.role,
+        permissions: roleDoc.permissions 
+      },
       config.secret,
       { expiresIn: config.jwtExpiration }
     );
+    ////
 
     // 5. Preparar respuesta sin datos sensibles
     const userData = user.toObject();
     delete userData.password;
+    userData.permissions = roleDoc.permissions; // ← agrega permisos al objeto user
+
 
     res.status(200).json({
       success: true,
@@ -335,7 +353,8 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     // Verificar que sea admin
-    if (!checkPermission(req.userRole, [ROLES.ADMIN])) {
+    if (!req.permissions.includes('usuarios.eliminar')) {
+
       return res.status(403).json({
         success: false,
         message: 'Solo administradores pueden eliminar usuarios'

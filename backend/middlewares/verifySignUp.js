@@ -1,44 +1,64 @@
-const User = require ('../models/User');
+const User = require('../models/User');
+const Role = require('../models/Role');
 
-const checkDuplicateUsernameOrEmail = async (req,res,next) =>{
-    try{
+const checkDuplicateUsernameOrEmail = async (req, res, next) => {
+    try {
         const user = await User.findOne({
             $or: [
-                {username :req.body.username},
-                {email: req.body.email}
+                { username: req.body.username },
+                { email: req.body.email }
             ]
         }).exec();
-        if(user){
+
+        if (user) {
             return res.status(400).json({
-                success:false,
-                message:'Error Usuario o Email ya existen'
+                success: false,
+                message: 'Error: Usuario o Email ya existen'
             });
         }
+
         next();
-    }catch(error){
-        console.error('[verifySignUp] Error en checkDuplicateUsernameOrEmail:',err);
+    } catch (err) {
+        console.error('[verifySignUp] Error en checkDuplicateUsernameOrEmail:', err);
         res.status(500).json({
-            success:false,
-            message:'Error al verificar credenciales',
+            success: false,
+            message: 'Error al verificar credenciales',
             error: err.message
         });
     }
 };
 
-const checkRolesExisted = (req,res,next) => {
-    //verificameos si viene el campo 'role' como string
-    if(req.body.role){
-        const validRoles = ['admin','coordinador','auxiliar'];
-        if(!validRoles.includes(req.body.role)){
-            return res.status(400).json({
-                success:false,
-                message:`Rol no valido : ${req.body.role}`
-            });
-        
-        }
+const checkRolesExisted = async (req, res, next) => {
+    const roleName = req.body.role;
+
+    if (!roleName) {
+        return res.status(400).json({
+            success: false,
+            message: 'El campo "role" es requerido'
+        });
     }
-    next();
+
+    try {
+        const roleExists = await Role.findOne({ name: roleName });
+
+        if (!roleExists) {
+            return res.status(400).json({
+                success: false,
+                message: `Rol no encontrado: ${roleName}`
+            });
+        }
+
+        next();
+    } catch (err) {
+        console.error('[verifySignUp] Error al verificar rol:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Error interno al verificar rol',
+            error: err.message
+        });
+    }
 };
+
 module.exports = {
     checkDuplicateUsernameOrEmail,
     checkRolesExisted
