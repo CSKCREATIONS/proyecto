@@ -1,5 +1,5 @@
 import Fijo from '../components/Fijo'
-import NavDocumentacion from '../components/NavDocumentacion'
+import NavDocumentacion from '../components/NavCompras'
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 

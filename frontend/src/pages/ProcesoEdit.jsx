@@ -1,6 +1,6 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
-import NavDocumentacion from '../components/NavDocumentacion'
+import NavDocumentacion from '../components/NavCompras'
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2'
 import '@fortawesome/fontawesome-free/css/all.min.css';

@@ -4,7 +4,6 @@ import ListaDeUsuarios from './pages/ListaDeUsuarios';
 import Home from './pages/Home';
 import RolesYPermisos from './pages/RolesYPermisos'
 import InformacionDeFuente from './pages/InformacionDeFuente';
-import Documentacion from './pages/Documentacion';
 import AgendarVenta from './pages/AgendarVenta';
 import PedidosAgendados from './pages/PedidosAgendados';
 import PedidosEntregados from './pages/PedidosEntregados';
@@ -36,6 +35,10 @@ import GestionProductos from './pages/GestionProductos';
 import ReporteVentas from './pages/ReporteVentas';
 import PrivateRoute from './routes/PrivateRoute';
 import PermisoRoute from './routes/PermisoRoute';
+import HistorialCompras from './pages/HistorialCompras';
+import CatalogoProveedores from './pages/CatalogoProveedores';
+import ReporteCompras from './pages/ReporteCompras';
+
 
 const App = () => {
   return (
@@ -58,7 +61,6 @@ const App = () => {
             }
           />
           <Route path='/InformacionDeFuente' element={<InformacionDeFuente />} />
-          <Route path='/Documentacion' element={<Documentacion />} />
           <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar />} />
           <Route path='/AgendarVenta' element={<AgendarVenta />} />
           <Route path='/PedidosAgendados' element={<PedidosAgendados />} />
@@ -87,6 +89,9 @@ const App = () => {
           <Route path='/Perfil2' element={<Perfil2 />} />
           <Route path='/GestionProductos' element={<GestionProductos />} />
           <Route path='/ReporteVentas' element={<ReporteVentas />} />
+          <Route path='/HistorialCompras' element={<HistorialCompras />} />
+          <Route path='/CatalogoProveedores' element={<CatalogoProveedores/>}/>
+          <Route path='/ReporteCompras' element={<ReporteCompras />} />
 
 
         </Routes>

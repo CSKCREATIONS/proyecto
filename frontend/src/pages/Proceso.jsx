@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Fijo from "../components/Fijo";
-import NavDocumentacion from "../components/NavDocumentacion";
+import NavDocumentacion from "../components/NavCompras";
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2'
 

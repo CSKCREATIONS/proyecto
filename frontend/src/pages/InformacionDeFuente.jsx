@@ -1,7 +1,7 @@
 import React from 'react'
 import Fijo from '../components/Fijo'
 import EncabezadoModuloSIG from '../components/EncabezadoModuloSIG'
-import NavDocumentacion from '../components/NavDocumentacion'
+import NavDocumentacion from '../components/NavCompras'
 import { Link } from "react-router-dom";
 
 export default function InformacionDeFuente() {

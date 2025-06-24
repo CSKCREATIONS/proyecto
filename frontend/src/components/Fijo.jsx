@@ -97,8 +97,9 @@ export default function Fijo() {
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
                 <ul id="Compras" className="dropdown">
-                  <Link as={Link} to="/Documentacion"><li>Historial de compras </li></Link>
-                  <Link as={Link} to="/InformacionDeFuente"><li>Catalogo de proveedores</li></Link>
+                  <Link as={Link} to="/HistorialCompras"><li>Historial de compras </li></Link>
+                  <Link as={Link} to="/CatalogoProveedores"><li>Catalogo de proveedores</li></Link>
+                  <Link as={Link} to="/ReporteCompras"><li>Dashboard</li></Link>
                 </ul>
               </nav>
 
