@@ -48,7 +48,16 @@ const App = () => {
           <Route path='/RecuperarContraseña' element={<RecuperarContraseña />} />
 
           <Route path='/Home' element={<PrivateRoute><Home /></PrivateRoute>} />
-          <Route path='/ListaDeUsuarios' element={<ListaDeUsuarios />} />
+
+          <Route
+            path='/ListaDeUsuarios'
+            element={
+              <PermisoRoute permiso="usuarios.ver">
+                <ListaDeUsuarios />
+              </PermisoRoute>
+            }
+          />
+
           <Route
             path="/RolesYPermisos"
             element={

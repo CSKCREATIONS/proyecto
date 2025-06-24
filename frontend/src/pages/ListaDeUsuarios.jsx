@@ -69,6 +69,8 @@ export default function ListaDeUsuarios() {
 
 
   const [usuarios, setUsuarios] = useState([]);
+  const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
+
 
   /***esto se encarga de la paginacion de la tabla*****/
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,8 +109,42 @@ export default function ListaDeUsuarios() {
 
   useEffect(() => {
     fetchUsuarios();
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.permissions) {
+      setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
+    }
   }, []);
 
+  const toggleEstadoUsuario = async (id, estadoActual) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`http://localhost:5000/api/users/${id}/toggle-enabled`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token
+        },
+        body: JSON.stringify({ enabled: !estadoActual })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Actualiza los usuarios en el frontend
+        setUsuarios(prev =>
+          prev.map(usuario =>
+            usuario._id === id ? { ...usuario, enabled: !estadoActual } : usuario
+          )
+        );
+      } else {
+        console.error('Error actualizando estado:', data.message);
+      }
+    } catch (error) {
+      console.error('Error en toggleEstadoUsuario:', error.message);
+    }
+  };
 
 
 
@@ -144,7 +180,10 @@ export default function ListaDeUsuarios() {
               <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportToExcel}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
               <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i><span> Exportar a PDF</span></button>
             </div>
-            <button onClick={() => openModal('agregar-usuario')} type='submit' className='btn-agregar'>+ Agregar usuario</button>
+            {puedeCrearUsuario && (
+              <button onClick={() => openModal('agregar-usuario')} type='submit' className='btn-agregar'>+ Crear usuario</button>
+            )}
+
           </div>
 
           <br />
@@ -165,14 +204,20 @@ export default function ListaDeUsuarios() {
               <tbody>
                 {currentItems.map((usuario, index) => (
                   <tr key={usuario._id}>
-                    <td>{index + 1}</td>
+                    <td>{indexOfFirstItem + index + 1}</td>
                     <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
                     <td>{usuario.role}</td>
                     <td>{usuario.email}</td>
                     <td>{usuario.username}</td>
-                    <td style={{ color: usuario.enabled ? 'green' : 'red' }}>
-                      {usuario.enabled ? 'Habilitado' : 'Deshabilitado'}
+                    <td>
+                      <button
+                        onClick={() => toggleEstadoUsuario(usuario._id, usuario.enabled)}
+                        className={`estado-btn ${usuario.enabled ? 'habilitado' : 'deshabilitado'}`}
+                      >
+                        {usuario.enabled ? 'Habilitado' : 'Deshabilitado'}
+                      </button>
                     </td>
+
                     <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
                     <td>
                       <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>

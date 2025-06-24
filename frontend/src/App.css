@@ -463,6 +463,25 @@ td {
   color: white;
 }
 
+.estado-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.estado-btn.habilitado {
+  background-color: #28a745; /* verde */
+}
+
+.estado-btn.deshabilitado {
+  background-color: #dc3545; /* rojo */
+}
+
+
 
 
 
@@ -742,23 +761,8 @@ h1 {
 /**Desplazamiento en los nav **/
 
 
-.nav-modulo-wrapper {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  position: relative;
-  margin: 1rem 0 0 .5rem;
-}
 
-.nav-modulo {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  white-space: nowrap;
-  flex: 1;
-  font-size: .8em;
-}
+
 
 /* Ítems visibles */
 .nav-modulo-wrapper {
@@ -811,11 +815,11 @@ h1 {
 }
 
 .nav-dropdown-toggle {
-  padding: 6px 12px;
+  padding: 3px 10px;
   border: 1px solid #ccc;
   background: white;
   border-radius: 6px;
-  font-size: 20px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -823,7 +827,6 @@ h1 {
 .nav-dropdown-menu {
   position: absolute;
   top: 100%;
-  font-size: 0.8rem;
   right: 0;
   background: white;
   border: 1px solid #ccc;
@@ -838,6 +841,7 @@ h1 {
   padding: 10px 12px;
   color: darkslategray;
   text-decoration: none;
+  font-size: 0.8rem;
 }
 
 .dropdown-item:hover {
@@ -1159,10 +1163,15 @@ select:focus {
   .permissions .group {
     width: 100%;
   }
+  .nav-modulo-wrapper{
+    margin: 0.7rem 0 0 .0rem;
+  }
   .nav-modulo{
     font-size: .6rem;
-    margin: 1rem 0 0 0;
-  }
+  }´
+  .nav-dropdown-menu .dropdown-item{
+  font-size: 15rem;
+}
   .labelDOCS{
     font-size: .8rem ;
   }

@@ -5,6 +5,7 @@ const { verifyToken } = require('../middlewares/authJwt');
 const { checkPermission } = require('../middlewares/role')
 const { checkDuplicateUsernameOrEmail} = require('../middlewares/verifySignUp')
 const {checkRolesExisted} = require('../middlewares/verifySignUp')
+const User = require('../models/User')
 
 // Middleware de diagnóstico para todas las rutas
 router.use((req, res, next) => {
@@ -18,7 +19,7 @@ router.use((req, res, next) => {
     next();
 });
 
-// GET /api/users - Listar usuarios (admin y coordinador pueden ver todos, auxiliar solo se ve a sí mismo)
+// GET /api/users - Listar usuarios 
 router.get('/',
     verifyToken,
     userController.getAllUsers
@@ -45,6 +46,23 @@ router.put('/:id',
     verifyToken,
     userController.updateUser
 );
+
+// PATCH /api/users/:id/toggle-enabled
+router.patch('/:id/toggle-enabled',
+  verifyToken,
+  checkPermission('usuarios.editar'),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { enabled } = req.body;
+      const usuario = await User.findByIdAndUpdate(id, { enabled }, { new: true });
+      res.json({ success: true, data: usuario });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al cambiar el estado' });
+    }
+  });
+
 
 // DELETE /api/users/:id - Eliminar usuario
 router.delete('/:id',
