@@ -1,0 +1,128 @@
+[{
+  "_id": {
+    "$oid": "68463318ddf347ca69ae3632"
+  },
+  "name": "televisores samsung",
+  "description": "televisores asiaticos",
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "createdAt": {
+    "$date": "2025-06-09T01:04:24.954Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-09T01:04:24.954Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68463326ddf347ca69ae3635"
+  },
+  "name": "televisores Kalley",
+  "description": "televisores Nacionales",
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "createdAt": {
+    "$date": "2025-06-09T01:04:38.292Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-09T01:04:38.292Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6846381addf347ca69ae3638"
+  },
+  "name": "Cilindros portatiles",
+  "description": "Para llevar a cualquier lado",
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "createdAt": {
+    "$date": "2025-06-09T01:25:46.733Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-09T01:25:46.733Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6846386fddf347ca69ae363b"
+  },
+  "name": "Cilindros hospitalarios",
+  "description": "Para centros medicos",
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "createdAt": {
+    "$date": "2025-06-09T01:27:11.463Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-09T01:27:11.463Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a14680fba650e43fdd64"
+  },
+  "name": "Grama sintetica decorativa",
+  "description": "Jardines, terrazas, balcones, zonas comunes",
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "createdAt": {
+    "$date": "2025-06-10T03:06:46.435Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:06:46.435Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a17280fba650e43fdd67"
+  },
+  "name": "Grama sintetica deportiva",
+  "description": "Canchas de fútbol, tenis, usos recreativos.",
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "createdAt": {
+    "$date": "2025-06-10T03:07:30.641Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:07:30.641Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a78e80fba650e43fdd94"
+  },
+  "name": "Camisas para caballero",
+  "description": "de todas las tallas y colores",
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "createdAt": {
+    "$date": "2025-06-10T03:33:34.521Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:33:34.521Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a7a480fba650e43fdd97"
+  },
+  "name": "Camisas para dama",
+  "description": "de todas las tallas y colores",
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "createdAt": {
+    "$date": "2025-06-10T03:33:56.454Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:33:56.454Z"
+  }
+}]
