@@ -266,28 +266,10 @@ li {
 
 
 /***Barra de navegacion de los modulos**/
-.nav-modulo {
-  display: flex;
-  white-space: nowrap;
-  scrollbar-width: thin;
-  margin: 1rem 0 0 .5rem;
-  overflow: auto;
-  font-size: .8em;
-}
 
-.nav-modulo li {
-  padding: 8px 0px;
-  white-space: nowrap;
-  max-width: 180px;
-  overflow: hidden;
-  color: #194d5a;
-  text-overflow: ellipsis;
-  /*no funciona hay que arreglarlo*/
-}
 
-.nav-modulo li:hover {
-  color: #7c8e99;
-}
+
+
 
 
 .encabezado-modulo {
@@ -312,13 +294,85 @@ li {
   background-color: #cfcfcf;
 }
 
+/*Estilos para todas las <table>*/
 .table-container {
   width: 100%;
   max-width: 1120px;
   overflow-x: auto;
   scrollbar-width: thin;
+  font-size: 14px; 
 }
 
+/* Estilos de encabezado */
+th {
+  background-color: #43805a;
+  color: white;
+  padding: 0.6em;
+  text-align: center;
+  border: none;
+  white-space: nowrap; /* evita salto de línea */
+}
+
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Estilos de celdas */
+td {
+  background-color: #f9fafb;
+  color: #111827;
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  vertical-align: middle;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* mantiene una línea de texto */
+}
+
+
+
+.td-multiline {
+  max-height: 60px;
+  overflow: auto;
+  white-space: normal; /* permite salto de línea */
+  text-align: left;
+}
+
+
+.btn-agregar {
+  cursor: pointer;
+  padding: 0.5rem;
+  background-color: #43805a;
+  border-radius: 10px;
+  color: white
+}
+
+
+/**Estilos para la paginacion de tablas****/
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.pagination button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+.pagination button.active-page {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
 
 
 @media print {
@@ -336,43 +390,8 @@ li {
   }
 }
 
-table{
-  font-size: 15px;
-}
 
-th {
-  background-color: #43805a;
-  color: white;
-  padding: .8em;
-  text-align: center;
-  border: none;
-}
 
-th:first-child {
-  border-top-left-radius: 10px;
-}
-
-th:last-child {
-  border-top-right-radius: 10px;
-}
-
-td {
-  max-height:50px;
-  background-color: #f9fafb;
-  /* blanco suave */
-  color: #111827;
-  padding: .2rem;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-}
-
-.btn-agregar {
-  cursor: pointer;
-  padding: 0.5rem;
-  background-color: #43805a;
-  border-radius: 10px;
-  color: white
-}
 
 .modal {
   display: none;
@@ -723,24 +742,54 @@ h1 {
 /**Desplazamiento en los nav **/
 
 
-.nav-modulo::-webkit-scrollbar {
-  height: 10px;
+.nav-modulo-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  position: relative;
+  margin: 1rem 0 0 .5rem;
 }
 
-.nav-modulo::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
+.nav-modulo {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+  font-size: .8em;
 }
 
-.nav-modulo::-webkit-scrollbar-thumb:hover {
-  background: #555;
+/* Ítems visibles */
+.nav-modulo-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: visible;
+  position: relative;
+  margin: 1rem 0 0 .5rem;
 }
 
+.nav-modulo {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+  font-size: .8em;
+}
 
 .nav-item {
+  flex: 0 0 auto;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
   padding: 8px 12px;
   border-radius: 8px 8px 0 0;
-  color:darkslategray;
+  color: darkslategray;
+  text-decoration: none;
 }
 
 .nav-item:hover {
@@ -754,6 +803,57 @@ h1 {
   border-left: #174643c0 solid 1px;
   font-weight: bold;
 }
+
+/* Botón ⋯ */
+.nav-dropdown {
+  position: relative; /* <- IMPORTANTE */
+  margin-left: .5rem;
+}
+
+.nav-dropdown-toggle {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Menú desplegable del boton de los nav-menu*/
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  font-size: 0.8rem;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  z-index: 100;
+  min-width: 200px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px 12px;
+  color: darkslategray;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown-item.active {
+  font-weight: bold;
+  background-color: #cfcfcf;
+}
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Fijo from '../components/Fijo'
 import NavUsuarios from '../components/NavUsuarios'
 import AgregarRol from '../components/AgregarRol';
@@ -7,16 +8,52 @@ import { Link } from 'react-router-dom';
 
 export default function RolesYPermisos() {
 
+  const [roles, setRoles] = useState([]);
   const [puedeCrearRol, setPuedeCrearRol] = useState(false);
+  const navigate = useNavigate();
+
+  //crea paginacion de tablas
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // se renderizan 10 registros 
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = roles.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(roles.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
-    if (usuario && usuario.role && usuario.permissions) {
+    if (!usuario || !usuario.permissions || !usuario.permissions.includes('roles.ver')) {
+      // Si no tiene permiso, lo redirigimos
+      navigate('/Home');
+    } else {
+      // se valida si puede crear roles
       setPuedeCrearRol(usuario.permissions.includes('roles.crear'));
     }
-  }, []);
+
+    // Petición al backend para obtener los roles
+    fetch('http://localhost:5000/api/roles', {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setRoles(data.roles);
+        } else {
+          console.error('Error cargando roles');
+        }
+      })
+      .catch(err => console.error('Error:', err));
+
+  }, [navigate]);
 
 
   return (
@@ -36,7 +73,7 @@ export default function RolesYPermisos() {
               </button>
             )}
 
-            
+
           </div>
           <br />
           <div className='table-container'>
@@ -50,50 +87,50 @@ export default function RolesYPermisos() {
                   <th>Estado</th>
                 </tr>
               </thead>
+
               <tbody>
-                <tr >
-                  <td>1</td>
-                  <td>Gerente de importaciones</td>
-                  <td>20/03/2025</td>
-                  <td>Ver compras - Registrar compras - Ver proveedores - Editar proveedores - Ver productos - Editar productos - Inactivar productos - Ver categorias - Editar categorias - etcetera</td>
-                  <td style={{ color: 'green' }}>Habilitado</td>
-                  <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
-                    <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                  </button>
-                  <Link to={`/`} >
-                    <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
-                      <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                    </button>
-                  </Link>
-                </tr>
-                <tr >
-                  <td>1</td>
-                  <td>Admin</td>
-                  <td>20/03/2025</td>
-                  <td>Todos los permisos</td>
-                  <td style={{ color: 'green' }}>Habilitado</td>
-                  <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
-                    <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                  </button>
-                  <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
-                    <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                  </button>
-                </tr>
-                <tr >
-                  <td>1</td>
-                  <td>Admin</td>
-                  <td>20/03/2025</td>
-                  <td>Todos los permisos</td>
-                  <td style={{ color: 'green' }}>Habilitado</td>
-                  <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
-                    <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                  </button>
-                  <button className='btnTransparente' style={{ marginLeft: '.7rem', height: '35px', width: '50px' }} type="button">
-                    <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                  </button>
-                </tr>
+                {currentItems.map((rol, index) => (
+                  <tr key={rol._id}>
+                    <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{rol.name}</td>
+                    <td>{new Date(rol.createdAt).toLocaleDateString()}</td>
+                    <td className="td-multiline">{rol.permissions.join(' - ')}</td>
+                    <td style={{ color: 'green' }}>Habilitado</td>
+                    <td>
+                      <button
+                        className='btnTransparente'
+                        style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
+                        onClick={() => openModal('editUserModal')}
+                      >
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                      </button>
+                      <button
+                        className='btnTransparente'
+                        style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
+                        type="button"
+                      >
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
+
+
             </table>
+
+          </div>
+
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
 
         </div>

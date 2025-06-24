@@ -1,16 +1,23 @@
-import React from 'react'
-import '../App.css'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
-import { mostrarMenu } from '../funciones/animaciones.js'
-import { toggleSubMenu } from '../funciones/animaciones.js'
-import { cerrarMenu } from '../funciones/animaciones.js'
-import Swal from 'sweetalert2'
-
+import React, { useEffect, useState } from 'react';
+import '../App.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { mostrarMenu, toggleSubMenu, cerrarMenu } from '../funciones/animaciones.js';
+import Swal from 'sweetalert2';
 
 
 export default function Fijo() {
   const navigate = useNavigate();
+  const [puedeVerRoles, setPuedeVerRoles] = useState(false);
+  const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
+
+  useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem('user'));
+    if (usuario && usuario.permissions) {
+      setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
+      setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
+    }
+  }, []);
+
 
 
   const handleClick = async () => {
@@ -78,8 +85,12 @@ export default function Fijo() {
                   Usuarios
                 </li>
                 <ul className="dropdown" id="submenuUsuarios">
-                  <Link as={Link} to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                  <Link as={Link} to="/RolesYPermisos"><li>Roles y permisos</li></Link>
+                  {puedeVerUsuarios && (
+                    <Link to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
+                  )}
+                  {puedeVerRoles && (
+                    <Link to="/RolesYPermisos"><li>Roles y permisos</li></Link>
+                  )}
                 </ul>
               </nav>
 

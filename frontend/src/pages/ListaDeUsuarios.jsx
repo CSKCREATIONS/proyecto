@@ -70,10 +70,22 @@ export default function ListaDeUsuarios() {
 
   const [usuarios, setUsuarios] = useState([]);
 
+  /***esto se encarga de la paginacion de la tabla*****/
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; //numero de registros que se renderizan
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = usuarios.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(usuarios.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
   // FUNCIONES
   const fetchUsuarios = async () => {
     try {
-      const token = localStorage.getItem('token'); // Asumiendo que guardaste el token como 'token'
+      const token = localStorage.getItem('token'); //obtiene el token del usuario que hace la peticion
 
       const response = await fetch('http://localhost:5000/api/users', {
         headers: {
@@ -137,50 +149,60 @@ export default function ListaDeUsuarios() {
 
           <br />
 
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id='tabla_lista_usuarios'>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Nombre completo</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Nombre de usuario</th>
-                    <th>Estado</th>
-                    <th>Creado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usuarios.map((usuario, index) => (
-                    <tr key={usuario._id}>
-                      <td>{index + 1}</td>
-                      <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
-                      <td>{usuario.role}</td>
-                      <td>{usuario.email}</td>
-                      <td>{usuario.username}</td>
-                      <td style={{ color: usuario.enabled ? 'green' : 'red' }}>
-                        {usuario.enabled ? 'Habilitado' : 'Deshabilitado'}
-                      </td>
-                      <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
-                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+          <div className="table-container">
+            <table id='tabla_lista_usuarios'>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre completo</th>
+                  <th>Rol</th>
+                  <th>Correo</th>
+                  <th>Nombre de usuario</th>
+                  <th>Estado</th>
+                  <th>Creado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((usuario, index) => (
+                  <tr key={usuario._id}>
+                    <td>{index + 1}</td>
+                    <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
+                    <td>{usuario.role}</td>
+                    <td>{usuario.email}</td>
+                    <td>{usuario.username}</td>
+                    <td style={{ color: usuario.enabled ? 'green' : 'red' }}>
+                      {usuario.enabled ? 'Habilitado' : 'Deshabilitado'}
+                    </td>
+                    <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                      </button>
+                      <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
+                        <button className='btnTransparente' style={{ height: '35px', width: '50px' }} type="button">
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                         </button>
-                        <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
-                          <button className='btnTransparente' style={{ height: '35px', width: '50px' }} type="button">
-                            <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                          </button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-              {usuarios.length === 0 && <p>No hay usuarios disponibles.</p>}
-            </div>
+            {usuarios.length === 0 && <p>No hay usuarios disponibles.</p>}
+
+
+          </div>
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
         </div>
 

@@ -18,5 +18,16 @@ module.exports = {
     EDITAR: 'productos.editar',
     INACTIVAR: 'productos.inactivar'
   },
-  // Puedes agregar más secciones: VENTAS, CLIENTES, etc.
+  CATEGORIAS: {
+    VER: 'categorias.ver',
+    CREAR: 'categorias.crear',
+    EDITAR: 'categorias.editar',
+    INACTIVAR: 'categorias.inactivar'
+  },
+  SUBCATEGORIAS: {
+    VER: 'subcategorias.ver',
+    CREAR: 'subcategorias.crear',
+    EDITAR: 'subcategorias.editar',
+    INACTIVAR: 'subcategorias.inactivar'
+  },
 };

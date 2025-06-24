@@ -7,14 +7,9 @@ const { checkPermission } = require('../middlewares/role');
 
 router.get('/',
   verifyToken,
-  async (req, res) => {
-    try {
-      const roles = await Role.find();
-      res.status(200).json({ roles });
-    } catch (error) {
-      res.status(500).json({ message: 'Error al obtener roles', error });
-    }
-  });
+  checkPermission('roles.ver'),
+  roleController.getAllRoles
+)
 
 router.post('/',
   verifyToken,

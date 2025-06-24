@@ -33,13 +33,12 @@ exports.getAllRoles = async (req, res) => {
     const roles = await Role.find();
     res.status(200).json({
       success: true,
-      data: roles
+      roles
     });
   } catch (error) {
-    console.error('Error al obtener roles:', error);
     res.status(500).json({
       success: false,
-      message: 'Error del servidor'
+      message: 'Error al obtener roles', error
     });
   }
 };

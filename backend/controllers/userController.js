@@ -86,7 +86,7 @@ exports.createUser = async (req, res) => {
       role: role.name
     });
 
-    await user.save(); // ✅ Aquí sí se activa el pre('save')
+    await user.save(); 
 
     res.status(201).json({ 
         success: true, 
