@@ -93,7 +93,6 @@ export default function AgregarUsuario() {
           confirmButtonText: 'Aceptar'
         });
 
-
         closeModal('agregar-usuario');
       } else {
         Swal.fire({
