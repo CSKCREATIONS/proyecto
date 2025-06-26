@@ -70,7 +70,7 @@ export default function ListaDeUsuarios() {
 
   const [usuarios, setUsuarios] = useState([]);
   const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
-
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
 
   /***esto se encarga de la paginacion de la tabla*****/
   const [currentPage, setCurrentPage] = useState(1);
@@ -116,7 +116,21 @@ export default function ListaDeUsuarios() {
     }
   }, []);
 
-  const toggleEstadoUsuario = async (id, estadoActual) => {
+  const toggleEstadoUsuario = async (id, estadoActual, username) => {
+  
+  const accion = estadoActual ? 'inhabilitar' : 'habilitar';
+  const participio = estadoActual ? 'inhabilitado' : 'habilitado';
+
+  const confirmacion = await Swal.fire({
+    title: `¿Estás seguro?`,
+    text: `¿Quieres ${accion} al usuario "${username}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: `Sí, ${accion}`,
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (confirmacion.isConfirmed) {
     try {
       const token = localStorage.getItem('token');
 
@@ -132,19 +146,29 @@ export default function ListaDeUsuarios() {
       const data = await response.json();
 
       if (data.success) {
-        // Actualiza los usuarios en el frontend
         setUsuarios(prev =>
           prev.map(usuario =>
             usuario._id === id ? { ...usuario, enabled: !estadoActual } : usuario
           )
         );
+
+        Swal.fire({
+          icon: 'success',
+          text: `Usuario ${participio} correctamente`,
+          timer: 1500,
+          showConfirmButton: false
+        });
       } else {
-        console.error('Error actualizando estado:', data.message);
+        Swal.fire('Error', data.message, 'error');
       }
     } catch (error) {
       console.error('Error en toggleEstadoUsuario:', error.message);
+      Swal.fire('Error', 'No se pudo cambiar el estado del usuario', 'error');
     }
-  };
+  }
+};
+
+
 
 
 
@@ -210,17 +234,18 @@ export default function ListaDeUsuarios() {
                     <td>{usuario.email}</td>
                     <td>{usuario.username}</td>
                     <td>
-                      <button
-                        onClick={() => toggleEstadoUsuario(usuario._id, usuario.enabled)}
-                        className={`estado-btn ${usuario.enabled ? 'habilitado' : 'deshabilitado'}`}
-                      >
-                        {usuario.enabled ? 'Habilitado' : 'Deshabilitado'}
-                      </button>
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          checked={usuario.enabled}
+                          onChange={() => toggleEstadoUsuario(usuario._id, usuario.enabled, usuario.username)}
+                        />
+                        <span className="slider"></span>
+                      </label>
                     </td>
-
                     <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editUserModal')}>
+                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => {setUsuarioEditando(usuario); openModal('editUserModal');}}>
                         <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                       </button>
                       <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
@@ -251,7 +276,7 @@ export default function ListaDeUsuarios() {
           </div>
         </div>
 
-        <EditarUsuario />
+        <EditarUsuario usuario={usuarioEditando} fetchUsuarios={fetchUsuarios} />
         <AgregarUsuario />
       </div>
     </div>

@@ -13,7 +13,9 @@ export default function ContenedorModuloUsuarios() {
     }
   }, []);
   return (
-    <section className="seccion">
+     <section className="seccion">
+    {(puedeVerRoles || puedeVerUsuarios) && (
+     
       <fieldset>
         <legend>Usuarios</legend>
         <div className="botones-container">
@@ -36,6 +38,8 @@ export default function ContenedorModuloUsuarios() {
           )}
         </div>
       </fieldset>
+    
+    )}
     </section>
   )
 }

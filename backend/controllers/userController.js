@@ -101,7 +101,7 @@ exports.createUser = async (req, res) => {
 };
 
 
-//actualizar usuario (admin y Coordinador)
+//actualizar usuario 
 exports.updateUser = async (req, res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(

@@ -7,12 +7,18 @@ import Swal from 'sweetalert2';
 
 export default function Fijo() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [puedeVerRoles, setPuedeVerRoles] = useState(false);
   const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
     const usuario = JSON.parse(localStorage.getItem('user'));
-    if (usuario && usuario.permissions) {
+    if (storedUser && usuario.permissions) {
       setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
       setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
     }
@@ -61,7 +67,12 @@ export default function Fijo() {
 
           </div>
           <div className="user">
-            <Link as={Link} to="/Perfil"><span style={{ color: 'white' }}>Pepito</span></Link>
+            {user && (
+              <Link as={Link} to="/Perfil">
+                <span style={{ color: 'white' }}>{user.firstName}</span>
+              </Link>
+            )}
+
             <Link as={Link} to="/Perfil"><img style={{ color: 'white' }} src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className='icono' /></Link>
           </div>
         </header>
@@ -73,14 +84,21 @@ export default function Fijo() {
             <Link as={Link} to="/Perfil"><div className="preview-usuario">
               <img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" style={{ width: "80px" }} />
               <div className="datos-usuario">
-                <span className="usuario-nombre">Pepito Perez</span>
+                {user && (
+                  <span className="usuario-nombre">{user.firstName} {user.surname}</span>
+                )}
+
                 <br />
-                <span className="usuario-rol">Administrador</span>
+                {user && (
+                  <span className="usuario-rol">{user.role}</span>
+                )}
+                
               </div>
             </div></Link>
 
             <div className="modulos-menu">
-              <nav>
+              {(puedeVerUsuarios || puedeVerRoles ) && (
+                <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
                   Usuarios
                 </li>
@@ -93,6 +111,8 @@ export default function Fijo() {
                   )}
                 </ul>
               </nav>
+              )}
+              
 
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>

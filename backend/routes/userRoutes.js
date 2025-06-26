@@ -34,7 +34,7 @@ router.post('/',
     userController.createUser
 );
 
-// GET /api/users/:id - Obtener usuario específico (admin y coordinador pueden ver cualquiera, auxiliar solo se ve a sí mismo)
+// GET /api/users/:id - Obtener usuario específico 
 router.get('/:id',
     verifyToken,
     userController.getUserById
@@ -47,10 +47,12 @@ router.put('/:id',
     userController.updateUser
 );
 
+
+
 // PATCH /api/users/:id/toggle-enabled
 router.patch('/:id/toggle-enabled',
   verifyToken,
-  checkPermission('usuarios.editar'),
+  checkPermission('usuarios.inhabilitar'),
   async (req, res) => {
     try {
       const { id } = req.params;

@@ -57,6 +57,7 @@ export default function AgregarUsuario() {
 
   const handleSubmit = async () => {
     const token = localStorage.getItem('token');
+    const usuarioNombre = generarUsername()
     const nuevaPassword = generarPassword();
     const usuario = {
       firstName,
@@ -64,7 +65,7 @@ export default function AgregarUsuario() {
       surname,
       secondSurname,
       email,
-      username: generarUsername(),
+      username: usuarioNombre,
       password: nuevaPassword,
       role
     };
@@ -84,10 +85,15 @@ export default function AgregarUsuario() {
       if (res.ok) {
         console.log('Password generada: ', nuevaPassword)
         Swal.fire({
-          text: 'Usuario añadido correctamente',
+          title: 'Usuario creado correctamente',
+          html: `
+            <p><strong>Nombre de usuario:</strong> ${usuarioNombre}</p>
+            <p><strong>Contraseña:</strong> ${nuevaPassword}</p>`,
           icon: 'success',
           confirmButtonText: 'Aceptar'
         });
+
+
         closeModal('agregar-usuario');
       } else {
         Swal.fire({
