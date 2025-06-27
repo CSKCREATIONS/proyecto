@@ -22,6 +22,26 @@ export default function Fijo() {
       setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
       setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
     }
+
+    const handleClickOutside = (event) => {
+      const menu = document.getElementById('menu');
+      const closeBtn = document.getElementById('close-menu');
+      const btnMenu = document.getElementById('btn-menu');
+
+      // Si el menú está abierto y el clic no es dentro del menú ni en el botón para abrirlo
+      if (menu.classList.contains('mostrar-menu') &&
+        !menu.contains(event.target) &&
+        !btnMenu.contains(event.target)) {
+        cerrarMenu();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+
   }, []);
 
 
@@ -51,7 +71,11 @@ export default function Fijo() {
       <div className="fijo">
         <header>
           <div className="izquierda">
-            <button onClick={mostrarMenu} id="btn-menu">
+            <button onClick={(e) => {
+              e.stopPropagation(); // evita propagación
+              mostrarMenu();
+            }} id="btn-menu">
+
               <div class="palito"></div>
               <div class="palito"></div>
               <div class="palito"></div>
@@ -92,27 +116,27 @@ export default function Fijo() {
                 {user && (
                   <span className="usuario-rol">{user.role}</span>
                 )}
-                
+
               </div>
             </div></Link>
 
             <div className="modulos-menu">
-              {(puedeVerUsuarios || puedeVerRoles ) && (
+              {(puedeVerUsuarios || puedeVerRoles) && (
                 <nav>
-                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
-                  Usuarios
-                </li>
-                <ul className="dropdown" id="submenuUsuarios">
-                  {puedeVerUsuarios && (
-                    <Link to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                  )}
-                  {puedeVerRoles && (
-                    <Link to="/RolesYPermisos"><li>Roles y permisos</li></Link>
-                  )}
-                </ul>
-              </nav>
+                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
+                    Usuarios
+                  </li>
+                  <ul className="dropdown" id="submenuUsuarios">
+                    {puedeVerUsuarios && (
+                      <Link to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
+                    )}
+                    {puedeVerRoles && (
+                      <Link to="/RolesYPermisos"><li>Roles y permisos</li></Link>
+                    )}
+                  </ul>
+                </nav>
               )}
-              
+
 
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>

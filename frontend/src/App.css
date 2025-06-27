@@ -75,8 +75,9 @@ header {
   background-color: #174643;
   position: fixed;
   top: 0;
+  width: 250px;
   height: 100vh;
-  left: -260px;
+  left: -250px;
   transition: left .3s;
   overflow-y: scroll;
   scrollbar-width: none;
@@ -266,10 +267,6 @@ li {
 
 
 /***Barra de navegacion de los modulos**/
-
-
-
-
 
 
 .encabezado-modulo {

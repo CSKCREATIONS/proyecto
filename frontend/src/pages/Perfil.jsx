@@ -28,13 +28,6 @@ export default function Perfil() {
 
     if (result.isConfirmed) {
       localStorage.clear();
-
-      await Swal.fire({
-        title: '¡Sesión cerrada!',
-        text: 'Has salido correctamente.',
-        icon: 'success'
-      });
-
       navigate('/Login');
     }
   };

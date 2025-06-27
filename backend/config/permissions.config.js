@@ -10,7 +10,7 @@ module.exports = {
     VER: 'roles.ver',
     CREAR: 'roles.crear',
     EDITAR: 'roles.editar',
-    ELIMINAR: 'roles.eliminar'
+    INHABILITAR: 'roles.inhabilitar'
   },
   PRODUCTOS: {
     VER: 'productos.ver',

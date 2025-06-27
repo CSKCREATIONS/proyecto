@@ -17,8 +17,8 @@ export function mostrarMenu(){
 
     if (window.innerWidth > 768) {
         // En computadoras de escritorio, el contenido se mueve hacia la derecha
-        contenido.style.marginLeft = '220px'
-        companyName.style.marginLeft = '160px'
+        contenido.style.marginLeft = '250px'
+        companyName.style.marginLeft = '200px'
         menuLateral.style.boxShadow= '0 0 5px 5px  rgba(0,0,0,.5)';
     } else{
         // En dispositivos moviles, el contenido se sombrea
@@ -35,7 +35,7 @@ export function cerrarMenu(){
     menuLateral.classList.toggle('mostrar-menu')
     closeMenu.classList.toggle('visible')
     const contenido = document.querySelector('.content')
-    contenido.style.margin = '0 '
+    contenido.style.marginLeft = '0 '
     menuLateral.style.boxShadow= 'none';
 }
 

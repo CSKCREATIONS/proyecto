@@ -3,6 +3,7 @@ import { toggleSubMenu, closeModal } from '../funciones/animaciones';
 import Swal from 'sweetalert2';
 
 export default function EditarUsuario({ usuario, fetchUsuarios }) {
+  const [rolesDisponibles, setRolesDisponibles] = useState([]);
   const [form, setForm] = useState({
     firstName: '',
     secondName: '',
@@ -15,12 +16,29 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
   });
 
   const [passwords, setPasswords] = useState({
-    current: '',
     new: '',
     confirm: '',
   });
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    fetch('http://localhost:5000/api/roles', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setRolesDisponibles(data.roles || []);
+      })
+      .catch(err => {
+        console.error('Error al cargar roles:', err);
+        setRolesDisponibles([]);
+      });
+
     if (usuario) {
       setForm({
         firstName: usuario.firstName,
@@ -46,6 +64,10 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
   const guardarCambios = async () => {
     try {
       const token = localStorage.getItem('token');
+      if (passwords.new !== passwords.confirm) {
+        return Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      }
+
       const res = await fetch(`http://localhost:5000/api/users/${usuario._id}`, {
         method: 'PATCH',
         headers: {
@@ -59,7 +81,7 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
       let nuevaContrasena = null;
 
-      // Si se quiere cambiar la contraseña
+      // Cambiar contraseña si aplica
       if (passwords.new && passwords.confirm && passwords.new === passwords.confirm) {
         const resPassword = await fetch(`http://localhost:5000/api/users/${usuario._id}/change-password`, {
           method: 'PATCH',
@@ -68,7 +90,6 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
             'x-access-token': token
           },
           body: JSON.stringify({
-            currentPassword: passwords.current,
             newPassword: passwords.new
           })
         });
@@ -78,6 +99,7 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
         nuevaContrasena = passwords.new;
       }
+
 
       await fetchUsuarios();
       closeModal('editUserModal');
@@ -99,26 +121,38 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
   return (
     <div className="modal" id="editUserModal">
       <div className="modal-content">
-        {['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username'].map(campo => (
-          <div className="form-group" key={campo}>
-            <label>{campo.replace(/([A-Z])/g, ' $1')}</label>
-            <input className='entrada' type="text" name={campo} value={form[campo] || ''} onChange={handleChange} />
-          </div>
-        ))}
-
         <div className="form-group">
-          <label>Rol</label>
-          <select className='entrada' name="role" value={form.role} onChange={handleChange}>
-            <option value="admin">admin</option>
-            <option value="gerente">Gerente general</option>
-          </select>
+          <label>Primer nombre</label>
+          <input className='entrada' type="text" name="firstName" value={form.firstName} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Segundo nombre</label>
+          <input className='entrada' type="text" name="secondName" value={form.secondName} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Primer apellido</label>
+          <input className='entrada' type="text" name="surname" value={form.surname} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Segundo apellido</label>
+          <input className='entrada' type="text" name="secondSurname" value={form.secondSurname} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Correo electrónico</label>
+          <input className='entrada' type="email" name="email" value={form.email} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Nombre de usuario</label>
+          <input className='entrada' type="text" name="username" value={form.username} onChange={handleChange} />
         </div>
 
         <div className="form-group">
-          <label>Estado</label>
-          <select className='entrada' name="enabled" value={form.enabled} onChange={(e) => setForm({...form, enabled: e.target.value === 'true'})}>
-            <option value="true">Habilitado</option>
-            <option value="false">Inhabilitado</option>
+          <label>Rol</label>
+          <select className='entrada' name="role" value={form.role} onChange={handleChange} required>
+            <option value="" disabled>Seleccione un rol</option>
+            {Array.isArray(rolesDisponibles) && rolesDisponibles.map(r => (
+              <option key={r._id} value={r.name}>{r.name}</option>
+            ))}
           </select>
         </div>
 
@@ -127,9 +161,28 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
         </div>
 
         <div className='dropdown' id='changePassword' style={{ border: '1px solid #ccc', padding: '0.5rem', marginTop: '1rem' }}>
-          <div className="form-group"><label>Nueva contraseña</label><input className='entrada' type="password" name="new" value={passwords.new} onChange={handlePasswordChange} /></div>
-          <div className="form-group"><label>Confirmar contraseña</label><input className='entrada' type="password" name="confirm" value={passwords.confirm} onChange={handlePasswordChange} /></div>
+          <div className="form-group">
+            <label>Nueva contraseña</label>
+            <input
+              className='entrada'
+              type="password"
+              name="new"
+              value={passwords.new}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Confirmar nueva contraseña</label>
+            <input
+              className='entrada'
+              type="password"
+              name="confirm"
+              value={passwords.confirm}
+              onChange={handlePasswordChange}
+            />
+          </div>
         </div>
+
 
         <div className="buttons">
           <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')}>Cancelar</button>

@@ -17,4 +17,12 @@ router.post('/',
   roleController.createRole
 );
 
+// En routes/roleRoutes.js
+router.patch('/:id/toggle-enabled',
+  verifyToken,
+  checkPermission('roles.inhabilitar'),
+  roleController.toggleEnabled
+);
+
+
 module.exports = router;
