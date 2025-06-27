@@ -10,6 +10,7 @@ export default function RolesYPermisos() {
 
   const [roles, setRoles] = useState([]);
   const [puedeCrearRol, setPuedeCrearRol] = useState(false);
+  const [puedeEditarRol, setPuedeEditarRol] = useState(false);
   const navigate = useNavigate();
 
   //crea paginacion de tablas
@@ -23,9 +24,39 @@ export default function RolesYPermisos() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const toggleEstadoRol = async (id, nuevoEstado) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`http://localhost:5000/api/roles/${id}/toggle-enabled`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token
+        },
+        body: JSON.stringify({ enabled: nuevoEstado })
+      });
+
+      if (!res.ok) throw new Error('Error al cambiar estado del rol');
+
+      // Actualiza la lista
+      const data = await res.json();
+      setRoles(prev =>
+        prev.map(r => (r._id === id ? { ...r, enabled: nuevoEstado } : r))
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem('user'));
+    if (usuario && usuario.permissions) {
+      setPuedeEditarRol(usuario.permissions.includes('roles.editar'));
+    }
     const token = localStorage.getItem('token');
 
     if (!usuario || !usuario.permissions || !usuario.permissions.includes('roles.ver')) {
@@ -73,7 +104,6 @@ export default function RolesYPermisos() {
               </button>
             )}
 
-
           </div>
           <br />
           <div className='table-container'>
@@ -95,22 +125,29 @@ export default function RolesYPermisos() {
                     <td>{rol.name}</td>
                     <td>{new Date(rol.createdAt).toLocaleDateString()}</td>
                     <td className="td-multiline">{rol.permissions.join(' - ')}</td>
-                    <td style={{ color: 'green' }}>Habilitado</td>
                     <td>
-                      <button
-                        className='btnTransparente'
-                        style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
-                        onClick={() => openModal('editUserModal')}
-                      >
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-                      <button
-                        className='btnTransparente'
-                        style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
-                        type="button"
-                      >
-                        <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                      </button>
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          checked={rol.enabled}
+                          onChange={() => toggleEstadoRol(rol._id, !rol.enabled)}
+                        />
+                        <span className="slider round"></span>
+                      </label>
+                    </td>
+
+
+                    <td>
+                      {puedeEditarRol && (
+                        <button
+                          className='btnTransparente'
+                          style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
+                          onClick={() => openModal('editUserModal')}
+                        >
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                        </button>
+                      )}
+
                     </td>
                   </tr>
                 ))}

@@ -69,7 +69,9 @@ export default function ListaDeUsuarios() {
 
 
   const [usuarios, setUsuarios] = useState([]);
+  const [puedeEditarUsuario, setPuedeEditarUsuario] = useState(false);
   const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
+  const [puedeEliminarUsuario, setPuedeEliminarUsuario] = useState(false);
   const [usuarioEditando, setUsuarioEditando] = useState(null);
 
   /***esto se encarga de la paginacion de la tabla*****/
@@ -114,59 +116,65 @@ export default function ListaDeUsuarios() {
     if (user && user.permissions) {
       setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
     }
+    if (user && user.permissions) {
+      setPuedeEditarUsuario(user.permissions.includes('usuarios.editar'));
+    }
+    if (user && user.permissions) {
+      setPuedeEliminarUsuario(user.permissions.includes('usuarios.eliminar'));
+    }
   }, []);
 
   const toggleEstadoUsuario = async (id, estadoActual, username) => {
-  
-  const accion = estadoActual ? 'inhabilitar' : 'habilitar';
-  const participio = estadoActual ? 'inhabilitado' : 'habilitado';
 
-  const confirmacion = await Swal.fire({
-    title: `¿Estás seguro?`,
-    text: `¿Quieres ${accion} al usuario "${username}"?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: `Sí, ${accion}`,
-    cancelButtonText: 'Cancelar'
-  });
+    const accion = estadoActual ? 'inhabilitar' : 'habilitar';
+    const participio = estadoActual ? 'inhabilitado' : 'habilitado';
 
-  if (confirmacion.isConfirmed) {
-    try {
-      const token = localStorage.getItem('token');
+    const confirmacion = await Swal.fire({
+      title: `¿Estás seguro?`,
+      text: `¿Quieres ${accion} al usuario "${username}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Sí, ${accion}`,
+      cancelButtonText: 'Cancelar'
+    });
 
-      const response = await fetch(`http://localhost:5000/api/users/${id}/toggle-enabled`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
-        body: JSON.stringify({ enabled: !estadoActual })
-      });
+    if (confirmacion.isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
 
-      const data = await response.json();
-
-      if (data.success) {
-        setUsuarios(prev =>
-          prev.map(usuario =>
-            usuario._id === id ? { ...usuario, enabled: !estadoActual } : usuario
-          )
-        );
-
-        Swal.fire({
-          icon: 'success',
-          text: `Usuario ${participio} correctamente`,
-          timer: 1500,
-          showConfirmButton: false
+        const response = await fetch(`http://localhost:5000/api/users/${id}/toggle-enabled`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          },
+          body: JSON.stringify({ enabled: !estadoActual })
         });
-      } else {
-        Swal.fire('Error', data.message, 'error');
+
+        const data = await response.json();
+
+        if (data.success) {
+          setUsuarios(prev =>
+            prev.map(usuario =>
+              usuario._id === id ? { ...usuario, enabled: !estadoActual } : usuario
+            )
+          );
+
+          Swal.fire({
+            icon: 'success',
+            text: `Usuario ${participio} correctamente`,
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire('Error', data.message, 'error');
+        }
+      } catch (error) {
+        console.error('Error en toggleEstadoUsuario:', error.message);
+        Swal.fire('Error', 'No se pudo cambiar el estado del usuario', 'error');
       }
-    } catch (error) {
-      console.error('Error en toggleEstadoUsuario:', error.message);
-      Swal.fire('Error', 'No se pudo cambiar el estado del usuario', 'error');
     }
-  }
-};
+  };
 
 
 
@@ -244,16 +252,24 @@ export default function ListaDeUsuarios() {
                       </label>
                     </td>
                     <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
-                    <td>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => {setUsuarioEditando(usuario); openModal('editUserModal');}}>
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-                      <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
+                    {(puedeEditarUsuario || puedeEliminarUsuario) && (
+                      <td>
+                      {puedeEditarUsuario && (
+                        <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => { setUsuarioEditando(usuario); openModal('editUserModal'); }}>
+                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                        </button>
+                      )}
+                      {puedeEliminarUsuario && (
+                        <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
                         <button className='btnTransparente' style={{ height: '35px', width: '50px' }} type="button">
                           <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
                         </button>
                       </Link>
+                      )}
+                      
                     </td>
+                    )}
+                    
                   </tr>
                 ))}
               </tbody>
