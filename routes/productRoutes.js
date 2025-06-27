@@ -13,6 +13,8 @@ const validateProduct = [
     check('stock').isInt({ min: 0 }).withMessage('stock invalido'),
     check('category').not().isEmpty().withMessage('la categoria es requerida'),
     check('subcategory').not().isEmpty().withMessage('la subcategoria es requerida'),
+    check('proveedor').not().isEmpty().withMessage('El proveedor es requerido'),
+
 ];
 
 

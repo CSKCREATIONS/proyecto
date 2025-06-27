@@ -39,7 +39,22 @@ const productSchema = new mongoose.Schema({
     activo: {
     type: Boolean,
     default: true
+    },
+    proveedor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Proveedor', 
+    required: true
+    },
+    CreatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+
+  
 
 },{
     timestamps:true,
