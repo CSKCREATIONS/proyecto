@@ -7,27 +7,57 @@ import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 const API_URL = 'http://localhost:3000/api/proveedores';
 const token = localStorage.getItem('token');
 
+
 const ProveedorModal = ({ proveedor, onClose, onSave }) => {
   const [form, setForm] = useState({
     nombre: proveedor?.nombre || '',
-    contacto: proveedor?.contacto || '',
-    telefono: proveedor?.telefono || '',
-    correo: proveedor?.correo || '',
-    direccion: proveedor?.direccion || '',
+    contacto: {
+      telefono: proveedor?.contacto?.telefono || '',
+      correo: proveedor?.contacto?.correo || ''
+    },
+    direccion: {
+      calle: proveedor?.direccion?.calle || '',
+      pais: proveedor?.direccion?.pais || ''
+    },
     empresa: proveedor?.empresa || ''
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+
+    if (name.startsWith('contacto.')) {
+      const key = name.split('.')[1];
+      setForm(prev => ({
+        ...prev,
+        contacto: { ...prev.contacto, [key]: value }
+      }));
+    } else if (name.startsWith('direccion.')) {
+      const key = name.split('.')[1];
+      setForm(prev => ({
+        ...prev,
+        direccion: { ...prev.direccion, [key]: value }
+      }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (Object.values(form).some(val => !val.trim())) {
-      Swal.fire('Error', 'Todos los campos son obligatorios', 'warning');
+
+    const { nombre, contacto, direccion } = form;
+
+    if (
+      !nombre.trim() ||
+      !contacto.telefono.trim() ||
+      !contacto.correo.trim() ||
+      !direccion.calle.trim() ||
+      !direccion.pais.trim()
+    ) {
+      Swal.fire('Error', 'Todos los campos obligatorios deben estar completos', 'warning');
       return;
     }
+
     onSave({ ...proveedor, ...form });
   };
 
@@ -40,19 +70,73 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            {['nombre', 'contacto', 'telefono', 'correo', 'direccion', 'empresa'].map((field) => (
-              <div key={field} className="form-group">
-                <label className="form-label required">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-                <input
-                  name={field}
-                  value={form[field]}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                />
-              </div>
-            ))}
+            <div className="form-group">
+              <label className="form-label required">Nombre</label>
+              <input
+                name="nombre"
+                value={form.nombre}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label required">Teléfono</label>
+              <input
+                name="contacto.telefono"
+                value={form.contacto.telefono}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label required">Correo</label>
+              <input
+                name="contacto.correo"
+                type="email"
+                value={form.contacto.correo}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label required">Dirección</label>
+              <input
+                name="direccion.calle"
+                value={form.direccion.calle}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label required">País</label>
+              <input
+                name="direccion.pais"
+                value={form.direccion.pais}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Empresa (opcional)</label>
+              <input
+                name="empresa"
+                value={form.empresa}
+                onChange={handleChange}
+                className="form-input"
+              />
+            </div>
           </div>
+
           <div className="modal-footer">
             <button type="button" className="btn btn-cancel" onClick={onClose}>Cancelar</button>
             <button type="submit" className="btn btn-save">Guardar</button>
@@ -62,6 +146,8 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
     </div>
   );
 };
+
+
 
 const ModalProductosProveedor = ({ visible, onClose, productos, proveedor }) => {
   if (!visible) return null;
@@ -105,6 +191,9 @@ const GestionProveedores = () => {
   useEffect(() => {
     cargarProveedores();
   }, []);
+
+
+  
 
   const cargarProveedores = async () => {
     try {
@@ -189,57 +278,68 @@ const GestionProveedores = () => {
           <div className="table-container">
             <table>
               <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Nombre</th>
-                  <th>Contacto</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                  <th>Dirección</th>
-                  <th>Empresa</th>
-                  <th>Productos</th>
-                  <th>Acciones</th>
-                </tr>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Dirección</th>
+                <th>País</th>
+                <th>Empresa</th>
+                <th>Productos</th>
+                <th>Acciones</th>
+              </tr>
               </thead>
               <tbody>
                 {Array.isArray(proveedores) && proveedores.length > 0 ? (
                   proveedores.map((prov, index) => (
-                  <tr key={prov._id}>
-                    <td>{index + 1}</td>
-                    <td>{prov.nombre}</td>
-                    <td>{prov.contacto}</td>
-                    <td>{prov.telefono}</td>
-                    <td>{prov.correo}</td>
-                    <td>{prov.direccion}</td>
-                    <td>{prov.empresa}</td>
-                    <td>
-                      <button
-                        className="btn btn-info btn-sm"
-                        onClick={() => {
-                          setProductosProveedor(prov.productos || []);
-                          setProveedorNombre(prov.nombre);
-                          setModalProductosVisible(true);
-                        }}
-                      >
-                        Ver Productos
-                      </button>
-                    </td>
-                    <td>
-                      <button className="btn btn-success btn-sm" onClick={() => {
-                        setProveedorEditando(prov);
-                        setModalVisible(true);
-                      }}>
-                        <i className="fa-solid fa-pen"></i>
-                      </button>{' '}
-                      <button className="btn btn-danger btn-sm" onClick={() => eliminarProveedor(prov._id)}>
-                        <i className="fa-solid fa-trash"></i>
-                      </button>
-                    </td>
+                    <tr key={prov._id}>
+                      <td>{index + 1}</td>
+                      <td>{prov.nombre}</td>
+                      <td>{prov.contacto?.telefono}</td>
+                      <td>{prov.contacto?.correo}</td>
+                      <td>{prov.direccion?.calle}</td>
+                      <td>{prov.direccion?.pais}</td>
+                      <td>{prov.empresa}</td>
+                      <td>
+                        <button
+                          className="btn btn-info btn-sm"
+                          onClick={() => {
+                            setProductosProveedor(prov.productos || []);
+                            setProveedorNombre(prov.nombre);
+                            setModalProductosVisible(true);
+                          }}
+                        >
+                          Ver Productos
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => {
+                            setProveedorEditando(prov);
+                            setModalVisible(true);
+                          }}
+                        >
+                          <i className="fa-solid fa-pen"></i>
+                        </button>{' '}
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => eliminarProveedor(prov._id)}
+                        >
+                          <i className="fa-solid fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9">No hay proveedores disponibles</td>
                   </tr>
-                ))) : (
-                  <tr><td colSpan="9">No hay proveedores disponibles</td></tr>
                 )}
               </tbody>
+
+
             </table>
           </div>
 
