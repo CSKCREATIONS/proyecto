@@ -11,7 +11,10 @@ const validateCliente = [
     check('correo').isEmail().withMessage('Debe proporcionar un correo válido'),
     check('telefono').not().isEmpty().withMessage('El teléfono es obligatorio'),
     check('direccion').not().isEmpty().withMessage('La dirección es obligatoria'),
+    check('ciudad').not().isEmpty().withMessage('La ciudad es obligatoria'),
+
 ];
+
 
 // RUTAS
 
@@ -24,11 +27,7 @@ router.post('/',
 );
 
 // GET /api/clientes - Obtener todos los clientes (admin, coordinador, auxiliar)
-router.get('/',
-    verifyToken,
-    checkRole('admin', 'coordinador', 'auxiliar'),
-    clienteController.getClientes
-);
+router.get('/', verifyToken, checkRole('admin', 'coordinador', 'auxiliar'), clienteController.getClientes);
 
 // GET /api/clientes/:id - Obtener cliente por ID
 router.get('/:id',
@@ -36,6 +35,7 @@ router.get('/:id',
     checkRole('admin', 'coordinador', 'auxiliar'),
     clienteController.getClienteById
 );
+
 
 // PUT /api/clientes/:id - Actualizar cliente
 router.put('/:id',

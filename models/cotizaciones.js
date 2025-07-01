@@ -3,43 +3,36 @@ const mongoose = require('mongoose');
 const CotizacionSchema = new mongoose.Schema({
   cliente: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cliente',
+    ref: 'Cliente', // 👈 Esto establece la relación con el modelo Cliente
     required: true
   },
-  proveedor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Proveedor',
-    required: true
-  },
-  productos: [{
-    producto: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Producto',
-      required: true
-    },
-    cantidad: {
-      type: Number,
-      required: true,
-      min: 1
-    },
-    precioUnitario: {
-      type: Number,
-      required: true,
-      min: 0
-    }
-  }],
+  ciudad: String,
+  telefono: String,
+  correo: String,
+  responsable: String,
   fecha: {
     type: Date,
-    default: Date.now
+    required: true
   },
-  observaciones: {
-    type: String,
-    default: ''
+  descripcion: String,
+  condicionesPago: String,
+  productos: [
+    {
+      producto: String, // o { type: mongoose.Schema.Types.ObjectId, ref: 'Producto' } si tienes modelo Producto
+      descripcion: String,
+      cantidad: Number,
+      valorUnitario: Number,
+      descuento: Number,
+      valorTotal: Number
+    }
+  ],
+  clientePotencial: {
+    type: Boolean,
+    default: false
   },
-  estado: {
-    type: String,
-    enum: ['pendiente', 'aprobada', 'rechazada'],
-    default: 'pendiente'
+  enviadoCorreo: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

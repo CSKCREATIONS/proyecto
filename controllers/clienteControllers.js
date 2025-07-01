@@ -1,13 +1,15 @@
 const Cliente = require('../models/cliente');
+const { validationResult } = require('express-validator');
+
 
 // Obtener todos los clientes
 exports.getClientes = async (req, res) => {
-  try {
-    const clientes = await Cliente.find();
-    res.status(200).json(clientes);
-  } catch (err) {
-    res.status(500).json({ message: 'Error al obtener clientes', error: err.message });
+  const filtro = {};
+  if (req.query.esCliente !== undefined) {
+    filtro.esCliente = req.query.esCliente === 'true';
   }
+  const clientes = await Cliente.find(filtro);
+  res.json(clientes);
 };
 
 // Obtener un cliente por ID
@@ -25,14 +27,22 @@ exports.getClienteById = async (req, res) => {
 
 // Crear un nuevo cliente
 exports.createCliente = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('❌ Errores de validación:', errors.array());
+    return res.status(400).json({ errores: errors.array() });
+  }
+
   try {
     const nuevoCliente = new Cliente(req.body);
     await nuevoCliente.save();
-    res.status(201).json({ message: 'Cliente creado exitosamente', data: nuevoCliente });
+    res.status(201).json(nuevoCliente);
   } catch (err) {
-    res.status(400).json({ message: 'Error al crear cliente', error: err.message });
+    console.error('❌ Error en el controlador:', err);
+    res.status(500).json({ mensaje: 'Error al crear cliente' });
   }
 };
+
 
 // Actualizar un cliente existente
 exports.updateCliente = async (req, res) => {
@@ -59,3 +69,5 @@ exports.deleteCliente = async (req, res) => {
     res.status(500).json({ message: 'Error al eliminar cliente', error: err.message });
   }
 };
+
+

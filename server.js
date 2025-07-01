@@ -19,6 +19,8 @@ const clientesRoutes = require('./routes/clientesRoutes'); // Ruta base para cli
 const ventaRoutes = require('./routes/ventasRoutes');
 const proveedorRoutes = require('./routes/proveedorRoutes');
 const comprasRoutes = require('./routes/comprasRoutes'); // Ruta base para compras
+const cotizacionRoutes = require('./routes/cotizacionRoutes');
+
 
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 (async()=>{
@@ -49,6 +51,8 @@ app.use('/api/clientes', clientesRoutes); // Ruta base para clientes
 app.use('/api/ventas', ventaRoutes); // Ruta base para ventas
 app.use('/api/proveedores', proveedorRoutes); // Ruta base para proveedores
 app.use('/api/compras', comprasRoutes); // Ruta base para compras
+app.use('/api/cotizaciones', cotizacionRoutes);
+
 
 
 //Inicio del servidor

@@ -1,7 +1,6 @@
-const Cotizacion = require('../models/cotizacion');
+const Cotizacion = require('../models/cotizaciones');
 const Cliente = require('../models/cliente');
-const Proveedor = require('../models/proveedor');
-const Producto = require('../models/producto');
+
 const { validationResult } = require('express-validator');
 
 // Crear cotización
@@ -12,26 +11,73 @@ exports.createCotizacion = async (req, res) => {
   }
 
   try {
-    const cotizacion = new Cotizacion(req.body);
+    // Extraer datos del cliente
+    const {
+      cliente: nombre,
+      ciudad,
+      telefono,
+      correo,
+      clientePotencial,
+      fecha
+    } = req.body;
+
+    // Buscar cliente existente por correo
+    let clienteExistente = await Cliente.findOne({ correo });
+
+    // Si no existe, se crea
+    if (!clienteExistente) {
+      clienteExistente = new Cliente({
+        nombre,
+        ciudad,
+        telefono,
+        correo,
+        esCliente: !clientePotencial
+      });
+      await clienteExistente.save();
+    }
+
+    // Crear cotización con referencia al _id del cliente
+    const cotizacion = new Cotizacion({
+    cliente: clienteExistente._id,
+    ciudad,
+    telefono,
+    correo,
+    responsable: req.body.responsable,
+    fecha: new Date(fecha),
+    descripcion: req.body.descripcion,
+    condicionesPago: req.body.condicionesPago,
+    productos: req.body.productos,
+    clientePotencial,
+    enviadoCorreo: req.body.enviadoCorreo
+  });
+
+
     await cotizacion.save();
-    res.status(201).json({ message: 'Cotización creada', data: cotizacion });
+
+  const cotizacionConCliente = await Cotizacion.findById(cotizacion._id).populate('cliente', 'nombre');
+  res.status(201).json({ message: 'Cotización creada', data: cotizacionConCliente });
+
   } catch (error) {
+    console.error('❌ Error al crear cotización:', error);
     res.status(500).json({ message: 'Error al crear cotización', error: error.message });
   }
 };
+
 
 // Obtener todas las cotizaciones
 exports.getCotizaciones = async (req, res) => {
   try {
     const cotizaciones = await Cotizacion.find()
-      .populate('cliente', 'nombre')
-      .populate('proveedor', 'nombre')
-      .populate('productos.producto', 'name price');
+      .populate('cliente', 'nombre') // Esto llena el nombre del cliente
+      .populate('productos.producto', 'name price'); // Solo si usas ref a Producto
+
     res.status(200).json(cotizaciones);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener cotizaciones', error: error.message });
   }
 };
+
+
 
 // Obtener cotización por ID
 exports.getCotizacionById = async (req, res) => {
