@@ -19,6 +19,14 @@ router.use((req, res, next) => {
     next();
 });
 
+// PATCH /api/users/change-password (usuario actual)
+router.patch(
+  '/change-password',
+  verifyToken,
+  userController.changeOwnPassword
+);
+
+
 // GET /api/users - Listar usuarios 
 router.get('/',
     verifyToken,
@@ -42,7 +50,7 @@ router.get('/:id',
 
 
 // PUT /api/users/:id - Actualizar usuario 
-router.put('/:id',
+router.patch('/:id',
     verifyToken,
     userController.updateUser
 );
@@ -66,11 +74,21 @@ router.patch('/:id/toggle-enabled',
   });
 
 
+// PATCH /api/users/:id/change-password - Cambiar contraseña
+// el que puede modificar la informacion de los usuarios
+router.patch('/:id/change-password',
+  verifyToken,
+  checkPermission('usuarios.editar'),
+  userController.changePassword
+);
+
+
+
 // DELETE /api/users/:id - Eliminar usuario
 router.delete('/:id',
     verifyToken,
     checkPermission('usuarios.eliminar'),
     userController.deleteUser
-);
+)
 
 module.exports = router;

@@ -3,63 +3,63 @@ const bcrypt = require('bcryptjs');
 
 //Obtener todos los usuarios (admin y coordinador)
 exports.getAllUsers = async (req, res) => {
-    console.log('[CONTROLLER] Ejecutando getAllUsers');
-    try {
-        const users = await User.find().select('-password');
-        console.log('[CONTROLLER] Usuarios encontrados:', users.length);
-        res.status(200).json({
-            success: true,
-            data: users
-        });
-    } catch (error) {
-        console.error('[CONTROLLER] error en getAllUsers:', error.message);
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener usuarios'
-        });
-    }
+  console.log('[CONTROLLER] Ejecutando getAllUsers');
+  try {
+    const users = await User.find().select('-password');
+    console.log('[CONTROLLER] Usuarios encontrados:', users.length);
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    console.error('[CONTROLLER] error en getAllUsers:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener usuarios'
+    });
+  }
 };
 
 
 //Obtener usuario especifico
 exports.getUserById = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id).select('-password');
+  try {
+    const user = await User.findById(req.params.id).select('-password');
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'usuario no encontrado'
-            });
-        }
-
-        // validaciones de acceso
-        if (req.userRole === 'auxiliar' && req.userId !== user._id.toString()) {
-            return res.status(403).json({
-                success: false,
-                message: 'No tienes permisos para ver este usuario'
-            });
-        }
-
-        if (req.userRole === 'coordinador' && user.role === 'admin') {
-            return res.status(403).json({
-                success: false,
-                message: 'NO puedes ver usuarios admin'
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            user
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener usuario',
-            error: error.message
-        });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'usuario no encontrado'
+      });
     }
+
+    // validaciones de acceso
+    if (req.userRole === 'auxiliar' && req.userId !== user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'No tienes permisos para ver este usuario'
+      });
+    }
+
+    if (req.userRole === 'coordinador' && user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'NO puedes ver usuarios admin'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener usuario',
+      error: error.message
+    });
+  }
 };
 
 
@@ -86,12 +86,12 @@ exports.createUser = async (req, res) => {
       role: role.name
     });
 
-    await user.save(); 
+    await user.save();
 
-    res.status(201).json({ 
-        success: true, 
-        message: 'Usuario creado' 
-        
+    res.status(201).json({
+      success: true,
+      message: 'Usuario creado'
+
     });
 
   } catch (error) {
@@ -101,59 +101,148 @@ exports.createUser = async (req, res) => {
 };
 
 
-//actualizar usuario 
 exports.updateUser = async (req, res) => {
-    try {
-        const updatedUser = await User.findByIdAndUpdate(
-            req.params.id,
-            { $set: req.body },
-            { new: true }
-        ).select('-password');
+  try {
+    const allowedFields = ['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username', 'role'];
+    const updates = {};
 
-        if (!updatedUser) {
-            return res.status(404).json({
-                success: false,
-                message: 'usuario no encontrado'
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: 'Usuario actualizado correctamente',
-            user: updatedUser
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'error al actualizar usuario',
-            error: error.message
-        });
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
     }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: updates },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Usuario actualizado correctamente',
+      user: updatedUser
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar usuario',
+      error: error.message
+    });
+  }
 };
+
+
 
 //Eliminar usuario(solo admin)
 exports.deleteUser = async (req, res) => {
-    console.log('[CONTROLLER] Ejecutando deleteUser para Id:', req.params.id);//diagnostico
-    try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id);
-        if (!deletedUser) {
-            console.log('[CONTROLLER] usuario no encontrado para eliminar');//Diagnostico
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            });
-        }
-
-        console.log('[CONTROLLER] usuario eliminado ', deletedUser._id); //diagonostico
-        res.status(200).json({
-            success: true,
-            message: 'usuario eliminado correctamente'
-        });
-    } catch (error) {
-        console.error('[CONTROLLER ] error al eliminar usuario', error.message);//diagonostico
-        res.status(500).json({
-            success: false,
-            message: 'error al eliminar usuario'
-        });
+  console.log('[CONTROLLER] Ejecutando deleteUser para Id:', req.params.id);//diagnostico
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      console.log('[CONTROLLER] usuario no encontrado para eliminar');//Diagnostico
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
     }
+
+    console.log('[CONTROLLER] usuario eliminado ', deletedUser._id); //diagonostico
+    res.status(200).json({
+      success: true,
+      message: 'usuario eliminado correctamente'
+    });
+  } catch (error) {
+    console.error('[CONTROLLER ] error al eliminar usuario', error.message);//diagonostico
+    res.status(500).json({
+      success: false,
+      message: 'error al eliminar usuario'
+    });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { newPassword } = req.body;
+  if (!newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: 'La nueva contraseña es requerida'
+    });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Contraseña actualizada correctamente'
+    });
+  } catch (error) {
+    console.error('[CambioContraseña]', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar la contraseña'
+    });
+  }
+};
+
+// Cambiar contraseña propia
+exports.changeOwnPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    // Validación básica
+    if (!newPassword || newPassword.trim().length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'La nueva contraseña debe tener al menos 6 caracteres'
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Contraseña actualizada correctamente'
+    });
+
+  } catch (error) {
+    console.error('[changeOwnPassword] Error al cambiar contraseña:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al cambiar contraseña'
+    });
+  }
 };

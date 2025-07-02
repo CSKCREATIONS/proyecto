@@ -135,7 +135,6 @@ exports.signin = async (req, res) => {
     // 4. Generar token JWT
 
 
-    ///AGREGADO CON GPT
     const Role = require('../models/Role'); // importar
 
     // buscar el rol completo con permisos
@@ -160,7 +159,8 @@ exports.signin = async (req, res) => {
     // 5. Preparar respuesta sin datos sensibles
     const userData = user.toObject();
     delete userData.password;
-    userData.permissions = roleDoc.permissions; // ← agrega permisos al objeto user
+    userData.permissions = roleDoc.permissions; 
+    userData.mustChangePassword = user.mustChangePassword;
 
 
     res.status(200).json({

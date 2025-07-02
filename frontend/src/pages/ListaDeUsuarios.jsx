@@ -49,16 +49,31 @@ const exportarPDF = () => {
 // Funcion exportar a Excel
 
 
-const exportToExcel = () => {
-  // Cambiar el ID a 'tabla_pedidos_agendados'
-  const table = document.getElementById('tabla_lista_usuarios');
-
-  if (!table) {
-    console.error("Tabla no encontrada");
+const exportToExcel = (todosLosUsuarios) => {
+  if (!todosLosUsuarios || todosLosUsuarios.length === 0) {
+    console.error("No hay datos para exportar");
     return;
   }
 
-  const workbook = XLSX.utils.table_to_book(table);
+  const dataFormateada = todosLosUsuarios.map(usuario => ({
+    'Nombre completo': `${usuario.firstName || ''} ${usuario.secondName || ''} ${usuario.surname || ''} ${usuario.secondSurname || ''}`.trim(),
+    'Rol': usuario.role,
+    'Correo': usuario.email,
+    'Usuario': usuario.username,
+    'Estado': usuario.enabled ? 'Habilitado' : 'Inhabilitado',
+    'Fecha de creación': new Date(usuario.createdAt).toLocaleString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(dataFormateada);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+
   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
   const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
   saveAs(data, 'ListaUsuarios.xlsx');
@@ -67,7 +82,7 @@ const exportToExcel = () => {
 
 export default function ListaDeUsuarios() {
 
-
+  const [todosLosUsuarios, setTodosLosUsuarios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [puedeEditarUsuario, setPuedeEditarUsuario] = useState(false);
   const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
@@ -100,6 +115,7 @@ export default function ListaDeUsuarios() {
       const data = await response.json();
 
       if (data.success) {
+        setTodosLosUsuarios(data.data);
         setUsuarios(data.data);
       } else {
         console.error('Error al obtener usuarios:', data.message);
@@ -163,7 +179,7 @@ export default function ListaDeUsuarios() {
           Swal.fire({
             icon: 'success',
             text: `Usuario ${participio} correctamente`,
-            timer: 1500,
+            timer: 2000,
             showConfirmButton: false
           });
         } else {
@@ -209,7 +225,7 @@ export default function ListaDeUsuarios() {
           <div className='encabezado-modulo'>
             <div>
               <h3>Lista de usuarios</h3>
-              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportToExcel}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
+              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={() => exportToExcel(todosLosUsuarios)}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
               <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i><span> Exportar a PDF</span></button>
             </div>
             {puedeCrearUsuario && (
