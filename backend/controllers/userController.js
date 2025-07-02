@@ -140,34 +140,51 @@ exports.updateUser = async (req, res) => {
 };
 
 
-
-//Eliminar usuario(solo admin)
+//Eliminar usuario solo si nunca ha iniciado sesión
 exports.deleteUser = async (req, res) => {
-  console.log('[CONTROLLER] Ejecutando deleteUser para Id:', req.params.id);//diagnostico
+  console.log('[CONTROLLER] Ejecutando deleteUser para Id:', req.params.id); // diagnóstico
+
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
-      console.log('[CONTROLLER] usuario no encontrado para eliminar');//Diagnostico
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      console.log('[CONTROLLER] Usuario no encontrado para eliminar'); // diagnóstico
       return res.status(404).json({
         success: false,
         message: 'Usuario no encontrado'
       });
     }
 
-    console.log('[CONTROLLER] usuario eliminado ', deletedUser._id); //diagonostico
+    //  Verificar si el usuario ha iniciado sesión al menos una vez
+    if (user.lastLogin !== null) {
+      console.log('[CONTROLLER] No se puede eliminar: usuario ya inició sesión'); // diagnóstico
+      return res.status(403).json({
+        success: false,
+        message: 'No se puede eliminar: el usuario ya ha iniciado sesión en el sistema.'
+      });
+    }
+
+    //  Si pasa la validación, eliminar
+    await User.findByIdAndDelete(req.params.id);
+    console.log('[CONTROLLER] Usuario eliminado', user._id); // diagnóstico
+
     res.status(200).json({
       success: true,
-      message: 'usuario eliminado correctamente'
+      message: 'Usuario eliminado correctamente'
     });
+
   } catch (error) {
-    console.error('[CONTROLLER ] error al eliminar usuario', error.message);//diagonostico
+    console.error('[CONTROLLER] Error al eliminar usuario', error.message); // diagnóstico
     res.status(500).json({
       success: false,
-      message: 'error al eliminar usuario'
+      message: 'Error al eliminar usuario'
     });
   }
 };
 
+
+
+/****cambia la contraseña de cualquier usuario */
 exports.changePassword = async (req, res) => {
   const { newPassword } = req.body;
   if (!newPassword) {
@@ -210,7 +227,6 @@ exports.changeOwnPassword = async (req, res) => {
   try {
     const { newPassword } = req.body;
 
-    // Validación básica
     if (!newPassword || newPassword.trim().length < 6) {
       return res.status(400).json({
         success: false,

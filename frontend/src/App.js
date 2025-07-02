@@ -1,8 +1,10 @@
 import React from 'react';
 import { Routes, Route, BrowserRouter, } from "react-router-dom";
 import ListaDeUsuarios from './pages/ListaDeUsuarios';
-import Home from './pages/Home';
+import CambiarContrasena from './components/CambiarContraseña';
+import Perfil from './pages/Perfil';
 import RolesYPermisos from './pages/RolesYPermisos'
+import Home from './pages/Home';
 import InformacionDeFuente from './pages/InformacionDeFuente';
 import Documentacion from './pages/Documentacion';
 import AgendarVenta from './pages/AgendarVenta';
@@ -24,7 +26,6 @@ import ProcesoAdicionar from './pages/ProcesoAdicionar';
 import DocumentacionAdicionar from './pages/DocumentacionAdicionar';
 import DocumentacionEdit from './pages/DocumentacionEdit';
 import Trazabilidad from './pages/Trazabilidad';
-import Perfil from './pages/Perfil';
 import Error404 from './pages/Error404';
 import Error504 from './pages/Error504';
 import Empresa from './pages/Empresa';
@@ -69,6 +70,8 @@ const App = () => {
               </PermisoRoute>
             }
           />
+          <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
+
           <Route path='/InformacionDeFuente' element={<InformacionDeFuente />} />
           <Route path='/Documentacion' element={<Documentacion />} />
           <Route path='/DocumentacionAdicionar' element={<DocumentacionAdicionar />} />

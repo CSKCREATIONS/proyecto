@@ -52,9 +52,11 @@ const userSchema = new mongoose.Schema({
   mustChangePassword: {
     type: Boolean,
     default: true
-  }
-
-
+  },
+    lastLogin: {
+    type: Date,
+    default: null
+  },
 }, { timestamps: true });
 
 // Middleware para hashear la contraseña antes de guardar

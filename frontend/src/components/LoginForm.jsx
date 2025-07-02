@@ -26,13 +26,16 @@ export default function LoginForm(props) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Redirigir a la pantalla principal
-        navigate('/Home');
+        if (data.user.mustChangePassword) {
+          navigate('/cambiar-contrasena');
+        } else {
+          navigate('/Home');
+        }
       } else {
         setMensajeError(data.message || 'Error al iniciar sesión');
       }
 
-      
+
 
     } catch (error) {
       setMensajeError('Error en el servidor');

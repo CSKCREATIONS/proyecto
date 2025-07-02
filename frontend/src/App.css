@@ -254,6 +254,49 @@ li {
   font-size: small
 }
 
+/*****Estilos para la vista de /cambiar_contraseña al iniciar sesion por primera vez**********/
+.cambiar-contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #e5e5e5;
+}
+
+.cambiar-formulario {
+  background: white;
+  padding: 2rem 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+.cambiar-formulario h2{
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.cambiar-formulario h3{
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+
+
+
+.btn-cambiar {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #215f5b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
 
 
 
