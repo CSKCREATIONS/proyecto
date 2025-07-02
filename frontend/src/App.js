@@ -52,9 +52,12 @@ const App = () => {
           <Route
             path='/ListaDeUsuarios'
             element={
-              <PermisoRoute permiso="usuarios.ver">
-                <ListaDeUsuarios />
-              </PermisoRoute>
+              <PrivateRoute>
+                <PermisoRoute permiso="usuarios.ver">
+                  <ListaDeUsuarios />
+                </PermisoRoute>
+              </PrivateRoute>
+
             }
           />
 

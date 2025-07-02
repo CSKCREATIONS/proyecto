@@ -7,7 +7,7 @@ const roleSchema = new mongoose.Schema({
         unique: true
     },
     permissions:
-        [{ type: String }], // Ej: ["usuarios.ver", "usuarios.editar", "ventas.crear"]
+        [{ type: String }],
     enabled: {
         type: Boolean,
         default: true

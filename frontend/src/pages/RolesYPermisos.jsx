@@ -4,7 +4,8 @@ import Fijo from '../components/Fijo'
 import NavUsuarios from '../components/NavUsuarios'
 import AgregarRol from '../components/AgregarRol';
 import { openModal } from '../funciones/animaciones';
-import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 
 export default function RolesYPermisos() {
 
@@ -25,6 +26,19 @@ export default function RolesYPermisos() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const toggleEstadoRol = async (id, nuevoEstado) => {
+    const confirmResult = await Swal.fire({
+      title: nuevoEstado ? '¿Habilitar rol?' : '¿Inhabilitar rol?',
+      text: `¿Estás seguro de que deseas ${nuevoEstado ? 'habilitar' : 'inhabilitar'} este rol?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, confirmar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`http://localhost:5000/api/roles/${id}/toggle-enabled`, {
@@ -38,18 +52,25 @@ export default function RolesYPermisos() {
 
       if (!res.ok) throw new Error('Error al cambiar estado del rol');
 
-      // Actualiza la lista
       const data = await res.json();
+
       setRoles(prev =>
         prev.map(r => (r._id === id ? { ...r, enabled: nuevoEstado } : r))
       );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Estado actualizado',
+        text: `El rol ha sido ${nuevoEstado ? 'habilitado' : 'inhabilitado'} correctamente.`,
+        timer: 2000,
+        showConfirmButton: false
+      });
+
     } catch (error) {
       console.error(error);
+      Swal.fire('Error', 'No se pudo actualizar el estado del rol', 'error');
     }
   };
-
-
-
 
 
   useEffect(() => {
@@ -141,7 +162,7 @@ export default function RolesYPermisos() {
                       {puedeEditarRol && (
                         <button
                           className='btnTransparente'
-                          style={{ marginLeft: '.7rem', height: '35px', width: '50px' }}
+                          style={{ height: '35px', width: '50px' }}
                           onClick={() => openModal('editUserModal')}
                         >
                           <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>

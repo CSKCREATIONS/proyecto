@@ -32,6 +32,8 @@ export default function LoginForm(props) {
         setMensajeError(data.message || 'Error al iniciar sesión');
       }
 
+      
+
     } catch (error) {
       setMensajeError('Error en el servidor');
       console.error('Login error:', error);

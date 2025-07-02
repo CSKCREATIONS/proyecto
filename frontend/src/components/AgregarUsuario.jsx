@@ -10,6 +10,18 @@ export default function AgregarUsuario() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [rolesDisponibles, setRolesDisponibles] = useState([]);
+  const [rolesSeleccionados, setRolesSeleccionados] = useState([]);
+
+
+  const toggleRole = (roleName) => {
+    setRolesSeleccionados(prev => {
+      if (prev.includes(roleName)) {
+        return prev.filter(r => r !== roleName);
+      } else {
+        return [...prev, roleName];
+      }
+    });
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');

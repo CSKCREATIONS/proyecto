@@ -1,348 +1,463 @@
+import { useState } from "react";
 import { closeModal, toggleSubMenu } from "../funciones/animaciones";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
 
 export default function AgregarRol() {
-    const handleClick = () =>
-        Swal.fire({
-            text: 'Rol creado correctamente',
-            icon: 'success',
-            showCancelButton: false,
-            showCloseButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
-        });
+
+   const [nombreRol, setNombreRol] = useState('');
+   const [permisos, setPermisos] = useState([]);
+
+   const permisosUsuarios = [
+      'usuarios.crear',
+      'usuarios.editar',
+      'usuarios.inhabilitar',
+      'usuarios.eliminar'
+   ];
+
+   const permisosRoles = [
+      'roles.crear',
+      'roles.editar',
+      'roles.inhabilitar'
+   ];
 
 
-    return (
-        <form class="modal" id="crear-rol" onSubmit={(e) => {
-            e.preventDefault(); // Previene recarga
-        }}>
-            <h3>Crear rol</h3>
-            <form action="">
-                <br />
-                <label>Nombre de rol</label>
-                <input className='entrada' type="text" style={{ marginLeft: '1.5rem' }} /><br /><br />
-                <label >Módulos con acceso</label>
-                <br />
-                <br />
-                <div class="checkbox-group">
-                    <input type="checkbox" onClick={() => toggleSubMenu('permisos-usuarios')} /> Usuarios
-                    <input type="checkbox" onClick={() => toggleSubMenu('permisos-compras')} /> Compras
-                    <input type="checkbox" onClick={() => toggleSubMenu('permisos-productos')} /> Productos
-                    <input type="checkbox" onClick={() => toggleSubMenu('permisos-ventas')} /> Ventas
-                </div>
-                <br />
-                <div className="section dropdown" id='permisos-usuarios'>
-                    <h4>Permisos módulo usuarios</h4>
-                    <br />
-                    <div class="permissions">
-                        <div className="group">
-                            <label >
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" onChange={() => toggleSubMenu('lista-usuarios')} />
-                                Lista de usuarios
-                            </label>
-                            <br />
 
-                        </div>
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" onChange={() => toggleSubMenu('roles-y-permisos')} />
-                                Roles y permisos
-                            </label>
-                            <br />
-                        </div>
-                        <br />
+   // Manejo de cambios en checkboxes
+   const togglePermiso = (permiso) => {
+      setPermisos(prev =>
+         prev.includes(permiso)
+            ? prev.filter(p => p !== permiso)
+            : [...prev, permiso]
+      );
+   };
 
-                    </div>
-                    <br />
-                    <div class="form-group-rol dropdown" id='lista-usuarios'>
-                        <label>Permisos para lista de usuarios</label>
-                        <div class="radio-options">
-                            <input type="checkbox" id="check_editar" /> Crear usuarios
-                            <input type="checkbox" id="check_editar" /> Editar usuarios
-                            <input type="checkbox" /> Habilitar / Inhabilitar
-                            <input type="checkbox" /> Eliminar usuarios
-                            <input type="radio" name="usersListPermissions" /> Todos los permisos
-                        </div>
-                    </div>
-                    <div class="form-group-rol dropdown" id='roles-y-permisos'>
-                        <label>Permisos para roles y permisos</label>
-                        <div class="radio-options">
-                            <input type="checkbox" /> Crear roles
-                            <input type="checkbox" /> Editar roles
-                            <input type="checkbox" /> Habilitar / Inhabilitar
-                            <input type="radio" /> Todos los permisos
-                        </div>
-                    </div>
+   const toggleGrupoPermisos = (grupoPermisos) => {
+      const todosMarcados = grupoPermisos.every(p => permisos.includes(p));
+      if (todosMarcados) {
+         // Si todos ya están marcados → los quitamos
+         setPermisos(prev => prev.filter(p => !grupoPermisos.includes(p)));
+      } else {
+         // Si hay al menos uno sin marcar → los agregamos todos
+         setPermisos(prev => [...new Set([...prev, ...grupoPermisos])]);
+      }
+   };
 
-                </div>
-                <div className="section dropdown" id='permisos-compras'>
-                    <h4>Permisos módulo compras</h4>
-                    <br />
-                    <div class="permissions">
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                                Lista de proveedores
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
-                                Historial de compras
-                            </label>
-                            <br />
-                        </div>
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                                Ver reportes
-                            </label>
-                            <br />
 
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" />
-                                Todos
-                            </label>
-                        </div>
-                    </div>
-                    <br />
+   const handleSubmit = async (e) => {
+      e.preventDefault();
 
-                </div>
-                <div className="section dropdown" id='permisos-productos'>
-                    <h4>Permisos módulo productos</h4>
-                    <br />
+      if (!nombreRol.trim()) {
+         return Swal.fire('Error', 'El nombre del rol es obligatorio', 'error');
+      }
 
-                    <div class="permissions">
+      if (permisos.length === 0) {
+         return Swal.fire('Error', 'Selecciona al menos un permiso', 'error');
+      }
 
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                                Lista de productos
-                            </label>
-                            <br />
-                        </div>
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                                Pedidos cancelados
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
-                                Registrar cotización
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
-                                Lista de cotizaciones
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
-                                Todos
-                            </label>
-                        </div>
-                    </div>
-                    <br />
+      try {
+         const token = localStorage.getItem('token');
 
-                    <div class="form-group-rol">
-                        <label>Permisos para pedidos agendados</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para pedidos entregados</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de devoluciones</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de cotizaciones</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de clientes</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para prospectos de cliente</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="section dropdown" id='permisos-ventas'>
-                    <h4>Permisos módulo ventas</h4>
-                    <br />
+         const response = await fetch('/api/roles', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+               'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ name: nombreRol, permissions: permisos })
+         });
 
-                    <div class="permissions">
+         const data = await response.json();
 
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendar" />
-                                Agendar pedido
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendados" />
-                                Pedidos agendados
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
-                                Pedidos entregados
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="devueltos" />
-                                Pedidos devueltos
-                            </label>
-                        </div>
-                        <div className="group">
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                                Pedidos cancelados
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
-                                Registrar cotización
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
-                                Lista de cotizaciones
-                            </label>
-                            <br />
-                            <label>
-                                <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
-                                Todos
-                            </label>
-                        </div>
-                    </div>
-                    <br />
+         if (data.success) {
+            Swal.fire('Éxito', 'Rol creado correctamente', 'success');
+            setNombreRol('');
+            setPermisos([]);
+            closeModal('crear-rol');
+         } else {
+            Swal.fire('Error', data.message || 'No se pudo crear el rol', 'error');
+         }
 
-                    <div class="form-group-rol">
-                        <label>Permisos para pedidos agendados</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para pedidos entregados</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de devoluciones</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de cotizaciones</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para lista de clientes</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group-rol">
-                        <label>Permisos para prospectos de cliente</label>
-                        <div class="radio-options">
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Solo ver
-                            </div>
-                            <div>
-                                <input type="radio" name="pedidosagendados" /> Todos los permisos
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      } catch (error) {
+         console.error('[AgregarRol]', error);
+         Swal.fire('Error', 'Error del servidor al crear el rol', 'error');
+      }
+   };
 
-                <div className="buttons">
-                    <button type="button" onClick={() => closeModal('crear-rol')} className="btn btn-primary-cancel" >Cancelar</button>
+   return (
+      <form class="modal" id="crear-rol" onSubmit={handleSubmit}>
+         <h3>Crear rol</h3>
+         <br />
+         <label>Nombre de rol</label>
+         <input className='entrada' type="text" style={{ marginLeft: '1.5rem' }} value={nombreRol} onChange={(e) => setNombreRol(e.target.value)} /><br /><br />
+         <label >Módulos con acceso</label>
+         <br />
+         <br />
+         <div class="checkbox-group">
+            <input value="usuarios" type="checkbox" onClick={() => toggleSubMenu('permisos-usuarios')} />Usuarios
+            <input type="checkbox" onClick={() => toggleSubMenu('permisos-compras')} /> Compras
+            <input type="checkbox" onClick={() => toggleSubMenu('permisos-productos')} /> Productos
+            <input type="checkbox" onClick={() => toggleSubMenu('permisos-ventas')} /> Ventas
+         </div>
+         <br />
+         <div className="section dropdown" id='permisos-usuarios'>
+            <h4>Permisos módulo usuarios</h4>
+            <br />
+            <div class="permissions">
+               <div className="group">
+                  <label >
+                     <input
+                        style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
+                        type="checkbox"
+                        checked={permisos.includes('usuarios.ver')}
+                        onChange={() => { toggleSubMenu('lista-usuarios'); togglePermiso('usuarios.ver') }}
+                     />
+                     Lista de usuarios
+                  </label>
+                  <br />
 
-                    <button type="submit" onClick={() => closeModal('crear-rol')} className="btn btn-primary-env">Crear Rol</button>
+               </div>
+               <div className="group">
+                  <label>
+                     <input
+                        style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
+                        type="checkbox"
+                        checked={permisos.includes('roles.ver')}
+                        onChange={() => { toggleSubMenu('roles-y-permisos'); togglePermiso('roles.ver') }} />
+                     Roles y permisos
+                  </label>
+                  <br />
+               </div>
+               <br />
 
-                </div>
-            </form>
+            </div>
+            <br />
+            <div class="form-group-rol dropdown" id='lista-usuarios'>
+               <label>Permisos para lista de usuarios</label>
+               <div class="radio-options">
+                  <input type="checkbox"
+                     checked={permisos.includes('usuarios.crear')}
+                     onChange={() => togglePermiso('usuarios.crear')}
+                  /> Crear usuarios
+                  <input type="checkbox"
+                     checked={permisos.includes('usuarios.editar')}
+                     onChange={() => togglePermiso('usuarios.editar')}
+                  /> Editar usuarios
+                  <input type="checkbox"
+                     checked={permisos.includes('usuarios.inhabilitar')}
+                     onChange={() => togglePermiso('usuarios.inhabilitar')}
+                  /> Habilitar / Inhabilitar
+                  <input type="checkbox"
+                     checked={permisos.includes('usuarios.eliminar')}
+                     onChange={() => togglePermiso('usuarios.eliminar')}
+                  /> Eliminar usuarios
+                  <input
+                     type="radio"
+                     name="usersListPermissions"
+                     onClick={() => toggleGrupoPermisos(permisosUsuarios)}
+                     checked={permisosUsuarios.every(p => permisos.includes(p))}
+                  /> Todos los permisos
 
-        </form>
-    )
+               </div>
+            </div>
+            <div class="form-group-rol dropdown" id='roles-y-permisos'>
+               <label>Permisos para roles y permisos</label>
+               <div className="radio-options">
+                  <input
+                     type="checkbox"
+                     checked={permisos.includes('roles.crear')}
+                     onChange={() => togglePermiso('roles.crear')}
+                  /> Crear roles
+
+                  <input
+                     type="checkbox"
+                     checked={permisos.includes('roles.editar')}
+                     onChange={() => togglePermiso('roles.editar')}
+                  /> Editar roles
+
+                  <input
+                     type="checkbox"
+                     checked={permisos.includes('roles.inhabilitar')}
+                     onChange={() => togglePermiso('roles.inhabilitar')}
+                  /> Habilitar / Inhabilitar
+
+                  <input
+                     type="radio"
+                     name="rolesPermissions"
+                     onClick={() => toggleGrupoPermisos(permisosRoles)}
+                     checked={permisosRoles.every(p => permisos.includes(p))}
+                  /> Todos los permisos
+               </div>
+            </div>
+            <div className=" dropdown" id='permisos-compras'>
+               <h4>Permisos módulo compras</h4>
+               <br />
+               <div class="permissions">
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
+                        Lista de proveedores
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
+                        Historial de compras
+                     </label>
+                     <br />
+                  </div>
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
+                        Ver reportes
+                     </label>
+                     <br />
+
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" />
+                        Todos
+                     </label>
+                  </div>
+               </div>
+               <br />
+
+            </div>
+            <div className="section dropdown" id='permisos-productos'>
+               <h4>Permisos módulo productos</h4>
+               <br />
+
+               <div class="permissions">
+
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
+                        Lista de productos
+                     </label>
+                     <br />
+                  </div>
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
+                        Pedidos cancelados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
+                        Registrar cotización
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
+                        Lista de cotizaciones
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
+                        Todos
+                     </label>
+                  </div>
+               </div>
+               <br />
+
+               <div class="form-group-rol">
+                  <label>Permisos para pedidos agendados</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para pedidos entregados</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de devoluciones</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de cotizaciones</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de clientes</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para prospectos de cliente</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className="section dropdown" id='permisos-ventas'>
+               <h4>Permisos módulo ventas</h4>
+               <br />
+
+               <div class="permissions">
+
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendar" />
+                        Agendar pedido
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendados" />
+                        Pedidos agendados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
+                        Pedidos entregados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="devueltos" />
+                        Pedidos devueltos
+                     </label>
+                  </div>
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
+                        Pedidos cancelados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
+                        Registrar cotización
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
+                        Lista de cotizaciones
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
+                        Todos
+                     </label>
+                  </div>
+               </div>
+               <br />
+
+               <div class="form-group-rol">
+                  <label>Permisos para pedidos agendados</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para pedidos entregados</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de devoluciones</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de cotizaciones</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para lista de clientes</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group-rol">
+                  <label>Permisos para prospectos de cliente</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+
+
+         <div className="buttons">
+            <button type="button" onClick={() => closeModal('crear-rol')} className="btn btn-primary-cancel">
+               Cancelar
+            </button>
+            <button type="submit" className="btn btn-primary-env">
+               Crear Rol
+            </button>
+         </div>
+
+
+      </form>
+   )
 
 
 }
