@@ -1,0 +1,7 @@
+cd front1
+
+npm install recharts
+npm install axios
+npm install sweetalert2
+npm install antd
+npm install @ant-design/icons
