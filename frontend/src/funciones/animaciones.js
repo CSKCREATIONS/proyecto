@@ -2,7 +2,9 @@
 /*Funcion para desplegar los submenus de la barra lateral*/ 
 export function toggleSubMenu(menuId){
     const targetMenu = document.getElementById(menuId);
-    targetMenu.classList.toggle('visible')
+    if(targetMenu) {
+        targetMenu.classList.toggle('visible')
+    }
 }
 
 

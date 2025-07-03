@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import { closeModal, toggleSubMenu } from "../funciones/animaciones";
 import Swal from "sweetalert2";
 
-export default function AgregarRol() {
-
+export default function EditarRol({ rol }) {
    const [nombreRol, setNombreRol] = useState('');
    const [permisos, setPermisos] = useState([]);
-
    const permisosUsuarios = [
       'usuarios.crear',
       'usuarios.editar',
@@ -26,7 +24,12 @@ export default function AgregarRol() {
       'productos.inactivar'
    ];
 
-
+   useEffect(() => {
+      if (rol) {
+         setNombreRol(rol.name || '');
+         setPermisos(rol.permissions || []);
+      }
+   }, [rol]);
 
    // Manejo de cambios en checkboxes
    const togglePermiso = (permiso) => {
@@ -36,7 +39,6 @@ export default function AgregarRol() {
             : [...prev, permiso]
       );
    };
-
    const toggleGrupoPermisos = (grupoPermisos) => {
       const todosMarcados = grupoPermisos.every(p => permisos.includes(p));
       if (todosMarcados) {
@@ -47,8 +49,6 @@ export default function AgregarRol() {
          setPermisos(prev => [...new Set([...prev, ...grupoPermisos])]);
       }
    };
-
-
    const handleSubmit = async (e) => {
       e.preventDefault();
 
@@ -62,36 +62,35 @@ export default function AgregarRol() {
 
       try {
          const token = localStorage.getItem('token');
-
-         const response = await fetch('/api/roles', {
-            method: 'POST',
+         const res = await fetch(`http://localhost:5000/api/roles/${rol._id}`, {
+            method: 'PATCH',
             headers: {
                'Content-Type': 'application/json',
-               'Authorization': 'Bearer ' + token
+               'x-access-token': token
             },
-            body: JSON.stringify({ name: nombreRol, permissions: permisos })
+            body: JSON.stringify({
+               name: nombreRol,
+               permissions: permisos
+            })
          });
 
-         const data = await response.json();
+         const data = await res.json();
 
-         if (data.success) {
-            Swal.fire('Éxito', 'Rol creado correctamente', 'success');
-            setNombreRol('');
-            setPermisos([]);
-            closeModal('crear-rol');
+         if (res.ok && data.success) {
+            Swal.fire('Éxito', 'Rol actualizado correctamente', 'success');
+            closeModal('edit-role-modal');
          } else {
-            Swal.fire('Error', data.message || 'No se pudo crear el rol', 'error');
+            Swal.fire('Error', data.message || 'No se pudo actualizar el rol', 'error');
          }
 
       } catch (error) {
-         console.error('[AgregarRol]', error);
-         Swal.fire('Error', 'Error del servidor al crear el rol', 'error');
+         console.error('[EditarRol]', error);
+         Swal.fire('Error', 'Error del servidor al actualizar el rol', 'error');
       }
    };
-
    return (
-      <form class="modal" id="crear-rol" onSubmit={handleSubmit}>
-         <h3>Crear rol</h3>
+      <form class="modal" id="edit-role-modal" onSubmit={handleSubmit}>
+         <h3>Editar rol</h3>
          <br />
          <label>Nombre de rol</label>
          <input className='entrada' type="text" style={{ marginLeft: '1.5rem' }} value={nombreRol} onChange={(e) => setNombreRol(e.target.value)} /><br /><br />
@@ -454,17 +453,15 @@ export default function AgregarRol() {
 
 
          <div className="buttons">
-            <button type="button" onClick={() => closeModal('crear-rol')} className="btn btn-primary-cancel">
+            <button type="button" onClick={() => closeModal('edit-role-modal')} className="btn btn-primary-cancel">
                Cancelar
             </button>
             <button type="submit" className="btn btn-primary-env">
-               Crear Rol
+               Guardar cambios
             </button>
          </div>
 
 
       </form>
    )
-
-
 }

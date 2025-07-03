@@ -24,5 +24,11 @@ router.patch('/:id/toggle-enabled',
   roleController.toggleEnabled
 );
 
+router.patch('/:id',
+  verifyToken,
+  checkPermission('roles.editar'),
+  roleController.updateRole
+);
+
 
 module.exports = router;
