@@ -88,6 +88,10 @@ export default function ListaDeUsuarios() {
   const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
   const [puedeEliminarUsuario, setPuedeEliminarUsuario] = useState(false);
   const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [filtroTexto, setFiltroTexto] = useState('');
+  const [filtroRol, setFiltroRol] = useState('todos');
+  const [filtroEstado, setFiltroEstado] = useState('todos');
+
 
   /***esto se encarga de la paginacion de la tabla*****/
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,45 +104,70 @@ export default function ListaDeUsuarios() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+const fetchUsuarios = async () => {
+  try {
+    const token = localStorage.getItem('token');
 
-  // FUNCIONES
-  const fetchUsuarios = async () => {
-    try {
-      const token = localStorage.getItem('token'); //obtiene el token del usuario que hace la peticion
-
-      const response = await fetch('http://localhost:5000/api/users', {
-        headers: {
-          'x-access-token': token
-        }
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setTodosLosUsuarios(data.data);
-        setUsuarios(data.data);
-      } else {
-        console.error('Error al obtener usuarios:', data.message);
+    const response = await fetch('http://localhost:5000/api/users', {
+      headers: {
+        'x-access-token': token
       }
-    } catch (error) {
-      console.error('Error al conectar con el backend:', error.message);
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setTodosLosUsuarios(data.data);
+    } else {
+      console.error('Error al obtener usuarios:', data.message);
     }
-  };
+  } catch (error) {
+    console.error('Error al conectar con el backend:', error.message);
+  }
+};
+
+
+
+ useEffect(() => {
+  fetchUsuarios();
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user && user.permissions) {
+    setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
+    setPuedeEditarUsuario(user.permissions.includes('usuarios.editar'));
+    setPuedeEliminarUsuario(user.permissions.includes('usuarios.eliminar'));
+  }
+}, []);
+
+
 
   useEffect(() => {
-    fetchUsuarios();
+    const texto = filtroTexto.toLowerCase();
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.permissions) {
-      setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
-    }
-    if (user && user.permissions) {
-      setPuedeEditarUsuario(user.permissions.includes('usuarios.editar'));
-    }
-    if (user && user.permissions) {
-      setPuedeEliminarUsuario(user.permissions.includes('usuarios.eliminar'));
-    }
-  }, []);
+    const filtrados = todosLosUsuarios.filter((usuario) => {
+      const nombreCompleto = `${usuario.firstName} ${usuario.secondName} ${usuario.surname} ${usuario.secondSurname}`.toLowerCase();
+      const correo = usuario.email.toLowerCase();
+
+      const coincideTexto =
+        nombreCompleto.includes(texto) || correo.includes(texto);
+
+      const coincideRol =
+        filtroRol === 'todos' || usuario.role === filtroRol;
+
+      const coincideEstado =
+        filtroEstado === 'todos' ||
+        (filtroEstado === 'habilitado' && usuario.enabled) ||
+        (filtroEstado === 'inhabilitado' && !usuario.enabled);
+
+      return coincideTexto && coincideRol && coincideEstado;
+    });
+
+    setUsuarios(filtrados);
+    setCurrentPage(1); // Reiniciar paginación cuando se filtra
+  }, [filtroTexto, filtroRol, filtroEstado, todosLosUsuarios]);
+
+
+
 
   const toggleEstadoUsuario = async (id, estadoActual, username) => {
 
@@ -193,6 +222,45 @@ export default function ListaDeUsuarios() {
   };
 
 
+  const eliminarUsuario = async (usuario) => {
+    const confirmacion = await Swal.fire({
+      title: `¿Estás seguro?`,
+      text: `Esta acción eliminará permanentemente al usuario "${usuario.username}".`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (confirmacion.isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`http://localhost:5000/api/users/${usuario._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Remueve el usuario del estado actual
+          setUsuarios(prev => prev.filter(u => u._id !== usuario._id));
+          setTodosLosUsuarios(prev => prev.filter(u => u._id !== usuario._id));
+
+          Swal.fire('Eliminado', 'Usuario eliminado correctamente.', 'success');
+        } else {
+          Swal.fire('Error', data.message || 'No se pudo eliminar el usuario.', 'error');
+        }
+      } catch (error) {
+        console.error('Error al eliminar usuario:', error.message);
+        Swal.fire('Error', 'Error en la conexión con el servidor.', 'error');
+      }
+    }
+  };
 
 
 
@@ -236,6 +304,40 @@ export default function ListaDeUsuarios() {
 
           <br />
 
+          <div className="filtros">
+            <input
+              type="text"
+              placeholder="Buscar por nombre o correo"
+              value={filtroTexto}
+              onChange={(e) => setFiltroTexto(e.target.value)}
+              style={{ marginRight: '10px' }}
+            />
+
+            <select
+              value={filtroRol}
+              onChange={(e) => setFiltroRol(e.target.value)}
+              style={{ marginRight: '10px' }}
+            >
+              <option value="todos">Todos los roles</option>
+              {[...new Set(todosLosUsuarios.map((u) => u.role))].map((rol) => (
+                <option key={rol} value={rol}>
+                  {rol}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
+              <option value="todos">Todos los estados</option>
+              <option value="habilitado">Habilitado</option>
+              <option value="inhabilitado">Inhabilitado</option>
+            </select>
+          </div>
+
+
+
           <div className="table-container">
             <table id='tabla_lista_usuarios'>
               <thead>
@@ -247,6 +349,8 @@ export default function ListaDeUsuarios() {
                   <th>Nombre de usuario</th>
                   <th>Estado</th>
                   <th>Creado</th>
+                  <th>Último acceso</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -268,24 +372,39 @@ export default function ListaDeUsuarios() {
                       </label>
                     </td>
                     <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      {usuario.lastLogin
+                        ? new Date(usuario.lastLogin).toLocaleString('es-CO', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                        : 'Nunca'}
+                    </td>
+
                     {(puedeEditarUsuario || puedeEliminarUsuario) && (
                       <td>
-                      {puedeEditarUsuario && (
-                        <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => { setUsuarioEditando(usuario); openModal('editUserModal'); }}>
-                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                        </button>
-                      )}
-                      {puedeEliminarUsuario && (
-                        <Link to={`/ListaDeUsuarios`} onClick={() => console.log('Eliminar usuario', usuario._id)}>
-                        <button className='btnTransparente' style={{ height: '35px', width: '50px' }} type="button">
-                          <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
-                        </button>
-                      </Link>
-                      )}
-                      
-                    </td>
+                        {puedeEditarUsuario && (
+                          <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => { setUsuarioEditando(usuario); openModal('editUserModal'); }}>
+                            <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                          </button>
+                        )}
+                        {puedeEliminarUsuario && usuario.lastLogin === null && (
+                          <button
+                            className='btnTransparente'
+                            style={{ height: '35px', width: '50px' }}
+                            type="button"
+                            onClick={() => eliminarUsuario(usuario)}
+                          >
+                            <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
+                          </button>
+                        )}
+
+                      </td>
                     )}
-                    
+
                   </tr>
                 ))}
               </tbody>
