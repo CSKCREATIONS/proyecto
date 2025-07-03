@@ -20,8 +20,8 @@ router.use((req, res, next) => {
 });
 
 // PATCH /api/users/change-password (usuario actual)
-router.patch(
-  '/change-password',
+//para que cambie su contraseña desde su perfil
+router.patch('/change-password',
   verifyToken,
   userController.changeOwnPassword
 );
@@ -52,6 +52,7 @@ router.get('/:id',
 // PUT /api/users/:id - Actualizar usuario 
 router.patch('/:id',
     verifyToken,
+    checkPermission('usuarios.editar'),
     userController.updateUser
 );
 
@@ -90,5 +91,18 @@ router.delete('/:id',
     checkPermission('usuarios.eliminar'),
     userController.deleteUser
 )
+
+
+// para cambiar la contraseña al primer inicio de sesion
+router.patch('/:id/confirm-password-change', verifyToken, async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, { mustChangePassword: false });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error al actualizar estado de contraseña' });
+  }
+});
+
+
 
 module.exports = router;

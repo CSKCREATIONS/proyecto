@@ -30,7 +30,7 @@ exports.signup = async (req, res) => {
       username: req.body.username.trim(),
       email: req.body.email.toLowerCase().trim(),
       password: req.body.password,
-      role: req.body.role 
+      role: req.body.role
     });
 
     // Guardar usuario en la base de datos
@@ -132,6 +132,11 @@ exports.signin = async (req, res) => {
       });
     }
 
+
+    // ✅ REGISTRA el último inicio de sesión
+    user.lastLogin = new Date();
+    await user.save();
+
     // 4. Generar token JWT
 
 
@@ -149,7 +154,7 @@ exports.signin = async (req, res) => {
       {
         id: user._id,
         role: user.role,
-        permissions: roleDoc.permissions 
+        permissions: roleDoc.permissions
       },
       config.secret,
       { expiresIn: config.jwtExpiration }
@@ -159,7 +164,7 @@ exports.signin = async (req, res) => {
     // 5. Preparar respuesta sin datos sensibles
     const userData = user.toObject();
     delete userData.password;
-    userData.permissions = roleDoc.permissions; 
+    userData.permissions = roleDoc.permissions;
     userData.mustChangePassword = user.mustChangePassword;
 
 
