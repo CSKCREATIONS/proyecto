@@ -1,17 +1,81 @@
-import React from 'react'
-import LoginForm from '../components/LoginForm'
+// pages/RecuperarContraseña.jsx
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function RecuperarContraseña() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [mensajeError, setMensajeError] = useState('');
+
+  const handleRecuperar = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/recover-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Correo enviado',
+          text: 'Revisa tu correo electrónico',
+          confirmButtonColor: '#3085d6'
+        });
+        navigate('/');
+      } else {
+        setMensajeError(data.message || 'No se pudo recuperar la contraseña');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMensajeError('Error en el servidor');
+    }
+  };
+
   return (
-    <div>
-      <LoginForm
-      label = 'Correo electrónico'
-      accion = 'Recuperar contraseña'
-      pregunta = '¿Recordaste tu contraseña?'
-      ruta = 'Inicia sesión aquí'
-      enlace = '/'
-      />
-      
+    <div className='container'>
+      <h1 className="Titulo">Portal JLA Global Company</h1>
+
+      <div className="container-form">
+        <div className="login-container">
+          <form onSubmit={handleRecuperar}>
+            <p>Escribe tu correo electrónico. Allí te será enviada una contraseña provisional</p>
+
+            <div className="input-container">
+              <input
+                type="email"
+                id="email"
+                required
+                placeholder=" "
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label htmlFor="email">Correo electrónico</label>
+            </div>
+
+            {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
+
+            <div className="buttons">
+              <button className='btn btn-secondary' type="submit">
+                Recuperar contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="recuperar-contraseña">
+          <p style={{ color: 'lightgray' }}>¿Recordaste tu contraseña?</p>
+          <Link to="/" style={{ color: 'lightgray' }}>
+            <u>Inicia sesión aquí</u>
+          </Link>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

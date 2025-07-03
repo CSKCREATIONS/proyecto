@@ -2,6 +2,10 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
+const sgMail = require('@sendgrid/mail');
+
+/*sgMail.setApiKey('');*/
+
 
 // Función para verificar permisos
 const checkPermission = (userRole, allowedRoles) => {
@@ -184,7 +188,51 @@ exports.signin = async (req, res) => {
   }
 };
 
-// 4. Obtener usuario por ID (Admin y Coordinador)
+/*exports.recoverPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Correo no registrado' });
+    }
+
+    const provisionalPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(provisionalPassword, 10);
+
+    user.password = hashedPassword;
+    user.provisional = true;
+    await user.save();
+
+    const msg = {
+      to: email,
+      from: 'gaseosaconpan1@gmail.com', // usa el Gmail verificado
+      subject: 'Recuperación de contraseña - JLA Global Company',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Recuperación de contraseña</h2>
+          <p>Hola <strong>${user.username}</strong>,</p>
+          <p>Tu contraseña provisional es:</p>
+          <h3 style="color: #333; background: #f0f0f0; padding: 10px; display: inline-block;">${provisionalPassword}</h3>
+          <p>Ingresa al sistema con esta contraseña y cámbiala inmediatamente.</p>
+          <p>Si no solicitaste este cambio, ignora este mensaje.</p>
+          <hr />
+          <small>JLA Global Company</small>
+        </div>
+      `
+    };
+
+    await sgMail.send(msg);
+    return res.status(200).json({ success: true, message: 'Correo enviado correctamente' });
+
+  } catch (error) {
+    console.error('Error al recuperar contraseña:', error);
+    return res.status(500).json({ success: false, message: 'Error del servidor' });
+  }
+};*/
+
+
 exports.getUserById = async (req, res) => {
   console.log('\n=== INICIO CONSULTA POR ID - SOLUCIÓN DEFINITIVA ===');
 

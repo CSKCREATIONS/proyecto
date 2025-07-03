@@ -44,6 +44,8 @@ router.post('/signup',
     authController.signup
 );
 
+//router.post('/recover-password', authController.recoverPassword);
+
 //verificacion final de rutas
 console.log('[AuthRoutes] Rutas configuradas:',router.stack.map(layer =>{
     return{
@@ -51,5 +53,7 @@ console.log('[AuthRoutes] Rutas configuradas:',router.stack.map(layer =>{
         methods: layer.route?.methods
     };
 }));
+
+
 
 module.exports = router;
