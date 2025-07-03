@@ -58,3 +58,41 @@ exports.toggleEnabled = async (req, res) => {
   }
 };
 
+exports.updateRole = async (req, res) => {
+  const roleId = req.params.id;
+  const { name, permissions } = req.body;
+
+  if (!name || !Array.isArray(permissions)) {
+    return res.status(400).json({
+      success: false,
+      message: 'El nombre y los permisos son requeridos.'
+    });
+  }
+
+  try {
+    const updatedRole = await Role.findByIdAndUpdate(
+      roleId,
+      { name, permissions },
+      { new: true }
+    );
+
+    if (!updatedRole) {
+      return res.status(404).json({
+        success: false,
+        message: 'Rol no encontrado.'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Rol actualizado correctamente.',
+      role: updatedRole
+    });
+  } catch (error) {
+    console.error('[updateRole]', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error del servidor al actualizar el rol.'
+    });
+  }
+};

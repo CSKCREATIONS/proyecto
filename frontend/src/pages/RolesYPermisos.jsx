@@ -5,7 +5,7 @@ import NavUsuarios from '../components/NavUsuarios'
 import AgregarRol from '../components/AgregarRol';
 import { openModal } from '../funciones/animaciones';
 import Swal from 'sweetalert2';
-
+import EditarRol from '../components/EditarRol';
 
 export default function RolesYPermisos() {
 
@@ -13,6 +13,8 @@ export default function RolesYPermisos() {
   const [puedeCrearRol, setPuedeCrearRol] = useState(false);
   const [puedeEditarRol, setPuedeEditarRol] = useState(false);
   const navigate = useNavigate();
+  const [rolSeleccionado, setRolSeleccionado] = useState(null);
+
 
   //crea paginacion de tablas
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,8 @@ export default function RolesYPermisos() {
   const totalPages = Math.ceil(roles.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
 
   const toggleEstadoRol = async (id, nuevoEstado) => {
     const confirmResult = await Swal.fire({
@@ -163,13 +167,16 @@ export default function RolesYPermisos() {
                         <button
                           className='btnTransparente'
                           style={{ height: '35px', width: '50px' }}
-                          onClick={() => openModal('editUserModal')}
+                          onClick={() => {
+                            setRolSeleccionado(rol); // <- Aquí guardamos el rol a editar
+                            openModal('edit-role-modal'); // <- Abre el modal
+                          }}
                         >
                           <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
                         </button>
                       )}
-
                     </td>
+
                   </tr>
                 ))}
               </tbody>
@@ -195,6 +202,8 @@ export default function RolesYPermisos() {
 
       </div>
       <AgregarRol />
+      <EditarRol rol={rolSeleccionado} />
+
     </div>
   )
 }

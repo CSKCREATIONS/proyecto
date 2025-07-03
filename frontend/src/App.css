@@ -158,10 +158,8 @@ li {
 }
 
 
-
-
 /*clase agregada con js para hacer visible los dropdown*/
-.visible {
+.dropdown.visible {
   display: block;
 }
 
