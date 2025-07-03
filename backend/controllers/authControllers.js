@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 
-
 // Función para verificar permisos
 const checkPermission = (userRole, allowedRoles) => {
   return allowedRoles.includes(userRole);
