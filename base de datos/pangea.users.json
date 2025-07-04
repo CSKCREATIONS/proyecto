@@ -9,13 +9,15 @@
   "username": "admin2",
   "email": "admin2@example.com",
   "password": "$2b$10$7AQ1asfZLOE0P2JnDps9qe6MLWrfUidyL.0RtrbWsRgBXhOff652a",
-  "role": "controlador de roles",
+  "role": {
+    "$oid": "685a2d1281b79670eea33097"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-23T02:13:34.207Z"
   },
   "updatedAt": {
-    "$date": "2025-07-04T14:24:16.276Z"
+    "$date": "2025-07-04T20:16:43.369Z"
   },
   "__v": 0,
   "lastLogin": {
@@ -34,18 +36,20 @@
   "secondSurname": "",
   "username": "Administrador",
   "email": "nataliamariacardenasgarcia@gmail.com",
-  "password": "$2b$10$OcL47aRvDcOZfSq1Ebhg6u1viOTXkQ/JP1dBQwVBMzfqAjjUFS2/K",
-  "role": "Administrador",
+  "password": "$2b$10$1SVkDcDkQQFFe4M5RKrLSORGHPbzKYE7r5j2aAQk9F11J0vGI6ynK",
+  "role": {
+    "$oid": "685a2d1281b79670eea33097"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-23T02:15:08.214Z"
   },
   "updatedAt": {
-    "$date": "2025-07-04T15:18:33.127Z"
+    "$date": "2025-07-04T22:14:41.624Z"
   },
   "__v": 0,
   "lastLogin": {
-    "$date": "2025-07-04T15:18:33.126Z"
+    "$date": "2025-07-04T22:14:16.604Z"
   },
   "mustChangePassword": false,
   "provisional": true
@@ -61,7 +65,9 @@
   "username": "jla153",
   "email": "ejemplo@example.com",
   "password": "$2b$10$nQz5ma.AdzKnWaRj9.lAmu1onqvRuMJP.31pVMimMhyLls8lSA5E.",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": false,
   "createdAt": {
     "$date": "2025-06-23T03:33:54.640Z"
@@ -83,7 +89,9 @@
   "username": "jla993",
   "email": "prueba@test.com",
   "password": "$2b$10$wxLB5hkjjOWFOxcifjIbgO4oMX3QNo2wY2DRB5Q3A7cKL0e5lkA5.",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-23T04:30:27.410Z"
@@ -104,7 +112,9 @@
   "username": "jla582",
   "email": "jesusgomes@gmail.com",
   "password": "$2b$10$MxiVj1x20wSNyH4sWTfBXeImhvzopfQS/V2auzW0K.M9Tj43UGEJy",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-23T04:43:44.958Z"
@@ -125,13 +135,15 @@
   "username": "jla775",
   "email": "fsharyk@gmail.com",
   "password": "$2b$10$mlwi9wzbLuWhEJeEU5pPmeA66uvPamxhvoVfdB5GhHtQ69fTVJQ8O",
-  "role": "controlador de usuarios",
-  "enabled": false,
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
+  "enabled": true,
   "createdAt": {
     "$date": "2025-06-23T05:27:35.354Z"
   },
   "updatedAt": {
-    "$date": "2025-07-02T04:11:44.129Z"
+    "$date": "2025-07-04T19:31:16.149Z"
   },
   "__v": 0
 },
@@ -146,7 +158,9 @@
   "username": "jla237",
   "email": "juliancastrogil@gmail.com",
   "password": "$2b$10$Wu1Lam65AzNw4wXCcEuVQeRaFr2Sjp6kEEsdHAVm5EUlBREvPZfEC",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T03:47:28.363Z"
@@ -167,7 +181,9 @@
   "username": "jla379",
   "email": "florezalex@gmail.com",
   "password": "$2b$10$ngmAWW9UYeGN5mcSSMAVjeIRZ9HaP3donhIQ9S4VHz.DUBwkIdZ5S",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T05:01:23.004Z"
@@ -193,7 +209,9 @@
   "username": "jla288",
   "email": "user@user.com",
   "password": "$2b$10$q0ZJ95DsbuhEROMI.83YpeP/N3jaXIn3X02EKitbN0oZhIcAunWIO",
-  "role": "Administrador",
+  "role": {
+    "$oid": "685a2d1281b79670eea33097"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-26T04:44:42.954Z"
@@ -214,13 +232,15 @@
   "username": "jla163",
   "email": "avenger@avengers.com",
   "password": "$2b$10$bFnhGjIiBdxx.YfEsb.YSOQUpdM19kXUx83mj2VvzP1ebBKIiBW3O",
-  "role": "controlador de roles",
-  "enabled": true,
+  "role": {
+    "$oid": "685a2c7d81b79670eea3308a"
+  },
+  "enabled": false,
   "createdAt": {
     "$date": "2025-06-26T07:34:50.129Z"
   },
   "updatedAt": {
-    "$date": "2025-06-26T07:34:50.129Z"
+    "$date": "2025-07-04T19:35:11.420Z"
   },
   "__v": 0
 },
@@ -235,7 +255,9 @@
   "username": "jla366",
   "email": "gduarte@teleperformance.com",
   "password": "$2b$10$gxxxzrIDPNqhn4toUxRwsuRmEeNdYp//Po.6Q9no2fQ6kpM8matjq",
-  "role": "controlador de roles",
+  "role": {
+    "$oid": "685a2c7d81b79670eea3308a"
+  },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-26T07:36:47.527Z"
@@ -256,7 +278,9 @@
   "username": "jla242",
   "email": "quinterovlad@jobs.com",
   "password": "$2b$10$EL2rxa1P8dByZbm1twJ/ReP.UB4AMygfubDwm.p7XPArXGjQI00mm",
-  "role": "controlador de usuarios",
+  "role": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
   "enabled": false,
   "createdAt": {
     "$date": "2025-07-02T02:30:00.154Z"
@@ -277,7 +301,9 @@
   "username": "jla872",
   "email": "mikamonsa@gmail.com",
   "password": "$2b$10$2OizjlaesxhwqDdVVwTgAuxtiKpVpfAvd0UI20AU4kyXWX6nhR3Uy",
-  "role": "Administrador",
+  "role": {
+    "$oid": "685a2d1281b79670eea33097"
+  },
   "enabled": true,
   "mustChangePassword": false,
   "lastLogin": {
@@ -302,7 +328,9 @@
   "username": "adminjla",
   "email": "admin@jlaglobal.com",
   "password": "$2b$10$B4ZJOxPX0GT1.SdaCdBNHO.5XCl0Rwx1LTrNfF2kYKu3jeZvY2Qa2",
-  "role": "Administrador",
+  "role": {
+    "$oid": "685a2c7d81b79670eea3308a"
+  },
   "enabled": true,
   "mustChangePassword": false,
   "lastLogin": {
@@ -313,7 +341,7 @@
     "$date": "2025-07-03T07:38:46.131Z"
   },
   "updatedAt": {
-    "$date": "2025-07-04T03:15:16.726Z"
+    "$date": "2025-07-04T20:17:11.332Z"
   },
   "__v": 0
 }]

@@ -5,14 +5,16 @@
   "name": "controlador de roles",
   "permissions": [
     "roles.crear",
-    "roles.ver"
+    "roles.ver",
+    "roles.editar",
+    "roles.inhabilitar"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T04:41:33.450Z"
   },
   "updatedAt": {
-    "$date": "2025-07-02T04:11:34.761Z"
+    "$date": "2025-07-04T20:11:00.118Z"
   },
   "__v": 0
 },
@@ -23,21 +25,20 @@
   "name": "Admin",
   "permissions": [
     "roles.ver",
-    "usuarios.ver",
     "roles.crear",
-    "roles.editar",
+    "usuarios.ver",
     "roles.inhabilitar",
+    "roles.editar",
     "usuarios.crear",
     "usuarios.editar",
-    "usuarios.inhabilitar",
-    "usuarios.eliminar"
+    "usuarios.inhabilitar"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T04:44:02.345Z"
   },
   "updatedAt": {
-    "$date": "2025-07-04T15:36:00.294Z"
+    "$date": "2025-07-04T21:01:49.971Z"
   },
   "__v": 0
 },
@@ -50,14 +51,15 @@
     "usuarios.crear",
     "usuarios.ver",
     "usuarios.editar",
-    "usuarios.eliminar"
+    "usuarios.eliminar",
+    "usuarios.inhabilitar"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T04:44:29.711Z"
   },
   "updatedAt": {
-    "$date": "2025-06-24T04:44:29.711Z"
+    "$date": "2025-07-04T20:40:13.217Z"
   },
   "__v": 0
 }]
