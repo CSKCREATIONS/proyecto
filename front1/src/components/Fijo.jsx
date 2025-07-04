@@ -107,7 +107,7 @@ export default function Fijo() {
                   <ul id="submenuVentas" className="dropdown">
                     <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
                     <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
-                    <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
+                   {/*<Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link> */} 
                     <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
                     <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
                     <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>

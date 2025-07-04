@@ -215,10 +215,9 @@ const GestionCategorias = () => {
           <EncabezadoModulo2 titulo='Lista de Categorías' />
 
           <div className="d-flex justify-content-end mb-3">
-            <br />
             <button className="btn btn-save" onClick={() => { setCategoriaEditando(null); setModalVisible(true); }}>+ Nueva Categoría</button>
           </div>
-
+          <br />
           <div className="table-container">
             <table>
               <thead>

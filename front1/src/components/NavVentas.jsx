@@ -13,27 +13,42 @@ export default function NavVentas(props) {
           <NavLink to="/RegistrarCotizacion" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Registrar cotización
           </NavLink>
+
           <NavLink to="/ListaDeCotizaciones" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Lista de cotizaciones
           </NavLink>
-          <NavLink to="/AgendarVenta" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-            Agendar venta
-          </NavLink>
+
           <NavLink to="/PedidosAgendados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-            Pedidos agendados
+            Pedidos
           </NavLink>
+          
+          <NavLink to="/PedidosDepachados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos despachados
+          </NavLink>
+          
           <NavLink to="/PedidosEntregados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Pedidos entregados
           </NavLink>
+
           <NavLink to="/PedidosCancelados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Pedidos cancelados
           </NavLink>
+
+          <NavLink to="/PedidosDevueltos" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos Devueltos
+          </NavLink>
+          <NavLink to="/Ventas" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Lista de ventas
+          </NavLink>
+
           <NavLink to="/ListaDeClientes" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Lista de clientes
           </NavLink>
+
           <NavLink to="/ProspectosDeClientes" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Prospectos de clientes
           </NavLink>
+
           <NavLink to="/ReporteVentas" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
             Dahsboard
           </NavLink>

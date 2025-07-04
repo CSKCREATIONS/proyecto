@@ -2,7 +2,6 @@
   box-sizing: border-box;
   border: 0;
   padding: 0;
-  margin: 0;
   font-family: "Inter", sans-serif;
 }
 
@@ -310,20 +309,65 @@ a, li{
 
 
 .table-container {
+  width: 100%;
   overflow-x: auto;
+}
+
+.table-container table {
+  width: 100%;
+  table-layout: auto;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  max-width: 100%;
+  table-layout: auto;
 }
 
 
-th, td { 
-  padding: .3rem;
-  border: 1px solid black;
+
+@media print {
+  table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    
+  }
+
+  th, td {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    white-space: normal;
+  }
 }
+
+
+th {
+  background-color: #43805a; 
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border: none;
+}
+
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+th:last-child {
+  border-top-right-radius: 10px;
+}
+
+td {
+  background-color: #f9fafb; /* blanco suave */
+  color: #111827;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+
 
 
 .search-container {
@@ -368,6 +412,7 @@ th, td {
   background: white;
   width: 100vw;
   max-width: 550px;
+  padding: 20px 75px;
 }
 .form-group {
   display: flex;
@@ -398,7 +443,9 @@ th, td {
 .btn:active{
   transform: scale(0.9);
 }
-.btn-primary { background: darkblue; color: white; }
+.btn-primary-cancel { background: rgb(231, 59, 59); color: white; }
+.btn-primary-env { background: rgb(43, 99, 57); color: white; }
+.btn-primary-guardar { background: rgb(42, 88, 105); color: white; }
 .btn-secondary { background: gray; color: white; }
 
 
@@ -907,16 +954,28 @@ h1 {
 /**estilos para los input en agendar pedido***/
 .cuadroTexto {
   width: 100%;
-  padding: 10px 10px;
-  background-color: transparent;
-  outline: none;
-  transition: border-color 0.3s ease;
+  padding: 10px 12px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.cuadroTexto::placeholder {
+  color: #999;
+  font-style: italic;
 }
 
 .cuadroTexto:focus {
-  border-color: #152b2a;
-  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  outline: none;
+  background-color: #ffffff;
+  border-top-color: #2563eb; /* cambia a azul más fuerte */
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.2);
 }
+
 
 /**botones de las tablas**/
 .btnTransparente {
@@ -944,6 +1003,101 @@ select:focus {
 }
 
 
+/*Diseño filtros de lista de cotizaciones*/
+.filtros-tabla {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  align-items: center;
+  justify-content: center; 
+  border-radius: 8px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column; 
+  gap: 5px;
+  min-width: 150px;
+  flex: 1 1 auto;}
+
+.filtro-input, .filtro-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  width: 100%; 
+  box-sizing: border-box; 
+  transition: border-color 0.3s ease;
+}
+
+.filtro-input:focus, .filtro-select:focus {
+  border-color: #43805a; 
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .filtros-tabla {
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 10px;
+  }
+  
+  .filtro-grupo {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .filtros-tabla {
+    justify-content: flex-start; 
+  }
+  
+  .filtro-grupo {
+    max-width: 220px; 
+  }
+}
+
+
+
+
+
+
+
+
+
+.p-4 {
+  padding: 1rem; /* ya hace parte de Tailwind, pero lo dejamos por claridad */
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.p-4:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.p-4 h3 {
+  font-size: 1.125rem;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.p-4 .text-3xl {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.p-4 .text-sm {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
 body {
   margin: 0;
   padding: 0;
@@ -1369,3 +1523,206 @@ body {
     font-size: .8rem ;
   }
 }
+
+/*estilo formato de cotizaciones*/
+.cotizacion-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.cotizacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+}
+
+.cotizacion-header h1 {
+  color: #333;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.edit-btn {
+  background-color: #f0ad4e;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #ec971f;
+}
+
+.cancel-btn {
+  background-color: #d9534f;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #c9302c;
+}
+
+.send-btn {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.send-btn:hover {
+  background-color: #4cae4c;
+}
+
+.print-btn {
+  background-color: #5bc0de;
+  color: white;
+}
+
+.print-btn:hover {
+  background-color: #46b8da;
+}
+
+.cotizacion-body {
+  display: flex;
+  gap: 30px;
+}
+
+.company-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.company-name input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.company-logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #f5f5f5;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #666;
+  border-radius: 4px;
+}
+
+.recipient-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.info-row input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+@media print {
+  .action-buttons {
+    display: none;
+  }
+}
+
+
+/* estilos corresponfientes a mensajes y validacion de fecha en cotizacion*/
+/* Estilos para mensajes de error */
+.error-message {
+  color: #d9534f;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+/* Estilo para el display de fecha */
+.fecha-display {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-top: 5px;
+}
+
+/*modal nuevo de ventas*/
+
+.modal-productos {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* Fondo oscuro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-contenido table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.modal-contenido th, .modal-contenido td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+
+
+
+

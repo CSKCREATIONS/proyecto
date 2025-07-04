@@ -188,13 +188,13 @@ const loadCategorias = async () => {
         <div className="contenido-modulo">
 
             <EncabezadoModulo2 titulo="Gestión de Subcategorías" />
-        <div className="d-flex justify-content-between align-items-center mb-4"><br /><br />
+        <div className="d-flex justify-content-end mb-3">
           <button className="btn btn-save" onClick={() => { setSubcategoriaEditando(null); setModalVisible(true); }}>
             + Nueva Subcategoría
           </button>
         </div>
-
-        <div className="table-responsive">
+        <br />
+        <div className="table-conteiner">
           <table className="table table-bordered table-hover shadow-sm">
             <thead className="table-primary">
               <tr>

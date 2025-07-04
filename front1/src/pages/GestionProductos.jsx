@@ -13,18 +13,14 @@ const token = localStorage.getItem('token');
 
 const ProductoModal = ({ producto, onClose, onSave, categorias, subcategorias, proveedores }) => {
   const [form, setForm] = useState({
-  name: producto?.name || '',
-  description: producto?.description || '',
-  price: producto?.price || '',
-  stock: producto?.stock || '',
-  category: producto?.category || '',
-  subcategory: producto?.subcategory || '',
-  proveedor: producto?.proveedor || ''
-});
-
-
-
-
+    name: producto?.name || '',
+    description: producto?.description || '',
+    price: producto?.price || '',
+    stock: producto?.stock || '',
+    category: producto?.category?._id || producto?.category || '',
+    subcategory: producto?.subcategory?._id || producto?.subcategory || '',
+    proveedor: producto?.proveedor?._id || producto?.proveedor || ''
+  });
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -69,13 +65,13 @@ const ProductoModal = ({ producto, onClose, onSave, categorias, subcategorias, p
                 ))}
               </select>
               <select name="proveedor" value={form.proveedor} onChange={handleChange} className="form-select" required>
-              <option value="">Seleccione Proveedor</option>
-              {Array.isArray(proveedores) && proveedores.map(prov => (
-              <option key={prov._id} value={prov._id}>
-                {prov.nombre} ({prov.empresa})
-                </option>
-              ))}
-            </select>
+                <option value="">Seleccione Proveedor</option>
+                {proveedores.map(prov => (
+                  <option key={prov._id} value={prov._id}>
+                    {prov.nombre} ({prov.empresa})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="modal-footer">
@@ -95,6 +91,7 @@ const GestionProductos = () => {
   const [proveedores, setProveedores] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
+  const [filtroEstado, setFiltroEstado] = useState('todos');
 
   useEffect(() => {
     loadProductos();
@@ -110,12 +107,46 @@ const GestionProductos = () => {
       const lista = result.products || result.data || result;
       setProductos(Array.isArray(lista) ? lista : []);
     } catch (err) {
-      console.error('Error al cargar productos:', err);
       Swal.fire('Error', 'No se pudieron cargar los productos', 'error');
     }
   };
 
-  // ✅ define aquí mismo estas funciones
+  const handleSave = async (producto) => {
+    const url = producto._id ? `${API_PRODUCTS}/${producto._id}` : API_PRODUCTS;
+    const method = producto._id ? 'PUT' : 'POST';
+
+    const dataToSend = {
+      ...producto,
+      proveedor: typeof producto.proveedor === 'object' ? producto.proveedor._id : producto.proveedor,
+      category: typeof producto.category === 'object' ? producto.category._id : producto.category,
+      subcategory: typeof producto.subcategory === 'object' ? producto.subcategory._id : producto.subcategory
+    };
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token
+        },
+        body: JSON.stringify(dataToSend)
+      });
+
+      if (!res.ok) throw new Error('Error al guardar el producto');
+
+      Swal.fire('Éxito', 'Producto guardado correctamente', 'success');
+      setModalVisible(false);
+      loadProductos();
+    } catch (err) {
+      Swal.fire('Error', err.message, 'error');
+    }
+  };
+
+  const handleEdit = producto => {
+    setProductoEditando(producto);
+    setModalVisible(true);
+  };
+
   const handleToggleEstado = async (productoId, estadoActual) => {
     const accion = estadoActual ? 'deactivate' : 'activate';
     const url = `${API_PRODUCTS}/${productoId}/${accion}`;
@@ -185,53 +216,15 @@ const GestionProductos = () => {
   };
 
   const loadProveedores = async () => {
-  try {
-    const res = await fetch(API_PROVEEDORES, { headers: { 'x-access-token': token } });
-    const result = await res.json();
-    console.log('[DEBUG] Proveedores cargados:', result);
-
-    const data = result.proveedores || result.data || result;
-    setProveedores(Array.isArray(data) ? data : []);
-  } catch (err) {
-    console.error('Error al cargar proveedores:', err);
-    setProveedores([]);
-  }
-};
-
-
-
-  const handleSave = async (producto) => {
-    const url = producto._id ? `${API_PRODUCTS}/${producto._id}` : API_PRODUCTS;
-    const method = producto._id ? 'PUT' : 'POST';
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
-        body: JSON.stringify(producto)
-      });
-      if (!res.ok) throw new Error('Error al guardar el producto');
-      Swal.fire('Éxito', 'Producto guardado correctamente', 'success');
-      setModalVisible(false);
-      loadProductos();
+      const res = await fetch(API_PROVEEDORES, { headers: { 'x-access-token': token } });
+      const result = await res.json();
+      const data = result.proveedores || result.data || result;
+      setProveedores(Array.isArray(data) ? data : []);
     } catch (err) {
-      Swal.fire('Error', err.message, 'error');
+      setProveedores([]);
     }
   };
-
-  const handleEdit = producto => {
-    setProductoEditando(producto);
-    setModalVisible(true);
-  };
-
-  
-
-
-  const [filtroEstado, setFiltroEstado] = useState('todos');
-
 
   return (
     <div>
@@ -239,42 +232,38 @@ const GestionProductos = () => {
       <div className="content">
         <div className="contenido-modulo">
           <EncabezadoModulo2 titulo='Gestión de Productos' />
-          <br />
           <div className="d-flex justify-content-end align-items-center mb-3 gap-2">
-                  <button
-                    className="btn btn-save"
-                    onClick={() => {
-                      setProductoEditando(null);
-                      setModalVisible(true);
-                    }}
-                  >
-                    + Agregar Producto
-                  </button>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <select
-                    className="form-select"
-                    value={filtroEstado}
-                    onChange={(e) => setFiltroEstado(e.target.value)}
-                    style={{
-                      maxWidth: '200px',
-                      padding: '8px 15px',
-                      borderRadius: '8px',
-                      border: '1px solid #ccc',
-                      backgroundColor: '#fff',
-                      color: '#333',
-                      fontSize: '14px',
-                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                      cursor: 'pointer',
-                      transition: 'border-color 0.3s ease',
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = '#007bff')}
-                    onBlur={(e) => (e.target.style.borderColor = '#ccc')}
-                  >
-                    <option value="todos">Todos</option>
-                    <option value="activos">Activos</option>
-                    <option value="inactivos">Inactivos</option>
-                  </select>
-                </div>
+            <button className="btn btn-save" onClick={() => {
+              setProductoEditando(null);
+              setModalVisible(true);
+            }}>
+              + Agregar Producto
+            </button>
+            <select
+              className="form-select"
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+              style={{
+                maxWidth: '200px',
+                padding: '8px 15px',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                backgroundColor: '#fff',
+                color: '#333',
+                fontSize: '14px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',
+                transition: 'border-color 0.3s ease',
+              }}
+              onFocus={(e) => (e.target.style.borderColor = '#007bff')}
+              onBlur={(e) => (e.target.style.borderColor = '#ccc')}
+            >
+              <option value="todos">Todos</option>
+              <option value="activos">Activos</option>
+              <option value="inactivos">Inactivos</option>
+            </select>
+          </div>
+          <br />
           <div className="table-container">
             <table>
               <thead>
@@ -290,12 +279,11 @@ const GestionProductos = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(productos) && productos.length > 0 ? (
-                  productos
+                {productos
                   .filter(prod => {
                     if (filtroEstado === 'activos') return prod.activo;
                     if (filtroEstado === 'inactivos') return !prod.activo;
-                    return true; // todos
+                    return true;
                   })
                   .map(prod => (
                     <tr key={prod._id}>
@@ -310,10 +298,7 @@ const GestionProductos = () => {
                         <button className="btn btn-success btn-sm me-1" onClick={() => handleEdit(prod)}>
                           <i className="fa-solid fa-pen"></i>
                         </button>
-                        <button
-                          className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`}
-                          onClick={() => handleToggleEstado(prod._id, prod.activo)}
-                        >
+                        <button className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`} onClick={() => handleToggleEstado(prod._id, prod.activo)}>
                           {prod.activo ? <i className="fa-solid fa-ban"></i> : <i className="fa-solid fa-check"></i>}
                         </button>
                         <button className="btn btn-danger btn-sm" onClick={() => handleDelete(prod._id)}>
@@ -321,14 +306,10 @@ const GestionProductos = () => {
                         </button>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr><td colSpan="8">No hay productos disponibles</td></tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
-
           {modalVisible && (
             <ProductoModal
               producto={productoEditando}
