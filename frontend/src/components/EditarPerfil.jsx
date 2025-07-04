@@ -31,7 +31,7 @@ export default function EditarPerfil() {
             secondSurname: data.user.secondSurname,
             email: data.user.email,
             username: data.user.username,
-            role: data.user.role
+            role: data.user.role?.name || data.user.role
           });
         } else {
           Swal.fire('Error', data.message, 'error');
@@ -60,7 +60,6 @@ export default function EditarPerfil() {
     }
 
     try {
-      // Actualizar datos del perfil (excepto contraseña)
       const res = await fetch(`http://localhost:5000/api/users/${userData._id}`, {
         method: 'PATCH',
         headers: {
@@ -72,7 +71,7 @@ export default function EditarPerfil() {
 
       if (!res.ok) throw new Error('Error al actualizar los datos del perfil');
 
-      // Cambiar la contraseña si se llenaron los campos
+      // Cambiar contraseña si aplica
       if (passwords.new) {
         const resPass = await fetch(`http://localhost:5000/api/users/change-password`, {
           method: 'PATCH',
@@ -83,18 +82,21 @@ export default function EditarPerfil() {
           body: JSON.stringify({ newPassword: passwords.new })
         });
 
-        // Actualizar localStorage con los nuevos datos
-        const updatedUser = {
-          ...userData,
-          ...form // sobreescribe solo los campos modificados
-        };
-
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-
-
         const data = await resPass.json();
         if (!resPass.ok) throw new Error(data.message || 'Error al cambiar la contraseña');
       }
+
+      // Actualizar localStorage con nuevos datos
+      const updatedUser = {
+        ...userData,
+        ...form,
+        role: {
+          _id: userData.role._id,       // Conservar el ID del rol
+          name: form.role.name || form.role // Asegurar que el nombre esté incluido
+        }
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event('storage'));
 
       Swal.fire('Éxito', 'Perfil actualizado correctamente', 'success');
       closeModal('editar-perfil');
@@ -104,7 +106,6 @@ export default function EditarPerfil() {
       Swal.fire('Error', err.message, 'error');
     }
   };
-
 
   if (!form.firstName) return null;
 

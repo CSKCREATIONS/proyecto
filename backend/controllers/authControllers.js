@@ -92,8 +92,6 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = async (req, res) => {
-
-
   try {
     const { username, password } = req.body;
 
@@ -106,9 +104,10 @@ exports.signin = async (req, res) => {
     }
 
 
+    const user = await User.findOne({ username })
+      .select('+password')
+      .populate('role'); // trae el objeto de rol completo
 
-    // 2. Buscar usuario incluyendo el password (que normalmente está oculto)
-    const user = await User.findOne({ username }).select('+password');
 
     if (!user) {
       return res.status(404).json({
@@ -143,32 +142,33 @@ exports.signin = async (req, res) => {
     // 4. Generar token JWT
 
 
-    const Role = require('../models/Role'); // importar
+    const Role = require('../models/Role');
 
     // buscar el rol completo con permisos
-    const roleDoc = await Role.findOne({ name: user.role });
+    const roleDoc = user.role;
 
     if (!roleDoc) {
-      return res.status(500).json({ success: false, message: "Rol no encontrado" });
+      return res.status(500).json({ success: false, message: "Rol no asignado correctamente al usuario" });
     }
+
 
     // generar el token con permisos
     const token = jwt.sign(
       {
         id: user._id,
-        role: user.role,
+        role: roleDoc.name, // usamos name, no el objeto entero
         permissions: roleDoc.permissions
       },
       config.secret,
       { expiresIn: config.jwtExpiration }
     );
-    ////
 
-    // 5. Preparar respuesta sin datos sensibles
     const userData = user.toObject();
     delete userData.password;
     userData.permissions = roleDoc.permissions;
     userData.mustChangePassword = user.mustChangePassword;
+    userData.role = roleDoc.name; // incluir solo el nombre en el frontend
+
 
 
     res.status(200).json({

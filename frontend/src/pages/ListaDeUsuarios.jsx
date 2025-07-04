@@ -152,8 +152,8 @@ export default function ListaDeUsuarios() {
       const coincideTexto =
         nombreCompleto.includes(texto) || correo.includes(texto);
 
-      const coincideRol =
-        filtroRol === 'todos' || usuario.role === filtroRol;
+      const coincideRol = filtroRol === 'todos' || usuario.role?._id === filtroRol;
+
 
       const coincideEstado =
         filtroEstado === 'todos' ||
@@ -300,11 +300,15 @@ export default function ListaDeUsuarios() {
               style={{ marginRight: '10px' }}
             >
               <option value="todos">Todos los roles</option>
-              {[...new Set(todosLosUsuarios.map((u) => u.role))].map((rol) => (
-                <option key={rol} value={rol}>
-                  {rol}
-                </option>
-              ))}
+              {[...new Set(todosLosUsuarios.map((u) => u.role?._id))].map((rolId) => {
+                const rol = todosLosUsuarios.find(u => u.role?._id === rolId)?.role;
+                return (
+                  <option key={rolId} value={rolId}>
+                    {rol?.name || 'Sin rol'}
+                  </option>
+                );
+              })}
+
             </select>
 
             <select
@@ -339,7 +343,7 @@ export default function ListaDeUsuarios() {
                   <tr key={usuario._id}>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
-                    <td>{usuario.role}</td>
+                    <td>{usuario.role?.name || 'Sin rol'}</td>
                     <td>{usuario.email}</td>
                     <td>{usuario.username}</td>
                     <td>

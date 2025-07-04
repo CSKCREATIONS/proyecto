@@ -9,19 +9,19 @@ export default function Perfil() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
- useEffect(() => {
-  const loadUser = () => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  };
+  useEffect(() => {
+    const loadUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
 
-  loadUser();
+    loadUser();
 
-  window.addEventListener('storage', loadUser);
-  return () => window.removeEventListener('storage', loadUser);
-}, []);
+    window.addEventListener('storage', loadUser);
+    return () => window.removeEventListener('storage', loadUser);
+  }, []);
 
 
   const handleClick = async () => {
@@ -58,7 +58,8 @@ export default function Perfil() {
               <div className="info-item"><strong>Apellidos</strong><p>{user.surname} {user.secondSurname}</p></div>
               <div className="info-item"><strong>Correo electrónico</strong><p>{user.email}</p></div>
               <div className="info-item"><strong>Nombre de usuario</strong><p>{user.username}</p></div>
-              <div className="info-item"><strong>Rol</strong><p>{user.role}</p></div>
+              <div className="info-item"><strong>Rol</strong><p>{typeof user.role === 'string' ? user.role : user.role?.name || 'Sin rol'}</p>
+              </div>
 
               <button className="btn btn-primary" onClick={handleClick}>
                 Cerrar sesión
@@ -69,6 +70,7 @@ export default function Perfil() {
       </div>
 
       <EditarPerfil />
+
     </div>
   );
 }

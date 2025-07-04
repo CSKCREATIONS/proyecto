@@ -41,16 +41,17 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
     if (usuario) {
       setForm({
-        firstName: usuario.firstName,
-        secondName: usuario.secondName,
-        surname: usuario.surname,
-        secondSurname: usuario.secondSurname,
-        role: usuario.role,
-        email: usuario.email,
-        username: usuario.username,
-        enabled: usuario.enabled,
+        firstName: usuario.firstName || '',
+        secondName: usuario.secondName || '',
+        surname: usuario.surname || '',
+        secondSurname: usuario.secondSurname || '',
+        role: usuario.role?._id || usuario.role || '',
+        email: usuario.email || '',
+        username: usuario.username || '',
+        enabled: usuario.enabled ?? true,
       });
     }
+
   }, [usuario]);
 
   const handleChange = (e) => {
@@ -151,7 +152,7 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
           <select className='entrada' name="role" value={form.role} onChange={handleChange} required>
             <option value="" disabled>Seleccione un rol</option>
             {Array.isArray(rolesDisponibles) && rolesDisponibles.map(r => (
-              <option key={r._id} value={r.name}>{r.name}</option>
+              <option key={r._id} value={r._id}>{r.name}</option>
             ))}
           </select>
         </div>

@@ -12,6 +12,7 @@ export default function RolesYPermisos() {
   const [roles, setRoles] = useState([]);
   const [puedeCrearRol, setPuedeCrearRol] = useState(false);
   const [puedeEditarRol, setPuedeEditarRol] = useState(false);
+  const [puedeInhabilitarRol, setpuedeInhabilitarRol] = useState(false);
   const navigate = useNavigate();
   const [rolSeleccionado, setRolSeleccionado] = useState(null);
 
@@ -81,16 +82,12 @@ export default function RolesYPermisos() {
     const usuario = JSON.parse(localStorage.getItem('user'));
     if (usuario && usuario.permissions) {
       setPuedeEditarRol(usuario.permissions.includes('roles.editar'));
-    }
-    const token = localStorage.getItem('token');
-
-    if (!usuario || !usuario.permissions || !usuario.permissions.includes('roles.ver')) {
-      // Si no tiene permiso, lo redirigimos
-      navigate('/Home');
-    } else {
-      // se valida si puede crear roles
+      setpuedeInhabilitarRol(usuario.permissions.includes('roles.inhabilitar'))
       setPuedeCrearRol(usuario.permissions.includes('roles.crear'));
     }
+
+    const token = localStorage.getItem('token');
+
 
     // Petición al backend para obtener los roles
     fetch('http://localhost:5000/api/roles', {
@@ -155,7 +152,18 @@ export default function RolesYPermisos() {
                         <input
                           type="checkbox"
                           checked={rol.enabled}
-                          onChange={() => toggleEstadoRol(rol._id, !rol.enabled)}
+                          onChange={() => {
+                            if (puedeInhabilitarRol) {
+                              toggleEstadoRol(rol._id, !rol.enabled);
+                            } else {
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Acción no permitida',
+                                text: 'No tienes permisos para esta accion',
+                                confirmButtonText: 'Entendido'
+                              });
+                            }
+                          }}
                         />
                         <span className="slider round"></span>
                       </label>

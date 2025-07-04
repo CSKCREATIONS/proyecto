@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 exports.getAllUsers = async (req, res) => {
   console.log('[CONTROLLER] Ejecutando getAllUsers');
   try {
-    const users = await User.find().select('-password');
+    const users = await User.find()
+      .populate('role')
+      .select('-password');
     console.log('[CONTROLLER] Usuarios encontrados:', users.length);
     res.status(200).json({
       success: true,
@@ -116,7 +118,10 @@ exports.updateUser = async (req, res) => {
       req.params.id,
       { $set: updates },
       { new: true }
-    ).select('-password');
+    )
+      .populate('role') 
+      .select('-password');
+
 
     if (!updatedUser) {
       return res.status(404).json({

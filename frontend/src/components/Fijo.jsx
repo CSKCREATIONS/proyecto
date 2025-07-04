@@ -12,39 +12,54 @@ export default function Fijo() {
   const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    // 1. Cargar datos del usuario y permisos
+    const loadUserAndPermissions = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const usuario = JSON.parse(storedUser);
+        setUser(usuario);
 
-    const usuario = JSON.parse(localStorage.getItem('user'));
-    if (storedUser && usuario.permissions) {
-      setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
-      setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
-    }
+        // Manejar tanto rol como string (nombre) o objeto {_id, name}
+        const roleName = typeof usuario.role === 'object'
+          ? usuario.role.name
+          : usuario.role;
 
+        // Actualizar permisos (usando permissions directo o basado en el rol)
+        const permissions = usuario.permissions || [];
+        setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
+        setPuedeVerRoles(permissions.includes('roles.ver'));
+      }
+    };
+
+    // Cargar datos iniciales
+    loadUserAndPermissions();
+
+    // 2. Configurar evento para cambios en localStorage
+    const handleStorageChange = () => {
+      loadUserAndPermissions();
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    // 3. Manejar click fuera del menú (código original preservado)
     const handleClickOutside = (event) => {
       const menu = document.getElementById('menu');
       const closeBtn = document.getElementById('close-menu');
       const btnMenu = document.getElementById('btn-menu');
 
-      // Si el menú está abierto y el clic no es dentro del menú ni en el botón para abrirlo
       if (menu.classList.contains('mostrar-menu') &&
         !menu.contains(event.target) &&
         !btnMenu.contains(event.target)) {
         cerrarMenu();
       }
     };
-
     document.addEventListener('click', handleClickOutside);
 
+    // Cleanup
     return () => {
+      window.removeEventListener('storage', handleStorageChange);
       document.removeEventListener('click', handleClickOutside);
     };
-
   }, []);
-
-
 
   const handleClick = async () => {
     const result = await Swal.fire({
@@ -114,7 +129,9 @@ export default function Fijo() {
 
                 <br />
                 {user && (
-                  <span className="usuario-rol">{user.role}</span>
+                  <span className="usuario-rol">
+                    {typeof user.role === 'object' ? user.role.name : user.role}
+                  </span>
                 )}
 
               </div>

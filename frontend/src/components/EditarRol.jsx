@@ -53,12 +53,26 @@ export default function EditarRol({ rol }) {
 
    // Manejo de cambios en checkboxes
    const togglePermiso = (permiso) => {
-      setPermisos(prev =>
-         prev.includes(permiso)
-            ? prev.filter(p => p !== permiso)
-            : [...prev, permiso]
-      );
-   };
+   setPermisos(prev => {
+      const yaIncluido = prev.includes(permiso);
+
+      // Si se desactiva 'usuarios.ver', también quitamos los hijos
+      if (permiso === 'usuarios.ver' && yaIncluido) {
+         return prev.filter(p => p !== 'usuarios.ver' && !permisosUsuarios.includes(p));
+      }
+
+      // Si se desactiva 'roles.ver', también quitamos los hijos de roles
+      if (permiso === 'roles.ver' && yaIncluido) {
+         return prev.filter(p => p !== 'roles.ver' && !permisosRoles.includes(p));
+      }
+
+      // Normal toggle
+      return yaIncluido
+         ? prev.filter(p => p !== permiso)
+         : [...prev, permiso];
+   });
+};
+
    const toggleGrupoPermisos = (grupoPermisos) => {
       const todosMarcados = grupoPermisos.every(p => permisos.includes(p));
       if (todosMarcados) {
