@@ -9,12 +9,20 @@ export default function Perfil() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+ useEffect(() => {
+  const loadUser = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-  }, []);
+  };
+
+  loadUser();
+
+  window.addEventListener('storage', loadUser);
+  return () => window.removeEventListener('storage', loadUser);
+}, []);
+
 
   const handleClick = async () => {
     const result = await Swal.fire({

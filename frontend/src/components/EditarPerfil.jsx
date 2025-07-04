@@ -53,47 +53,57 @@ export default function EditarPerfil() {
   };
 
   const guardarCambios = async () => {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-  if (passwords.new && passwords.new !== passwords.confirm) {
-    return Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
-  }
+    if (passwords.new && passwords.new !== passwords.confirm) {
+      return Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+    }
 
-  try {
-    // Actualizar datos del perfil (excepto contraseña)
-    const res = await fetch(`http://localhost:5000/api/users/${userData._id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      },
-      body: JSON.stringify(form)
-    });
-
-    if (!res.ok) throw new Error('Error al actualizar los datos del perfil');
-
-    // Cambiar la contraseña si se llenaron los campos
-    if (passwords.new) {
-      const resPass = await fetch(`http://localhost:5000/api/users/change-password`, {
+    try {
+      // Actualizar datos del perfil (excepto contraseña)
+      const res = await fetch(`http://localhost:5000/api/users/${userData._id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': token
         },
-        body: JSON.stringify({ newPassword: passwords.new })
+        body: JSON.stringify(form)
       });
 
-      const data = await resPass.json();
-      if (!resPass.ok) throw new Error(data.message || 'Error al cambiar la contraseña');
-    }
+      if (!res.ok) throw new Error('Error al actualizar los datos del perfil');
 
-    Swal.fire('Éxito', 'Perfil actualizado correctamente', 'success');
-    closeModal('editar-perfil');
-    setPasswords({ new: '', confirm: '' });
-  } catch (err) {
-    Swal.fire('Error', err.message, 'error');
-  }
-};
+      // Cambiar la contraseña si se llenaron los campos
+      if (passwords.new) {
+        const resPass = await fetch(`http://localhost:5000/api/users/change-password`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          },
+          body: JSON.stringify({ newPassword: passwords.new })
+        });
+
+        // Actualizar localStorage con los nuevos datos
+        const updatedUser = {
+          ...userData,
+          ...form // sobreescribe solo los campos modificados
+        };
+
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+
+        const data = await resPass.json();
+        if (!resPass.ok) throw new Error(data.message || 'Error al cambiar la contraseña');
+      }
+
+      Swal.fire('Éxito', 'Perfil actualizado correctamente', 'success');
+      closeModal('editar-perfil');
+      setPasswords({ new: '', confirm: '' });
+
+    } catch (err) {
+      Swal.fire('Error', err.message, 'error');
+    }
+  };
 
 
   if (!form.firstName) return null;
