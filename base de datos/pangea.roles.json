@@ -12,7 +12,7 @@
     "$date": "2025-06-24T04:41:33.450Z"
   },
   "updatedAt": {
-    "$date": "2025-06-24T04:41:33.450Z"
+    "$date": "2025-07-02T04:11:34.761Z"
   },
   "__v": 0
 },
@@ -20,11 +20,13 @@
   "_id": {
     "$oid": "685a2d1281b79670eea33097"
   },
-  "name": "admin",
+  "name": "Admin",
   "permissions": [
-    "roles.crear",
     "roles.ver",
     "usuarios.ver",
+    "roles.crear",
+    "roles.editar",
+    "roles.inhabilitar",
     "usuarios.crear",
     "usuarios.editar",
     "usuarios.inhabilitar",
@@ -35,7 +37,7 @@
     "$date": "2025-06-24T04:44:02.345Z"
   },
   "updatedAt": {
-    "$date": "2025-06-24T04:44:02.345Z"
+    "$date": "2025-07-04T15:36:00.294Z"
   },
   "__v": 0
 },
@@ -46,8 +48,8 @@
   "name": "controlador de usuarios",
   "permissions": [
     "usuarios.crear",
+    "usuarios.ver",
     "usuarios.editar",
-    "usuarios.inhabilitar",
     "usuarios.eliminar"
   ],
   "enabled": true,
