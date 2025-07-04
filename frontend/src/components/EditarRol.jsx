@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
-import { closeModal, toggleSubMenu } from "../funciones/animaciones";
+import { closeModal } from "../funciones/animaciones";
 import Swal from "sweetalert2";
 
 export default function EditarRol({ rol }) {
    const [nombreRol, setNombreRol] = useState('');
    const [permisos, setPermisos] = useState([]);
+
+   const [mostrarUsuarios, setMostrarUsuarios] = useState(false);
+   const mostrarListaUsuarios = permisos.includes('usuarios.ver');
+   const mostrarListaRoles = permisos.includes('roles.ver');
+
+
    const permisosUsuarios = [
       'usuarios.crear',
       'usuarios.editar',
@@ -24,12 +30,26 @@ export default function EditarRol({ rol }) {
       'productos.inactivar'
    ];
 
+   const tienePermisosUsuarios = () => {
+      return permisos.includes('usuarios.ver') || permisos.includes('roles.ver');
+   };
+
+
    useEffect(() => {
       if (rol) {
          setNombreRol(rol.name || '');
          setPermisos(rol.permissions || []);
       }
    }, [rol]);
+
+   useEffect(() => {
+      // Cuando los permisos cambian (después del primer useEffect), revisamos si debe mostrarse el submenú
+      if (tienePermisosUsuarios()) {
+         setMostrarUsuarios(true);
+      } else {
+         setMostrarUsuarios(false);
+      }
+   }, [permisos]);
 
    // Manejo de cambios en checkboxes
    const togglePermiso = (permiso) => {
@@ -87,6 +107,8 @@ export default function EditarRol({ rol }) {
          console.error('[EditarRol]', error);
          Swal.fire('Error', 'Error del servidor al actualizar el rol', 'error');
       }
+
+
    };
    return (
       <form class="modal" id="edit-role-modal" onSubmit={handleSubmit}>
@@ -98,103 +120,141 @@ export default function EditarRol({ rol }) {
          <br />
          <br />
          <div class="checkbox-group">
-            <input value="usuarios" type="checkbox" onClick={() => toggleSubMenu('permisos-usuarios')} />Usuarios
-            <input value="compras" type="checkbox" onClick={() => toggleSubMenu('permisos-compras')} /> Compras
-            <input value="productos" type="checkbox" onClick={() => toggleSubMenu('permisos-productos')} /> Productos
-            <input value="ventas" type="checkbox" onClick={() => toggleSubMenu('permisos-ventas')} /> Ventas
+            <input
+               value="usuarios"
+               type="checkbox"
+               checked={mostrarUsuarios}
+               onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  setMostrarUsuarios(isChecked);
+
+                  if (!isChecked) {
+                     // Filtra los permisos eliminando los relacionados con usuarios y roles
+                     setPermisos(prev =>
+                        prev.filter(p =>
+                           !p.startsWith('usuarios.') && !p.startsWith('roles.')
+                        )
+                     );
+                  }
+               }}
+
+            /> Usuarios
+
+
+            <input value="compras" type="checkbox" /> Compras
+            <input value="productos" type="checkbox" /> Productos
+            <input value="ventas" type="checkbox" /> Ventas
          </div>
          <br />
-         <div className="section dropdown" id='permisos-usuarios'>
-            <h4>Permisos módulo usuarios</h4>
-            <br />
-            <div class="permissions">
-               <div className="group">
-                  <label >
-                     <input
-                        style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
-                        type="checkbox"
-                        checked={permisos.includes('usuarios.ver')}
-                        onChange={() => { toggleSubMenu('lista-usuarios'); togglePermiso('usuarios.ver') }}
-                     />
-                     Lista de usuarios
-                  </label>
+         {mostrarUsuarios && (
+            <div className="section" id='permisos-usuarios'>
+               <h4>Permisos módulo usuarios</h4>
+               <br />
+               <div class="permissions">
+                  <div className="group">
+                     <label>
+                        <input
+                           style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
+                           type="checkbox"
+                           checked={permisos.includes('usuarios.ver')}
+                           onChange={() => togglePermiso('usuarios.ver')}
+                        />
+                        Lista de usuarios
+                     </label>
+
+                     <br />
+
+                  </div>
+                  <div className="group">
+                     <label>
+                        <input
+                           style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
+                           type="checkbox"
+                           checked={permisos.includes('roles.ver')}
+                           onChange={() => togglePermiso('roles.ver')}
+                        />
+                        Roles y permisos
+                     </label>
+                     <br />
+                  </div>
                   <br />
 
-               </div>
-               <div className="group">
-                  <label>
-                     <input
-                        style={{ marginRight: '0.5rem', marginBottom: '.5rem' }}
-                        type="checkbox"
-                        checked={permisos.includes('roles.ver')}
-                        onChange={() => { toggleSubMenu('roles-y-permisos'); togglePermiso('roles.ver') }} />
-                     Roles y permisos
-                  </label>
-                  <br />
                </div>
                <br />
+               {mostrarListaUsuarios && (
+                  <div className="form-group-rol" id="lista-usuarios">
+                     <label>Permisos para lista de usuarios</label>
+                     <div className="radio-options">
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('usuarios.crear')}
+                           onChange={() => togglePermiso('usuarios.crear')}
+                        /> Crear usuarios
 
-            </div>
-            <br />
-            <div class="form-group-rol dropdown" id='lista-usuarios'>
-               <label>Permisos para lista de usuarios</label>
-               <div class="radio-options">
-                  <input type="checkbox"
-                     checked={permisos.includes('usuarios.crear')}
-                     onChange={() => togglePermiso('usuarios.crear')}
-                  /> Crear usuarios
-                  <input type="checkbox"
-                     checked={permisos.includes('usuarios.editar')}
-                     onChange={() => togglePermiso('usuarios.editar')}
-                  /> Editar usuarios
-                  <input type="checkbox"
-                     checked={permisos.includes('usuarios.inhabilitar')}
-                     onChange={() => togglePermiso('usuarios.inhabilitar')}
-                  /> Habilitar / Inhabilitar
-                  <input type="checkbox"
-                     checked={permisos.includes('usuarios.eliminar')}
-                     onChange={() => togglePermiso('usuarios.eliminar')}
-                  /> Eliminar usuarios
-                  <input
-                     type="radio"
-                     name="usersListPermissions"
-                     onClick={() => toggleGrupoPermisos(permisosUsuarios)}
-                     checked={permisosUsuarios.every(p => permisos.includes(p))}
-                  /> Todos los permisos
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('usuarios.editar')}
+                           onChange={() => togglePermiso('usuarios.editar')}
+                        /> Editar usuarios
 
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('usuarios.inhabilitar')}
+                           onChange={() => togglePermiso('usuarios.inhabilitar')}
+                        /> Habilitar / Inhabilitar
+
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('usuarios.eliminar')}
+                           onChange={() => togglePermiso('usuarios.eliminar')}
+                        /> Eliminar usuarios
+
+                        <input
+                           type="radio"
+                           name="usersListPermissions"
+                           onClick={() => toggleGrupoPermisos(permisosUsuarios)}
+                           checked={permisosUsuarios.every(p => permisos.includes(p))}
+                        /> Todos los permisos
+                     </div>
+                  </div>
+               )}
+
+               {mostrarListaRoles && (
+                  <div class="form-group-rol" id='roles-y-permisos'>
+                  <label>Permisos para roles y permisos</label>
+                  <div className="radio-options">
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('roles.crear')}
+                        onChange={() => togglePermiso('roles.crear')}
+                     /> Crear roles
+
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('roles.editar')}
+                        onChange={() => togglePermiso('roles.editar')}
+                     /> Editar roles
+
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('roles.inhabilitar')}
+                        onChange={() => togglePermiso('roles.inhabilitar')}
+                     /> Habilitar / Inhabilitar
+
+                     <input
+                        type="radio"
+                        name="rolesPermissions"
+                        onClick={() => toggleGrupoPermisos(permisosRoles)}
+                        checked={permisosRoles.every(p => permisos.includes(p))}
+                     /> Todos los permisos
+                  </div>
                </div>
+               )}
+               
             </div>
-            <div class="form-group-rol dropdown" id='roles-y-permisos'>
-               <label>Permisos para roles y permisos</label>
-               <div className="radio-options">
-                  <input
-                     type="checkbox"
-                     checked={permisos.includes('roles.crear')}
-                     onChange={() => togglePermiso('roles.crear')}
-                  /> Crear roles
+         )}
 
-                  <input
-                     type="checkbox"
-                     checked={permisos.includes('roles.editar')}
-                     onChange={() => togglePermiso('roles.editar')}
-                  /> Editar roles
-
-                  <input
-                     type="checkbox"
-                     checked={permisos.includes('roles.inhabilitar')}
-                     onChange={() => togglePermiso('roles.inhabilitar')}
-                  /> Habilitar / Inhabilitar
-
-                  <input
-                     type="radio"
-                     name="rolesPermissions"
-                     onClick={() => toggleGrupoPermisos(permisosRoles)}
-                     checked={permisosRoles.every(p => permisos.includes(p))}
-                  /> Todos los permisos
-               </div>
-            </div>
-         </div>
-         <div className="section dropdown" id='permisos-compras'>
+         <div className="section " id='permisos-compras'>
             <h4>Permisos módulo compras</h4>
             <br />
             <div class="permissions">
@@ -226,7 +286,7 @@ export default function EditarRol({ rol }) {
             <br />
 
          </div>
-         <div className="section dropdown" id='permisos-productos'>
+         <div className="section " id='permisos-productos'>
             <h4>Permisos módulo productos</h4>
             <br />
 
@@ -330,7 +390,7 @@ export default function EditarRol({ rol }) {
                </div>
             </div>
          </div>
-         <div className="section dropdown" id='permisos-ventas'>
+         <div className="section" id='permisos-ventas'>
             <h4>Permisos módulo ventas</h4>
             <br />
 

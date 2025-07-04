@@ -30,6 +30,7 @@ router.patch('/change-password',
 // GET /api/users - Listar usuarios 
 router.get('/',
     verifyToken,
+    checkPermission('usuarios.ver'),
     userController.getAllUsers
 );
 
@@ -49,7 +50,7 @@ router.get('/:id',
 );
 
 
-// PUT /api/users/:id - Actualizar usuario 
+// PATCH /api/users/:id - Actualizar usuario 
 router.patch('/:id',
     verifyToken,
     checkPermission('usuarios.editar'),
@@ -92,9 +93,11 @@ router.delete('/:id',
     userController.deleteUser
 )
 
-
+// PATCH /api/users/id/confirm-password-change  
 // para cambiar la contraseña al primer inicio de sesion
-router.patch('/:id/confirm-password-change', verifyToken, async (req, res) => {
+router.patch('/:id/confirm-password-change',
+  verifyToken, 
+  async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.params.id, { mustChangePassword: false });
     res.json({ success: true });
