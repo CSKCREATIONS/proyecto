@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const CotizacionSchema = new mongoose.Schema({
   cliente: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cliente', // 👈 Esto establece la relación con el modelo Cliente
+    ref: 'Cliente',
     required: true
   },
   ciudad: String,
@@ -18,7 +18,10 @@ const CotizacionSchema = new mongoose.Schema({
   condicionesPago: String,
   productos: [
     {
-      producto: String, // o { type: mongoose.Schema.Types.ObjectId, ref: 'Producto' } si tienes modelo Producto
+      producto: {
+        type: mongoose.Schema.Types.ObjectId,  // ✅ Esto es importante
+        ref: 'Product'                        // ✅ Relación con el modelo Producto
+      },
       descripcion: String,
       cantidad: Number,
       valorUnitario: Number,

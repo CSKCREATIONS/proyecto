@@ -1,63 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const ventaController = require('../controllers/ventasControllers');
-const { check } = require('express-validator');
+const { crearVenta, obtenerVentas, eliminarVenta } = require('../controllers/ventasControllers');
 const { verifyToken } = require('../middlewares/authJwt');
-const { checkRole } = require('../middlewares/role');
+const Venta = require('../models/venta');
 
-// Validaciones
-const validateVenta = [
-  check('nombre').not().isEmpty().withMessage('El nombre es obligatorio'),
-  check('ciudad').not().isEmpty().withMessage('La ciudad es obligatoria'),
-  check('telefono').not().isEmpty().withMessage('El teléfono es obligatorio'),
-  check('correo').isEmail().withMessage('Correo electrónico inválido'),
-  check('producto').not().isEmpty().withMessage('El producto es obligatorio'),
-  check('cantidad').isNumeric().withMessage('La cantidad debe ser un número'),
-  check('fecha_entrega').not().isEmpty().withMessage('La fecha de entrega es obligatoria')
-];
 
-/********** RUTAS **********/
 
-// POST - Registrar venta (admin, coordinador, auxiliar)
-router.post(
-  '/',
-  verifyToken,
-  checkRole('admin', 'coordinador', 'auxiliar'),
-  validateVenta,
-  ventaController.createVenta
-);
+router.post('/', verifyToken, crearVenta);
 
-// GET - Obtener todas las ventas
-router.get(
-  '/',
-  verifyToken,
-  checkRole('admin', 'coordinador', 'auxiliar'),
-  ventaController.getVentas
-);
+router.get('/', verifyToken, async (req, res) => {
+  try {
+    const ventas = await Venta.find()
+      .populate('cliente')
+      .sort({ fecha: -1 }); // orden descendente por fecha
+    res.json(ventas);
+  } catch (error) {
+    console.error('Error al obtener ventas:', error);
+    res.status(500).json({ message: 'Error al obtener ventas' });
+  }
+});
 
-// GET - Obtener venta por ID
-router.get(
-  '/:id',
-  verifyToken,
-  checkRole('admin', 'coordinador', 'auxiliar'),
-  ventaController.getVentaById
-);
 
-// PUT - Actualizar venta
-router.put(
-  '/:id',
-  verifyToken,
-  checkRole('admin', 'coordinador'),
-  validateVenta,
-  ventaController.updateVenta
-);
 
-// DELETE - Eliminar venta
-router.delete(
-  '/:id',
-  verifyToken,
-  checkRole('admin'),
-  ventaController.deleteVenta
-);
+router.delete('/:id', verifyToken, eliminarVenta);
 
 module.exports = router;

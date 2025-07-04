@@ -1,55 +1,60 @@
 const Venta = require('../models/venta');
+const Product = require('../models/Products'); // asegúrate de importar el modelo
 
-// Crear nueva venta
-exports.createVenta = async (req, res) => {
+exports.obtenerVentas = async (req, res) => {
   try {
-    const venta = new Venta(req.body);
-    await venta.save();
-    res.status(201).json({ message: 'Venta registrada con éxito', data: venta });
-  } catch (err) {
-    res.status(400).json({ message: 'Error al registrar la venta', error: err.message });
-  }
-};
-
-// Obtener todas las ventas
-exports.getVentas = async (req, res) => {
-  try {
-    const ventas = await Venta.find();
+    const ventas = await Venta.find().populate('cliente').populate('productos.producto');
     res.status(200).json(ventas);
-  } catch (err) {
-    res.status(500).json({ message: 'Error al obtener las ventas', error: err.message });
+  } catch (error) {
+    console.error('Error al obtener ventas:', error);
+    res.status(500).json({ message: 'Error al obtener ventas', error });
   }
 };
 
-// Obtener venta por ID
-exports.getVentaById = async (req, res) => {
+exports.eliminarVenta = async (req, res) => {
   try {
-    const venta = await Venta.findById(req.params.id);
-    if (!venta) return res.status(404).json({ message: 'Venta no encontrada' });
-    res.status(200).json(venta);
-  } catch (err) {
-    res.status(500).json({ message: 'Error al buscar la venta', error: err.message });
-  }
-};
-
-// Actualizar venta
-exports.updateVenta = async (req, res) => {
-  try {
-    const ventaActualizada = await Venta.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!ventaActualizada) return res.status(404).json({ message: 'Venta no encontrada' });
-    res.status(200).json({ message: 'Venta actualizada', data: ventaActualizada });
-  } catch (err) {
-    res.status(400).json({ message: 'Error al actualizar la venta', error: err.message });
-  }
-};
-
-// Eliminar venta
-exports.deleteVenta = async (req, res) => {
-  try {
-    const ventaEliminada = await Venta.findByIdAndDelete(req.params.id);
-    if (!ventaEliminada) return res.status(404).json({ message: 'Venta no encontrada' });
+    await Venta.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: 'Venta eliminada correctamente' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error al eliminar la venta', error: err.message });
+  } catch (error) {
+    console.error('Error al eliminar venta:', error);
+    res.status(500).json({ message: 'Error al eliminar venta', error });
   }
 };
+
+
+exports.crearVenta = async (req, res) => {
+  try {
+    const { cliente, productos } = req.body;
+
+    // Verificar y calcular total
+    let total = 0;
+    const productosProcesados = await Promise.all(productos.map(async (p) => {
+      const productoDB = await Product.findById(p.producto);
+      if (!productoDB) throw new Error('Producto no encontrado');
+
+      const subtotal = productoDB.precio * p.cantidad;
+      total += subtotal;
+
+      return {
+        producto: p.producto,
+        cantidad: p.cantidad,
+        precioUnitario: productoDB.precio
+      };
+    }));
+
+    const nuevaVenta = new Venta({
+      cliente,
+      productos: productosProcesados,
+      total
+    });
+
+    await nuevaVenta.save();
+
+    res.status(201).json({ message: 'Venta registrada correctamente', venta: nuevaVenta });
+
+  } catch (error) {
+    console.error('Error al crear venta:', error);
+    res.status(500).json({ message: 'Error al registrar la venta', error });
+  }
+};
+

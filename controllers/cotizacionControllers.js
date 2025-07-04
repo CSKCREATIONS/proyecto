@@ -1,5 +1,6 @@
 const Cotizacion = require('../models/cotizaciones');
-const Cliente = require('../models/cliente');
+const Cliente = require('../models/Cliente');
+const Producto = require('../models/Products');
 
 const { validationResult } = require('express-validator');
 
@@ -67,15 +68,20 @@ exports.createCotizacion = async (req, res) => {
 // Obtener todas las cotizaciones
 exports.getCotizaciones = async (req, res) => {
   try {
-    const cotizaciones = await Cotizacion.find()
-      .populate('cliente', 'nombre') // Esto llena el nombre del cliente
-      .populate('productos.producto', 'name price'); // Solo si usas ref a Producto
+    const cotizaciones = await Cotizacion
+      .find()
+      .populate('productos.producto', 'name') // 🔥 Aquí es donde traes el nombre del producto
+      .populate('cliente', 'nombre correo');   // Opcional: traer info del cliente
 
-    res.status(200).json(cotizaciones);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener cotizaciones', error: error.message });
+    res.json(cotizaciones);
+  } catch (err) {
+    console.error('[ERROR getCotizaciones]', err);
+    res.status(500).json({ message: 'Error al obtener cotizaciones' });
   }
 };
+
+
+
 
 
 
@@ -139,3 +145,23 @@ exports.updateEstadoCotizacion = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar estado', error: error.message });
   }
 };
+
+
+
+exports.getUltimaCotizacionPorCliente = async (req, res) => {
+  const { cliente } = req.query;
+
+  try {
+    const cotizacion = await Cotizacion.findOne({ cliente })
+      .sort({ createdAt: -1 })
+      .populate('productos.producto'); // para que traiga el objeto producto
+
+    if (!cotizacion) return res.status(404).json({ message: 'No hay cotización' });
+
+    res.json(cotizacion);
+  } catch (error) {
+    console.error('[ERROR getUltimaCotizacionPorCliente]', error);
+    res.status(500).json({ message: 'Error al obtener la cotización' });
+  }
+};
+

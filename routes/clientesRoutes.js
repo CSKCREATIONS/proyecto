@@ -4,6 +4,7 @@ const { check } = require('express-validator');
 const clienteController = require('../controllers/clienteControllers');
 const { verifyToken } = require('../middlewares/authJwt');
 const { checkRole } = require('../middlewares/role');
+const Cliente = require('../models/cliente');
 
 // Validaciones para crear/actualizar cliente
 const validateCliente = [
@@ -26,6 +27,9 @@ router.post('/',
     clienteController.createCliente
 );
 
+router.get('/estado-de-clientes', verifyToken, clienteController.getClientesConEstado);
+
+
 // GET /api/clientes - Obtener todos los clientes (admin, coordinador, auxiliar)
 router.get('/', verifyToken, checkRole('admin', 'coordinador', 'auxiliar'), clienteController.getClientes);
 
@@ -38,12 +42,22 @@ router.get('/:id',
 
 
 // PUT /api/clientes/:id - Actualizar cliente
-router.put('/:id',
-    verifyToken,
-    checkRole('admin', 'coordinador'),
-    validateCliente,
-    clienteController.updateCliente
-);
+router.put('/clientes/:id', verifyToken, async (req, res) => {
+  try {
+    const clienteActualizado = await Cliente.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(clienteActualizado);
+  } catch (error) {
+    console.error('❌ Error al actualizar cliente:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+
+
 
 // DELETE /api/clientes/:id - Eliminar cliente (solo admin)
 router.delete('/:id',
@@ -51,5 +65,7 @@ router.delete('/:id',
     checkRole('admin'),
     clienteController.deleteCliente
 );
+
+
 
 module.exports = router;

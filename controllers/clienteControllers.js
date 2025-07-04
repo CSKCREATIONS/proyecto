@@ -1,4 +1,5 @@
-const Cliente = require('../models/cliente');
+const Cliente = require('../models/Cliente');
+const Pedido = require('../models/Pedido');
 const { validationResult } = require('express-validator');
 
 
@@ -70,4 +71,30 @@ exports.deleteCliente = async (req, res) => {
   }
 };
 
+exports.getClientesConEstado = async (req, res) => {
+  try {
+    const clientes = await Cliente.find({ esCliente: true });
 
+    const clientesConEstado = await Promise.all(
+      clientes.map(async cliente => {
+        const pedidos = await Pedido.find({ cliente: cliente._id })
+          .sort({ createdAt: -1 })
+          .populate('cliente'); // <- ESTA LÍNEA ES CLAVE
+
+        const ultimoPedido = pedidos[0];
+
+        return {
+          ...cliente.toObject(),
+          ultimoEstado: ultimoPedido ? ultimoPedido.estado : 'Sin pedido',
+          ultimoPedidoId: ultimoPedido ? ultimoPedido._id.toString() : null,
+          clienteInfo: ultimoPedido?.cliente || null
+        };
+      })
+    );
+
+    res.json(clientesConEstado);
+  } catch (err) {
+    console.error('❌ Error al obtener clientes con estado:', err.message);
+    res.status(500).json({ message: 'Error al obtener los estados' });
+  }
+};

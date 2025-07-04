@@ -71,4 +71,4 @@ productSchema.post('save', function(error, doc, next){
     }
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);
