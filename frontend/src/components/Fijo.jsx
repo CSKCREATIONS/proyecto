@@ -13,23 +13,33 @@ export default function Fijo() {
 
   useEffect(() => {
     // 1. Cargar datos del usuario y permisos
-    const loadUserAndPermissions = () => {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const usuario = JSON.parse(storedUser);
-        setUser(usuario);
+    const loadUserAndPermissions = async () => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const usuario = JSON.parse(storedUser);
 
-        // Manejar tanto rol como string (nombre) o objeto {_id, name}
-        const roleName = typeof usuario.role === 'object'
-          ? usuario.role.name
-          : usuario.role;
-
-        // Actualizar permisos (usando permissions directo o basado en el rol)
-        const permissions = usuario.permissions || [];
-        setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
-        setPuedeVerRoles(permissions.includes('roles.ver'));
+    // Si solo se guarda el ID del rol, cargar el rol desde la API
+    if (usuario.role && typeof usuario.role === 'string') {
+      try {
+        const res = await fetch(`/api/roles/${usuario.role}`);
+        const data = await res.json();
+        if (data.success) {
+          usuario.role = data.role;
+          localStorage.setItem('user', JSON.stringify(usuario));
+        }
+      } catch (error) {
+        console.error("Error al cargar rol:", error);
       }
-    };
+    }
+
+    setUser(usuario);
+
+    const permissions = usuario.permissions || [];
+    setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
+    setPuedeVerRoles(permissions.includes('roles.ver'));
+  }
+};
+
 
     // Cargar datos iniciales
     loadUserAndPermissions();

@@ -181,7 +181,7 @@ li {
 
 
 
-/*********Estilos para el componente RegistroLogin**********/
+/*********Estilos para el Login **********/
 
 .container {
   display: flex;
@@ -269,12 +269,14 @@ li {
   width: 100%;
   max-width: 400px;
 }
-.cambiar-formulario h2{
+
+.cambiar-formulario h2 {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.6rem;
 }
-.cambiar-formulario h3{
+
+.cambiar-formulario h3 {
   font-size: 1rem;
   margin-bottom: 1.2rem;
 }
@@ -338,7 +340,7 @@ li {
   max-width: 1120px;
   overflow-x: auto;
   scrollbar-width: thin;
-  font-size: 14px; 
+  font-size: 14px;
 }
 
 /* Estilos de encabezado */
@@ -348,7 +350,8 @@ th {
   padding: 0.6em;
   text-align: center;
   border: none;
-  white-space: nowrap; /* evita salto de línea */
+  white-space: nowrap;
+  /* evita salto de línea */
 }
 
 th:first-child {
@@ -370,7 +373,8 @@ td {
   max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* mantiene una línea de texto */
+  white-space: nowrap;
+  /* mantiene una línea de texto */
 }
 
 
@@ -378,7 +382,8 @@ td {
 .td-multiline {
   max-height: 60px;
   overflow: auto;
-  white-space: normal; /* permite salto de línea */
+  white-space: normal;
+  /* permite salto de línea */
   text-align: left;
 }
 
@@ -399,6 +404,7 @@ td {
   justify-content: center;
   gap: 0.5rem;
 }
+
 .pagination button {
   padding: 6px 12px;
   border: none;
@@ -406,6 +412,7 @@ td {
   background-color: #e0e0e0;
   cursor: pointer;
 }
+
 .pagination button.active-page {
   background-color: #007bff;
   color: white;
@@ -429,7 +436,7 @@ td {
 }
 
 
-
+/***Estilos para todos los popup**/
 
 .modal {
   display: none;
@@ -501,7 +508,7 @@ td {
   color: white;
 }
 
-/*switch de inhabilitar/habilitar usuarios*/
+/*switch de inhabilitar/habilitar en las tablas*/
 .switch {
   position: relative;
   display: inline-block;
@@ -518,7 +525,10 @@ td {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #ccc;
   transition: .4s;
   border-radius: 24px;
@@ -536,11 +546,11 @@ td {
   border-radius: 50%;
 }
 
-.switch input:checked + .slider {
+.switch input:checked+.slider {
   background-color: #4CAF50;
 }
 
-.switch input:checked + .slider:before {
+.switch input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -763,14 +773,16 @@ button:hover {
 }
 
 
-/****perfil****/
+/**** Perfil.jsx ****/
+
+
 .containerPerfil {
   background: white;
   display: grid;
   place-content: center;
   padding: 20px;
   border-radius: 10px;
-  width: 70vw;
+  width: 95vw;
   max-width: 850px;
   margin: 40px auto;
   display: flex;
@@ -778,57 +790,27 @@ button:hover {
 }
 
 
-h1 {
-  font-size: 24px;
+.autenticated-user {
+  display: flex;
+  justify-content: space-between;
+}
+
+.containerPerfil .autenticated-user h1 {
+  font-size: 1.5rem;
   margin: 0;
 }
 
-.edit-profile {
-  background: none;
-  border: none;
-  color: black;
-  font-size: 14px;
-  cursor: pointer;
-}
 
-.edit-profile:hover {
-  text-decoration: underline;
-}
-
-.user-info {
+.containerPerfil .user-info {
   display: grid;
   place-content: center;
   grid-template-columns: 1fr 1fr;
   gap: 2rem 9rem;
 }
 
-.logout-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: left;
-}
-
-.logout-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  border: 2px solid black;
-  background: none;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background: #e0e0e0;
-}
 
 
-
-/**Desplazamiento en los nav **/
-
-
-
-
-
-/* Ítems visibles */
+/********Nav horizontal de los modulos***********/
 .nav-modulo-wrapper {
   display: flex;
   align-items: center;
@@ -874,7 +856,7 @@ h1 {
 
 /* Botón ⋯ */
 .nav-dropdown {
-  position: relative; /* <- IMPORTANTE */
+  position: relative;
   margin-left: .5rem;
 }
 
@@ -897,7 +879,7 @@ h1 {
   border-radius: 6px;
   z-index: 100;
   min-width: 200px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-item {
@@ -1187,56 +1169,78 @@ select:focus {
 
 /********Estilos para mobile***********/
 @media (max-width: 700px) {
-  .content{
+  .content {
     padding: 1rem 0.2rem;
   }
 
-  h2{
+  h2 {
     font-size: 1.1rem;
   }
-  h3{
+
+  h3 {
     font-size: 1rem;
   }
+
   .fijo .izquierda {
     gap: 1rem;
   }
-  .fijo .izquierda #empresa-nombre{
+
+  .fijo .izquierda #empresa-nombre {
     font-size: 1.2rem;
   }
-  .fijo .user{
+
+  .fijo .user {
     font-size: .8rem;
   }
-  .contenido-modulo{
+
+  .contenido-modulo {
     padding: 1rem .2rem;
   }
-  table, .btn, .btnTransparente{
+
+  table,
+  .btn,
+  .btnTransparente {
     font-size: .7rem;
   }
-  .btn-agregar{
+
+  .btn-agregar {
     font-size: 0.6rem;
   }
+
   .export-text {
     display: none !important;
   }
-  .encabezado-modulo button span{
+
+  .encabezado-modulo button span {
     display: none;
   }
-  .encabezado-modulo > div{
+
+  .encabezado-modulo>div {
     gap: 1.5rem;
   }
+
   .permissions .group {
     width: 100%;
   }
-  .nav-modulo-wrapper{
+
+  .containerPerfil .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-modulo-wrapper {
     margin: 0.7rem 0 0 .0rem;
   }
-  .nav-modulo{
+
+  .nav-modulo {
     font-size: .6rem;
-  }´
-  .nav-dropdown-menu .dropdown-item{
-  font-size: 15rem;
-}
-  .labelDOCS{
-    font-size: .8rem ;
+  }
+
+  .nav-dropdown-menu .dropdown-item {
+    font-size: 15rem;
+  }
+
+  .labelDOCS {
+    font-size: .8rem;
   }
 }

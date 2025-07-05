@@ -1,47 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { toggleSubMenu, closeModal } from '../funciones/animaciones';
+import { closeModal, toggleSubMenu } from '../funciones/animaciones';
+import { useNavigate } from 'react-router-dom';
 
 export default function EditarPerfil() {
-  const [userData, setUserData] = useState(null);
   const [form, setForm] = useState({});
   const [passwords, setPasswords] = useState({ new: '', confirm: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem('token');
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const userId = payload.id;
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!token || !user) return;
 
-      try {
-        const res = await fetch(`http://localhost:5000/api/users/${userId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': token
-          }
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          setUserData(data.user);
-          setForm({
-            firstName: data.user.firstName,
-            secondName: data.user.secondName,
-            surname: data.user.surname,
-            secondSurname: data.user.secondSurname,
-            email: data.user.email,
-            username: data.user.username,
-            role: data.user.role?.name || data.user.role
-          });
-        } else {
-          Swal.fire('Error', data.message, 'error');
-        }
-      } catch (error) {
-        Swal.fire('Error', 'No se pudo cargar el perfil', 'error');
-      }
-    };
-
-    fetchUser();
+    setForm({
+      firstName: user.firstName || '',
+      secondName: user.secondName || '',
+      surname: user.surname || '',
+      secondSurname: user.secondSurname || '',
+      email: user.email || '',
+      username: user.username || '',
+      role: typeof user.role === 'object' ? user.role.name : user.role
+    });
   }, []);
 
   const handleChange = (e) => {
@@ -54,13 +34,22 @@ export default function EditarPerfil() {
 
   const guardarCambios = async () => {
     const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user._id;
 
-    if (passwords.new && passwords.new !== passwords.confirm) {
-      return Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+    // Validar contraseña si aplica
+    if (passwords.new || passwords.confirm) {
+      if (passwords.new !== passwords.confirm) {
+        return Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+      }
+      if (passwords.new.length < 6) {
+        return Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres', 'error');
+      }
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userData._id}`, {
+      // 1. Actualizar perfil
+      const res = await fetch('http://localhost:5000/api/users/me', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -69,11 +58,11 @@ export default function EditarPerfil() {
         body: JSON.stringify(form)
       });
 
-      if (!res.ok) throw new Error('Error al actualizar los datos del perfil');
+      if (!res.ok) throw new Error('Error al actualizar perfil');
 
-      // Cambiar contraseña si aplica
+      // 2. Si hay cambio de contraseña
       if (passwords.new) {
-        const resPass = await fetch(`http://localhost:5000/api/users/change-password`, {
+        const resPass = await fetch('http://localhost:5000/api/users/change-password', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -84,17 +73,30 @@ export default function EditarPerfil() {
 
         const data = await resPass.json();
         if (!resPass.ok) throw new Error(data.message || 'Error al cambiar la contraseña');
+
+        // Contraseña cambiada -> cerrar sesión
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Contraseña actualizada',
+          text: 'Debes iniciar sesión nuevamente',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          navigate('/Login');
+        });
+
+        return; // Detener ejecución para no mostrar el otro Swal
       }
 
-      // Actualizar localStorage con nuevos datos
+      // 3. Actualizar localStorage y vista si NO se cambió la contraseña
       const updatedUser = {
-        ...userData,
+        ...user,
         ...form,
-        role: {
-          _id: userData.role._id,       // Conservar el ID del rol
-          name: form.role.name || form.role // Asegurar que el nombre esté incluido
-        }
+        role: user.role // no cambia
       };
+
       localStorage.setItem('user', JSON.stringify(updatedUser));
       window.dispatchEvent(new Event('storage'));
 
@@ -107,37 +109,35 @@ export default function EditarPerfil() {
     }
   };
 
-  if (!form.firstName) return null;
-
   return (
-    <div className="modal" id='editar-perfil'>
+    <div className="modal" id="editar-perfil">
       <div className="form-group">
         <label>Primer nombre</label>
-        <input className='entrada' type="text" name="firstName" value={form.firstName} onChange={handleChange} />
+        <input className='entrada' type="text" name="firstName" value={form.firstName || ''} onChange={handleChange} />
       </div>
       <div className="form-group">
         <label>Segundo nombre</label>
-        <input className='entrada' type="text" name="secondName" value={form.secondName} onChange={handleChange} />
+        <input className='entrada' type="text" name="secondName" value={form.secondName || ''} onChange={handleChange} />
       </div>
       <div className="form-group">
         <label>Primer apellido</label>
-        <input className='entrada' type="text" name="surname" value={form.surname} onChange={handleChange} />
+        <input className='entrada' type="text" name="surname" value={form.surname || ''} onChange={handleChange} />
       </div>
       <div className="form-group">
         <label>Segundo apellido</label>
-        <input className='entrada' type="text" name="secondSurname" value={form.secondSurname} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Rol</label>
-        <input className='entrada' type="text" value={form.role} readOnly disabled />
+        <input className='entrada' type="text" name="secondSurname" value={form.secondSurname || ''} onChange={handleChange} />
       </div>
       <div className="form-group">
         <label>Correo</label>
-        <input className='entrada' type="email" name="email" value={form.email} onChange={handleChange} />
+        <input className='entrada' type="email" name="email" value={form.email || ''} onChange={handleChange} />
       </div>
       <div className="form-group">
         <label>Nombre de usuario</label>
-        <input className='entrada' type="text" name="username" value={form.username} onChange={handleChange} />
+        <input className='entrada' type="text" name="username" value={form.username || ''} onChange={handleChange} />
+      </div>
+      <div className="form-group">
+        <label>Rol</label>
+        <input className='entrada' type="text" value={form.role || ''} readOnly disabled />
       </div>
 
       <div className="buttons">

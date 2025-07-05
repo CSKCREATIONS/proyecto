@@ -102,7 +102,8 @@ exports.createUser = async (req, res) => {
   }
 };
 
-
+// Para el usuario con permiso usuarios.editar
+// con este metodo puede actualizar cualquier usuario
 exports.updateUser = async (req, res) => {
   try {
     const allowedFields = ['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username', 'role'];
@@ -119,7 +120,7 @@ exports.updateUser = async (req, res) => {
       { $set: updates },
       { new: true }
     )
-      .populate('role') 
+      .populate('role')
       .select('-password');
 
 
@@ -143,6 +144,52 @@ exports.updateUser = async (req, res) => {
     });
   }
 };
+
+// Para editar perfil propio del usuario autenticado
+//PATCH api/users/me
+exports.updateOwnProfile = async (req, res) => {
+  try {
+    console.log('ejecutando updateOwnProfile');
+    console.log('Datos recibidos:', req.body); // 👈 Diagnóstico
+
+    const allowedFields = ['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username'];
+    const updates = {};
+
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId, // del token
+      { $set: updates },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('[updateOwnProfile] Error interno:', error); // <== Añade esto
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar perfil',
+      error: error.message
+    });
+  }
+
+};
+
 
 
 //Eliminar usuario solo si nunca ha iniciado sesión
