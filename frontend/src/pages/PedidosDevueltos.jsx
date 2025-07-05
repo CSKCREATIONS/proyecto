@@ -13,7 +13,7 @@ export default function PedidosDevueltos() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos', {
       headers: {
         Authorization: `Bearer ${token}`
       }

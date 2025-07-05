@@ -11,7 +11,7 @@ export default function Ventas() {
 
   useEffect(() => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/ventas', {
+  fetch('http://localhost:5000/api/ventas', {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -35,7 +35,7 @@ export default function Ventas() {
 
   const cargarVentas = () => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/ventas', {
+  fetch('http://localhost:5000/api/ventas', {
     headers: { 'Authorization': `Bearer ${token}` }
   })
     .then(res => res.json())

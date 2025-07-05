@@ -13,7 +13,7 @@ export default function ListaDeClientes() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/clientes', {
+    fetch('http://localhost:5000/api/clientes', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(async res => {
@@ -41,7 +41,7 @@ export default function ListaDeClientes() {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/api/clientes/${id}`, {
+        fetch(`http://localhost:5000/api/clientes/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -60,7 +60,7 @@ export default function ListaDeClientes() {
   const handleGuardar = async (clienteActualizado) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/api/clientes/${clienteActualizado._id}`, {
+      const res = await fetch(`http://localhost:5000/api/clientes/${clienteActualizado._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

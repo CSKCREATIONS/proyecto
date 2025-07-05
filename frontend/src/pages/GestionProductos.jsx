@@ -4,10 +4,10 @@ import '../App.css';
 import Fijo from '../components/Fijo';
 import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
-const API_PRODUCTS = 'http://localhost:3000/api/products';
-const API_CATEGORIES = 'http://localhost:3000/api/categories';
-const API_SUBCATEGORIES = 'http://localhost:3000/api/subcategories';
-const API_PROVEEDORES = 'http://localhost:3000/api/proveedores';
+const API_PRODUCTS = 'http://localhost:5000/api/products';
+const API_CATEGORIES = 'http://localhost:5000/api/categories';
+const API_SUBCATEGORIES = 'http://localhost:5000/api/subcategories';
+const API_PROVEEDORES = 'http://localhost:5000/api/proveedores';
 
 const token = localStorage.getItem('token');
 

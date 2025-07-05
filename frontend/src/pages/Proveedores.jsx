@@ -4,7 +4,7 @@ import '../App.css';
 import Fijo from '../components/Fijo';
 import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
-const API_URL = 'http://localhost:3000/api/proveedores';
+const API_URL = 'http://localhost:5000/api/proveedores';
 const token = localStorage.getItem('token');
 
 

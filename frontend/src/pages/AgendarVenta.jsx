@@ -20,7 +20,7 @@ useEffect(() => {
   const cargarDatos = async () => {
     try {
       // 1. Obtener cliente
-      const clienteRes = await fetch(`http://localhost:3000/api/clientes/${id}`, {
+      const clienteRes = await fetch(`http://localhost:5000/api/clientes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const clienteData = await clienteRes.json();
@@ -28,7 +28,7 @@ useEffect(() => {
 
       // 2. Si no es cliente real, actualizarlo
       if (!clienteData.esCliente) {
-        await fetch(`http://localhost:3000/api/clientes/${id}`, {
+        await fetch(`http://localhost:5000/api/clientes/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const [productosDisponibles, setProductosDisponibles] = useState([]);
 
 useEffect(() => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/products', {
+  fetch('http://localhost:5000/api/products', {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then(res => res.json())
@@ -86,7 +86,7 @@ useEffect(() => {
   console.log('Pedido que se enviará:', pedido); // ✅ revisar en consola
 
   try {
-    const res = await fetch('http://localhost:3000/api/pedidos', {
+    const res = await fetch('http://localhost:5000/api/pedidos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ useEffect(() => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/cotizaciones/ultima?cliente=${id}`, {
+      const res = await fetch(`http://localhost:5000/api/cotizaciones/ultima?cliente=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -4,8 +4,8 @@ import '../App.css';
 import Fijo from '../components/Fijo';
 import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
-const API_URL = 'http://localhost:3000/api/subcategories';
-const CATEGORY_API_URL = 'http://localhost:3000/api/categories';
+const API_URL = 'http://localhost:5000/api/subcategories';
+const CATEGORY_API_URL = 'http://localhost:5000/api/categories';
 const token = localStorage.getItem('token');
 
 const SubcategoriaModal = ({ subcategoria, categorias, onClose, onSave }) => {
@@ -101,7 +101,7 @@ const GestionSubcategorias = () => {
 
 const loadCategorias = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/categories', {
+    const res = await fetch('http://localhost:5000/api/categories', {
       headers: { 'x-access-token': token }
     });
 

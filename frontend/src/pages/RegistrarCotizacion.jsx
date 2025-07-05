@@ -16,7 +16,7 @@ export default function RegistrarCotizacion() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/products', {
+    fetch('http://localhost:5000/api/products', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -150,7 +150,7 @@ export default function RegistrarCotizacion() {
 
     let clienteGuardado = null;
     try {
-      const clienteResponse = await fetch('http://localhost:3000/api/clientes', {
+      const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ export default function RegistrarCotizacion() {
     };
 
     try {
-      const cotizacionResponse = await fetch('http://localhost:3000/api/cotizaciones', {
+      const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

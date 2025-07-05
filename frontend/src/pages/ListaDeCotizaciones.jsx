@@ -60,7 +60,7 @@ export default function ListaDeCotizaciones() {
     return;
   }
 
-  fetch('http://localhost:3000/api/cotizaciones', {
+  fetch('http://localhost:5000/api/cotizaciones', {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@ export default function ListaDeCotizaciones() {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/api/cotizaciones/${id}`, {
+        fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
           method: 'DELETE'
         })
           .then(() => {

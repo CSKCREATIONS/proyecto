@@ -65,7 +65,7 @@ export default function ListaDeClientes() {
   useEffect(() => {
   const token = localStorage.getItem('token');
 
-  fetch('http://localhost:3000/api/clientes?esCliente=false', {
+  fetch('http://localhost:5000/api/clientes?esCliente=false', {
     headers: {
       Authorization: `Bearer ${token}`
     }
