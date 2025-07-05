@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6868793eccc62f877cbf102e"
+  },
+  "name": "grama 0.5",
+  "description": "gramad de espesor 0.5",
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "activo": true,
+  "createdAt": {
+    "$date": "2025-07-05T01:00:46.519Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:00:46.519Z"
+  }
+}]

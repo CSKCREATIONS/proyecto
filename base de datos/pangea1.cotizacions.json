@@ -1,0 +1,67 @@
+[{
+  "_id": {
+    "$oid": "686884654901e18164eea3d7"
+  },
+  "cliente": {
+    "$oid": "686884654901e18164eea3d4"
+  },
+  "ciudad": "Cali",
+  "telefono": "123456",
+  "correo": "Val@sena.com",
+  "responsable": "Pepito",
+  "fecha": {
+    "$date": "2025-07-03T00:00:00.000Z"
+  },
+  "descripcion": "<p>hola</p>",
+  "condicionesPago": "<p>sda</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a85e80fba650e43fdd9b"
+      },
+      "descripcion": "de cualquier color vale lo mismo",
+      "cantidad": 12,
+      "valorUnitario": 70000,
+      "descuento": 0,
+      "valorTotal": 840000,
+      "_id": {
+        "$oid": "686884654901e18164eea3d8"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "68687a53ccc62f877cbf1047"
+      },
+      "descripcion": "tipo nova",
+      "cantidad": 23,
+      "valorUnitario": 1000,
+      "descuento": 0,
+      "valorTotal": 23000,
+      "_id": {
+        "$oid": "686884654901e18164eea3d9"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847984280fba650e43fdd4c"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 123,
+      "valorUnitario": 1200000,
+      "descuento": 0,
+      "valorTotal": 147600000,
+      "_id": {
+        "$oid": "686884654901e18164eea3da"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-07-05T01:48:21.573Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:48:21.573Z"
+  },
+  "__v": 0
+}]

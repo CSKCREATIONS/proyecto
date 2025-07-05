@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "686884654901e18164eea3d4"
+  },
+  "nombre": "Valentina",
+  "ciudad": "Cali",
+  "direccion": "Calle 123",
+  "telefono": "123456",
+  "correo": "Val@sena.com",
+  "esCliente": false,
+  "createdAt": {
+    "$date": "2025-07-05T01:48:21.235Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:48:21.235Z"
+  },
+  "__v": 0
+}]
