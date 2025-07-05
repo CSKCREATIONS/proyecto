@@ -1,0 +1,401 @@
+[{
+  "_id": {
+    "$oid": "6847958580fba650e43fdd30"
+  },
+  "name": "Cilindro portátil 2L con válvula reguladora",
+  "description": "lhajlfjalkjfa",
+  "price": 150000,
+  "stock": 45,
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "subcategory": {
+    "$oid": "6846381addf347ca69ae3638"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:16:37.936Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:16:37.936Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684796b380fba650e43fdd37"
+  },
+  "name": "Televisor Samsung 42 pulgadas",
+  "description": "lhajlfjalkjfa",
+  "price": 600000,
+  "stock": 24,
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "subcategory": {
+    "$oid": "68463318ddf347ca69ae3632"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:21:39.503Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:21:39.503Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847973d80fba650e43fdd3e"
+  },
+  "name": "Televisor Samsung smart 65 pulgadas",
+  "description": "lhajlfjalkjfa",
+  "price": 1600000,
+  "stock": 53,
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "subcategory": {
+    "$oid": "68463318ddf347ca69ae3632"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:23:57.341Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:23:57.341Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684797f480fba650e43fdd45"
+  },
+  "name": "Televisor Kalley 48 pulgadas con TDT",
+  "description": "lhajlfjalkjfa",
+  "price": 1600000,
+  "stock": 53,
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "subcategory": {
+    "$oid": "68463326ddf347ca69ae3635"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:27:00.222Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:27:00.222Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847984280fba650e43fdd4c"
+  },
+  "name": "Televisor Kalley 55 pulgadas con mini-radio",
+  "description": "lhajlfjalkjfa",
+  "price": 1200000,
+  "stock": 32,
+  "category": {
+    "$oid": "68450adefc88e90d35621b7e"
+  },
+  "subcategory": {
+    "$oid": "68463326ddf347ca69ae3635"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:28:18.321Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:28:18.321Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68479f0d80fba650e43fdd5e"
+  },
+  "name": "Cilindro portátil 5L con maleta y manómetro",
+  "description": "lhajlfjalkjfa",
+  "price": 380000,
+  "stock": 23,
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "subcategory": {
+    "$oid": "6846381addf347ca69ae3638"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T02:57:17.962Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T02:57:17.962Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a23880fba650e43fdd6b"
+  },
+  "name": "Grama decorativa 20 mm – color natural",
+  "description": "Aspecto realista, suave al tacto, resistente al clima. Ideal para uso residencial.",
+  "price": 4654132,
+  "stock": 8796,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6847a14680fba650e43fdd64"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:10:48.533Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:10:48.533Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a28280fba650e43fdd72"
+  },
+  "name": "Grama decorativa 25 mm premium con drenaje",
+  "description": "para patios y áreas de descanso. Incluye base perforada para escurrimiento de agua",
+  "price": 684597,
+  "stock": 36,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6847a14680fba650e43fdd64"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:12:02.177Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:12:02.177Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a38480fba650e43fdd79"
+  },
+  "name": "Grama deportiva 50 mm para fútbol 5",
+  "description": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+  "price": 468541,
+  "stock": 346,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6847a17280fba650e43fdd67"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:16:20.778Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:16:20.778Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a3c580fba650e43fdd80"
+  },
+  "name": "Grama deportiva sintética multideporte 30 mm",
+  "description": "Versátil, usada en canchas escolares o zonas recreativas comunitarias",
+  "price": 646548,
+  "stock": 317,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6847a17280fba650e43fdd67"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:17:25.479Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:17:25.479Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a5e980fba650e43fdd87"
+  },
+  "name": "Cilindro de oxígeno hospitalario de 3.4 m³ (tipo G)",
+  "description": "Instalaciones médicas, clínicas, hospitales, UCI.",
+  "price": 87952,
+  "stock": 46,
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "subcategory": {
+    "$oid": "6846386fddf347ca69ae363b"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:26:33.033Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:26:33.033Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a67f80fba650e43fdd8e"
+  },
+  "name": "Cilindro de oxígeno hospitalario de 6.8 m³ (tipo H))",
+  "description": "UCI, quirófanos, hospitales de alta demanda",
+  "price": 94572,
+  "stock": 31,
+  "category": {
+    "$oid": "684508af28a89e5874b3a632"
+  },
+  "subcategory": {
+    "$oid": "6846386fddf347ca69ae363b"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:29:03.671Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:29:03.671Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a85e80fba650e43fdd9b"
+  },
+  "name": "Camisa para caballero talla M",
+  "description": "de cualquier color vale lo mismo",
+  "price": 70000,
+  "stock": 28,
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "subcategory": {
+    "$oid": "6847a78e80fba650e43fdd94"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:37:02.064Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T04:15:05.664Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a88b80fba650e43fdda2"
+  },
+  "name": "Camisa caballero talla XXL",
+  "description": "de cualquier color vale lo mismo",
+  "price": 120000,
+  "stock": 87,
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "subcategory": {
+    "$oid": "6847a78e80fba650e43fdd94"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:37:47.073Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:37:47.073Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a8c980fba650e43fddaa"
+  },
+  "name": "Camisa dama talla s",
+  "description": "de cualquier color vale lo mismo",
+  "price": 55000,
+  "stock": 45,
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "subcategory": {
+    "$oid": "6847a7a480fba650e43fdd97"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:38:49.960Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:38:49.960Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6847a8fd80fba650e43fddb1"
+  },
+  "name": "Camisa dama talla XL",
+  "description": "de cualquier color vale lo mismo",
+  "price": 90000,
+  "stock": 36,
+  "category": {
+    "$oid": "68450bcefc88e90d35621b83"
+  },
+  "subcategory": {
+    "$oid": "6847a7a480fba650e43fdd97"
+  },
+  "images": [],
+  "createdAt": {
+    "$date": "2025-06-10T03:39:41.561Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-10T03:39:41.561Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68687a53ccc62f877cbf1047"
+  },
+  "name": "Grama sintetica",
+  "description": "tipo nova",
+  "price": 1000,
+  "stock": 20000000000,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6868793eccc62f877cbf102e"
+  },
+  "images": [],
+  "activo": true,
+  "createdAt": {
+    "$date": "2025-07-05T01:05:23.492Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:05:23.492Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68687c2d4901e18164eea37d"
+  },
+  "name": "Grama sintetic",
+  "description": "tipo elastica",
+  "price": 10000,
+  "stock": 2000000,
+  "category": {
+    "$oid": "68462cd621a3ee921e5db6fb"
+  },
+  "subcategory": {
+    "$oid": "6868793eccc62f877cbf102e"
+  },
+  "images": [],
+  "activo": true,
+  "proveedor": {
+    "$oid": "68687a04ccc62f877cbf1034"
+  },
+  "createdAt": {
+    "$date": "2025-07-05T01:13:17.718Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:13:17.718Z"
+  }
+}]

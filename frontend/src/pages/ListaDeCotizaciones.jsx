@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
@@ -8,6 +8,9 @@ import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+
+
+
 
 
 const exportarPDF = () => {
@@ -35,6 +38,8 @@ const exportarPDF = () => {
   });
 };
 
+
+
 const exportToExcel = () => {
   const table = document.getElementById('tabla_cotizaciones');
   if (!table) return;
@@ -44,11 +49,43 @@ const exportToExcel = () => {
   saveAs(data, 'listaCotizaciones.xlsx');
 };
 
-
 export default function ListaDeCotizaciones() {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [cotizaciones, setCotizaciones] = useState([]);
 
-  const handleEliminarCotizacion = () => {
+  useEffect(() => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    Swal.fire('Error', 'Sesión expirada. Vuelve a iniciar sesión.', 'warning');
+    return;
+  }
+
+  fetch('http://localhost:3000/api/cotizaciones', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('Fallo en autenticación');
+      return res.json();
+    })
+    .then(data => {
+      if (Array.isArray(data)) {
+        setCotizaciones(data);
+      } else {
+        console.error('Formato de datos inesperado:', data);
+      }
+    })
+    .catch(err => {
+      console.error('Error al cargar cotizaciones:', err);
+      Swal.fire('Error', 'No se pudieron cargar las cotizaciones.', 'error');
+    });
+}, []);
+
+
+  const handleEliminarCotizacion = (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta Cotización se cancelará y no podrás revertirlo',
@@ -60,10 +97,33 @@ export default function ListaDeCotizaciones() {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('Perfecto', 'Se ha eliminado la cotización.', 'success');
+        fetch(`http://localhost:3000/api/cotizaciones/${id}`, {
+          method: 'DELETE'
+        })
+          .then(() => {
+            setCotizaciones(prev => prev.filter(c => c._id !== id));
+            Swal.fire('Perfecto', 'Se ha eliminado la cotización.', 'success');
+          })
+          .catch(() => Swal.fire('Error', 'No se pudo eliminar.', 'error'));
       }
     });
   };
+
+const [filtroFecha, setFiltroFecha] = useState('');
+const [filtroCliente, setFiltroCliente] = useState('');
+const [filtroEnviado, setFiltroEnviado] = useState('');
+
+const cotizacionesFiltradas = cotizaciones.filter(cot => {
+  const coincideFecha = !filtroFecha || new Date(cot.fecha).toISOString().slice(0, 10) === filtroFecha;
+  const coincideCliente = !filtroCliente || cot.cliente?.nombre?.toLowerCase().includes(filtroCliente.toLowerCase());
+  const coincideEnviado = !filtroEnviado || 
+    (filtroEnviado === 'Si' && cot.enviadoCorreo) ||
+    (filtroEnviado === 'No' && !cot.enviadoCorreo);
+  
+  return coincideFecha && coincideCliente && coincideEnviado;
+});
+
+
 
   return (
     <div>
@@ -78,27 +138,41 @@ export default function ListaDeCotizaciones() {
             buscar='Buscar cotización'
           />
 
-          {/* Filtros separados */}
           <div className="filtros-tabla">
             <div className="filtro-grupo">
               <label>Fecha:</label>
-              <input type="date" className="filtro-input" />
-            </div>
-            <div className="filtro-grupo">
-              <label>Cliente:</label>
-              <input type="text" className="filtro-input" placeholder="Buscar cliente..." />
-            </div>
-            <div className="filtro-grupo">
-              <label>Enviado:</label>
-              <select className="filtro-select">
-                <option value="">Todos</option>
-                <option value="Si">Sí</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-          </div>
+              <input 
+                type="date" 
+                className="filtro-input" 
+                value={filtroFecha} 
+                onChange={(e) => setFiltroFecha(e.target.value)} 
+              />
+                  </div>
+                  <div className="filtro-grupo">
+                    <label>Cliente:</label>
+                    <input 
+                      type="text" 
+                      className="filtro-input" 
+                      placeholder="Buscar cliente..." 
+                      value={filtroCliente} 
+                      onChange={(e) => setFiltroCliente(e.target.value)} 
+                    />
+                  </div>
+                  <div className="filtro-grupo">
+                    <label>Enviado:</label>
+                    <select 
+                      className="filtro-select" 
+                      value={filtroEnviado} 
+                      onChange={(e) => setFiltroEnviado(e.target.value)}
+                    >
+                      <option value="">Todos</option>
+                      <option value="Si">Sí</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
 
-          {/* Tabla sin filtros internos */}
+
           <div className="container-tabla">
             <div className="table-container">
               <table id='tabla_cotizaciones'>
@@ -108,25 +182,26 @@ export default function ListaDeCotizaciones() {
                     <th>Fecha elaboración</th>
                     <th>Cliente</th>
                     <th>Enviado por correo</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><a onClick={() => openModal('cotizacionPreview')}>C-18839</a></td>
-                    <td>13/06/2025</td>
-                    <td>SDFAF</td>
-                    <td>Si</td>
-
-                    <button className='btnTransparente' onClick={handleEliminarCotizacion}>
-                      <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
-                    </button>
-
-                    {/**Debe abrir agendar cotizacion como pedido */}
-                    <button className='btnTransparente' onClick={() => openModal('')}>
-                      <i className="fa-regular fa-calendar fa-xl"></i>
-                    </button>
-
-                  </tr>
+                  {cotizacionesFiltradas.map((cot, index) => (
+                    <tr key={cot._id}>
+                      <td><a onClick={() => openModal('cotizacionPreview')}>C-{cot._id.slice(-5)}</a></td>
+                      <td>{new Date(cot.fecha).toLocaleDateString()}</td>
+                      <td>{cot.cliente?.nombre || 'Sin nombre'}</td>
+                      <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
+                      <td>
+                        <button className='btnTransparente' onClick={() => handleEliminarCotizacion(cot._id)}>
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+                        </button>
+                        <button className='btnTransparente' onClick={() => openModal('')}>  
+                          <i className="fa-regular fa-calendar fa-xl"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

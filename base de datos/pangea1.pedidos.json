@@ -1,0 +1,54 @@
+[{
+  "_id": {
+    "$oid": "6868855a4901e18164eea440"
+  },
+  "numeroPedido": "PED-00001",
+  "productos": [
+    {
+      "product": {
+        "$oid": "6847a85e80fba650e43fdd9b"
+      },
+      "cantidad": 12,
+      "precioUnitario": 70000,
+      "_id": {
+        "$oid": "6868855a4901e18164eea441"
+      }
+    },
+    {
+      "product": {
+        "$oid": "68687a53ccc62f877cbf1047"
+      },
+      "cantidad": 23,
+      "precioUnitario": 1000,
+      "_id": {
+        "$oid": "6868855a4901e18164eea442"
+      }
+    },
+    {
+      "product": {
+        "$oid": "6847984280fba650e43fdd4c"
+      },
+      "cantidad": 123,
+      "precioUnitario": 1200000,
+      "_id": {
+        "$oid": "6868855a4901e18164eea443"
+      }
+    }
+  ],
+  "fechaEntrega": {
+    "$date": "2025-07-04T00:00:00.000Z"
+  },
+  "observacion": "hola",
+  "motivoDevolucion": "",
+  "estado": "entregado",
+  "cliente": {
+    "$oid": "686884654901e18164eea3d4"
+  },
+  "createdAt": {
+    "$date": "2025-07-05T01:52:26.820Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-05T01:54:14.779Z"
+  },
+  "__v": 0
+}]

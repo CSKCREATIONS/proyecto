@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "68687a04ccc62f877cbf1034"
+  },
+  "nombre": "natalia",
+  "contacto": {
+    "telefono": "1234",
+    "correo": "Nat@gmail.com"
+  },
+  "direccion": {
+    "calle": "clla123",
+    "pais": "Colombia"
+  },
+  "empresa": "",
+  "productos": [
+    {
+      "$oid": "68687c2d4901e18164eea37d"
+    }
+  ],
+  "activo": true,
+  "fechaCreacion": {
+    "$date": "2025-07-05T01:04:04.775Z"
+  },
+  "__v": 0
+}]

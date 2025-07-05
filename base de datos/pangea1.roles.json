@@ -1,0 +1,63 @@
+[{
+  "_id": {
+    "$oid": "685a2c7d81b79670eea3308a"
+  },
+  "name": "controlador de roles",
+  "permissions": [
+    "roles.crear",
+    "roles.ver"
+  ],
+  "enabled": true,
+  "createdAt": {
+    "$date": "2025-06-24T04:41:33.450Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-02T04:11:34.761Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685a2d1281b79670eea33097"
+  },
+  "name": "Admin",
+  "permissions": [
+    "roles.ver",
+    "usuarios.ver",
+    "roles.crear",
+    "roles.editar",
+    "roles.inhabilitar",
+    "usuarios.crear",
+    "usuarios.editar",
+    "usuarios.inhabilitar",
+    "usuarios.eliminar"
+  ],
+  "enabled": true,
+  "createdAt": {
+    "$date": "2025-06-24T04:44:02.345Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-04T15:36:00.294Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685a2d2d81b79670eea3309a"
+  },
+  "name": "controlador de usuarios",
+  "permissions": [
+    "usuarios.crear",
+    "usuarios.ver",
+    "usuarios.editar",
+    "usuarios.eliminar"
+  ],
+  "enabled": true,
+  "createdAt": {
+    "$date": "2025-06-24T04:44:29.711Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-24T04:44:29.711Z"
+  },
+  "__v": 0
+}]
