@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ContenedorModuloSIG() {
   return (
@@ -8,21 +8,29 @@ export default function ContenedorModuloSIG() {
         <fieldset>
           <legend>Compras</legend>
           <div className="botones-container">
-            <Link as={Link} to="/InformacionDeFuente" >
+            <Link to="/Proveedores">
               <button className="boton">
-                <img src="https://cdn-icons-png.flaticon.com/128/943/943593.png" alt="" className="icono" />
-                <span>Lista de compras</span>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/942/942751.png"
+                  alt="Proveedores"
+                  className="icono"
+                />
+                <span>Proveedores</span>
               </button>
             </Link>
-            <Link as={Link} to="/Documentacion" >
+            <Link to="/historialCompras">
               <button className="boton">
-                <img src="https://cdn-icons-png.flaticon.com/128/3175/3175530.png" alt="" className="icono" />
-                <span>Proveedores</span>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/2921/2921222.png"
+                  alt="Historial de compras"
+                  className="icono"
+                />
+                <span>Historial de compras</span>
               </button>
             </Link>
           </div>
         </fieldset>
       </section>
     </div>
-  )
+  );
 }

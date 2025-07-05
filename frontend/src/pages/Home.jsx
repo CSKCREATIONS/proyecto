@@ -4,6 +4,7 @@ import Fijo from '../components/Fijo'
 import ContenedorModuloUsuarios from '../components/ContenedorModuloUsuarios'
 import ContenedorModuloSIG from '../components/ContenedorModuloSIG'
 import ContenedorModuloVentas from '../components/ContenedorModuloVentas'
+import ContenedorModuloProductos from '../components/ContenedorModuloProductos'
 
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         <div className="contenido-modulo">
         <ContenedorModuloUsuarios/>
         <ContenedorModuloSIG/>
+        <ContenedorModuloProductos/>
         <ContenedorModuloVentas/>
         </div>
 

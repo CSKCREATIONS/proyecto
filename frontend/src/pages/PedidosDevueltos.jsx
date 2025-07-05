@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 
-export default function PedidosCancelados() {
+export default function PedidosDevueltos() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
 
-const mostrarProductos = (pedido) => {
+  const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
   };
 
@@ -23,27 +19,12 @@ const mostrarProductos = (pedido) => {
       }
     })
       .then(res => res.json())
-      .then(data => setPedidos(data.filter(p => p.estado === 'cancelado')))
-      .catch(err => console.error('Error al cargar pedidos cancelados:', err));
+      .then(data => {
+        const devueltos = data.filter(p => p.estado === 'devuelto');
+        setPedidos(devueltos);
+      })
+      .catch(err => console.error('Error al cargar pedidos devueltos:', err));
   }, []);
-
-  const exportarPDF = () => {
-    const input = document.getElementById('tabla_cancelados');
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save('pedidos_cancelados.pdf');
-    });
-  };
-
-  const exportToExcel = () => {
-    const table = document.getElementById('tabla_cancelados');
-    const workbook = XLSX.utils.table_to_book(table, { sheet: "Cancelados" });
-    XLSX.writeFile(workbook, 'pedidos_cancelados.xlsx');
-  };
 
   const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
   if (!visible) return null;
@@ -86,23 +67,27 @@ const mostrarProductos = (pedido) => {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo
-            titulo="Pedidos Cancelados"
-            exportarPDF={exportarPDF}
-            exportToExcel={exportToExcel}
-            buscar='Buscar pedido cancelado'
+            titulo="Pedidos Devueltos"
+            exportarPDF={null}
+            exportToExcel={null}
+            buscar='Buscar pedido devuelto'
           />
           <div className="container-tabla">
             <div className="table-container">
-              <table id="tabla_cancelados">
+              <table id="tabla_pedidos_devueltos">
                 <thead><br />
                   <tr>
                     <th>No</th>
-                    <th># Pedido</th> {/* 👈 NUEVA COLUMNA */}
+                    <th>identificador de Pedido</th> {/* 👈 NUEVA COLUMNA */}
                     <th>Producto</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
                     <th>Cliente</th>
                     <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Observaciones</th>
+                    <th>Motivo Devolucion</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -110,7 +95,7 @@ const mostrarProductos = (pedido) => {
                   {pedidos.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{index + 1}</td>
-                       <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
+                      <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
                           Productos
@@ -120,6 +105,10 @@ const mostrarProductos = (pedido) => {
                       <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                       <td>{pedido.cliente?.nombre}</td>
                       <td>{pedido.cliente?.ciudad}</td>
+                      <td>{pedido.cliente?.telefono}</td>
+                      <td>{pedido.cliente?.correo}</td>
+                      <td>{pedido.observacion || 'N/A'}</td>
+                        <td>{pedido.estado === 'devuelto' ? pedido.motivoDevolucion : ''}</td>
                       <td>{pedido.estado}</td>
                     </tr>
                   ))}

@@ -1,106 +1,59 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-
-export default function NavVentas() {
-  const containerRef = useRef(null);
-  const [visibleLinks, setVisibleLinks] = useState([]);
-  const [overflowLinks, setOverflowLinks] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const links = [
-    { path: "/RegistrarCotizacion", label: "Registrar cotización" },
-    { path: "/ListaDeCotizaciones", label: "Lista de cotizaciones" },
-    { path: "/AgendarVenta", label: "Agendar venta" },
-    { path: "/PedidosAgendados", label: "Pedidos agendados" },
-    { path: "/PedidosEntregados", label: "Pedidos entregados" },
-    { path: "/PedidosCancelados", label: "Pedidos cancelados" },
-    { path: "/ListaDeClientes", label: "Lista de clientes" },
-    { path: "/ProspectosDeClientes", label: "Prospectos de clientes" },
-    { path: "/ReporteVentas", label: "Dashboard" }
-  ];
-
-  useEffect(() => {
-    
+import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 
-    const updateLayout = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
-      const availableWidth = container.offsetWidth;
-      const tempContainer = document.createElement('div');
-      tempContainer.style.position = 'absolute';
-      tempContainer.style.visibility = 'hidden';
-      tempContainer.style.height = 0;
-      tempContainer.style.display = 'flex';
-      tempContainer.style.gap = '0.5rem';
-
-      document.body.appendChild(tempContainer);
-
-      let usedWidth = 0;
-      const visible = [];
-      const hidden = [];
-
-      links.forEach((link) => {
-        const linkElement = document.createElement('div');
-        linkElement.className = 'nav-item';
-        linkElement.textContent = link.label;
-        tempContainer.appendChild(linkElement);
-
-        const width = linkElement.offsetWidth;
-        usedWidth += width + 12; // pequeño padding entre items
-
-        if (usedWidth < availableWidth - 50) {
-          visible.push(link);
-        } else {
-          hidden.push(link);
-        }
-      });
-
-      document.body.removeChild(tempContainer);
-      setVisibleLinks(visible);
-      setOverflowLinks(hidden);
-    };
-
-    updateLayout();
-    window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
-  }, [showDropdown]);
-
+/*Este componente es el titulo del modulo ventas y el navegable del mismo
+el cual es llamado en cada una de las paginas del modulo ventas, a excepcion de agendar venta y registrar cotizacion*/
+export default function NavVentas(props) {
   return (
-    <div>
-      <h2>Ventas</h2>
-      <div className="nav-modulo-wrapper">
-        <nav className="nav-modulo" ref={containerRef}>
-          {visibleLinks.map(link => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+    
+      <div>
+        <h2>Ventas</h2>
+        <br />
+        <nav className='nav-modulo' id='ventas-nav'>
+          <NavLink to="/RegistrarCotizacion" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Registrar cotización
+          </NavLink>
 
-        {overflowLinks.length > 0 && (
-          <div className="nav-dropdown">
-            <button onClick={() => setShowDropdown(!showDropdown)} className="nav-dropdown-toggle">⋯</button>
-            {showDropdown && (
-              <div className="nav-dropdown-menu">
-                {overflowLinks.map(link => (
-                  <NavLink
-                    key={link.path}
-                    to={link.path}
-                    className={({ isActive }) => isActive ? 'dropdown-item active' : 'dropdown-item'}
-                    onClick={() => setShowDropdown(false)}>
-                    {link.label}
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+          <NavLink to="/ListaDeCotizaciones" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Lista de cotizaciones
+          </NavLink>
+
+          <NavLink to="/PedidosAgendados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos
+          </NavLink>
+          
+          <NavLink to="/PedidosDespachados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos despachados
+          </NavLink>
+          
+          <NavLink to="/PedidosEntregados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos entregados
+          </NavLink>
+
+          <NavLink to="/PedidosCancelados" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos cancelados
+          </NavLink>
+
+          <NavLink to="/PedidosDevueltos" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Pedidos Devueltos
+          </NavLink>
+          <NavLink to="/Ventas" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Lista de ventas
+          </NavLink>
+
+          <NavLink to="/ListaDeClientes" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Lista de clientes
+          </NavLink>
+
+          <NavLink to="/ProspectosDeClientes" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Prospectos de clientes
+          </NavLink>
+
+          <NavLink to="/ReporteVentas" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            Dahsboard
+          </NavLink>
+        </nav>
       </div>
-    </div>
-  );
+      )
 }

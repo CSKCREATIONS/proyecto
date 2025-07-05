@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← añadido
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
@@ -8,130 +7,100 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { openModal } from '../funciones/animaciones';
-import EditarPedido from '../components/EditarPedido';
 
-export default function Despachos() {
+export default function PedidosDespachados() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
-  const navigate = useNavigate(); // ← añadido
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/pedidos', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => setPedidos(data.filter(p => p.estado === 'agendado')))
-      .catch(err => console.error('Error al cargar pedidos:', err));
-  }, []);
 
   const exportarPDF = () => {
-    const input = document.getElementById('tabla_despachos');
+    const input = document.getElementById('tabla_despachados');
     const originalWidth = input.style.width;
     input.style.width = '100%';
 
-    html2canvas(input, {
-      scale: 1,
-      width: input.offsetWidth,
-      windowWidth: input.scrollWidth
-    }).then((canvas) => {
+    html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 190;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save('despachos.pdf');
+      pdf.save('pedidos_despachados.pdf');
 
       input.style.width = originalWidth;
     });
   };
 
   const exportToExcel = () => {
-    const table = document.getElementById('tabla_despachos');
+    const table = document.getElementById('tabla_despachados');
     if (!table) return;
 
     const elementosNoExport = table.querySelectorAll('.no-export');
     elementosNoExport.forEach(el => el.style.display = 'none');
 
-    const workbook = XLSX.utils.table_to_book(table, { sheet: "Despachos" });
-    workbook.Sheets["Despachos"]["!cols"] = Array(10).fill({ width: 20 });
+    const workbook = XLSX.utils.table_to_book(table, { sheet: 'Pedidos Despachados' });
+    XLSX.writeFile(workbook, 'pedidos_despachados.xlsx');
 
-    XLSX.writeFile(workbook, 'despachos.xlsx');
     elementosNoExport.forEach(el => el.style.display = '');
   };
 
-  const despacharPedido = async (id) => {
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ estado: 'despachado' })
-      });
 
-      if (res.ok) {
-        const data = await res.json();
-        Swal.fire('Despachado', 'El pedido ha sido despachado.', 'success').then(() => {
-          navigate('/PedidosDepachados'); 
-        });
-      } else {
-        throw new Error('No se pudo despachar el pedido');
-      }
-    } catch (error) {
-      console.error(error);
-      Swal.fire('Error', 'Hubo un problema al despachar el pedido', 'error');
+useEffect(() => {
+  obtenerPedidos();
+}, []);
+
+const obtenerPedidos = () => {
+  const token = localStorage.getItem('token');
+  fetch('http://localhost:3000/api/pedidos', {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-  };
+  })
+    .then(res => res.json())
+    .then(data => setPedidos(data.filter(p => p.estado === 'despachado')))
+    .catch(err => console.error('Error al cargar pedidos:', err));
+};
 
-  const cancelarPedido = async (id) => {
-    const token = localStorage.getItem('token');
+const marcarComoEntregado = async (idPedido) => {
+  const token = localStorage.getItem('token');
 
-    const confirm = await Swal.fire({
-      title: '¿Cancelar pedido?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'No'
+  const confirmar = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esto marcará el pedido como entregado y generará una venta.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, confirmar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!confirmar.isConfirmed) return;
+
+  try {
+    const result = await fetch(`http://localhost:3000/api/pedidos/${idPedido}/entregar`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` // ✅ necesario si la ruta está protegida
+      }
     });
 
-    if (!confirm.isConfirmed) return;
-
-    try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        Swal.fire('Cancelado', 'El pedido ha sido cancelado', 'success');
-        setPedidos(prev => prev.filter(p => p._id !== id));
-      } else {
-        throw new Error(result.message || 'No se pudo cancelar');
-      }
-    } catch (error) {
-      console.error('Error al cancelar pedido:', error);
-      Swal.fire('Error', 'No se pudo cancelar el pedido', 'error');
+    if (result.ok) {
+      Swal.fire('¡Éxito!', 'El pedido fue marcado como entregado.', 'success');
+      obtenerPedidos(); // 👈 recarga la lista de pedidos despachados
+    } else {
+      Swal.fire('Error', 'No se pudo entregar el pedido.', 'error');
     }
-  };
+  } catch (error) {
+    console.error('Error al actualizar estado:', error);
+    Swal.fire('Error', 'Hubo un problema al actualizar el pedido', 'error');
+  }
+};
 
-  const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
+const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
   if (!visible) return null;
 
   return (
@@ -165,6 +134,8 @@ export default function Despachos() {
   );
 };
 
+
+
   return (
     <div>
       <Fijo />
@@ -172,31 +143,30 @@ export default function Despachos() {
         <NavVentas />
         <div className="contenido-modulo">
           <EncabezadoModulo
-            titulo="Pedidos por despachar"
+            titulo="Pedidos despachados"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
             buscar='Buscar pedido'
           />
           <div className="container-tabla">
             <div className="table-container">
-              <table id="tabla_despachos">
+              <table id="tabla_despachados">
                 <thead><br />
                   <tr>
                     <th>No</th>
-                    <th>identificador de Pedido</th>
                     <th>Producto</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
                     <th>Cliente</th>
                     <th>Ciudad</th>
-                    <th>Acciones</th>
+                    <th>Estado</th>
+                    <th className="no-export">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pedidos.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{index + 1}</td>
-                      <td>{pedido.numeroPedido || '---'}</td>
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
                           Productos
@@ -206,20 +176,19 @@ export default function Despachos() {
                       <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                       <td>{pedido.cliente?.nombre}</td>
                       <td>{pedido.cliente?.ciudad}</td>
+                      <td>{pedido.estado}</td>
                       <td className="no-export">
-                        <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
-                          Despachar
-                        </button>
-                        &nbsp;
-                        <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
-                          Cancelar
-                        </button>
+                        <button
+                        className="btn btn-success"
+                        onClick={() => marcarComoEntregado(pedido._id)}
+                      >
+                        Marcar como entregado
+                      </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <EditarPedido />
             </div>
           </div>
         </div>
