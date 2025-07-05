@@ -1,6 +1,5 @@
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
-import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
@@ -229,7 +228,10 @@ export default function RegistrarCotizacion() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Registrar cotizacion" />
+          <div className='encabezado-modulo'>
+            <h3>Registrar cotizacion</h3>
+          </div>
+          <br />
           <br />
           {/* Datos cliente */}
           <div className="table-container">

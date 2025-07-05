@@ -101,10 +101,28 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
         nuevaContrasena = passwords.new;
       }
 
-
       await fetchUsuarios();
       closeModal('editUserModal');
       setPasswords({ current: '', new: '', confirm: '' });
+
+      // Actualizar localStorage si el usuario editado es el mismo que está logueado
+      const userLogged = JSON.parse(localStorage.getItem('user'));
+      if (userLogged && userLogged._id === usuario._id) {
+        // Obtener el nombre del rol desde la lista de roles disponibles
+        const rolActualizado = rolesDisponibles.find(r => r._id === form.role);
+
+        localStorage.setItem('user', JSON.stringify({
+          ...userLogged,
+          ...form,
+          role: {
+            _id: form.role,
+            name: rolActualizado ? rolActualizado.name : userLogged.role?.name || ''
+          }
+        }));
+
+        window.dispatchEvent(new Event('storage')); // para que Fijo.jsx se actualice
+      }
+
 
       Swal.fire({
         icon: 'success',

@@ -47,7 +47,8 @@ export default function Perfil() {
       <Fijo />
       <div className="content">
         <div className='contenido-modulo'>
-          <div className="header">
+          
+          <div className="autenticated-user">
             <h1>{user.firstName} {user.surname}</h1>
             <button onClick={() => openModal('editar-perfil')} style={{ background: 'transparent', cursor: 'pointer' }}>◀ Editar</button>
           </div>

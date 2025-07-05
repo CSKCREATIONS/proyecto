@@ -17,7 +17,6 @@ import Login from './pages/Login';
 import RecuperarContraseña from './pages/RecuperarContraseña';
 import Error404 from './pages/Error404';
 import Error504 from './pages/Error504';
-import Empresa from './pages/Empresa';
 import Proveedores from './pages/Proveedores';
 import HistorialCompras from './pages/HistorialCompras';
 import GestionProductos from './pages/GestionProductos';
@@ -77,7 +76,6 @@ const App = () => {
           <Route path='Login' element={<Login />} />
           <Route path="/error504" element={<Error504 />} />
           <Route path="*" element={<Error404 />} />
-          <Route path="Empresa" element={<Empresa />} />
           <Route path='/GestionProductos' element={<GestionProductos />} />
           <Route path='/ReporteVentas' element={<ReporteVentas />} /> 
           <Route path='/Proveedores' element={<Proveedores />} />

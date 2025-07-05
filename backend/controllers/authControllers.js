@@ -157,6 +157,7 @@ exports.signin = async (req, res) => {
       {
         id: user._id,
         role: roleDoc.name, // usamos name, no el objeto entero
+        email: user.email,
         permissions: roleDoc.permissions
       },
       config.secret,

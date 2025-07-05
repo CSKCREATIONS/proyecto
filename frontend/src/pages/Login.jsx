@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 export default function Login() {
-  
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');

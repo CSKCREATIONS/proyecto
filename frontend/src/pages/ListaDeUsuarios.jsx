@@ -285,73 +285,41 @@ export default function ListaDeUsuarios() {
 
           <br />
 
-          <div className="filtros mejorados" style={{
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-  flexWrap: 'wrap',
-  background: '#f8f8f8',
-  padding: '15px',
-  borderRadius: '10px',
-  marginBottom: '20px',
-  boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
-}}>
-  <div style={{ flex: 1 }}>
-    <input
-      type="text"
-      placeholder="Buscar por nombre o correo"
-      value={filtroTexto}
-      onChange={(e) => setFiltroTexto(e.target.value)}
-      style={{
-        width: '100%',
-        padding: '8px 12px',
-        borderRadius: '8px',
-        border: '1px solid #ccc',
-        fontSize: '14px'
-      }}
-    />
-  </div>
+          <div className="filtros">
+            <input
+              type="text"
+              placeholder="Buscar por nombre o correo"
+              value={filtroTexto}
+              onChange={(e) => setFiltroTexto(e.target.value)}
+              style={{ marginRight: '10px' }}
+            />
 
-  <div>
-    <select
-      value={filtroRol}
-      onChange={(e) => setFiltroRol(e.target.value)}
-      style={{
-        padding: '8px 12px',
-        borderRadius: '8px',
-        border: '1px solid #ccc',
-        fontSize: '14px'
-      }}
-    >
-      <option value="todos">Todos los roles</option>
-      {[...new Set(todosLosUsuarios.map((u) => u.role?._id))].map((rolId) => {
-        const rol = todosLosUsuarios.find(u => u.role?._id === rolId)?.role;
-        return (
-          <option key={rolId} value={rolId}>
-            {rol?.name || 'Sin rol'}
-          </option>
-        );
-      })}
-    </select>
-  </div>
+            <select
+              value={filtroRol}
+              onChange={(e) => setFiltroRol(e.target.value)}
+              style={{ marginRight: '10px' }}
+            >
+              <option value="todos">Todos los roles</option>
+              {[...new Set(todosLosUsuarios.map((u) => u.role?._id))].map((rolId) => {
+                const rol = todosLosUsuarios.find(u => u.role?._id === rolId)?.role;
+                return (
+                  <option key={rolId} value={rolId}>
+                    {rol?.name || 'Sin rol'}
+                  </option>
+                );
+              })}
 
-  <div>
-    <select
-      value={filtroEstado}
-      onChange={(e) => setFiltroEstado(e.target.value)}
-      style={{
-        padding: '8px 12px',
-        borderRadius: '8px',
-        border: '1px solid #ccc',
-        fontSize: '14px'
-      }}
-    >
-      <option value="todos">Todos los estados</option>
-      <option value="habilitado">Habilitado</option>
-      <option value="inhabilitado">Inhabilitado</option>
-    </select>
-  </div>
-</div>
+            </select>
+
+            <select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
+              <option value="todos">Todos los estados</option>
+              <option value="habilitado">Habilitado</option>
+              <option value="inhabilitado">Inhabilitado</option>
+            </select>
+          </div>
 
 
 

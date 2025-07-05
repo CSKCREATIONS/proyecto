@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
 const API_URL = 'http://localhost:3000/api/proveedores';
 const token = localStorage.getItem('token');
@@ -264,7 +263,10 @@ const GestionProveedores = () => {
       <Fijo />
       <div className="content">
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo='Lista de Proveedores' />
+          <div className='encabezado-modulo'>
+            <h3>Lista de proveedores</h3>
+          </div>
+          <br />
           <br />
 
           <div className="d-flex justify-content-end mb-3">

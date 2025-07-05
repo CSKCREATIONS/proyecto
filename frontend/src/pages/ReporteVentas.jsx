@@ -4,7 +4,6 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 import Calendar from '../components/Calendar';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
 // Datos de ejemplo mejorados
 const salesByMonth = [
@@ -45,7 +44,10 @@ export default function ReporteVentas() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Dashboard Ventas" />
+          <div className='encabezado-modulo'>
+            <h3>Dashboard ventas</h3>
+          </div>
+          <br />
 
           {/* Sección de KPIs principales */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4"><br/>
