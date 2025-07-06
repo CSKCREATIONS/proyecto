@@ -70,8 +70,8 @@ exports.getCotizaciones = async (req, res) => {
   try {
     const cotizaciones = await Cotizacion
       .find()
-      .populate('productos.producto', 'name') // 🔥 Aquí es donde traes el nombre del producto
-      .populate('cliente', 'nombre correo');   // Opcional: traer info del cliente
+      .populate('productos.producto', 'name') 
+      .populate('cliente', 'nombre correo telefono ciudad'); // ✅ Incluye todos los campos necesarios
 
     res.json(cotizaciones);
   } catch (err) {

@@ -19,7 +19,7 @@ export default function PedidosEntregados() {
 
   useEffect(() => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/pedidos?estado=entregado', {
+  fetch('http://localhost:5000/api/pedidos?estado=entregado', {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -86,7 +86,7 @@ export default function PedidosEntregados() {
     }).then(result => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('token');
-        fetch(`http://localhost:3000/api/pedidos/${pedidoId}/devolver`, {
+        fetch(`http://localhost:5000/api/pedidos/${pedidoId}/devolver`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

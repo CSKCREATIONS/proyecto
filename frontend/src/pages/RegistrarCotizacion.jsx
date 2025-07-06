@@ -1,10 +1,11 @@
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
+import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
 import React, { useRef, useState, useEffect } from 'react';
-import { mostrarPopupCotizacion } from '../funciones/popupEnviarCotizacion';
+import FormatoCotizacion from '../components/FormatoCotizacion';
 
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
@@ -12,30 +13,31 @@ export default function RegistrarCotizacion() {
   const condicionesPagoRef = useRef(null);
   const [productos, setProductos] = useState([]);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
+  const [mostrarFormato, setMostrarFormato] = useState(false);
+  const [datosFormato, setDatosFormato] = useState(null);
+  const [usuario, setUsuario] = useState({ nombre: 'Pepito' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/products', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+
+    fetch('http://localhost:5000/api/products', {
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => {
-        console.log('Productos cargados:', data);
-        setProductos(data.data || []);
-      })
+      .then(data => setProductos(data.data || []))
       .catch(err => console.error('Error al cargar productos:', err));
+
+    fetch('http://localhost:5000/api/usuarios/perfil', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setUsuario(data.usuario || { nombre: 'Pepito' }))
+      .catch(err => console.error('Error al cargar usuario:', err));
   }, []);
 
   const agregarProducto = () => {
     setProductosSeleccionados([...productosSeleccionados, {
-      producto: '',
-      descripcion: '',
-      cantidad: '',
-      valorUnitario: '',
-      descuento: '',
-      valorTotal: ''
+      producto: '', descripcion: '', cantidad: '', valorUnitario: '', descuento: '', valorTotal: ''
     }]);
   };
 
@@ -45,29 +47,24 @@ export default function RegistrarCotizacion() {
     setProductosSeleccionados(nuevosProductos);
   };
 
-
-  
-
   const eliminarTodosLosProductos = () => {
-  if (productosSeleccionados.length === 0) return;
-
-  Swal.fire({
-    title: '¿Eliminar todos los productos?',
-    text: 'Esta acción eliminará todos los productos seleccionados de la cotización.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar todos',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setProductosSeleccionados([]);
-      Swal.fire('Eliminados', 'Todos los productos fueron eliminados.', 'success');
-    }
-  });
-};
-
+    if (productosSeleccionados.length === 0) return;
+    Swal.fire({
+      title: '¿Eliminar todos los productos?',
+      text: 'Esta acción eliminará todos los productos seleccionados de la cotización.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar todos',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setProductosSeleccionados([]);
+        Swal.fire('Eliminados', 'Todos los productos fueron eliminados.', 'success');
+      }
+    });
+  };
 
   const handleProductoChange = (index, value) => {
     const producto = productos.find(p => p._id === value);
@@ -118,7 +115,6 @@ export default function RegistrarCotizacion() {
       }
     });
   };
-  
 
   function obtenerFechaLocal(inputDate) {
     const date = new Date(inputDate);
@@ -145,11 +141,35 @@ export default function RegistrarCotizacion() {
       return;
     }
 
+    const datos = {
+      cliente: clienteData,
+      ciudad: clienteData.ciudad,
+      telefono: clienteData.telefono,
+      correo: clienteData.correo,
+      responsable: usuario.nombre,
+      fecha: obtenerFechaLocal(inputs[5]?.value),
+      descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
+      condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
+      productos: productosSeleccionados.map(p => ({
+        producto: p.producto,
+        descripcion: p.descripcion,
+        cantidad: parseFloat(p.cantidad || 0),
+        valorUnitario: parseFloat(p.valorUnitario || 0),
+        descuento: parseFloat(p.descuento || 0),
+        valorTotal: parseFloat(p.valorTotal || 0)
+      }))
+    };
+
+    if (enviar) {
+      setDatosFormato(datos);
+      setMostrarFormato(true);
+      return;
+    }
+
     const token = localStorage.getItem('token');
 
-    let clienteGuardado = null;
     try {
-      const clienteResponse = await fetch('http://localhost:3000/api/clientes', {
+      const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -161,42 +181,18 @@ export default function RegistrarCotizacion() {
       const clienteResult = await clienteResponse.json();
 
       if (!clienteResponse.ok) {
-        console.error('Error al guardar cliente:', clienteResult);
         Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
         return;
       }
 
-      clienteGuardado = clienteResult.data || clienteResult;
-    } catch (error) {
-      console.error('Error en la solicitud de cliente:', error);
-      Swal.fire('Error', 'Error de red al guardar cliente.', 'error');
-      return;
-    }
+      const datosCotizacion = {
+        ...datos,
+        cliente: clienteResult.data || clienteResult,
+        clientePotencial: true,
+        enviadoCorreo: enviar
+      };
 
-    const datosCotizacion = {
-      cliente: clienteData,
-      ciudad: clienteData.ciudad,
-      telefono: clienteData.telefono,
-      correo: clienteData.correo,
-      responsable: 'Pepito',
-      fecha: obtenerFechaLocal(inputs[5]?.value),
-      descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
-      condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
-      productos: productosSeleccionados.map(p => ({
-      producto: p.producto, // ✅ Asegúrate que sea el ID del producto
-      descripcion: p.descripcion,
-      cantidad: parseFloat(p.cantidad || 0),
-      valorUnitario: parseFloat(p.valorUnitario || 0),
-      descuento: parseFloat(p.descuento || 0),
-      valorTotal: parseFloat(p.valorTotal || 0)
-    })),
-
-      clientePotencial: true,
-      enviadoCorreo: enviar
-    };
-
-    try {
-      const cotizacionResponse = await fetch('http://localhost:3000/api/cotizaciones', {
+      const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -208,7 +204,6 @@ export default function RegistrarCotizacion() {
       const cotizacionResult = await cotizacionResponse.json();
 
       if (!cotizacionResponse.ok) {
-        console.error('Error al guardar cotización:', cotizacionResult);
         Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
         return;
       }
@@ -222,18 +217,210 @@ export default function RegistrarCotizacion() {
     }
   };
 
+  const guardarSinEnviar = async () => {
+  const inputs = document.querySelectorAll('.cuadroTexto');
+
+  const clienteData = {
+    nombre: inputs[0]?.value.trim() || '',
+    ciudad: inputs[1]?.value.trim() || '',
+    direccion: inputs[2]?.value.trim() || '',
+    telefono: inputs[3]?.value.trim() || '',
+    correo: inputs[4]?.value.trim() || '',
+    esCliente: false
+  };
+
+  if (!clienteData.nombre || !clienteData.correo || !clienteData.telefono || !clienteData.ciudad) {
+    Swal.fire('Error', 'Todos los campos del cliente son obligatorios.', 'warning');
+    return;
+  }
+
+  const datos = {
+    cliente: clienteData,
+    ciudad: clienteData.ciudad,
+    telefono: clienteData.telefono,
+    correo: clienteData.correo,
+    responsable: usuario.nombre,
+    fecha: obtenerFechaLocal(inputs[5]?.value),
+    descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
+    condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
+    productos: productosSeleccionados.map(p => ({
+      producto: p.producto,
+      descripcion: p.descripcion,
+      cantidad: parseFloat(p.cantidad || 0),
+      valorUnitario: parseFloat(p.valorUnitario || 0),
+      descuento: parseFloat(p.descuento || 0),
+      valorTotal: parseFloat(p.valorTotal || 0)
+    }))
+  };
+
+  const token = localStorage.getItem('token');
+
+  try {
+    const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(clienteData)
+    });
+
+    const clienteResult = await clienteResponse.json();
+
+    if (!clienteResponse.ok) {
+      Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
+      return;
+    }
+
+    const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...datos,
+        cliente: clienteResult.data || clienteResult,
+        clientePotencial: true,
+        enviadoCorreo: false
+      })
+    });
+
+    const cotizacionResult = await cotizacionResponse.json();
+
+    if (!cotizacionResponse.ok) {
+      Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
+      return;
+    }
+
+    Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success').then(() => {
+      navigate('/ListaDeCotizaciones');
+    });
+
+  } catch (error) {
+    console.error('Error en la solicitud de cotización:', error);
+    Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
+  }
+};
+
+
+  const guardarCotizacionFinal = async () => {
+  const token = localStorage.getItem('token');
+
+  try {
+    const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(datosFormato.cliente)
+    });
+
+    const clienteResult = await clienteResponse.json();
+
+    if (!clienteResponse.ok) {
+      Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
+      return;
+    }
+
+    const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...datosFormato,
+        cliente: clienteResult.data || clienteResult,
+        clientePotencial: true,
+        enviadoCorreo: true
+      })
+    });
+
+    const cotizacionResult = await cotizacionResponse.json();
+
+    if (!cotizacionResponse.ok) {
+      Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
+      return;
+    }
+
+    Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success')
+      .then(() => {
+        navigate('/ListaDeCotizaciones'); // ✅ Redirige después del mensaje
+      });
+
+  } catch (error) {
+    console.error('Error en la solicitud de cotización:', error);
+    Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
+  }
+};
+
+
+  const prepararEnvio = () => {
+  const inputs = document.querySelectorAll('.cuadroTexto');
+
+  const clienteData = {
+    nombre: inputs[0]?.value.trim() || '',
+    ciudad: inputs[1]?.value.trim() || '',
+    direccion: inputs[2]?.value.trim() || '',
+    telefono: inputs[3]?.value.trim() || '',
+    correo: inputs[4]?.value.trim() || '',
+    esCliente: false
+  };
+
+  if (!clienteData.nombre || !clienteData.correo || !clienteData.telefono || !clienteData.ciudad) {
+    Swal.fire('Error', 'Todos los campos del cliente son obligatorios.', 'warning');
+    return;
+  }
+
+  const datos = {
+    cliente: clienteData,
+    ciudad: clienteData.ciudad,
+    telefono: clienteData.telefono,
+    correo: clienteData.correo,
+    responsable: usuario.nombre,
+    fecha: obtenerFechaLocal(inputs[5]?.value),
+    descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
+    condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
+    productos: productosSeleccionados.map(p => ({
+      producto: p.producto,
+      descripcion: p.descripcion,
+      cantidad: parseFloat(p.cantidad || 0),
+      valorUnitario: parseFloat(p.valorUnitario || 0),
+      descuento: parseFloat(p.descuento || 0),
+      valorTotal: parseFloat(p.valorTotal || 0)
+    }))
+  };
+
+  setDatosFormato(datos);
+  setMostrarFormato(true);
+};
+
+
   return (
     <div>
       <Fijo />
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'>
-            <h3>Registrar cotizacion</h3>
-          </div>
+          <EncabezadoModulo2 titulo="Registrar cotizacion" />
           <br />
-          <br />
-          {/* Datos cliente */}
+
+          {mostrarFormato && datosFormato && (
+            <div className="modal-formato-overlay">
+              <div className="modal-formato-content">
+                <FormatoCotizacion
+                  datos={datosFormato}
+                  onCancelar={() => setMostrarFormato(false)}
+                  onConfirmarEnvio={guardarCotizacionFinal}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* FORMULARIO ORIGINAL A INSERTAR AQUÍ */}
+          {/* ... tu formulario completo sigue aquí como ya está construido */}
           <div className="table-container">
             <table>
               <thead>
@@ -263,9 +450,10 @@ export default function RegistrarCotizacion() {
 
           <br />
           <label className="labelDOCS">Descripción cotización</label>
+          <br /><br />
           <Editor
             onInit={(evt, editor) => (descripcionRef.current = editor)}
-            apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
+            apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
             textareaName="Descripcion"
             init={{ height: 250, menubar: false }}
           />
@@ -324,21 +512,38 @@ export default function RegistrarCotizacion() {
 
           <br />
           <label className="labelDOCS">Condiciones de pago</label>
+          <br /><br />
           <Editor
             onInit={(evt, editor) => (condicionesPagoRef.current = editor)}
-            apiKey="otu4s642tv612posr0ne65wrxy2i5kmop915g2gu2zbv5mho"
+            apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
             textareaName="Condiciones"
             init={{ height: 300, menubar: false }}
           />
 
+          
           <div className="buttons">
-            <button className="btn btn-primary-cancel" onClick={handleCancelado}>Cancelar</button>
-            <button className="btn btn-primary-guardar" onClick={() => handleGuardarCotizacion(false)}>Guardar</button>
-            <button className="btn btn-primary-env" onClick={() => handleGuardarCotizacion(true)}>Guardar y Enviar</button>
+            <button className="btn btn-primary-cancel" onClick={() => setProductosSeleccionados([])}>Cancelar</button>
+            <button className="btn btn-primary-guardar" onClick={guardarSinEnviar}>Guardar</button>
+            <button className="btn btn-primary-env" onClick={prepararEnvio}>
+              Guardar y Enviar
+            </button>
           </div>
+
+          
+
         </div>
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
 

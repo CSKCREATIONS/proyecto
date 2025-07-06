@@ -18,7 +18,7 @@ export default function NavVentas() {
     { path: "/Ventas", label: "Lista de ventas" },
     { path: "/ListaDeClientes", label: "Lista de clientes" },
     { path: "/ProspectosDeClientes", label: "Prospectos de clientes" },
-    { path: "/ReporteVentas", label: "Dashboard" }
+    { path: "/ReportessVentas", label: "Dashboard" }
   ];
 
   useEffect(() => {

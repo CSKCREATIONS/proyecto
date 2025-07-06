@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
+import NavCompras from '../components/NavCompras'
 
 const API_URL = 'http://localhost:3000/api/proveedores';
 const token = localStorage.getItem('token');
@@ -262,6 +263,7 @@ const GestionProveedores = () => {
     <div>
       <Fijo />
       <div className="content">
+        <NavCompras/>
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <h3>Lista de proveedores</h3>

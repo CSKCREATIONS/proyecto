@@ -1,0 +1,158 @@
+.cotizacion-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.cotizacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+}
+
+.cotizacion-header h1 {
+  color: #333;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.edit-btn {
+  background-color: #f0ad4e;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #ec971f;
+}
+
+.cancel-btn {
+  background-color: #d9534f;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #c9302c;
+}
+
+.send-btn {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.send-btn:hover {
+  background-color: #4cae4c;
+}
+
+.print-btn {
+  background-color: #5bc0de;
+  color: white;
+}
+
+.print-btn:hover {
+  background-color: #46b8da;
+}
+
+.cotizacion-body {
+  display: flex;
+  gap: 30px;
+}
+
+.company-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.company-name input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.company-logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #f5f5f5;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #666;
+  border-radius: 4px;
+}
+
+.recipient-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.info-row input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+@media print {
+  .action-buttons {
+    display: none;
+  }
+}
+
+
+/* estilos corresponfientes a mensajes y validacion de fecha en cotizacion*/
+/* Estilos para mensajes de error */
+.error-message {
+  color: #d9534f;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+/* Estilo para el display de fecha */
+.fecha-display {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-top: 5px;
+}

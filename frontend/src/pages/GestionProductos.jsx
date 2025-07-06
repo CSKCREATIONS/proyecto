@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
+import NavProductos from '../components/NavProductos';
 
 const API_PRODUCTS = 'http://localhost:3000/api/products';
 const API_CATEGORIES = 'http://localhost:3000/api/categories';
@@ -229,6 +230,7 @@ const GestionProductos = () => {
     <div>
       <Fijo />
       <div className="content">
+           <NavProductos/>
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <h3>Gestion de productos</h3>

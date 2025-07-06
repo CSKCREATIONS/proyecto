@@ -55,7 +55,7 @@ useEffect(() => {
 
 const obtenerPedidos = () => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/pedidos', {
+  fetch('http://localhost:5000/api/pedidos', {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -80,7 +80,7 @@ const marcarComoEntregado = async (idPedido) => {
   if (!confirmar.isConfirmed) return;
 
   try {
-    const result = await fetch(`http://localhost:3000/api/pedidos/${idPedido}/entregar`, {
+    const result = await fetch(`http://localhost:5000/api/pedidos/${idPedido}/entregar`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

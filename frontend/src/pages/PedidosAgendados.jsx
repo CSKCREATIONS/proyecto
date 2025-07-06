@@ -22,7 +22,7 @@ export default function Despachos() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -71,7 +71,7 @@ export default function Despachos() {
   const despacharPedido = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/estado`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export default function Despachos() {
       if (res.ok) {
         const data = await res.json();
         Swal.fire('Despachado', 'El pedido ha sido despachado.', 'success').then(() => {
-          navigate('/PedidosDepachados'); 
+          navigate('/PedidosDespachados'); 
         });
       } else {
         throw new Error('No se pudo despachar el pedido');
@@ -109,7 +109,7 @@ export default function Despachos() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/cancelar`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

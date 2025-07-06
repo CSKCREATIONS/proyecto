@@ -13,33 +13,23 @@ export default function Fijo() {
 
   useEffect(() => {
     // 1. Cargar datos del usuario y permisos
-    const loadUserAndPermissions = async () => {
+    const loadUserAndPermissions = () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const usuario = JSON.parse(storedUser);
-
-        // Si solo se guarda el ID del rol, cargar el rol desde la API
-        if (usuario.role && typeof usuario.role === 'string') {
-          try {
-            const res = await fetch(`/api/roles/${usuario.role}`);
-            const data = await res.json();
-            if (data.success) {
-              usuario.role = data.role;
-              localStorage.setItem('user', JSON.stringify(usuario));
-            }
-          } catch (error) {
-            console.error("Error al cargar rol:", error);
-          }
-        }
-
         setUser(usuario);
 
+        // Manejar tanto rol como string (nombre) o objeto {_id, name}
+        const roleName = typeof usuario.role === 'object'
+          ? usuario.role.name
+          : usuario.role;
+
+        // Actualizar permisos (usando permissions directo o basado en el rol)
         const permissions = usuario.permissions || [];
         setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
         setPuedeVerRoles(permissions.includes('roles.ver'));
       }
     };
-
 
     // Cargar datos iniciales
     loadUserAndPermissions();
@@ -168,17 +158,20 @@ export default function Fijo() {
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
                 <ul id="Compras" className="dropdown">
-                  <Link as={Link} to="/Documentacion"><li>Historial de compras </li></Link>
-                  <Link as={Link} to="/InformacionDeFuente"><li>Catalogo de proveedores</li></Link>
-                </ul>
+                    <Link as={Link} to="/Proveedores"><li>Proveedores</li></Link>
+                    <Link as={Link} to="/historialCompras"><li>Historial de compras</li></Link>
+                    <Link as={Link} to="/ReporteProveedores"><li>Dahsboard</li></Link>
+                    
+                  </ul>
               </nav>
 
               <nav>
                 <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuproductos')}>Productos</li>
                 <ul id="submenuproductos" className="dropdown">
-                  <Link as={Link} to="/GestionProductos"><li>Gestion productos</li></Link>
-                  <Link as={Link} to="/Documentacion"><li>Documentacion</li></Link>
-                  <Link as={Link} to="/InformacionDeFuente"><li>Informacion de fuente</li></Link>
+                    <Link as={Link} to="/Categorias"><li>Categorias</li></Link>
+                    <Link as={Link} to="/Subcategorias"><li>Subcategorias</li></Link>
+                    <Link as={Link} to="/GestionProductos"><li>Gestion de Productos</li></Link>
+                    <Link as={Link} to="/ReporteProductos"><li>Dashboard</li></Link>               
                 </ul>
               </nav>
 
@@ -193,7 +186,7 @@ export default function Fijo() {
                   <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
                   <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
                   <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
-                  <Link as={Link} to="/ReporteVentas"><li>Dashboard</li></Link>
+                  <Link as={Link} to="/ReportessVentas"><li>Dashboard </li></Link>                 
                 </ul>
               </nav>
             </div>

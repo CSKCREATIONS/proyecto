@@ -350,14 +350,31 @@ table {
 }
 
 
-/* Estilos de encabezado */
+
+@media print {
+  table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    
+  }
+
+  th, td {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    white-space: normal;
+  }
+}
+
+
 th {
-  background-color: #43805a;
+  background-color: #43805a; 
   color: white;
-  padding: 0.6em;
+  padding: 12px;
   text-align: center;
   border: none;
-  white-space: nowrap; /* evita salto de línea */
 }
 
 th:first-child {
@@ -368,29 +385,13 @@ th:last-child {
   border-top-right-radius: 10px;
 }
 
-/* Estilos de celdas */
 td {
-  background-color: #f9fafb;
+  background-color: #f9fafb; /* blanco suave */
   color: #111827;
-  padding: 0.4rem 0.6rem;
+  padding: 10px;
   text-align: center;
   border: 1px solid #e5e7eb;
-  vertical-align: middle;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; /* mantiene una línea de texto */
 }
-
-
-
-.td-multiline {
-  max-height: 60px;
-  overflow: auto;
-  white-space: normal; /* permite salto de línea */
-  text-align: left;
-}
-
 
 .btn-agregar {
   cursor: pointer;
@@ -1354,6 +1355,38 @@ body {
   background: linear-gradient(to right, #74ebd5, #9face6);
 }
 
+.login-container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.login-logo {
+  width: 80px;
+  height: auto;
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
 
 .form-group {
   margin-bottom: 1rem;
@@ -1742,249 +1775,97 @@ body {
 }
 
 /*estilo formato de cotizaciones*/
-.cotizacion-container {
-  font-family: 'Arial', sans-serif;
+.cotizacion-formato-elegante {
+  background: #fff;
+  border-radius: 10px;
+  padding: 40px;
   max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #fff;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #000;
 }
 
-.cotizacion-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 15px;
+.cotizacion-titulo {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  color: #0056b3;
+  margin-bottom: 10px;
 }
 
-.cotizacion-header h1 {
-  color: #333;
+.cotizacion-numero,
+.cotizacion-fecha {
+  text-align: center;
+  font-size: 14px;
   margin: 0;
 }
 
-.action-buttons {
+.cotizacion-info {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  margin: 30px 0;
+  font-size: 14px;
 }
 
-.action-buttons button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
-}
-
-.edit-btn {
-  background-color: #f0ad4e;
-  color: white;
-}
-
-.edit-btn:hover {
-  background-color: #ec971f;
-}
-
-.cancel-btn {
-  background-color: #d9534f;
-  color: white;
-}
-
-.cancel-btn:hover {
-  background-color: #c9302c;
-}
-
-.send-btn {
-  background-color: #5cb85c;
-  color: white;
-}
-
-.send-btn:hover {
-  background-color: #4cae4c;
-}
-
-.print-btn {
-  background-color: #5bc0de;
-  color: white;
-}
-
-.print-btn:hover {
-  background-color: #46b8da;
-}
-
-.cotizacion-body {
-  display: flex;
-  gap: 30px;
-}
-
-.company-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.company-name input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.company-logo {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-placeholder {
-  width: 100px;
-  height: 100px;
-  background-color: #f5f5f5;
-  border: 1px dashed #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: #666;
-  border-radius: 4px;
-}
-
-.recipient-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.info-row {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-row label {
+.cotizacion-info h4 {
+  color: #0056b3;
   margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
 }
 
-.info-row input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-@media print {
-  .action-buttons {
-    display: none;
-  }
-}
-
-
-/* estilos corresponfientes a mensajes y validacion de fecha en cotizacion*/
-/* Estilos para mensajes de error */
-.error-message {
-  color: #d9534f;
-  font-size: 0.8rem;
-  margin-top: 5px;
-}
-
-/* Estilo para el display de fecha */
-.fecha-display {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  margin-top: 5px;
-}
-
-/*modal nuevo de ventas*/
-
-.modal-productos {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5); /* Fondo oscuro */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal-contenido {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.modal-contenido table {
+.cotizacion-tabla {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-.modal-contenido th, .modal-contenido td {
-  border: 1px solid #ccc;
-  padding: 8px;
+.cotizacion-tabla th {
+  background-color: #0056b3;
+  color: white;
+  padding: 10px;
   text-align: left;
 }
 
-
-.modal-compact {
-  background: white;
-  border-radius: 10px;
-  padding: 40px;
-  width: 95%;                /* antes 90% */
-  max-width: 1100px;         /* antes 900px o 950px */
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-  position: relative;
+.cotizacion-tabla td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
 }
 
-.modal-lg {
-  max-width: 1100px !important;  /* Asegura ancho mayor incluso si otra clase intenta limitarlo */
+.cotizacion-resumen {
+  width: 250px;
+  margin-top: 30px;
+  margin-left: auto;
+  background-color: #0056b3;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
 }
 
-.modal-body table th,
-.modal-body table td {
-  border: 1px solid #ccc;
-  padding: 10px 12px;            /* Más espacio interno para que no se vea tan comprimido */
-  font-size: 15px;
+.cotizacion-resumen p {
+  margin: 5px 0;
 }
 
-.modal-body table {
-  table-layout: fixed;           /* Acomoda automáticamente los anchos */
-  word-wrap: break-word;
-}
-
-.modal-body .form-group {
-  margin-bottom: 18px;
-}
-
-.modal-title {
-  font-size: 24px;
-}
-
-/*inputs del editar cotizacion*/
-
-.input-estilo {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+.cotizacion-metodo {
+  margin-top: 60px;
   font-size: 14px;
-  background-color: white;
-  resize: none; /* evita que se estire el textarea */
 }
 
+.cotizacion-metodo h4 {
+  color: #0056b3;
+  margin-bottom: 8px;
+}
 
+.cotizacion-firmas {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+.cotizacion-firmas div {
+  width: 40%;
+  text-align: center;
+}
+
+.cotizacion-firmas hr {
+  border: 1px solid #999;
+  margin-bottom: 5px;
+}

@@ -22,12 +22,15 @@ import HistorialCompras from './pages/HistorialCompras';
 import GestionProductos from './pages/GestionProductos';
 import Categorias from './pages/Categorias';
 import Subcategorias from './pages/Subcategorias';
-import ReporteVentas from './pages/ReporteVentas';
+import ReportessVentas from './pages/ReportessVentas';
 import PrivateRoute from './routes/PrivateRoute';
 import PermisoRoute from './routes/PermisoRoute';
 import PedidosDevueltos from './pages/PedidosDevueltos';
 import PedidosDespachados from './pages/PedidosDespachados';
 import Ventas from './pages/Ventas';
+import ReporteProveedores from './pages/ReporteProveedores';
+import ReporteProductos from './pages/ReporteProductos';
+
 
 
 const App = () => {
@@ -77,7 +80,7 @@ const App = () => {
           <Route path="/error504" element={<Error504 />} />
           <Route path="*" element={<Error404 />} />
           <Route path='/GestionProductos' element={<GestionProductos />} />
-          <Route path='/ReporteVentas' element={<ReporteVentas />} /> 
+          <Route path='/ReportessVentas' element={<ReportessVentas />} /> 
           <Route path='/Proveedores' element={<Proveedores />} />
           <Route path='/HistorialCompras' element={<HistorialCompras />} />
           <Route path='/Categorias' element={<Categorias />} />
@@ -85,6 +88,8 @@ const App = () => {
           <Route path='/PedidosDevueltos' element={<PedidosDevueltos />} />
           <Route path='/PedidosDespachados' element={<PedidosDespachados />} />
           <Route path='/Ventas' element={<Ventas />} />
+          <Route path='/ReporteProveedores' element={<ReporteProveedores/>}/>
+          <Route path='/ReporteProductos' element={<ReporteProductos/>}/>
 
           {/* Rutas privadas */}
 
