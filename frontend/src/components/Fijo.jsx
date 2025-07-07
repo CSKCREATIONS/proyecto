@@ -32,6 +32,7 @@ export default function Fijo() {
   useEffect(() => {
     // 1. Cargar datos del usuario y permisos
     const loadUserAndPermissions = async () => {
+
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const usuario = JSON.parse(storedUser);
@@ -73,8 +74,18 @@ export default function Fijo() {
         setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
         setPuedeVerProspectos(permissions.includes('prospectos.ver'));
         setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
+
       }
-    };
+    }
+
+    setUser(usuario);
+
+    const permissions = usuario.permissions || [];
+    setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
+    setPuedeVerRoles(permissions.includes('roles.ver'));
+  }
+};
+
 
 
     // Cargar datos iniciales

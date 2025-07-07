@@ -37,6 +37,7 @@ export default function EditarPerfil() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
+
     // Validar contraseña si aplica
     if (passwords.new || passwords.confirm) {
       if (passwords.new !== passwords.confirm) {
@@ -84,7 +85,9 @@ export default function EditarPerfil() {
           text: 'Debes iniciar sesión nuevamente',
           confirmButtonText: 'OK'
         }).then(() => {
+
           navigate('/');
+
         });
 
         return; // Detener ejecución para no mostrar el otro Swal
@@ -118,6 +121,7 @@ export default function EditarPerfil() {
         closeModal('editar-perfil');
       }
     };
+
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);

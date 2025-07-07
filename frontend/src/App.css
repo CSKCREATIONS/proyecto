@@ -374,7 +374,6 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
   /* mantiene una línea de texto */
-}
 
 
 
@@ -1168,6 +1167,7 @@ select:focus {
 
 
 /*********************Agregados por Julian***********************************/
+
 
 
 
