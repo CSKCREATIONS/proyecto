@@ -374,7 +374,7 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
   /* mantiene una línea de texto */
-
+}
 
 
 .td-multiline {
@@ -1949,4 +1949,5 @@ select:focus {
   .labelDOCS {
     font-size: .8rem;
   }
+
 }

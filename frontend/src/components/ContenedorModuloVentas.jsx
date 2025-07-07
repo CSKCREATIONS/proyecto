@@ -131,7 +131,7 @@ export default function ContenedorModuloVentas() {
               )}
 
               {puedeVerReportesVentas && (
-                <Link to="/ReporteVentas">
+                <Link to="/ReportessVentas">
                   <button className="boton">
                     <img src="https://cdn-icons-png.freepik.com/256/901/901407.png" alt="Prospectos de cliente" className="icono" />
                     <span>Reportes</span>

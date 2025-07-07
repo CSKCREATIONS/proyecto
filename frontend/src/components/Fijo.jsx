@@ -16,7 +16,7 @@ export default function Fijo() {
   const [puedeVerCategorias, setPuedeVerCategorias] = useState(false);
   const [puedeVerSubcategorias, setPuedeVerSubcategorias] = useState(false);
   const [puedeVerProductos, setPuedeVerProductos] = useState(false);
-   const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
+  const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
   const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
   const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
   const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
@@ -73,23 +73,13 @@ export default function Fijo() {
         setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
         setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
         setPuedeVerProspectos(permissions.includes('prospectos.ver'));
-        setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
+    setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
 
-      }
-    }
-
-    setUser(usuario);
-
-    const permissions = usuario.permissions || [];
-    setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
-    setPuedeVerRoles(permissions.includes('roles.ver'));
   }
 };
 
-
-
-    // Cargar datos iniciales
-    loadUserAndPermissions();
+// Cargar datos iniciales
+loadUserAndPermissions();
 
     // 2. Configurar evento para cambios en localStorage
     const handleStorageChange = () => {
