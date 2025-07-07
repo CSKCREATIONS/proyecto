@@ -37,13 +37,36 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
+
+
+
         <Routes>
 
-          {/* Rutas públicas */}
+          {/* *****************Rutas públicas *****************/}
           <Route index path='/' element={<Login />} />
           <Route path='/RecuperarContraseña' element={<RecuperarContraseña />} />
+          <Route path="/error504" element={<Error504 />} />
+          <Route path="*" element={<Error404 />} />
 
-          <Route path='/Home' element={<PrivateRoute><Home /></PrivateRoute>} />
+          {/* ******************Rutas privadas****************/}
+          <Route
+            path='/Home'
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+
+          {/*******Rutas modulo usuarios***** */}
+          <Route
+            path='/Perfil'
+            element={
+              <PrivateRoute>
+                <Perfil />
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path='/ListaDeUsuarios'
@@ -53,48 +76,234 @@ const App = () => {
                   <ListaDeUsuarios />
                 </PermisoRoute>
               </PrivateRoute>
-
             }
           />
 
           <Route
             path="/RolesYPermisos"
             element={
-              <PermisoRoute permiso="roles.ver">
-                <RolesYPermisos />
-              </PermisoRoute>
+              <PrivateRoute>
+                <PermisoRoute permiso="roles.ver">
+                  <RolesYPermisos />
+                </PermisoRoute>
+              </PrivateRoute>
             }
           />
           <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
 
-          <Route path="/AgendarVenta/:id" element={<AgendarVenta />} />
-          <Route path='/PedidosAgendados' element={<PedidosAgendados />} />
-          <Route path='/PedidosEntregados' element={<PedidosEntregados />} />
-          <Route path='/PedidosCancelados' element={<PedidosCancelados />} />
-          <Route path='/RegistrarCotizacion' element={<RegistrarCotizacion />} />
-          <Route path='/ListaDeCotizaciones' element={<ListaDeCotizaciones />} />
-          <Route path='/ListaDeClientes' element={<ListaDeClientes />} />
-          <Route path='/ProspectosDeClientes' element={<ProspectosDeCliente />} />
-          <Route path='/Perfil' element={<Perfil />} />
-          <Route path='Login' element={<Login />} />
-          <Route path="/error504" element={<Error504 />} />
-          <Route path="*" element={<Error404 />} />
-          <Route path='/GestionProductos' element={<GestionProductos />} />
-          <Route path='/ReportessVentas' element={<ReportessVentas />} /> 
-          <Route path='/Proveedores' element={<Proveedores />} />
-          <Route path='/HistorialCompras' element={<HistorialCompras />} />
-          <Route path='/Categorias' element={<Categorias />} />
-          <Route path='/Subcategorias' element={<Subcategorias />} />
-          <Route path='/PedidosDevueltos' element={<PedidosDevueltos />} />
-          <Route path='/PedidosDespachados' element={<PedidosDespachados />} />
-          <Route path='/Ventas' element={<Ventas />} />
-          <Route path='/ReporteProveedores' element={<ReporteProveedores/>}/>
-          <Route path='/ReporteProductos' element={<ReporteProductos/>}/>
+          {/***Rutas modulo compras ****/}
 
-          {/* Rutas privadas */}
+          <Route
+            path='/HistorialCompras'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="hcompras.ver">
+                  <HistorialCompras />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
 
+          <Route
+            path='/Proveedores'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="proveedores.ver">
+                  <Proveedores />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ReporteProveedores'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="reportesCompras.ver">
+                  <ReporteProveedores />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          {/****Rutas modulo productos****/}
+
+          <Route
+            path='/GestionProductos'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="productos.ver">
+                  <GestionProductos />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/Categorias'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="categorias.ver">
+                  <Categorias />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/Subcategorias'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="subcategorias.ver">
+                  <Subcategorias />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ReporteProductos'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="reportesProductos.ver">
+                  <ReporteProductos />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          {/*****Rutas modulo ventas*** */}
+
+          <Route
+            path="/AgendarVenta/:id"
+            element={
+              <AgendarVenta />
+            }
+          />
+
+          <Route
+            path='/RegistrarCotizacion'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="cotizaciones.crear">
+                  <RegistrarCotizacion />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ListaDeCotizaciones'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="cotizaciones.ver">
+                  <ListaDeCotizaciones />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/PedidosAgendados'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosAgendados.ver">
+                  <PedidosAgendados />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/PedidosDespachados'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosDespachados.ver">
+                  <PedidosDespachados />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/PedidosEntregados'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosEntregados.ver">
+                  <PedidosEntregados />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/PedidosCancelados'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosCancelados.ver">
+                  <PedidosCancelados />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/PedidosDevueltos'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosDevueltos.ver">
+                  <PedidosDevueltos />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/Ventas'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="listaDeVentas.ver">
+                  <Ventas />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ListaDeClientes'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="clientes.ver">
+                  <ListaDeClientes />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ProspectosDeClientes'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="prospectos.ver">
+                  <ProspectosDeCliente />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/ReportessVentas'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="reportesVentas.ver">
+                  <ReportessVentas />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
 
         </Routes>
+
       </BrowserRouter>
 
     </div>

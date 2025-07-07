@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function NavUsuarios() {
-  const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
-  const [puedeVerRoles, setPuedeVerRoles] = useState(false);
+  const [puedeVerCategorias, setPuedeVerCategorias] = useState(false);
+  const [puedeVerSubcategorias, setPuedeVerSubcategorias] = useState(false);
+  const [puedeVerProductos, setPuedeVerProductos] = useState(false);
+  const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -11,8 +13,10 @@ export default function NavUsuarios() {
     if (storedUser) {
       const usuario = JSON.parse(storedUser);
       if (usuario.permissions) {
-        setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
-        setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
+        setPuedeVerCategorias(usuario.permissions.includes('categorias.ver'));
+        setPuedeVerSubcategorias(usuario.permissions.includes('subcategorias.ver'));
+        setPuedeVerProductos(usuario.permissions.includes('productos.ver'));
+        setPuedeVerReportesProductos(usuario.permissions.includes('reportesProductos.ver'));
       }
     }
   }, []);
@@ -22,7 +26,7 @@ export default function NavUsuarios() {
       <h2>Productos</h2>
       <div className="nav-modulo-wrapper">
         <nav className="nav-modulo" id="usuarios-nav">
-          {puedeVerUsuarios && (
+          {puedeVerCategorias && (
             <Link
               to="/Categorias"
               className={
@@ -33,7 +37,7 @@ export default function NavUsuarios() {
             </Link>
           )}
 
-          {puedeVerRoles && (
+          {puedeVerSubcategorias && (
             <Link
               to="/Subcategorias"
               className={
@@ -44,7 +48,7 @@ export default function NavUsuarios() {
             </Link>
           )}
 
-          {puedeVerRoles && (
+          {puedeVerProductos && (
             <Link
               to="/GestionProductos"
               className={
@@ -54,14 +58,14 @@ export default function NavUsuarios() {
               Lista de Productos
             </Link>
           )}
-          {puedeVerRoles && (
+          {puedeVerReportesProductos && (
             <Link
               to="/ReporteProductos"
               className={
                 location.pathname === '/ReporteProductos' ? 'nav-item active' : 'nav-item'
               }
             >
-              Reporte de Productos
+              Reportes de Productos
             </Link>
           )}
         </nav>

@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 import NavCompras from '../components/NavCompras'
-
 
 export default function HistorialCompras() {
   const [compras, setCompras] = useState([]);
@@ -143,42 +141,42 @@ export default function HistorialCompras() {
   const total = compra.productos.reduce((acc, p) => acc + (p.cantidad * p.precioUnitario), 0);
 
   const guardarCompra = async () => {
-  if (!compra.proveedor || compra.productos.length === 0) {
-    return Swal.fire('Error', 'Completa todos los campos', 'error');
-  }
+    if (!compra.proveedor || compra.productos.length === 0) {
+      return Swal.fire('Error', 'Completa todos los campos', 'error');
+    }
 
-  const token = localStorage.getItem('token');
-  const metodo = editandoId ? 'PUT' : 'POST';
-  const url = editandoId
-    ? `http://localhost:5000/api/compras/${editandoId}`
-    : 'http://localhost:5000/api/compras';
+    const token = localStorage.getItem('token');
+    const metodo = editandoId ? 'PUT' : 'POST';
+    const url = editandoId
+      ? `http://localhost:5000/api/compras/${editandoId}`
+      : 'http://localhost:5000/api/compras';
 
-  const res = await fetch(url, {
-    method: metodo,
-    headers: { 'Content-Type': 'application/json', 'x-access-token': token },
-    body: JSON.stringify({
-      ...compra,
-      productos: compra.productos.map(p => ({
-        producto: p.producto._id || p.producto,
-        cantidad: p.cantidad,
-        precioUnitario: p.precioUnitario
-      })),
-      total
-    })
-  });
+    const res = await fetch(url, {
+      method: metodo,
+      headers: { 'Content-Type': 'application/json', 'x-access-token': token },
+      body: JSON.stringify({
+        ...compra,
+        productos: compra.productos.map(p => ({
+          producto: p.producto._id || p.producto,
+          cantidad: p.cantidad,
+          precioUnitario: p.precioUnitario
+        })),
+        total
+      })
+    });
 
-  const data = await res.json();
-  if (data.success) {
-    Swal.fire('Éxito', editandoId ? 'Compra actualizada' : 'Compra registrada', 'success');
-    fetchCompras();
-    setModalVisible(false);
-    setCompra({ proveedor: '', productos: [], condicionesPago: '', observaciones: '' });
-    setProductosFiltrados([]);
-    setEditandoId(null); // ✅ Importante: limpiar estado de edición
-  } else {
-    Swal.fire('Error', data.message || 'Error al guardar', 'error');
-  }
-};
+    const data = await res.json();
+    if (data.success) {
+      Swal.fire('Éxito', editandoId ? 'Compra actualizada' : 'Compra registrada', 'success');
+      fetchCompras();
+      setModalVisible(false);
+      setCompra({ proveedor: '', productos: [], condicionesPago: '', observaciones: '' });
+      setProductosFiltrados([]);
+      setEditandoId(null); // ✅ Importante: limpiar estado de edición
+    } else {
+      Swal.fire('Error', data.message || 'Error al guardar', 'error');
+    }
+  };
 
 
   return (
@@ -187,7 +185,13 @@ export default function HistorialCompras() {
       <div className="content">
         <NavCompras/>
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Historial de Compras" />
+          <div className='encabezado-modulo'>
+            <div>
+              <h3>Historial de compras</h3>
+            </div>
+          </div>
+
+          <br />
           <br />
           <div className="d-flex justify-content-end mb-3">
             <button className="btn btn-save" onClick={() => setModalVisible(true)}>
@@ -207,7 +211,6 @@ export default function HistorialCompras() {
                   <th>Productos</th>
                   <th>Condiciones de Pago</th>
                   <th>Observaciones</th>
-                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -340,9 +343,9 @@ export default function HistorialCompras() {
                 </div>
                 <div className="modal-footer">
                   <button className="btn btn-cancel" onClick={() => setModalVisible(false)}>Cancelar</button>
-                <button className="btn btn-save" onClick={guardarCompra}>
-                  {editandoId ? 'Actualizar' : 'Guardar'}
-                </button>
+                  <button className="btn btn-save" onClick={guardarCompra}>
+                    {editandoId ? 'Actualizar' : 'Guardar'}
+                  </button>
                 </div>
               </div>
             </div>

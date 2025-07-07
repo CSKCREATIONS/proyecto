@@ -10,26 +10,72 @@ export default function Fijo() {
   const [user, setUser] = useState(null);
   const [puedeVerRoles, setPuedeVerRoles] = useState(false);
   const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
+  const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
+  const [puedeVerHCompras, setPuedeVerHCompras] = useState(false);
+  const [puedeVerReportesCompras, setPuedeVerReportesCompras] = useState(false);
+  const [puedeVerCategorias, setPuedeVerCategorias] = useState(false);
+  const [puedeVerSubcategorias, setPuedeVerSubcategorias] = useState(false);
+  const [puedeVerProductos, setPuedeVerProductos] = useState(false);
+   const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
+  const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
+  const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
+  const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
+  const [puedeVerPedidosDespachados, setPuedeVerPedidosDespachados] = useState(false);
+  const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
+  const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
+  const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
+  const [puedeVerListaDeVentas, setPuedeVerListaDeVentas] = useState(false);
+  const [puedeVerListaDeClientes, setPuedeVerListaDeClientes] = useState(false);
+  const [puedeVerProspectos, setPuedeVerProspectos] = useState(false);
+  const [puedeVerReportesVentas, setPuedeVerReportesVentas] = useState(false);
 
   useEffect(() => {
     // 1. Cargar datos del usuario y permisos
-    const loadUserAndPermissions = () => {
+    const loadUserAndPermissions = async () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const usuario = JSON.parse(storedUser);
+
+        // Si solo se guarda el ID del rol, cargar el rol desde la API
+        if (usuario.role && typeof usuario.role === 'string') {
+          try {
+            const res = await fetch(`/api/roles/${usuario.role}`);
+            const data = await res.json();
+            if (data.success) {
+              usuario.role = data.role;
+              localStorage.setItem('user', JSON.stringify(usuario));
+            }
+          } catch (error) {
+            console.error("Error al cargar rol:", error);
+          }
+        }
+
         setUser(usuario);
 
-        // Manejar tanto rol como string (nombre) o objeto {_id, name}
-        const roleName = typeof usuario.role === 'object'
-          ? usuario.role.name
-          : usuario.role;
-
-        // Actualizar permisos (usando permissions directo o basado en el rol)
         const permissions = usuario.permissions || [];
         setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
         setPuedeVerRoles(permissions.includes('roles.ver'));
+        setPuedeVerProveedores(permissions.includes('proveedores.ver'));
+        setPuedeVerHCompras(permissions.includes('hcompras.ver'));
+        setPuedeVerReportesCompras(permissions.includes('reportesCompras.ver'));
+        setPuedeVerCategorias(permissions.includes('categorias.ver'));
+        setPuedeVerSubcategorias(permissions.includes('subcategorias.ver'));
+        setPuedeVerProductos(permissions.includes('productos.ver'));
+        setPuedeVerReportesProductos(usuario.permissions.includes('reportesProductos.ver'));
+        setPuedeRegistrarCotizacion(permissions.includes('cotizaciones.crear'));
+        setPuedeVerCotizaciones(permissions.includes('cotizaciones.ver'));
+        setPuedeVerVentasAgendadas(permissions.includes('pedidosAgendados.ver'));
+        setPuedeVerPedidosDespachados(permissions.includes('pedidosDespachados.ver'));
+        setPuedeVerPedidosEntregados(permissions.includes('pedidosEntregados.ver'));
+        setPuedeVerPedidosCancelados(permissions.includes('pedidosCancelados.ver'));
+        setPuedeVerPedidosDevueltos(permissions.includes('pedidosDevueltos.ver'));
+        setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
+        setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
+        setPuedeVerProspectos(permissions.includes('prospectos.ver'));
+        setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
       }
     };
+
 
     // Cargar datos iniciales
     loadUserAndPermissions();
@@ -78,7 +124,7 @@ export default function Fijo() {
       localStorage.removeItem('user');
 
       //redirige al login
-      navigate('/Login');
+      navigate('/');
     }
   };
   return (
@@ -118,7 +164,7 @@ export default function Fijo() {
 
         <span id='close-menu' className="close-menu" onClick={cerrarMenu}>x</span>
         <div id='menu' className="menu">
-          <div className="usuarioYModulos">
+          <div className="usuarioYModulos" style={{ width: '100%' }}>
 
             <Link as={Link} to="/Perfil"><div className="preview-usuario">
               <img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" style={{ width: "80px" }} />
@@ -154,41 +200,98 @@ export default function Fijo() {
                 </nav>
               )}
 
+              {(puedeVerHCompras || puedeVerProveedores || puedeVerReportesCompras) && (
+                <nav>
+                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuCompras')}>Compras</li>
+                  <ul id="submenuCompras" className="dropdown" >
+                    {puedeVerHCompras && (
+                      <Link as={Link} to="/HistorialCompras"><li>Historial de compras </li></Link>
+                    )}
+                    {puedeVerProveedores && (
+                      <Link as={Link} to="/Proveedores"><li>Lista de proveedores</li></Link>
+                    )}
+                    {puedeVerReportesCompras && (
+                      <Link as={Link} to="/ReporteProveedores"><li>Reportes de compras</li></Link>
+                    )}
 
-              <nav>
-                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('Compras')}>Compras</li>
-                <ul id="Compras" className="dropdown">
-                    <Link as={Link} to="/Proveedores"><li>Proveedores</li></Link>
-                    <Link as={Link} to="/historialCompras"><li>Historial de compras</li></Link>
-                    <Link as={Link} to="/ReporteProveedores"><li>Dahsboard</li></Link>
-                    
                   </ul>
-              </nav>
+                </nav>
+              )}
 
-              <nav>
-                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuproductos')}>Productos</li>
-                <ul id="submenuproductos" className="dropdown">
-                    <Link as={Link} to="/Categorias"><li>Categorias</li></Link>
-                    <Link as={Link} to="/Subcategorias"><li>Subcategorias</li></Link>
-                    <Link as={Link} to="/GestionProductos"><li>Gestion de Productos</li></Link>
-                    <Link as={Link} to="/ReporteProductos"><li>Dashboard</li></Link>               
-                </ul>
-              </nav>
+              {(puedeVerCategorias || puedeVerSubcategorias || puedeVerProductos) && (
+                <nav>
+                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuProductos')}>Productos</li>
+                  <ul id="submenuProductos" className="dropdown">
+                    {puedeVerCategorias && (
+                      <Link as={Link} to="/Categorias"><li>Categorias</li></Link>
+                    )}
 
-              <nav>
-                <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
-                <ul id="submenuVentas" className="dropdown">
-                  <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
-                  <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
-                  <Link as={Link} to="/AgendarVenta"><li>Agendar venta</li></Link>
-                  <Link as={Link} to="/PedidosAgendados"><li>Pedidos agendados</li></Link>
-                  <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
-                  <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
-                  <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
-                  <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
-                  <Link as={Link} to="/ReportessVentas"><li>Dashboard </li></Link>                 
-                </ul>
-              </nav>
+                    {puedeVerSubcategorias && (
+                      <Link as={Link} to="/Subcategorias"><li>Subcategorias</li></Link>
+                    )}
+
+                    {puedeVerProductos && (
+                      <Link as={Link} to="/GestionProductos"><li>Lista de productos</li></Link>
+                    )}
+                    {puedeVerReportesProductos && (
+                      <Link as={Link} to="/ReporteProductos"><li>Reportes de productos</li></Link>
+                    )}
+
+                  </ul>
+                </nav>
+              )}
+
+              {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
+                <nav>
+                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
+                  <ul id="submenuVentas" className="dropdown">
+
+                    {puedeRegistrarCotizacion && (
+                      <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
+                    )}
+
+                    {puedeVerCotizaciones && (
+                      <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
+                    )}
+
+                    {puedeVerVentasAgendadas && (
+                      <Link as={Link} to="/PedidosAgendados"><li>Pedidos por despachar</li></Link>
+                    )}
+
+                    {puedeVerPedidosDespachados && (
+                      <Link as={Link} to="/PedidosDespachados"><li>Pedidos despachados</li></Link>
+                    )}
+
+                    {puedeVerPedidosEntregados && (
+                      <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
+                    )}
+
+                    {puedeVerPedidosCancelados && (
+                      <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
+                    )}
+
+                    {puedeVerPedidosDevueltos && (
+                      <Link as={Link} to="/PedidosDevueltos"><li>Pedidos devueltos</li></Link>
+                    )}
+
+                    {puedeVerListaDeVentas && (
+                      <Link as={Link} to="/Ventas"><li>Lista de ventas</li></Link>
+                    )}
+
+                    {puedeVerListaDeClientes && (
+                      <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
+                    )}
+
+                    {puedeVerProspectos && (
+                      <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
+                    )}
+
+                    {puedeVerReportesVentas && (
+                      <Link as={Link} to="/ReporteVentas"><li>Reportes</li></Link>
+                    )}
+                  </ul>
+                </nav>
+              )}
             </div>
           </div>
 

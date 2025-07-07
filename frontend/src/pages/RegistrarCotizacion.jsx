@@ -1,6 +1,5 @@
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
-import EncabezadoModulo2 from '../components/EncabezadoModulo2'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "@tinymce/tinymce-react";
@@ -9,13 +8,13 @@ import FormatoCotizacion from '../components/FormatoCotizacion';
 
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
+    const [user, setUser] = useState(null);
   const descripcionRef = useRef(null);
   const condicionesPagoRef = useRef(null);
   const [productos, setProductos] = useState([]);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
   const [mostrarFormato, setMostrarFormato] = useState(false);
   const [datosFormato, setDatosFormato] = useState(null);
-  const [usuario, setUsuario] = useState({ nombre: 'Pepito' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,13 +26,16 @@ export default function RegistrarCotizacion() {
       .then(data => setProductos(data.data || []))
       .catch(err => console.error('Error al cargar productos:', err));
 
-    fetch('http://localhost:5000/api/usuarios/perfil', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setUsuario(data.usuario || { nombre: 'Pepito' }))
-      .catch(err => console.error('Error al cargar usuario:', err));
   }, []);
+
+  useEffect(() => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const usuario = JSON.parse(storedUser);
+    setUser(usuario);
+  }
+}, []); 
+
 
   const agregarProducto = () => {
     setProductosSeleccionados([...productosSeleccionados, {
@@ -146,7 +148,7 @@ export default function RegistrarCotizacion() {
       ciudad: clienteData.ciudad,
       telefono: clienteData.telefono,
       correo: clienteData.correo,
-      responsable: usuario.nombre,
+      responsable: user?.firstName,
       fecha: obtenerFechaLocal(inputs[5]?.value),
       descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
       condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
@@ -239,7 +241,7 @@ export default function RegistrarCotizacion() {
     ciudad: clienteData.ciudad,
     telefono: clienteData.telefono,
     correo: clienteData.correo,
-    responsable: usuario.nombre,
+    responsable: user.firstName,
     fecha: obtenerFechaLocal(inputs[5]?.value),
     descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
     condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
@@ -379,7 +381,7 @@ export default function RegistrarCotizacion() {
     ciudad: clienteData.ciudad,
     telefono: clienteData.telefono,
     correo: clienteData.correo,
-    responsable: usuario.nombre,
+    responsable: user.firstName,
     fecha: obtenerFechaLocal(inputs[5]?.value),
     descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
     condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
@@ -404,7 +406,10 @@ export default function RegistrarCotizacion() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Registrar cotizacion" />
+          <div className='encabezado-modulo'>
+            <h3>Registrar cotizacion</h3>
+          </div>
+          <br />
           <br />
 
           {mostrarFormato && datosFormato && (
@@ -439,9 +444,9 @@ export default function RegistrarCotizacion() {
                   <td><input type="text" className="cuadroTexto" placeholder="Nombre o razón social" /></td>
                   <td><input type="text" className="cuadroTexto" placeholder="Ciudad" /></td>
                   <td><input type="text" className="cuadroTexto" placeholder="Dirección" /></td>
-                  <td><input type="text" className="cuadroTexto" placeholder="Teléfono" /></td>
-                  <td><input type="text" className="cuadroTexto" placeholder="Correo electrónico" /></td>
-                  <td><span>Pepito</span></td>
+                  <td><input type="number" className="cuadroTexto" placeholder="Teléfono" /></td>
+                  <td><input type="email" className="cuadroTexto" placeholder="Correo electrónico" /></td>
+                  <td><span>{user? user.firstName : ''} {user? user.surname : ''}</span></td>
                   <td><input type="date" className="cuadroTexto" /></td>
                 </tr>
               </tbody>

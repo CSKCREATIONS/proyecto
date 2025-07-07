@@ -11,7 +11,6 @@ import {
   CheckCircleOutlined, StopOutlined
 } from '@ant-design/icons';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -50,11 +49,12 @@ const Reportes = () => {
       <div className="content">
         <NavProductos/>
         <div className="contenido-modulo">
-          <EncabezadoModulo2 />
+          <div className='encabezado-modulo '>
+            <h3>Reportes de productos</h3>
+          </div>
+          <br />
+          <br />
           <div className="reportes-container">
-            <h1 className="titulo-reportes">Dashboard de productos</h1>
-            <br />
-
             {loading ? (
               <div className="cargando">Cargando datos...</div>
             ) : (

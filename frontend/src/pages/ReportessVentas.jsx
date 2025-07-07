@@ -16,7 +16,7 @@ import {
   UserOutlined, CheckCircleOutlined, StopOutlined
 } from '@ant-design/icons';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
+import NavVentas from '../components/NavVentas';
 
 const ReportessVentas = () => {
   const [ventas, setVentas] = useState([]);
@@ -104,12 +104,14 @@ const ReportessVentas = () => {
     <div>
       <Fijo />
       <div className="content">
+        <NavVentas/>
         <div className="contenido-modulo">
-          <EncabezadoModulo2 />
+          <div className='encabezado-modulo'>
+            <h3>Reportes de ventas</h3>
+          </div>
+          <br />
+          <br />
           <div className="reportes-container p-6 bg-gray-50 min-h-screen">
-            <h1 className="titulo-reportes">Dashboard de Ventas</h1>
-            <br />
-
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
               <Card>
                 <Statistic title="Total Ventas (30 días)" value={totalVentas} prefix={<ShoppingOutlined />} valueStyle={{ color: '#007bff' }} />

@@ -19,7 +19,7 @@ import {
   UserAddOutlined
 } from '@ant-design/icons';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
+import NavCompras from '../components/NavCompras'
 
 const colores = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28'];
 
@@ -40,10 +40,14 @@ const ReportesProveedores = () => {
     <div>
       <Fijo />
       <div className="content">
+        <NavCompras/>
         <div className="contenido-modulo">
-          <EncabezadoModulo2 />
+          <div className='encabezado-modulo'>
+            <h3>Reportes de compras</h3>
+          </div>
+          <br />
+          <br />
           <div className="reportes-container p-6 bg-gray-50 min-h-screen">
-            <h1 className="titulo-reportes">Dashboard de Proveedores</h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
               <Card>

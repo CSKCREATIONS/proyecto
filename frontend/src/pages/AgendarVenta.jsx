@@ -1,6 +1,5 @@
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -165,7 +164,9 @@ useEffect(() => {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Agendar pedido" />
+          <div className='encabezado-modulo'>
+            <h3>Agendar Pedido</h3>
+          </div>
           <br />
 
           {!cliente ? (

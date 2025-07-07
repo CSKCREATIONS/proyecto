@@ -292,7 +292,6 @@ const GestionProveedores = () => {
                 <th>País</th>
                 <th>Empresa</th>
                 <th>Productos</th>
-                <th>Acciones</th>
               </tr>
               </thead>
               <tbody>

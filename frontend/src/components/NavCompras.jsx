@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function NavUsuarios() {
-  const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
-  const [puedeVerRoles, setPuedeVerRoles] = useState(false);
+const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
+  const [puedeVerHCompras, setPuedeVerHCompras] = useState(false);
+  const [puedeVerReportesCompras, setPuedeVerReportesCompras] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -11,18 +12,29 @@ export default function NavUsuarios() {
     if (storedUser) {
       const usuario = JSON.parse(storedUser);
       if (usuario.permissions) {
-        setPuedeVerUsuarios(usuario.permissions.includes('usuarios.ver'));
-        setPuedeVerRoles(usuario.permissions.includes('roles.ver'));
+        setPuedeVerHCompras(usuario.permissions.includes('hcompras.ver'));
+        setPuedeVerProveedores(usuario.permissions.includes('proveedores.ver'));
+        setPuedeVerReportesCompras(usuario.permissions.includes('reportesCompras.ver'));
       }
     }
   }, []);
 
   return (
     <div>
-      <h2>Proveedores y Compras</h2>
+      <h2>Compras</h2>
       <div className="nav-modulo-wrapper">
         <nav className="nav-modulo" id="usuarios-nav">
-          {puedeVerUsuarios && (
+          {puedeVerHCompras && (
+            <Link
+              to="/HistorialCompras"
+              className={
+                location.pathname === '/HistorialCompras' ? 'nav-item active' : 'nav-item'
+              }
+            >
+                Historial de Compras
+            </Link>
+          )}
+          {puedeVerProveedores && (
             <Link
               to="/Proveedores"
               className={
@@ -33,17 +45,7 @@ export default function NavUsuarios() {
             </Link>
           )}
 
-          {puedeVerRoles && (
-            <Link
-              to="/HistorialCompras"
-              className={
-                location.pathname === '/HistorialCompras' ? 'nav-item active' : 'nav-item'
-              }
-            >
-                Historial de Compras
-            </Link>
-          )}
-          {puedeVerRoles && (
+          {puedeVerReportesCompras && (
             <Link
               to="/ReporteProveedores"
               className={

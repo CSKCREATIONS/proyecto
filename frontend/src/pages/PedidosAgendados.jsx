@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← añadido
+import { useNavigate } from 'react-router-dom';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
@@ -14,7 +14,10 @@ import EditarPedido from '../components/EditarPedido';
 export default function Despachos() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
-  const navigate = useNavigate(); // ← añadido
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const navigate = useNavigate();
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
@@ -22,10 +25,8 @@ export default function Despachos() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5000/api/pedidos', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    fetch('http://localhost:3000/api/pedidos', {
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => setPedidos(data.filter(p => p.estado === 'agendado')))
@@ -37,21 +38,18 @@ export default function Despachos() {
     const originalWidth = input.style.width;
     input.style.width = '100%';
 
-    html2canvas(input, {
-      scale: 1,
-      width: input.offsetWidth,
-      windowWidth: input.scrollWidth
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    html2canvas(input, { scale: 1, width: input.offsetWidth, windowWidth: input.scrollWidth })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 190;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save('despachos.pdf');
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        pdf.save('despachos.pdf');
 
-      input.style.width = originalWidth;
-    });
+        input.style.width = originalWidth;
+      });
   };
 
   const exportToExcel = () => {
@@ -71,19 +69,16 @@ export default function Despachos() {
   const despacharPedido = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/estado`, {
+      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ estado: 'despachado' })
       });
 
       if (res.ok) {
-        const data = await res.json();
+        await res.json();
         Swal.fire('Despachado', 'El pedido ha sido despachado.', 'success').then(() => {
-          navigate('/PedidosDespachados'); 
+          navigate('/PedidosDepachados');
         });
       } else {
         throw new Error('No se pudo despachar el pedido');
@@ -96,7 +91,6 @@ export default function Despachos() {
 
   const cancelarPedido = async (id) => {
     const token = localStorage.getItem('token');
-
     const confirm = await Swal.fire({
       title: '¿Cancelar pedido?',
       text: 'Esta acción no se puede deshacer.',
@@ -109,12 +103,9 @@ export default function Despachos() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/cancelar`, {
+      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       });
 
       const result = await res.json();
@@ -132,38 +123,40 @@ export default function Despachos() {
   };
 
   const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
-  if (!visible) return null;
-
-  return (
-    <div className="modal-overlay">
-      <div className="modal-compact modal-lg">
-        <div className="modal-header">
-          <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
-          <button className="modal-close" onClick={onClose}>&times;</button>
-        </div>
-        <div className="modal-body">
-          {productos && productos.length > 0 ? (
-            <ul className="list-group">
-              {productos.map((prod, idx) => (
-                <li key={idx} className="list-group-item">
-                  <strong>{prod?.product?.name  || 'Producto desconocido'}</strong><br />
-                  Cantidad: {prod?.cantidad}<br />
-                  Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
-                  <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
-                </li> 
-              ))}
-            </ul>
-          ) : (
-            <p>No hay productos asociados a este pedido.</p>
-          )}
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+    if (!visible) return null;
+    return (
+      <div className="modal-overlay">
+        <div className="modal-compact modal-lg">
+          <div className="modal-header">
+            <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
+            <button className="modal-close" onClick={onClose}>&times;</button>
+          </div>
+          <div className="modal-body">
+            {productos?.length > 0 ? (
+              <ul className="list-group">
+                {productos.map((prod, idx) => (
+                  <li key={idx} className="list-group-item">
+                    <strong>{prod?.product?.name || 'Producto desconocido'}</strong><br />
+                    Cantidad: {prod?.cantidad}<br />
+                    Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
+                    <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay productos asociados a este pedido.</p>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+
+  const totalPages = Math.ceil(pedidos.length / itemsPerPage);
+  const currentItems = pedidos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div>
@@ -183,7 +176,7 @@ export default function Despachos() {
                 <thead><br />
                   <tr>
                     <th>No</th>
-                    <th>identificador de Pedido</th>
+                    <th>Identificador de Pedido</th>
                     <th>Producto</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
@@ -193,9 +186,9 @@ export default function Despachos() {
                   </tr>
                 </thead>
                 <tbody>
-                  {pedidos.map((pedido, index) => (
+                  {currentItems.map((pedido, index) => (
                     <tr key={pedido._id}>
-                      <td>{index + 1}</td>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td>{pedido.numeroPedido || '---'}</td>
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
@@ -219,6 +212,17 @@ export default function Despachos() {
                   ))}
                 </tbody>
               </table>
+              <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={currentPage === i + 1 ? 'active-page' : ''}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
               <EditarPedido />
             </div>
           </div>

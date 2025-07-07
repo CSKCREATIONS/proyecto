@@ -93,6 +93,29 @@ const GestionProductos = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const itemsPorPagina = 10;
+
+  const productosFiltrados = productos.filter(prod => {
+    if (filtroEstado === 'activos') return prod.activo;
+    if (filtroEstado === 'inactivos') return !prod.activo;
+    return true;
+  });
+
+  const totalPaginas = Math.ceil(productosFiltrados.length / itemsPorPagina);
+  const indiceInicio = (paginaActual - 1) * itemsPorPagina;
+  const indiceFin = indiceInicio + itemsPorPagina;
+  const productosPaginados = productosFiltrados.slice(indiceInicio, indiceFin);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [filtroEstado]);
+
+
   useEffect(() => {
     loadProductos();
     loadCategorias();
@@ -194,7 +217,7 @@ const GestionProductos = () => {
         if (!res.ok) throw new Error('Error al eliminar el producto');
 
         Swal.fire('Eliminado', 'El producto ha sido eliminado', 'success');
-        loadProductos(); 
+        loadProductos();
       } catch (error) {
         Swal.fire('Error', error.message, 'error');
       }
@@ -230,7 +253,7 @@ const GestionProductos = () => {
     <div>
       <Fijo />
       <div className="content">
-           <NavProductos/>
+        <NavProductos />
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <h3>Gestion de productos</h3>
@@ -286,35 +309,33 @@ const GestionProductos = () => {
                 </tr>
               </thead>
               <tbody>
-                {productos
-                  .filter(prod => {
-                    if (filtroEstado === 'activos') return prod.activo;
-                    if (filtroEstado === 'inactivos') return !prod.activo;
-                    return true;
-                  })
-                  .map(prod => (
-                    <tr key={prod._id}>
-                      <td>{prod.name}</td>
-                      <td>{prod.description}</td>
-                      <td>{prod.price}</td>
-                      <td>{prod.stock}</td>
-                      <td>{prod.category?.name || '-'}</td>
-                      <td>{prod.subcategory?.name || '-'}</td>
-                      <td>{prod.proveedor?.nombre || '-'}</td>
-                      <td>
-                        <button className="btn btn-success btn-sm me-1" onClick={() => handleEdit(prod)}>
-                          <i className="fa-solid fa-pen"></i>
-                        </button>
-                        <button className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`} onClick={() => handleToggleEstado(prod._id, prod.activo)}>
-                          {prod.activo ? <i className="fa-solid fa-ban"></i> : <i className="fa-solid fa-check"></i>}
-                        </button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(prod._id)}>
-                          <i className="fa-solid fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
+                {productosPaginados.map(prod => (
+                  <tr key={prod._id}>
+                    <td>{prod.name}</td>
+                    <td>{prod.description}</td>
+                    <td>{prod.price}</td>
+                    <td>{prod.stock}</td>
+                    <td>{prod.category?.name || '-'}</td>
+                    <td>{prod.subcategory?.name || '-'}</td>
+                    <td>{prod.proveedor?.nombre || '-'}</td>
+                    <td>
+                      <button className="btn btn-success btn-sm me-1" onClick={() => handleEdit(prod)}>
+                        <i className="fa-solid fa-pen"></i>
+                      </button>
+                      <button
+                        className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`}
+                        onClick={() => handleToggleEstado(prod._id, prod.activo)}
+                      >
+                        {prod.activo ? <i className="fa-solid fa-ban"></i> : <i className="fa-solid fa-check"></i>}
+                      </button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(prod._id)}>
+                        <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
           {modalVisible && (
@@ -327,6 +348,18 @@ const GestionProductos = () => {
               proveedores={proveedores}
             />
           )}
+          <div className="pagination">
+            {Array.from({ length: totalPaginas }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => cambiarPagina(i + 1)}
+                className={paginaActual === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+
         </div>
       </div>
     </div>

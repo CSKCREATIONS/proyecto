@@ -36,7 +36,7 @@ export default function Perfil() {
 
     if (result.isConfirmed) {
       localStorage.clear();
-      navigate('/Login');
+      navigate('/');
     }
   };
 
