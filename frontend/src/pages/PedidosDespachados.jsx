@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
@@ -6,11 +7,14 @@ import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 
 export default function PedidosDespachados() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const navigate = useNavigate();
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
@@ -49,92 +53,93 @@ export default function PedidosDespachados() {
   };
 
 
-useEffect(() => {
-  obtenerPedidos();
-}, []);
+  useEffect(() => {
+    obtenerPedidos();
+  }, []);
 
-const obtenerPedidos = () => {
-  const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/pedidos', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(res => res.json())
-    .then(data => setPedidos(data.filter(p => p.estado === 'despachado')))
-    .catch(err => console.error('Error al cargar pedidos:', err));
-};
-
-const marcarComoEntregado = async (idPedido) => {
-  const token = localStorage.getItem('token');
-
-  const confirmar = await Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esto marcará el pedido como entregado y generará una venta.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, confirmar',
-    cancelButtonText: 'Cancelar'
-  });
-
-  if (!confirmar.isConfirmed) return;
-
-  try {
-    const result = await fetch(`http://localhost:3000/api/pedidos/${idPedido}/entregar`, {
-      method: 'PUT',
+  const obtenerPedidos = () => {
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:5000/api/pedidos', {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}` // ✅ necesario si la ruta está protegida
+        Authorization: `Bearer ${token}`
       }
+    })
+      .then(res => res.json())
+      .then(data => setPedidos(data.filter(p => p.estado === 'despachado')))
+      .catch(err => console.error('Error al cargar pedidos:', err));
+  };
+
+  const marcarComoEntregado = async (idPedido) => {
+    const token = localStorage.getItem('token');
+
+    const confirmar = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esto marcará el pedido como entregado y generará una venta.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, confirmar',
+      cancelButtonText: 'Cancelar'
     });
 
-    if (result.ok) {
-      Swal.fire('¡Éxito!', 'El pedido fue marcado como entregado.', 'success');
-      obtenerPedidos(); // 👈 recarga la lista de pedidos despachados
-    } else {
-      Swal.fire('Error', 'No se pudo entregar el pedido.', 'error');
+    if (!confirmar.isConfirmed) return;
+
+    try {
+      const result = await fetch(`http://localhost:5000/api/pedidos/${idPedido}/entregar`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // ✅ necesario si la ruta está protegida
+        }
+      });
+
+      if (result.ok) {
+        Swal.fire('¡Éxito!', 'El pedido fue marcado como entregado.', 'success');
+        obtenerPedidos(); // 👈 recarga la lista de pedidos despachados
+      } else {
+        Swal.fire('Error', 'No se pudo entregar el pedido.', 'error');
+      }
+    } catch (error) {
+      console.error('Error al actualizar estado:', error);
+      Swal.fire('Error', 'Hubo un problema al actualizar el pedido', 'error');
     }
-  } catch (error) {
-    console.error('Error al actualizar estado:', error);
-    Swal.fire('Error', 'Hubo un problema al actualizar el pedido', 'error');
-  }
-};
+  };
 
-const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
-  if (!visible) return null;
+  const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
+    if (!visible) return null;
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-compact modal-lg">
-        <div className="modal-header">
-          <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
-          <button className="modal-close" onClick={onClose}>&times;</button>
-        </div>
-        <div className="modal-body">
-          {productos && productos.length > 0 ? (
-            <ul className="list-group">
-              {productos.map((prod, idx) => (
-                <li key={idx} className="list-group-item">
-                  <strong>{prod?.product?.name  || 'Producto desconocido'}</strong><br />
-                  Cantidad: {prod?.cantidad}<br />
-                  Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
-                  <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
-                </li> 
-              ))}
-            </ul>
-          ) : (
-            <p>No hay productos asociados a este pedido.</p>
-          )}
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+    return (
+      <div className="modal-overlay">
+        <div className="modal-compact modal-lg">
+          <div className="modal-header">
+            <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
+            <button className="modal-close" onClick={onClose}>&times;</button>
+          </div>
+          <div className="modal-body">
+            {productos && productos.length > 0 ? (
+              <ul className="list-group">
+                {productos.map((prod, idx) => (
+                  <li key={idx} className="list-group-item">
+                    <strong>{prod?.product?.name || 'Producto desconocido'}</strong><br />
+                    Cantidad: {prod?.cantidad}<br />
+                    Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
+                    <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay productos asociados a este pedido.</p>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-
+  const totalPages = Math.ceil(pedidos.length / itemsPerPage);
+  const currentItems = pedidos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div>
@@ -164,9 +169,10 @@ const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId })
                   </tr>
                 </thead>
                 <tbody>
-                  {pedidos.map((pedido, index) => (
+                  {currentItems.map((pedido, index) => (
                     <tr key={pedido._id}>
-                      <td>{index + 1}</td>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td>{pedido.numeroPedido || '---'}</td>
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
                           Productos
@@ -179,16 +185,27 @@ const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId })
                       <td>{pedido.estado}</td>
                       <td className="no-export">
                         <button
-                        className="btn btn-success"
-                        onClick={() => marcarComoEntregado(pedido._id)}
-                      >
-                        Marcar como entregado
-                      </button>
+                          className="btn btn-success"
+                          onClick={() => marcarComoEntregado(pedido._id)}
+                        >
+                          Marcar como entregado
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={currentPage === i + 1 ? 'active-page' : ''}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

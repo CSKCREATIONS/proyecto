@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
+import NavProductos from '../components/NavProductos'
 
 const API_URL = 'http://localhost:3000/api/categories';
 const token = localStorage.getItem('token');
@@ -202,17 +202,16 @@ const GestionCategorias = () => {
 };
 
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  };
-
   return (
     <div>
       <Fijo />
       <div className="content">
+        <NavProductos/>
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo='Lista de Categorías' />
+          <div className='encabezado-modulo'>
+            <h3>Lista de categorias</h3>
+          </div>
+          <br />
           <br />
 
           <div className="d-flex justify-content-end mb-3">

@@ -14,7 +14,6 @@ export default function ContenedorModuloUsuarios() {
   }, []);
   return (
      <section className="seccion">
-    {(puedeVerRoles || puedeVerUsuarios) && (
      
       <fieldset>
         <legend>Usuarios</legend>
@@ -38,8 +37,6 @@ export default function ContenedorModuloUsuarios() {
           )}
         </div>
       </fieldset>
-    
-    )}
     </section>
   )
 }

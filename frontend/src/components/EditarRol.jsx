@@ -9,7 +9,9 @@ export default function EditarRol({ rol }) {
    const [mostrarUsuarios, setMostrarUsuarios] = useState(false);
    const mostrarListaUsuarios = permisos.includes('usuarios.ver');
    const mostrarListaRoles = permisos.includes('roles.ver');
-
+   const [mostrarCompras, setMostrarCompras] = useState(false);
+   const [mostrarProductos, setMostrarProductos] = useState(false);
+   const [mostrarVentas, setMostrarVentas] = useState(false);
 
    const permisosUsuarios = [
       'usuarios.crear',
@@ -23,15 +25,46 @@ export default function EditarRol({ rol }) {
       'roles.editar',
       'roles.inhabilitar'
    ];
+   const permisosCompras = [
+      'hcompras.ver',
+      'proveedores.ver',
+      'reportesCompras.ver'
+   ];
    const permisosProductos = [
       'productos.ver',
       'productos.crear',
       'productos.editar',
-      'productos.inactivar'
+      'productos.inactivar',
+      'categorias.ver',
+      'subcategorias.ver'
+   ];
+   const permisosVentas = [
+      'cotizaciones.crear',
+      'cotizaciones.ver',
+      'cotizaciones.editar',
+      'cotizaciones.eliminar',
+      'pedidosAgendados.ver',
+      'listaDeVentas.ver',
+      'pedidosDespachados.ver',
+      'pedidosEntregados.ver',
+      'pedidosCancelados.ver',
+      'pedidosDevueltos.ver',
+      'reportesVentas.ver',
+      'clientes.ver',
+      'clientes.crear',
+      'clientes.editar',
+      'clientes.inactivar',
+      'prospectos.ver'
    ];
 
    const tienePermisosUsuarios = () => {
       return permisos.includes('usuarios.ver') || permisos.includes('roles.ver');
+   };
+   const tienePermisosCompras = () => {
+      return permisos.includes('hcompras.ver') || permisos.includes('proveedores.ver') || permisos.includes('reportesCompras.ver');
+   };
+   const tienePermisosVentas = () => {
+      return permisos.includes('cotizaciones.crear') || permisos.includes('cotizaciones.ver') || permisos.includes('cotizaciones.editar') || permisos.includes('cotizaciones.eliminar') || permisos.includes('pedidosAgendados.ver') || permisos.includes('listaDeVentas.ver') || permisos.includes('pedidosDespachados.ver') || permisos.includes('pedidosEntregados.ver') || permisos.includes('pedidosCancelados.ver')|| permisos.includes('pedidosDevueltos.ver') || permisos.includes('reportesVentas.ver') || permisos.includes('clientes.ver') || permisos.includes('clientes.crear') || permisos.includes('clientes.editar') || permisos.includes('clientes.inactivar') || permisos.includes('prospectos.ver') || permisos.includes('reportesVentas.ver');
    };
 
 
@@ -49,29 +82,39 @@ export default function EditarRol({ rol }) {
       } else {
          setMostrarUsuarios(false);
       }
+      if (tienePermisosCompras()) {
+         setMostrarCompras(true);
+      } else {
+         setMostrarCompras(false);
+      }
+      if (tienePermisosVentas()) {
+         setMostrarVentas(true);
+      } else {
+         setMostrarVentas(false);
+      }
    }, [permisos]);
 
    // Manejo de cambios en checkboxes
    const togglePermiso = (permiso) => {
-   setPermisos(prev => {
-      const yaIncluido = prev.includes(permiso);
+      setPermisos(prev => {
+         const yaIncluido = prev.includes(permiso);
 
-      // Si se desactiva 'usuarios.ver', también quitamos los hijos
-      if (permiso === 'usuarios.ver' && yaIncluido) {
-         return prev.filter(p => p !== 'usuarios.ver' && !permisosUsuarios.includes(p));
-      }
+         // Si se desactiva 'usuarios.ver', también quitamos los hijos
+         if (permiso === 'usuarios.ver' && yaIncluido) {
+            return prev.filter(p => p !== 'usuarios.ver' && !permisosUsuarios.includes(p));
+         }
 
-      // Si se desactiva 'roles.ver', también quitamos los hijos de roles
-      if (permiso === 'roles.ver' && yaIncluido) {
-         return prev.filter(p => p !== 'roles.ver' && !permisosRoles.includes(p));
-      }
+         // Si se desactiva 'roles.ver', también quitamos los hijos de roles
+         if (permiso === 'roles.ver' && yaIncluido) {
+            return prev.filter(p => p !== 'roles.ver' && !permisosRoles.includes(p));
+         }
 
-      // Normal toggle
-      return yaIncluido
-         ? prev.filter(p => p !== permiso)
-         : [...prev, permiso];
-   });
-};
+         // Normal toggle
+         return yaIncluido
+            ? prev.filter(p => p !== permiso)
+            : [...prev, permiso];
+      });
+   };
 
    const toggleGrupoPermisos = (grupoPermisos) => {
       const todosMarcados = grupoPermisos.every(p => permisos.includes(p));
@@ -155,9 +198,20 @@ export default function EditarRol({ rol }) {
             /> Usuarios
 
 
-            <input value="compras" type="checkbox" /> Compras
+            <input value="compras" type="checkbox"
+               checked={mostrarCompras}
+               onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  setMostrarCompras(isChecked);
+               }} /> Compras
             <input value="productos" type="checkbox" /> Productos
-            <input value="ventas" type="checkbox" /> Ventas
+            <input value="ventas" type="checkbox" 
+            checked={mostrarVentas}
+               onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  setMostrarVentas(isChecked);
+               }}
+               /> Ventas
          </div>
          <br />
          {mostrarUsuarios && (
@@ -235,293 +289,235 @@ export default function EditarRol({ rol }) {
 
                {mostrarListaRoles && (
                   <div class="form-group-rol" id='roles-y-permisos'>
-                  <label>Permisos para roles y permisos</label>
-                  <div className="radio-options">
-                     <input
-                        type="checkbox"
-                        checked={permisos.includes('roles.crear')}
-                        onChange={() => togglePermiso('roles.crear')}
-                     /> Crear roles
+                     <label>Permisos para roles y permisos</label>
+                     <div className="radio-options">
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('roles.crear')}
+                           onChange={() => togglePermiso('roles.crear')}
+                        /> Crear roles
 
-                     <input
-                        type="checkbox"
-                        checked={permisos.includes('roles.editar')}
-                        onChange={() => togglePermiso('roles.editar')}
-                     /> Editar roles
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('roles.editar')}
+                           onChange={() => togglePermiso('roles.editar')}
+                        /> Editar roles
 
-                     <input
-                        type="checkbox"
-                        checked={permisos.includes('roles.inhabilitar')}
-                        onChange={() => togglePermiso('roles.inhabilitar')}
-                     /> Habilitar / Inhabilitar
+                        <input
+                           type="checkbox"
+                           checked={permisos.includes('roles.inhabilitar')}
+                           onChange={() => togglePermiso('roles.inhabilitar')}
+                        /> Habilitar / Inhabilitar
 
-                     <input
-                        type="radio"
-                        name="rolesPermissions"
-                        onClick={() => toggleGrupoPermisos(permisosRoles)}
-                        checked={permisosRoles.every(p => permisos.includes(p))}
-                     /> Todos los permisos
+                        <input
+                           type="radio"
+                           name="rolesPermissions"
+                           onClick={() => toggleGrupoPermisos(permisosRoles)}
+                           checked={permisosRoles.every(p => permisos.includes(p))}
+                        /> Todos los permisos
+                     </div>
                   </div>
-               </div>
                )}
-               
+
             </div>
          )}
 
-         <div className="section " id='permisos-compras'>
-            <h4>Permisos módulo compras</h4>
-            <br />
-            <div class="permissions">
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                     Lista de proveedores
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
-                     Historial de compras
-                  </label>
-                  <br />
-               </div>
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                     Ver reportes
-                  </label>
-                  <br />
+         {mostrarCompras && (
+            <div className="section" id='permisos-compras'>
+               <h4>Permisos módulo compras</h4>
+               <br />
+               <div class="permissions">
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="hcompras" checked={permisos.includes('hcompras.ver')}
+                           onChange={() => togglePermiso('hcompras.ver')} />
+                        Historial de compras
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('proveedores.ver')} onChange={() => togglePermiso('proveedores.ver')} />
+                        Catalogo de proveedores
+                     </label>
+                  </div>
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('reportesCompras.ver')} onChange={() => togglePermiso('reportesCompras.ver')} />
+                        Ver reportes
+                     </label>
+                     <br />
 
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" />
-                     Todos
-                  </label>
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="comprasPermissions"
+                           onClick={() => toggleGrupoPermisos(permisosCompras)}
+                           checked={permisosCompras.every(p => permisos.includes(p))} />
+                        Todos
+                     </label>
+                  </div>
                </div>
-            </div>
-            <br />
+               <br />
 
-         </div>
-         <div className="section " id='permisos-productos'>
-            <h4>Permisos módulo productos</h4>
-            <br />
+            </div>
+         )}
+         {mostrarProductos && (
+            <div className="section" id='permisos-productos'>
+               <h4>Permisos módulo productos</h4>
+               <br />
+               <div class="permissions">
 
-            <div class="permissions">
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('productos.ver')} onChange={() => togglePermiso('productos.ver')} />
+                        Lista de productos
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('categorias.ver')} onChange={() => togglePermiso('categorias.ver')} />
+                        Categorias
+                     </label>
+                     <br />
+                  </div>
+                  <div className="group">
 
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" />
-                     Lista de productos
-                  </label>
-                  <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('subcategorias.ver')} onChange={() => togglePermiso('subcategorias.ver')} />
+                        Subcategorias
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="productosPermissions"
+                           onClick={() => toggleGrupoPermisos(permisosProductos)}
+                           checked={permisosProductos.every(p => permisos.includes(p))} />
+                        Todos
+                     </label>
+                  </div>
                </div>
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                     Pedidos cancelados
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
-                     Registrar cotización
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
-                     Lista de cotizaciones
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
-                     Todos
-                  </label>
-               </div>
-            </div>
-            <br />
+               <br />
 
-            <div class="form-group-rol">
-               <label>Permisos para pedidos agendados</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para pedidos entregados</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de devoluciones</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de cotizaciones</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de clientes</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para prospectos de cliente</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div className="section" id='permisos-ventas'>
-            <h4>Permisos módulo ventas</h4>
-            <br />
+               <div class="form-group-rol " id="lista-productos">
+                  <label>Permisos para lista de productos</label>
+                  <div className="radio-options">
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('productos.crear')}
+                        onChange={() => togglePermiso('productos.crear')}
+                     /> Agregar Productos
 
-            <div class="permissions">
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('productos.editar')}
+                        onChange={() => togglePermiso('productos.editar')}
+                     /> Editar productos
 
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendar" />
-                     Agendar pedido
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendados" />
-                     Pedidos agendados
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" />
-                     Pedidos entregados
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="devueltos" />
-                     Pedidos devueltos
-                  </label>
-               </div>
-               <div className="group">
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" />
-                     Pedidos cancelados
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cotizacion" />
-                     Registrar cotización
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaCotizaciones" />
-                     Lista de cotizaciones
-                  </label>
-                  <br />
-                  <label>
-                     <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="todos" />
-                     Todos
-                  </label>
-               </div>
-            </div>
-            <br />
+                     <input
+                        type="checkbox"
+                        checked={permisos.includes('productos.inactivar ')}
+                        onChange={() => togglePermiso('productos.inactivar ')}
+                     /> Activar/Inactivar
 
-            <div class="form-group-rol">
-               <label>Permisos para pedidos agendados</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     <input
+                        type="radio"
+                     /> Todos los permisos
                   </div>
                </div>
             </div>
-            <div class="form-group-rol">
-               <label>Permisos para pedidos entregados</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
+         )}
+
+         {mostrarVentas && (
+            <div className="section" id='permisos-ventas'>
+               <h4>Permisos módulo ventas</h4>
+               <br />
+               <div class="permissions">
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('cotizaciones.crear')}
+                           onChange={() => togglePermiso('cotizaciones.crear')} />
+                        Registrar cotizacion
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('cotizaciones.ver')}
+                           onChange={() => togglePermiso('cotizaciones.ver')} />
+                        Lista de cotizaciones
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="agendados" checked={permisos.includes('pedidosAgendados.ver')}
+                           onChange={() => togglePermiso('pedidosAgendados.ver')} />
+                        Pedidos por despachar
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="despachados" checked={permisos.includes('pedidosDespachados.ver')}
+                           onChange={() => togglePermiso('pedidosDespachados.ver')} />
+                        Pedidos despachados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="entregados" checked={permisos.includes('pedidosEntregados.ver')}
+                           onChange={() => togglePermiso('pedidosEntregados.ver')} />
+                        Pedidos por entregados
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="cancelados" checked={permisos.includes('pedidosCancelados.ver')}
+                           onChange={() => togglePermiso('pedidosCancelados.ver')} />
+                        Pedidos cancelados
+                     </label>
+                     <br />
+
                   </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
+                  <div className="group">
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="devueltos" checked={permisos.includes('pedidosDevueltos.ver')}
+                           onChange={() => togglePermiso('pedidosDevueltos.ver')} />
+                        Pedidos devueltos
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="ventas" checked={permisos.includes('listaDeVentas.ver')}
+                           onChange={() => togglePermiso('listaDeVentas.ver')} />
+                        Lista de ventas
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="listaClientes" checked={permisos.includes('clientes.ver')}
+                           onChange={() => togglePermiso('clientes.ver')}/>
+                        Lista de clientes
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="prospectos" checked={permisos.includes('prospectos.ver')}
+                           onChange={() => togglePermiso('prospectos.ver')}/>
+                        Prospectos de cliente
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" name="reportesVentas" checked={permisos.includes('reportesVentas.ver')}
+                           onChange={() => togglePermiso('reportesVentas.ver')}/>
+                        Reportes
+                     </label>
+                     <br />
+                     <label>
+                        <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" />
+                        Todos
+                     </label>
+                  </div>
+               </div>
+               <br />
+
+               <div class="form-group-rol">
+                  <label>Permisos para lista de cotizaciones</label>
+                  <div class="radio-options">
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Solo ver
+                     </div>
+                     <div>
+                        <input type="radio" name="pedidosagendados" /> Todos los permisos
+                     </div>
                   </div>
                </div>
             </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de devoluciones</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de cotizaciones</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para lista de clientes</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-            <div class="form-group-rol">
-               <label>Permisos para prospectos de cliente</label>
-               <div class="radio-options">
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Solo ver
-                  </div>
-                  <div>
-                     <input type="radio" name="pedidosagendados" /> Todos los permisos
-                  </div>
-               </div>
-            </div>
-         </div>
+         )}
 
 
 

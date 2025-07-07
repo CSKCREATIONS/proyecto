@@ -336,52 +336,21 @@ li {
 
 /*Estilos para todas las <table>*/
 .table-container {
-  width: 100%;
+  max-width: 1250px;
   overflow-x: auto;
   scrollbar-width: thin;
   font-size: 14px;
 }
 
-.table-container table {
-  width: 100%;
-  table-layout: auto;
-}
-
-table {
-  width: 100%;
-  max-width: 100%;
-  table-layout: auto;
-}
-
-
-
-@media print {
-  table {
-    width: 100% !important;
-    max-width: 100% !important;
-    table-layout: fixed !important;
-    
-  }
-
-  th, td {
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-    white-space: normal;
-  }
-}
-
-
+/* Estilos de encabezado */
 th {
-  background-color: #43805a; 
+  background-color: #43805a;
   color: white;
-  padding: 12px;
+  padding: 0.6em;
   text-align: center;
   border: none;
   white-space: nowrap;
   /* evita salto de línea */
-
 }
 
 th:first-child {
@@ -392,10 +361,11 @@ th:last-child {
   border-top-right-radius: 10px;
 }
 
+/* Estilos de celdas */
 td {
-  background-color: #f9fafb; /* blanco suave */
+  background-color: #f9fafb;
   color: #111827;
-  padding: 10px;
+  padding: 0.4rem 0.6rem;
   text-align: center;
   border: 1px solid #e5e7eb;
   vertical-align: middle;
@@ -404,7 +374,7 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
   /* mantiene una línea de texto */
-}
+
 
 
 .td-multiline {
@@ -414,6 +384,7 @@ td {
   /* permite salto de línea */
   text-align: left;
 }
+
 
 .btn-agregar {
   cursor: pointer;
@@ -718,6 +689,7 @@ legend {
   padding-top: 0.4rem;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 
@@ -1194,83 +1166,8 @@ select:focus {
 }
 
 
-/********Estilos para mobile***********/
-@media (max-width: 700px) {
-  .content {
-    padding: 1rem 0.2rem;
-  }
+/*********************Agregados por Julian***********************************/
 
-  h2 {
-    font-size: 1.1rem;
-  }
-
-  h3 {
-    font-size: 1rem;
-  }
-
-  .fijo .izquierda {
-    gap: 1rem;
-  }
-
-  .fijo .izquierda #empresa-nombre {
-    font-size: 1.2rem;
-  }
-
-  .fijo .user {
-    font-size: .8rem;
-  }
-
-  .contenido-modulo {
-    padding: 1rem .2rem;
-  }
-
-  table,
-  .btn,
-  .btnTransparente {
-    font-size: .7rem;
-  }
-
-  .btn-agregar {
-    font-size: 0.6rem;
-  }
-
-  .export-text {
-    display: none !important;
-  }
-
-  .encabezado-modulo button span {
-    display: none;
-  }
-
-  .encabezado-modulo>div {
-    gap: 1.5rem;
-  }
-
-  .permissions .group {
-    width: 100%;
-  }
-
-  .containerPerfil .user-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav-modulo-wrapper {
-    margin: 0.7rem 0 0 .0rem;
-  }
-
-  .nav-modulo {
-    font-size: .6rem;
-  }
-
-  .nav-dropdown-menu .dropdown-item {
-    font-size: 15rem;
-  }
-
-  .labelDOCS {
-    font-size: .8rem;
-  }
-}
 
 
 
@@ -1369,29 +1266,7 @@ select:focus {
   font-size: 0.875rem;
   color: #6b7280;
 }
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #74ebd5, #9face6);
-}
 
-.login-container {
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 400px;
-  position: relative;
-}
 
 .logo-container {
   text-align: center;
@@ -1749,51 +1624,7 @@ body {
   background-color: #1d4ed8;
 }
 
-/********Estilos para mobile***********/
-@media (max-width: 700px) {
-  .content{
-    padding: 1rem ;
-  }
-  h2{
-    font-size: 1.1rem;
-  }
-  h3{
-    font-size: 1rem;
-  }
-  .fijo .izquierda {
-    gap: 1rem;
-  }
-  .fijo .izquierda #empresa-nombre{
-    font-size: 1.2rem;
-  }
-  .fijo .user{
-    font-size: .8rem;
-  }
-  .contenido-modulo{
-    padding: 1rem .2rem;
-  }
-  table, .btn-agregar, .btn, .btnTransparente{
-    font-size: .7rem;
-  }
-  .export-text {
-    display: none !important;
-  }
-  .encabezado-modulo button span{
-    display: none;
-  }
-  .encabezado-modulo > div{
-    gap: 1.5rem;
-  }
-  .permissions .group {
-    width: 100%;
-  }
-  .nav-modulo{
-    font-size: .6rem;
-  }
-  .labelDOCS{
-    font-size: .8rem ;
-  }
-}
+
 
 /*estilo formato de cotizaciones*/
 .cotizacion-container {
@@ -1994,6 +1825,128 @@ body {
 }
 
 
+.modal-compact {
+  background: white;
+  border-radius: 10px;
+  padding: 40px;
+  width: 95%;                /* antes 90% */
+  max-width: 1100px;         /* antes 900px o 950px */
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-lg {
+  max-width: 1100px !important;  /* Asegura ancho mayor incluso si otra clase intenta limitarlo */
+}
+
+.modal-body table th,
+.modal-body table td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;            /* Más espacio interno para que no se vea tan comprimido */
+  font-size: 15px;
+}
+
+.modal-body table {
+  table-layout: fixed;           /* Acomoda automáticamente los anchos */
+  word-wrap: break-word;
+}
+
+.modal-body .form-group {
+  margin-bottom: 18px;
+}
+
+.modal-title {
+  font-size: 24px;
+}
+
+/*inputs del editar cotizacion*/
+
+.input-estilo {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  background-color: white;
+  resize: none; /* evita que se estire el textarea */
+}
 
 
+/********Estilos para mobile***********/
+@media (max-width: 700px) {
+  .content {
+    padding: 1rem 0.2rem;
+  }
 
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  .fijo .izquierda {
+    gap: 1rem;
+  }
+
+  .fijo .izquierda #empresa-nombre {
+    font-size: 1.2rem;
+  }
+
+  .fijo .user {
+    font-size: .8rem;
+  }
+
+  .contenido-modulo {
+    padding: 1rem .2rem;
+  }
+
+  table,
+  .btn,
+  .btnTransparente {
+    font-size: .7rem;
+  }
+
+  .btn-agregar {
+    font-size: 0.6rem;
+  }
+
+  .export-text {
+    display: none !important;
+  }
+
+  .encabezado-modulo button span {
+    display: none;
+  }
+
+  .encabezado-modulo>div {
+    gap: 1.5rem;
+  }
+
+  .permissions .group {
+    width: 100%;
+  }
+
+  .containerPerfil .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-modulo-wrapper {
+    margin: 0.7rem 0 0 .0rem;
+  }
+
+  .nav-modulo {
+    font-size: .6rem;
+  }
+
+  .nav-dropdown-menu .dropdown-item {
+    font-size: 15rem;
+  }
+
+  .labelDOCS {
+    font-size: .8rem;
+  }
+}

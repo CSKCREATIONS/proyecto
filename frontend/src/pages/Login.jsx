@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 export default function Login() {
-  
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -75,7 +74,7 @@ export default function Login() {
             {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
 
             <div className="buttons">
-              <button className='btn btn-secondary' type="submit">
+              <button className='btn login-button' type="submit">
                 Iniciar sesión
               </button>
             </div>

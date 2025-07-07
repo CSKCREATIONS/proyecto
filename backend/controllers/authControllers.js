@@ -124,7 +124,14 @@ exports.signin = async (req, res) => {
       });
     }
 
-    // 3. Comparar contraseñas
+    // valida si el rol del usuario está inhabilitado
+    if (!user.role.enabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Rol inhabilitado"
+      });
+    }
+
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {

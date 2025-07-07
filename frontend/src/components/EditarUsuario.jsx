@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toggleSubMenu, closeModal } from '../funciones/animaciones';
 import Swal from 'sweetalert2';
 
+
 export default function EditarUsuario({ usuario, fetchUsuarios }) {
   const [rolesDisponibles, setRolesDisponibles] = useState([]);
   const [form, setForm] = useState({
@@ -54,6 +55,7 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
   }, [usuario]);
 
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -62,7 +64,8 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
-  const guardarCambios = async () => {
+  const guardarCambios = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       if (passwords.new !== passwords.confirm) {
@@ -137,8 +140,25 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const modal = document.getElementById('editUserModal');
+      const content = modal?.querySelector('.modal-content');
+
+      if (modal && content && !content.contains(e.target) && modal.style.display !== 'none') {
+        closeModal('editUserModal');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+
   return (
-    <div className="modal" id="editUserModal">
+
+
+    <form className="modal" id="editUserModal" onSubmit={guardarCambios}>
       <div className="modal-content">
         <div className="form-group">
           <label>Primer nombre</label>
@@ -176,7 +196,7 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
         </div>
 
         <div className="buttons">
-          <button className='btn btn-secondary' onClick={() => toggleSubMenu('changePassword')}>Cambiar contraseña</button>
+          <button className='btn btn-secondary' onClick={() => toggleSubMenu('changePassword')} type='button'>Cambiar contraseña</button>
         </div>
 
         <div className='dropdown' id='changePassword' style={{ border: '1px solid #ccc', padding: '0.5rem', marginTop: '1rem' }}>
@@ -204,10 +224,12 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
 
         <div className="buttons">
-          <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')}>Cancelar</button>
-          <button className="btn btn-primary" onClick={guardarCambios}>Guardar Cambios</button>
+          <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')} type='button'>Cancelar</button>
+          <button className="btn btn-primary" type='submit'>Guardar Cambios</button>
         </div>
       </div>
-    </div>
+
+
+    </form>
   );
 }

@@ -85,7 +85,7 @@ exports.createUser = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password, // se hashea con el pre('save')
-      role: role.name
+      role: role.id
     });
 
     await user.save();

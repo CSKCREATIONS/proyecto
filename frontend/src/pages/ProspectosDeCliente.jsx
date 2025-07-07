@@ -65,7 +65,7 @@ export default function ListaDeClientes() {
   useEffect(() => {
   const token = localStorage.getItem('token');
 
-  fetch('http://localhost:3000/api/clientes?esCliente=false', {
+  fetch('http://localhost:5000/api/clientes?esCliente=false', {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -99,7 +99,6 @@ export default function ListaDeClientes() {
                     <th>Ciudad</th>
                     <th>Teléfono</th>
                     <th>Correo</th>
-                    <th>Agenda / Cotiza</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,7 +113,6 @@ export default function ListaDeClientes() {
                       <td>{cliente.ciudad}</td>
                       <td>{cliente.telefono}</td>
                       <td>{cliente.correo}</td>
-                      <td><Link to={`/AgendarVenta/${cliente._id}`}><u>Agendar Venta</u></Link></td>
                     </tr>
                   ))
                 )}

@@ -11,19 +11,23 @@ router.get('/',
   roleController.getAllRoles
 )
 
+// POST api/roles - para crear rol 
+// puede crear rol todo aque usuario con permiso role.crear
 router.post('/',
   verifyToken,
   checkPermission('roles.crear'),
   roleController.createRole
 );
 
-// En routes/roleRoutes.js
+//PATCH api/roles/:id/toggle-enabled  inhabilitar rol
 router.patch('/:id/toggle-enabled',
   verifyToken,
   checkPermission('roles.inhabilitar'),
   roleController.toggleEnabled
 );
 
+
+// PATCH api/roles/:d  - editar rol
 router.patch('/:id',
   verifyToken,
   checkPermission('roles.editar'),

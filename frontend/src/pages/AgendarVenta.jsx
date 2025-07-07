@@ -1,6 +1,5 @@
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -20,7 +19,7 @@ useEffect(() => {
   const cargarDatos = async () => {
     try {
       // 1. Obtener cliente
-      const clienteRes = await fetch(`http://localhost:3000/api/clientes/${id}`, {
+      const clienteRes = await fetch(`http://localhost:5000/api/clientes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const clienteData = await clienteRes.json();
@@ -28,7 +27,7 @@ useEffect(() => {
 
       // 2. Si no es cliente real, actualizarlo
       if (!clienteData.esCliente) {
-        await fetch(`http://localhost:3000/api/clientes/${id}`, {
+        await fetch(`http://localhost:5000/api/clientes/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +51,7 @@ const [productosDisponibles, setProductosDisponibles] = useState([]);
 
 useEffect(() => {
   const token = localStorage.getItem('token');
-  fetch('http://localhost:3000/api/products', {
+  fetch('http://localhost:5000/api/products', {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then(res => res.json())
@@ -86,7 +85,7 @@ useEffect(() => {
   console.log('Pedido que se enviará:', pedido); // ✅ revisar en consola
 
   try {
-    const res = await fetch('http://localhost:3000/api/pedidos', {
+    const res = await fetch('http://localhost:5000/api/pedidos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,13 +107,13 @@ useEffect(() => {
 };
 
 
-  useEffect(() => {
+useEffect(() => {
   const fetchUltimaCotizacion = async () => {
-    if (!id) return;
+    if (!id || productosDisponibles.length === 0) return; // 👈 Esperar a que los productos estén cargados
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/cotizaciones/ultima?cliente=${id}`, {
+      const res = await fetch(`http://localhost:5000/api/cotizaciones/ultima?cliente=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -125,10 +124,26 @@ useEffect(() => {
         console.log('✅ Cotización para cliente:', id, cotizacion);
 
         if (cotizacion?.productos?.length > 0) {
-          setProductosCotizacion(cotizacion.productos);
+          const productosConPrecio = cotizacion.productos.map((p) => {
+            const productoInfo = productosDisponibles.find(prod => {
+              const idProducto = typeof p.producto === 'object' ? p.producto._id : p.producto;
+              return prod._id === idProducto;
+            });
+            return {
+              ...p,
+              valorUnitario: productoInfo?.price || 0,
+              producto: {
+                ...productoInfo,
+                _id: p.producto
+              }
+            };
+          });
+
+          setProductosCotizacion(productosConPrecio);
         } else {
           setProductosCotizacion([]);
         }
+
       } else {
         setProductosCotizacion([]);
         console.warn('⚠️ No hay cotización para este cliente');
@@ -140,7 +155,7 @@ useEffect(() => {
   };
 
   fetchUltimaCotizacion();
-}, [id]); // <- MUY IMPORTANTE que dependa de `id`
+}, [id, productosDisponibles]); // 👈 Dependencias correctas
 
 
   return (
@@ -149,7 +164,9 @@ useEffect(() => {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo2 titulo="Agendar pedido" />
+          <div className='encabezado-modulo'>
+            <h3>Agendar Pedido</h3>
+          </div>
           <br />
 
           {!cliente ? (

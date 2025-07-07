@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import EncabezadoModulo2 from '../components/EncabezadoModulo2';
+import NavProductos from '../components/NavProductos';
 
-const API_URL = 'http://localhost:3000/api/subcategories';
-const CATEGORY_API_URL = 'http://localhost:3000/api/categories';
+const API_URL = 'http://localhost:5000/api/subcategories';
+const CATEGORY_API_URL = 'http://localhost:5000/api/categories';
 const token = localStorage.getItem('token');
 
 const SubcategoriaModal = ({ subcategoria, categorias, onClose, onSave }) => {
@@ -101,7 +101,7 @@ const GestionSubcategorias = () => {
 
 const loadCategorias = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/categories', {
+    const res = await fetch('http://localhost:5000/api/categories', {
       headers: { 'x-access-token': token }
     });
 
@@ -185,9 +185,13 @@ const loadCategorias = async () => {
     <div>
       <Fijo />
       <div className="content">
+        <NavProductos/>
         <div className="contenido-modulo">
 
-            <EncabezadoModulo2 titulo="Gestión de Subcategorías" />
+            <div className='encabezado-modulo'>
+            <h3>Gestion de subcategorias</h3>
+          </div>
+          <br />
             <br />
         <div className="d-flex justify-content-end mb-3">
           <button className="btn btn-save" onClick={() => { setSubcategoriaEditando(null); setModalVisible(true); }}>

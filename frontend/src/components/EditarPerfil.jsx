@@ -32,10 +32,11 @@ export default function EditarPerfil() {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
-  const guardarCambios = async () => {
+  const guardarCambios = async (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user._id;
+
 
     // Validar contraseña si aplica
     if (passwords.new || passwords.confirm) {
@@ -84,7 +85,9 @@ export default function EditarPerfil() {
           text: 'Debes iniciar sesión nuevamente',
           confirmButtonText: 'OK'
         }).then(() => {
-          navigate('/Login');
+
+          navigate('/');
+
         });
 
         return; // Detener ejecución para no mostrar el otro Swal
@@ -109,58 +112,80 @@ export default function EditarPerfil() {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const modal = document.getElementById('editar-perfil');
+      const content = modal?.querySelector('.modal-content');
+
+      if (modal && content && !content.contains(e.target) && modal.style.display !== 'none') {
+        closeModal('editar-perfil');
+      }
+    };
+
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div className="modal" id="editar-perfil">
-      <div className="form-group">
-        <label>Primer nombre</label>
-        <input className='entrada' type="text" name="firstName" value={form.firstName || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Segundo nombre</label>
-        <input className='entrada' type="text" name="secondName" value={form.secondName || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Primer apellido</label>
-        <input className='entrada' type="text" name="surname" value={form.surname || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Segundo apellido</label>
-        <input className='entrada' type="text" name="secondSurname" value={form.secondSurname || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Correo</label>
-        <input className='entrada' type="email" name="email" value={form.email || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Nombre de usuario</label>
-        <input className='entrada' type="text" name="username" value={form.username || ''} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Rol</label>
-        <input className='entrada' type="text" value={form.role || ''} readOnly disabled />
-      </div>
+    <form className="modal" id="editar-perfil" onSubmit={guardarCambios}>
 
-      <div className="buttons">
-        <button className='btn btn-secondary' onClick={() => toggleSubMenu('changePassword')}>
-          Cambiar contraseña
-        </button>
-      </div>
-
-      <div className='dropdown' id='changePassword' style={{ border: '1px solid #ccc', padding: '0.5rem', marginTop: '1rem' }}>
+      <div className="modal-content">
         <div className="form-group">
-          <label>Nueva contraseña</label>
-          <input className='entrada' type="password" name="new" value={passwords.new} onChange={handlePasswordChange} />
+          <label>Primer nombre</label>
+          <input className='entrada' type="text" name="firstName" value={form.firstName || ''} onChange={handleChange} />
         </div>
         <div className="form-group">
-          <label>Confirmar nueva contraseña</label>
-          <input className='entrada' type="password" name="confirm" value={passwords.confirm} onChange={handlePasswordChange} />
+          <label>Segundo nombre</label>
+          <input className='entrada' type="text" name="secondName" value={form.secondName || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Primer apellido</label>
+          <input className='entrada' type="text" name="surname" value={form.surname || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Segundo apellido</label>
+          <input className='entrada' type="text" name="secondSurname" value={form.secondSurname || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Correo</label>
+          <input className='entrada' type="email" name="email" value={form.email || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Nombre de usuario</label>
+          <input className='entrada' type="text" name="username" value={form.username || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Rol</label>
+          <input className='entrada' type="text" value={form.role || ''} readOnly disabled />
+        </div>
+
+        <div className="buttons">
+          <button className='btn btn-secondary' type='button' onClick={() => toggleSubMenu('changePassword')}>
+            Cambiar contraseña
+          </button>
+        </div>
+
+        <div className='dropdown' id='changePassword' style={{ border: '1px solid #ccc', padding: '0.5rem', marginTop: '1rem' }}>
+          <div className="form-group">
+            <label>Nueva contraseña</label>
+            <input className='entrada' type="password" name="new" value={passwords.new} onChange={handlePasswordChange} />
+          </div>
+          <div className="form-group">
+            <label>Confirmar nueva contraseña</label>
+            <input className='entrada' type="password" name="confirm" value={passwords.confirm} onChange={handlePasswordChange} />
+          </div>
+        </div>
+
+        <div className="buttons">
+          <button className="btn btn-secondary" type='button' onClick={() => closeModal('editar-perfil')}>Cancelar</button>
+          <button type="submit" className="btn btn-primary">
+            Guardar Cambios
+          </button>
+
         </div>
       </div>
 
-      <div className="buttons">
-        <button className="btn btn-secondary" onClick={() => closeModal('editar-perfil')}>Cancelar</button>
-        <button className="btn btn-primary" onClick={guardarCambios}>Guardar Cambios</button>
-      </div>
-    </div>
+    </form>
   );
 }
