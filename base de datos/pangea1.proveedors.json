@@ -1,0 +1,53 @@
+[{
+  "_id": {
+    "$oid": "68687a04ccc62f877cbf1034"
+  },
+  "nombre": "natalia",
+  "contacto": {
+    "telefono": "1234",
+    "correo": "Nat@gmail.com"
+  },
+  "direccion": {
+    "calle": "clla123",
+    "pais": "Colombia"
+  },
+  "empresa": "",
+  "productos": [
+    {
+      "$oid": "68687c2d4901e18164eea37d"
+    },
+    {
+      "$oid": "6868aaaeee7c45c13e255296"
+    }
+  ],
+  "activo": true,
+  "fechaCreacion": {
+    "$date": "2025-07-05T01:04:04.775Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6869fcb0f3dacd0f5b9d3883"
+  },
+  "nombre": "julian",
+  "contacto": {
+    "telefono": "12345",
+    "correo": "julian@gmail.com"
+  },
+  "direccion": {
+    "calle": "car124",
+    "pais": "Estados Unidos"
+  },
+  "empresa": "Microsoft",
+  "productos": [
+    {
+      "$oid": "686b3f8d4010829b53d15dbd"
+    }
+  ],
+  "activo": true,
+  "fechaCreacion": {
+    "$date": "2025-07-06T04:33:52.900Z"
+  },
+  "__v": 0
+}]
