@@ -9,7 +9,7 @@ export default function EncabezadoModulo(props) {
 				<button style={{ background: 'transparent', cursor: 'pointer' }} onClick={props.exportToExcel}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
 				<button style={{ background: 'transparent', cursor: 'pointer' }} onClick={props.exportarPDF}><i className="fa-solid fa-file-pdf"></i> <span>Exportar a PDF</span></button>
 			</div>
-			<button type='submit' style={{ padding: '0.5rem', backgroundColor: '#43805a', borderRadius: '10px', color: 'white' }}>{props.descripcionBoton}</button>
+
 		</div>
 	)
 }

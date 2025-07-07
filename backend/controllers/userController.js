@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 exports.getAllUsers = async (req, res) => {
   console.log('[CONTROLLER] Ejecutando getAllUsers');
   try {
-    const users = await User.find().select('-password');
+    const users = await User.find()
+      .populate('role')
+      .select('-password');
     console.log('[CONTROLLER] Usuarios encontrados:', users.length);
     res.status(200).json({
       success: true,
@@ -83,7 +85,7 @@ exports.createUser = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password, // se hashea con el pre('save')
-      role: role.name
+      role: role.id
     });
 
     await user.save();
@@ -100,7 +102,8 @@ exports.createUser = async (req, res) => {
   }
 };
 
-
+// Para el usuario con permiso usuarios.editar
+// con este metodo puede actualizar cualquier usuario
 exports.updateUser = async (req, res) => {
   try {
     const allowedFields = ['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username', 'role'];
@@ -116,7 +119,10 @@ exports.updateUser = async (req, res) => {
       req.params.id,
       { $set: updates },
       { new: true }
-    ).select('-password');
+    )
+      .populate('role')
+      .select('-password');
+
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -138,6 +144,52 @@ exports.updateUser = async (req, res) => {
     });
   }
 };
+
+// Para editar perfil propio del usuario autenticado
+//PATCH api/users/me
+exports.updateOwnProfile = async (req, res) => {
+  try {
+    console.log('ejecutando updateOwnProfile');
+    console.log('Datos recibidos:', req.body); // 👈 Diagnóstico
+
+    const allowedFields = ['firstName', 'secondName', 'surname', 'secondSurname', 'email', 'username'];
+    const updates = {};
+
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId, // del token
+      { $set: updates },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('[updateOwnProfile] Error interno:', error); // <== Añade esto
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar perfil',
+      error: error.message
+    });
+  }
+
+};
+
 
 
 //Eliminar usuario solo si nunca ha iniciado sesión

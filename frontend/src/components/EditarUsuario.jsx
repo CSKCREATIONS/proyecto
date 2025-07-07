@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toggleSubMenu, closeModal } from '../funciones/animaciones';
 import Swal from 'sweetalert2';
 
+
 export default function EditarUsuario({ usuario, fetchUsuarios }) {
   const [rolesDisponibles, setRolesDisponibles] = useState([]);
   const [form, setForm] = useState({
@@ -41,17 +42,19 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
     if (usuario) {
       setForm({
-        firstName: usuario.firstName,
-        secondName: usuario.secondName,
-        surname: usuario.surname,
-        secondSurname: usuario.secondSurname,
-        role: usuario.role,
-        email: usuario.email,
-        username: usuario.username,
-        enabled: usuario.enabled,
+        firstName: usuario.firstName || '',
+        secondName: usuario.secondName || '',
+        surname: usuario.surname || '',
+        secondSurname: usuario.secondSurname || '',
+        role: usuario.role?._id || usuario.role || '',
+        email: usuario.email || '',
+        username: usuario.username || '',
+        enabled: usuario.enabled ?? true,
       });
     }
+
   }, [usuario]);
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -61,7 +64,8 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
-  const guardarCambios = async () => {
+  const guardarCambios = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       if (passwords.new !== passwords.confirm) {
@@ -100,10 +104,28 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
         nuevaContrasena = passwords.new;
       }
 
-
       await fetchUsuarios();
       closeModal('editUserModal');
       setPasswords({ current: '', new: '', confirm: '' });
+
+      // Actualizar localStorage si el usuario editado es el mismo que está logueado
+      const userLogged = JSON.parse(localStorage.getItem('user'));
+      if (userLogged && userLogged._id === usuario._id) {
+        // Obtener el nombre del rol desde la lista de roles disponibles
+        const rolActualizado = rolesDisponibles.find(r => r._id === form.role);
+
+        localStorage.setItem('user', JSON.stringify({
+          ...userLogged,
+          ...form,
+          role: {
+            _id: form.role,
+            name: rolActualizado ? rolActualizado.name : userLogged.role?.name || ''
+          }
+        }));
+
+        window.dispatchEvent(new Event('storage')); // para que Fijo.jsx se actualice
+      }
+
 
       Swal.fire({
         icon: 'success',
@@ -118,8 +140,25 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const modal = document.getElementById('editUserModal');
+      const content = modal?.querySelector('.modal-content');
+
+      if (modal && content && !content.contains(e.target) && modal.style.display !== 'none') {
+        closeModal('editUserModal');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+
   return (
-    <div className="modal" id="editUserModal">
+
+
+    <form className="modal" id="editUserModal" onSubmit={guardarCambios}>
       <div className="modal-content">
         <div className="form-group">
           <label>Primer nombre</label>
@@ -151,13 +190,13 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
           <select className='entrada' name="role" value={form.role} onChange={handleChange} required>
             <option value="" disabled>Seleccione un rol</option>
             {Array.isArray(rolesDisponibles) && rolesDisponibles.map(r => (
-              <option key={r._id} value={r.name}>{r.name}</option>
+              <option key={r._id} value={r._id}>{r.name}</option>
             ))}
           </select>
         </div>
 
         <div className="buttons">
-          <button className='btn btn-secondary' onClick={() => toggleSubMenu('changePassword')}>Cambiar contraseña</button>
+          <button className='btn btn-secondary' onClick={() => toggleSubMenu('changePassword')} type='button'>Cambiar contraseña</button>
         </div>
 
         <div className='dropdown' id='changePassword' style={{ border: '1px solid #ccc', padding: '0.5rem', marginTop: '1rem' }}>
@@ -185,10 +224,12 @@ export default function EditarUsuario({ usuario, fetchUsuarios }) {
 
 
         <div className="buttons">
-          <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')}>Cancelar</button>
-          <button className="btn btn-primary" onClick={guardarCambios}>Guardar Cambios</button>
+          <button className="btn btn-secondary" onClick={() => closeModal('editUserModal')} type='button'>Cancelar</button>
+          <button className="btn btn-primary" type='submit'>Guardar Cambios</button>
         </div>
       </div>
-    </div>
+
+
+    </form>
   );
 }

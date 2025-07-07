@@ -1,61 +1,90 @@
 [{
   "_id": {
-    "$oid": "685a2c7d81b79670eea3308a"
-  },
-  "name": "controlador de roles",
-  "permissions": [
-    "roles.crear",
-    "roles.ver"
-  ],
-  "enabled": true,
-  "createdAt": {
-    "$date": "2025-06-24T04:41:33.450Z"
-  },
-  "updatedAt": {
-    "$date": "2025-06-24T04:41:33.450Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
     "$oid": "685a2d1281b79670eea33097"
   },
-  "name": "admin",
+  "name": "Administrador",
   "permissions": [
     "roles.crear",
-    "roles.ver",
-    "usuarios.ver",
+    "roles.inhabilitar",
+    "roles.editar",
     "usuarios.crear",
     "usuarios.editar",
     "usuarios.inhabilitar",
-    "usuarios.eliminar"
+    "usuarios.eliminar",
+    "usuarios.ver",
+    "roles.ver",
+    "cotizaciones.crear",
+    "cotizaciones.ver",
+    "categorias.ver",
+    "subcategorias.ver",
+    "productos.ver",
+    "reportesProductos.ver",
+    "listaDeVentas.ver",
+    "pedidosAgendados.ver",
+    "pedidosDespachados.ver",
+    "pedidosEntregados.ver",
+    "pedidosCancelados.ver",
+    "pedidosDevueltos.ver",
+    "reportesVentas.ver",
+    "clientes.ver",
+    "prospectos.ver",
+    "hcompras.ver",
+    "proveedores.ver",
+    "reportesCompras.ver"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T04:44:02.345Z"
   },
   "updatedAt": {
-    "$date": "2025-06-24T04:44:02.345Z"
+    "$date": "2025-07-07T01:30:40.207Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "685a2d2d81b79670eea3309a"
+    "$oid": "686abf02946339bb938cb1b7"
   },
-  "name": "controlador de usuarios",
+  "name": "Gerente de ventas",
   "permissions": [
-    "usuarios.crear",
-    "usuarios.editar",
-    "usuarios.inhabilitar",
-    "usuarios.eliminar"
+    "listaDeVentas.ver",
+    "pedidosAgendados.ver",
+    "pedidosDespachados.ver",
+    "pedidosEntregados.ver",
+    "pedidosCancelados.ver",
+    "pedidosDevueltos.ver",
+    "reportesVentas.ver",
+    "cotizaciones.ver",
+    "clientes.ver",
+    "prospectos.ver"
   ],
   "enabled": true,
   "createdAt": {
-    "$date": "2025-06-24T04:44:29.711Z"
+    "$date": "2025-07-06T18:22:58.609Z"
   },
   "updatedAt": {
-    "$date": "2025-06-24T04:44:29.711Z"
+    "$date": "2025-07-06T18:22:58.609Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "686b20b83ad85ce60578d025"
+  },
+  "name": "Gerente de compras",
+  "permissions": [
+    "hcompras.ver",
+    "proveedores.ver",
+    "reportesCompras.ver",
+    "productos.ver",
+    "reportesProductos.ver"
+  ],
+  "enabled": true,
+  "createdAt": {
+    "$date": "2025-07-07T01:19:52.210Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-07T01:19:52.210Z"
   },
   "__v": 0
 }]

@@ -1,19 +1,19 @@
 const Product = require('../models/Products');
 const Category = require('../models/category');
 const Subcategory = require('../models/Subcategory');
+const Proveedores = require('../models/proveedores');
 
 exports.createProduct = async(req,res) =>{
     try{
-        const{name,description, price, stock, category,subcategory} = req.body;
+        const{name,description, price, stock, category,subcategory, proveedor} = req.body;
 
-        //validacion de campos requeridos
-        if(!name || !description || !price || !stock || !category || !subcategory){
+        if(!name || !description || !price || !stock || !category || !subcategory || !proveedor){
             return res.status(404).json({
                 success: false,
                 message:'todos los campos son obligatorios'
             });
         }
-        //verificar que la categoria exista
+
         const categoryExist = await Category.findById(category);
         if(!categoryExist){
             return res.status(404).json({
@@ -21,8 +21,6 @@ exports.createProduct = async(req,res) =>{
                 message:'la categoria especifica no existe'
             });
         }
-
-        // verificar que las subcategoria existe y pertenece a la categoria
 
         const subcategoryExists = await Subcategory.findOne({
             _id:subcategory,
@@ -35,7 +33,14 @@ exports.createProduct = async(req,res) =>{
                 message:'la subcategoria no existe o no pertenecea a la categoria especifica'
             });
         }
-        //crear el producto sin createBy temporalmente
+
+        const proveedorExist = await Proveedores.findById(proveedor);
+        if (!proveedorExist) {
+            return res.status(404).json({
+                success: false,
+                message: 'El proveedor especificado no existe'
+            });
+        }
 
         const product = new Product({
             name,
@@ -43,35 +48,33 @@ exports.createProduct = async(req,res) =>{
             description,
             stock,
             category,
-            subcategory
-            // CreateBy se agregara despues de verificar el usuario
+            subcategory,
+            proveedor
         });
 
-        //verificar si el usuario esya disponible en el request
         if(req.user && req.user.id){
             product.CreatedBy = req.user.id;
-
         }
-        //guardar en la base de dattos
 
         const savedProduct = await product.save();
 
-        //Obtener el producto con los datos poblados
+        await Proveedores.findByIdAndUpdate(proveedor, {
+            $push: { productos: savedProduct._id }
+        });
 
         const productWithDetails = await Product.findById(savedProduct._id)
-        .populate('category', 'name')
-        .populate('subcategory','name');
+            .populate('category', 'name')
+            .populate('subcategory','name')
+            .populate('proveedor');
+
 
         res.status(201).json({
             success:true,
-            message:('producto creado exitosamente'),
+            message:'producto creado exitosamente',
             data: productWithDetails
-
         });
     }catch(error){
         console.error('Error en createdProduct:',error);
-
-        //manejo de errores en mongoDB
         if(error.code === 11000){
             return res.status(400).json({
                 success:false,
@@ -86,34 +89,34 @@ exports.createProduct = async(req,res) =>{
     }
 };
 
-//consulta de productos GET api/products
 exports.getProducts = async (req,res) =>{
     try{
         const products = await Product.find()
-        .populate('category','name') 
-        .populate('subcategory','name')
-        .sort({createAt: -1 });
+            .populate('category','name') 
+            .populate('subcategory','name')
+            .populate('proveedor', 'nombre empresa')
+            .sort({createdAt: -1 });
 
         res.status(200).json({
             success:true,
-            const: products.length,
+            count: products.length,
             data:products
-        })
+        });
     }catch (error){
-        console.error('Error en el getProducts',error)
-            res.status(500).json({
-                success:false,
-                message:'Error al obtener los productos'
-            });
-        
+        console.error('Error en el getProducts',error);
+        res.status(500).json({
+            success:false,
+            message:'Error al obtener los productos'
+        });
     }
 };
 
 exports.getProductById = async (req, res) =>{
     try{
         const product = await Product.findById(req.params.id)
-        .populate('category','name description')
-        .populate('subcategory','name description') ;
+            .populate('category','name description')
+            .populate('subcategory','name description')
+            .populate('proveedor', 'nombre empresa');
 
         if(!product){
             return res.status(404).json({
@@ -131,51 +134,57 @@ exports.getProductById = async (req, res) =>{
         res.status(500).json({
             success:false,
             message:'Error al obtener el producto'
-
         });
     }
 };
 
 exports.updateProduct = async (req,res) =>{
     try{
-        const {name, description, price,stock,category,subcategory} = req.body;
+        const {name, description, price,stock,category,subcategory, proveedor} = req.body;
         const updateData = {};
 
-        //Validar y preparar datos para actualizacion
-        if(name) updateData.name= name;
+        if(name) updateData.name = name;
         if(description) updateData.description = description;
         if(price) updateData.price = price;
         if(stock) updateData.stock = stock;
 
-        //validar relaciones si se actualizan
-        if(category || subcategory){
-            if(category){
-                const categoryExist = await Category.findById(category);
-                if(!categoryExist){
-                    return res.status(404).json({
-                        success:false,
-                        message:'la categoria especifica no existe'
-                    });
-                }
-                updateData.category = category;
-            }
-            if(subcategory){
-                const subcategoryExists = await Subcategory.findOne({
-                    _id:subcategory,
-                    category:category || updateData.category
+        if(category){
+            const categoryExist = await Category.findById(category);
+            if(!categoryExist){
+                return res.status(404).json({
+                    success:false,
+                    message:'la categoria especifica no existe'
                 });
-
-                if(!subcategoryExists){
-                    return res.status(400).json({
-                        success:false,
-                        message:'esta subcategoria no existe o no pertenece a la categoria '
-                    });
-                }
-                updateData.subcategory = subcategory;
-                
             }
-         }
-        //actualizar el producto
+            updateData.category = category;
+        }
+
+        if(subcategory){
+            const subcategoryExists = await Subcategory.findOne({
+                _id:subcategory,
+                category:category || updateData.category
+            });
+
+            if(!subcategoryExists){
+                return res.status(400).json({
+                    success:false,
+                    message:'esta subcategoria no existe o no pertenece a la categoria '
+                });
+            }
+            updateData.subcategory = subcategory;
+        }
+
+        if(proveedor){
+            const proveedorExist = await Proveedores.findById(proveedor);
+            if (!proveedorExist) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'El proveedor especificado no existe'
+                });
+            }
+            updateData.proveedor = proveedor;
+        }
+
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
             updateData,{
@@ -184,8 +193,9 @@ exports.updateProduct = async (req,res) =>{
             }
         )
         .populate('category', 'name')
-        .populate('subcategory','name');
-        
+        .populate('subcategory','name')
+        .populate('proveedor', 'nombre empresa');
+
         if(!updatedProduct){
             return res.status(404).json({
                 success:false,
@@ -228,39 +238,38 @@ exports.deleteProduct = async (req,res) =>{
         res.status(500).json({
             success:false,
             message:'Error al eliminar el producto'
-
         });
     }
-    
 };
+
 exports.deactivateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, { activo: false }, { new: true });
-    if (!product) {
-      return res.status(404).json({ message: 'Producto no encontrado' });
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndUpdate(id, { activo: false }, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        res.status(200).json({ message: 'Producto desactivado', product });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al desactivar producto', error });
     }
-    res.status(200).json({ message: 'Producto desactivado', product });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al desactivar producto', error });
-  }
 };
 
 exports.activateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(
-      id,
-      { activo: true },
-      { new: true }
-    );
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndUpdate(
+            id,
+            { activo: true },
+            { new: true }
+        );
 
-    if (!product) {
-      return res.status(404).json({ message: 'Producto no encontrado' });
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        res.status(200).json({ message: 'Producto activado', product });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al activar el producto', error });
     }
-
-    res.status(200).json({ message: 'Producto activado', product });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al activar el producto', error });
-  }
 };

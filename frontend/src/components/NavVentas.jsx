@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function NavVentas() {
@@ -7,22 +7,68 @@ export default function NavVentas() {
   const [overflowLinks, setOverflowLinks] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const links = [
-    { path: "/RegistrarCotizacion", label: "Registrar cotización" },
-    { path: "/ListaDeCotizaciones", label: "Lista de cotizaciones" },
-    { path: "/AgendarVenta", label: "Agendar venta" },
-    { path: "/PedidosAgendados", label: "Pedidos agendados" },
-    { path: "/PedidosEntregados", label: "Pedidos entregados" },
-    { path: "/PedidosCancelados", label: "Pedidos cancelados" },
-    { path: "/ListaDeClientes", label: "Lista de clientes" },
-    { path: "/ProspectosDeClientes", label: "Prospectos de clientes" },
-    { path: "/ReporteVentas", label: "Dashboard" }
-  ];
+  // Estados de permisos individuales
+  const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
+  const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
+  const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
+  const [puedeVerPedidosDespachados, setPuedeVerPedidosDespachados] = useState(false);
+  const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
+  const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
+  const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
+  const [puedeVerListaDeVentas, setPuedeVerListaDeVentas] = useState(false);
+  const [puedeVerListaDeClientes, setPuedeVerListaDeClientes] = useState(false);
+  const [puedeVerProspectos, setPuedeVerProspectos] = useState(false);
+  const [puedeVerReportesVentas, setPuedeVerReportesVentas] = useState(false);
 
+  // Leer permisos desde localStorage
   useEffect(() => {
-    
+    const usuario = JSON.parse(localStorage.getItem('user'));
+    if (usuario && usuario.permissions) {
+      setPuedeRegistrarCotizacion(usuario.permissions.includes('cotizaciones.crear'));
+      setPuedeVerCotizaciones(usuario.permissions.includes('cotizaciones.ver'));
+      setPuedeVerVentasAgendadas(usuario.permissions.includes('pedidosAgendados.ver'));
+      setPuedeVerPedidosDespachados(usuario.permissions.includes('pedidosDespachados.ver'));
+      setPuedeVerPedidosEntregados(usuario.permissions.includes('pedidosEntregados.ver'));
+      setPuedeVerPedidosCancelados(usuario.permissions.includes('pedidosCancelados.ver'));
+      setPuedeVerPedidosDevueltos(usuario.permissions.includes('pedidosDevueltos.ver'));
+      setPuedeVerListaDeVentas(usuario.permissions.includes('listaDeVentas.ver'));
+      setPuedeVerListaDeClientes(usuario.permissions.includes('clientes.ver'));
+      setPuedeVerProspectos(usuario.permissions.includes('prospectos.ver'));
+      setPuedeVerReportesVentas(usuario.permissions.includes('reportesVentas.ver'));
+    }
+  }, []);
 
+  // Links con su estado de permiso asociado
+  const allLinks = useMemo(() => [
+    { path: "/RegistrarCotizacion", label: "Registrar cotización", visible: puedeRegistrarCotizacion },
+    { path: "/ListaDeCotizaciones", label: "Lista de cotizaciones", visible: puedeVerCotizaciones },
+    { path: "/PedidosAgendados", label: "Pedidos", visible: puedeVerVentasAgendadas },
+    { path: "/PedidosDespachados", label: "Pedidos despachados", visible: puedeVerPedidosDespachados },
+    { path: "/PedidosEntregados", label: "Pedidos Entregados", visible: puedeVerPedidosEntregados },
+    { path: "/PedidosCancelados", label: "Pedidos cancelados", visible: puedeVerPedidosCancelados },
+    { path: "/PedidosDevueltos", label: "Pedidos devueltos", visible: puedeVerPedidosDevueltos },
+    { path: "/Ventas", label: "Lista de ventas", visible: puedeVerListaDeVentas },
+    { path: "/ListaDeClientes", label: "Lista de clientes", visible: puedeVerListaDeClientes },
+    { path: "/ProspectosDeClientes", label: "Prospectos de clientes", visible: puedeVerProspectos },
+    { path: "/ReportessVentas", label: "Reportes", visible: puedeVerReportesVentas }
+  ], [
+    puedeRegistrarCotizacion,
+    puedeVerCotizaciones,
+    puedeVerVentasAgendadas,
+    puedeVerPedidosDespachados,
+    puedeVerPedidosEntregados,
+    puedeVerPedidosCancelados,
+    puedeVerPedidosDevueltos,
+    puedeVerListaDeVentas,
+    puedeVerListaDeClientes,
+    puedeVerProspectos,
+    puedeVerReportesVentas
+  ]);
 
+  const filteredLinks = useMemo(() => allLinks.filter(link => link.visible), [allLinks]);
+
+  // Calcular los visibles y desbordados
+  useEffect(() => {
     const updateLayout = () => {
       const container = containerRef.current;
       if (!container) return;
@@ -41,14 +87,14 @@ export default function NavVentas() {
       const visible = [];
       const hidden = [];
 
-      links.forEach((link) => {
+      filteredLinks.forEach((link) => {
         const linkElement = document.createElement('div');
         linkElement.className = 'nav-item';
         linkElement.textContent = link.label;
         tempContainer.appendChild(linkElement);
 
         const width = linkElement.offsetWidth;
-        usedWidth += width + 12; // pequeño padding entre items
+        usedWidth += width + 12;
 
         if (usedWidth < availableWidth - 50) {
           visible.push(link);
@@ -65,7 +111,7 @@ export default function NavVentas() {
     updateLayout();
     window.addEventListener('resize', updateLayout);
     return () => window.removeEventListener('resize', updateLayout);
-  }, [showDropdown]);
+  }, [filteredLinks, showDropdown]);
 
   return (
     <div>

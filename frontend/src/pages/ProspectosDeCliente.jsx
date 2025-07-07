@@ -1,13 +1,12 @@
-import React from 'react'
 import Fijo from '../components/Fijo'
 import NavVentas from '../components/NavVentas'
 import EncabezadoModulo from '../components/EncabezadoModulo'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Link } from 'react-router-dom';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import React, { useState, useEffect } from 'react';
 
 
 /****Funcion para exportar a pdf*** */
@@ -61,6 +60,22 @@ const exportToExcel = () => {
 
 
 export default function ListaDeClientes() {
+  const [prospectos, setProspectos] = useState([]);
+
+  useEffect(() => {
+  const token = localStorage.getItem('token');
+
+  fetch('http://localhost:5000/api/clientes?esCliente=false', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => setProspectos(data))
+    .catch(err => console.error('Error al cargar prospectos', err));
+}, []);
+
+
   return (
     <div>
       <Fijo />
@@ -80,24 +95,28 @@ export default function ListaDeClientes() {
               <table id='tabla_prospectos'>
                 <thead><br/>
                   <tr>
-                    <th>Nombre / Razón Social</th>
-                    <th>Ciudadd</th>
+                    <th>Cliente</th>
+                    <th>Ciudad</th>
                     <th>Teléfono</th>
                     <th>Correo</th>
-                    <th>Agenda / Cotiza</th>
-                    <th>%</th>
                   </tr>
                 </thead>
                 <tbody>
+                {prospectos.length === 0 ? (
                   <tr>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>Canchas El Barrio</u></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>Bogotá</u></Link></td>
-                    <td ><Link as={Link} to='/PedidosAgendados'><u>6904883</u><br /><img src="https://cdn-icons-png.freepik.com/256/3059/3059561.png?semt=ais_hybrid" alt="Logo" width="20" height="20" /></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>elbarrio@gmail.com</u><br /><img src="https://cdn-icons-png.freepik.com/256/3178/3178158.png?semt=ais_hybrid" alt="Logo" width="20" height="20" /></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>Agenda</u></Link></td>
-                    <td><Link as={Link} to='/PedidosAgendados'><u>80</u></Link></td>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>No hay prospectos registrados.</td>
                   </tr>
-                </tbody>
+                ) : (
+                  prospectos.map((cliente, index) => (
+                    <tr key={index}>
+                      <td>{cliente.nombre}</td>
+                      <td>{cliente.ciudad}</td>
+                      <td>{cliente.telefono}</td>
+                      <td>{cliente.correo}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
               </table>
             </div>
           </div>

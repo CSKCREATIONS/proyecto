@@ -62,7 +62,7 @@ export default function RecuperarContraseña() {
             {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
 
             <div className="buttons">
-              <button className='btn btn-secondary' type="submit">
+              <button className='btn login-button' type="submit">
                 Recuperar contraseña
               </button>
             </div>

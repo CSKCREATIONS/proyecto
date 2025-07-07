@@ -10,11 +10,19 @@ export default function Perfil() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const loadUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+
+    loadUser();
+
+    window.addEventListener('storage', loadUser);
+    return () => window.removeEventListener('storage', loadUser);
   }, []);
+
 
   const handleClick = async () => {
     const result = await Swal.fire({
@@ -28,7 +36,7 @@ export default function Perfil() {
 
     if (result.isConfirmed) {
       localStorage.clear();
-      navigate('/Login');
+      navigate('/');
     }
   };
 
@@ -39,7 +47,8 @@ export default function Perfil() {
       <Fijo />
       <div className="content">
         <div className='contenido-modulo'>
-          <div className="header">
+          
+          <div className="autenticated-user">
             <h1>{user.firstName} {user.surname}</h1>
             <button onClick={() => openModal('editar-perfil')} style={{ background: 'transparent', cursor: 'pointer' }}>◀ Editar</button>
           </div>
@@ -50,7 +59,8 @@ export default function Perfil() {
               <div className="info-item"><strong>Apellidos</strong><p>{user.surname} {user.secondSurname}</p></div>
               <div className="info-item"><strong>Correo electrónico</strong><p>{user.email}</p></div>
               <div className="info-item"><strong>Nombre de usuario</strong><p>{user.username}</p></div>
-              <div className="info-item"><strong>Rol</strong><p>{user.role}</p></div>
+              <div className="info-item"><strong>Rol</strong><p>{typeof user.role === 'string' ? user.role : user.role?.name || 'Sin rol'}</p>
+              </div>
 
               <button className="btn btn-primary" onClick={handleClick}>
                 Cerrar sesión
@@ -61,6 +71,7 @@ export default function Perfil() {
       </div>
 
       <EditarPerfil />
+
     </div>
   );
 }

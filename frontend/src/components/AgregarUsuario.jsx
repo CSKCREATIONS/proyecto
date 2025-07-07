@@ -126,51 +126,56 @@ export default function AgregarUsuario() {
       e.preventDefault(); // Previene recarga
       handleSubmit();
     }}>
-      <div className="double">
-        <div className="form-group">
-          <label>Primer nombre</label>
-          <input className='entrada' type="text" autoFocus value={firstName} onChange={e => setFirstName(e.target.value)} required />
+      <div className="modal-content">
+        <div className="double">
+          <div className="form-group">
+            <label>Primer nombre</label>
+            <input className='entrada' type="text" autoFocus value={firstName} onChange={e => setFirstName(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Segundo nombre</label>
+            <input className='entrada' type="text" value={secondName} onChange={e => setSecondName(e.target.value)} />
+          </div>
         </div>
-        <div className="form-group">
-          <label>Segundo nombre</label>
-          <input className='entrada' type="text" value={secondName} onChange={e => setSecondName(e.target.value)} />
+        <div className="double">
+          <div className="form-group">
+            <label>Primer apellido</label>
+            <input className='entrada' type="text" value={surname} onChange={e => setSurname(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Segundo apellido</label>
+            <input className='entrada' type="text" value={secondSurname} onChange={e => setSecondSurname(e.target.value)} />
+          </div>
+        </div>
+        <div className="triple">
+          <div className="form-group">
+            <label>Rol</label>
+            <select className='entrada' value={role} onChange={e => setRole(e.target.value)} required>
+              <option value="" disabled>Seleccione un rol</option>
+              {Array.isArray(rolesDisponibles) && rolesDisponibles.map(r => (
+                <option key={r._id} value={r.name}>{r.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Correo</label>
+            <input className='entrada' type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+          </div>
+        </div>
+        <div className="buttons">
+          <button
+            type="button"
+            onClick={() => closeModal('agregar-usuario')}
+            className="btn btn-secondary"
+          >
+            Cancelar
+          </button>
+          <button type="submit" className="btn btn-primary">Crear Usuario</button>
         </div>
       </div>
-      <div className="double">
-        <div className="form-group">
-          <label>Primer apellido</label>
-          <input className='entrada' type="text" value={surname} onChange={e => setSurname(e.target.value)} required />
-        </div>
-        <div className="form-group">
-          <label>Segundo apellido</label>
-          <input className='entrada' type="text" value={secondSurname} onChange={e => setSecondSurname(e.target.value)} />
-        </div>
-      </div>
-      <div className="triple">
-        <div className="form-group">
-          <label>Rol</label>
-          <select className='entrada' value={role} onChange={e => setRole(e.target.value)} required>
-            <option value="" disabled>Seleccione un rol</option>
-            {Array.isArray(rolesDisponibles) && rolesDisponibles.map(r => (
-              <option key={r._id} value={r.name}>{r.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Correo</label>
-          <input className='entrada' type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-        </div>
-      </div>
-      <div className="buttons">
-        <button
-          type="button"
-          onClick={() => closeModal('agregar-usuario')}
-          className="btn btn-secondary"
-        >
-          Cancelar
-        </button>
-        <button type="submit" className="btn btn-primary">Crear Usuario</button>
-      </div>
+
     </form>
+
+
   );
 }

@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     select: false // No devolver el password en las consultas
   },
   role: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Role',
     required: [true,
       'El rol es requerido']

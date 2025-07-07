@@ -16,7 +16,8 @@ module.exports = {
     VER: 'productos.ver',
     CREAR: 'productos.crear',
     EDITAR: 'productos.editar',
-    INACTIVAR: 'productos.inactivar'
+    INACTIVAR: 'productos.inactivar',
+    ELIMINAR: 'productos.eliminar'
   },
   CATEGORIAS: {
     VER: 'categorias.ver',
@@ -29,5 +30,42 @@ module.exports = {
     CREAR: 'subcategorias.crear',
     EDITAR: 'subcategorias.editar',
     INACTIVAR: 'subcategorias.inactivar'
+  },
+  PROVEEDORES: {
+    VER: 'proveedores.ver',
+    CREAR: 'proveedores.crear',
+    EDITAR: 'proveedores.editar',
+    INACTIVAR: 'proveedores.inactivar',
+    ELIMINAR: 'proveedores.eliminar'
+  },
+  COMPRAS: {
+    VER: 'hcompras.ver',
+    CREAR: 'compras.crear',
+    VERREPORTES: 'reportesCompras.ver'
+  },
+  VENTAS: {
+    VERGENERALES: 'listaDeVentas.ver',
+    VERAGENDADOS: 'pedidosAgendados.ver',
+    VERDESPACHADOS: 'pedidosDespachados.ver',
+    VERENTREGADOS: 'pedidosEntregados.ver',
+    VERCANCELADOS: 'pedidosCancelados.ver',
+    VERDEVUELTOS: 'pedidosDevueltos.ver',
+    VERREPORTES: 'reportesVentas.ver'
+  },
+  COTIZACIONES: {
+    VER: 'cotizaciones.ver',
+    CREAR: 'cotizaciones.crear',
+    EDITAR: 'cotizaciones.editar',
+    ELIMINAR: 'cotizaciones.eliminar'
+  },
+  
+  CLIENTES: {
+    VER: 'clientes.ver',
+    CREAR: 'clientes.crear',
+    EDITAR: 'clientes.editar',
+    INACTIVAR: 'clientes.inactivar'
+  },
+  PROSPECTOS: {
+    VER: 'prospectos.ver'
   },
 };

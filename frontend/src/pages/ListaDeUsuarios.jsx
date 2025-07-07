@@ -5,7 +5,6 @@ import NavUsuarios from '../components/NavUsuarios'
 import { openModal } from '../funciones/animaciones'
 import EditarUsuario from '../components/EditarUsuario'
 import Swal from 'sweetalert2';
-import { Link } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
@@ -85,6 +84,7 @@ export default function ListaDeUsuarios() {
   const [todosLosUsuarios, setTodosLosUsuarios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [puedeEditarUsuario, setPuedeEditarUsuario] = useState(false);
+  const [puedeInhabilitarUsuario, setPuedeInhabilitarUsuario] = useState(false);
   const [puedeCrearUsuario, setPuedeCrearUsuario] = useState(false);
   const [puedeEliminarUsuario, setPuedeEliminarUsuario] = useState(false);
   const [usuarioEditando, setUsuarioEditando] = useState(null);
@@ -104,40 +104,41 @@ export default function ListaDeUsuarios() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-const fetchUsuarios = async () => {
-  try {
-    const token = localStorage.getItem('token');
+  const fetchUsuarios = async () => {
+    try {
+      const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5000/api/users', {
-      headers: {
-        'x-access-token': token
+      const response = await fetch('http://localhost:5000/api/users', {
+        headers: {
+          'x-access-token': token
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setTodosLosUsuarios(data.data);
+      } else {
+        console.error('Error al obtener usuarios:', data.message);
       }
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      setTodosLosUsuarios(data.data);
-    } else {
-      console.error('Error al obtener usuarios:', data.message);
+    } catch (error) {
+      console.error('Error al conectar con el backend:', error.message);
     }
-  } catch (error) {
-    console.error('Error al conectar con el backend:', error.message);
-  }
-};
+  };
 
 
 
- useEffect(() => {
-  fetchUsuarios();
+  useEffect(() => {
+    fetchUsuarios();
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user && user.permissions) {
-    setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
-    setPuedeEditarUsuario(user.permissions.includes('usuarios.editar'));
-    setPuedeEliminarUsuario(user.permissions.includes('usuarios.eliminar'));
-  }
-}, []);
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.permissions) {
+      setPuedeCrearUsuario(user.permissions.includes('usuarios.crear'));
+      setPuedeEditarUsuario(user.permissions.includes('usuarios.editar'));
+      setPuedeInhabilitarUsuario(user.permissions.includes('usuarios.inhabilitar'));
+      setPuedeEliminarUsuario(user.permissions.includes('usuarios.eliminar'));
+    }
+  }, []);
 
 
 
@@ -151,8 +152,8 @@ const fetchUsuarios = async () => {
       const coincideTexto =
         nombreCompleto.includes(texto) || correo.includes(texto);
 
-      const coincideRol =
-        filtroRol === 'todos' || usuario.role === filtroRol;
+      const coincideRol = filtroRol === 'todos' || usuario.role?._id === filtroRol;
+
 
       const coincideEstado =
         filtroEstado === 'todos' ||
@@ -264,26 +265,6 @@ const fetchUsuarios = async () => {
 
 
 
-  const handleClick = () =>
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, continuar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: '¡Listo!',
-          text: 'El usuario ha sido borrado.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
-
-
   return (
     <div>
       <Fijo />
@@ -304,36 +285,51 @@ const fetchUsuarios = async () => {
 
           <br />
 
-          <div className="filtros">
-            <input
-              type="text"
-              placeholder="Buscar por nombre o correo"
-              value={filtroTexto}
-              onChange={(e) => setFiltroTexto(e.target.value)}
-              style={{ marginRight: '10px' }}
-            />
+          <div className="filtros-tabla">
+            <div className="filtro-grupo">
+              <input
+                className='filtro-input'
+                type="text"
+                placeholder="Buscar por nombre o correo"
+                value={filtroTexto}
+                onChange={(e) => setFiltroTexto(e.target.value)}
+                style={{ marginRight: '10px' }}
+              />
+            </div>
 
-            <select
-              value={filtroRol}
-              onChange={(e) => setFiltroRol(e.target.value)}
-              style={{ marginRight: '10px' }}
-            >
-              <option value="todos">Todos los roles</option>
-              {[...new Set(todosLosUsuarios.map((u) => u.role))].map((rol) => (
-                <option key={rol} value={rol}>
-                  {rol}
-                </option>
-              ))}
-            </select>
+            <div className="filtro-grupo">
+              <select
+                className='filtro-input'
+                value={filtroRol}
+                onChange={(e) => setFiltroRol(e.target.value)}
+                style={{ marginRight: '10px' }}
+              >
+                <option value="todos">Todos los roles</option>
+                {[...new Set(todosLosUsuarios.map((u) => u.role?._id))].map((rolId) => {
+                  const rol = todosLosUsuarios.find(u => u.role?._id === rolId)?.role;
+                  return (
+                    <option key={rolId} value={rolId}>
+                      {rol?.name || 'Sin rol'}
+                    </option>
+                  );
+                })}
 
-            <select
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
-            >
-              <option value="todos">Todos los estados</option>
-              <option value="habilitado">Habilitado</option>
-              <option value="inhabilitado">Inhabilitado</option>
-            </select>
+              </select>
+            </div>
+
+
+            <div className="filtro-grupo">
+              <select
+                className='filtro-input'
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+              >
+                <option value="todos">Todos los estados</option>
+                <option value="habilitado">Habilitado</option>
+                <option value="inhabilitado">Inhabilitado</option>
+              </select>
+            </div>
+
           </div>
 
 
@@ -358,7 +354,7 @@ const fetchUsuarios = async () => {
                   <tr key={usuario._id}>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{usuario.firstName} {usuario.secondName} {usuario.surname} {usuario.secondSurname}</td>
-                    <td>{usuario.role}</td>
+                    <td>{usuario.role?.name || 'Sin rol'}</td>
                     <td>{usuario.email}</td>
                     <td>{usuario.username}</td>
                     <td>
@@ -366,11 +362,24 @@ const fetchUsuarios = async () => {
                         <input
                           type="checkbox"
                           checked={usuario.enabled}
-                          onChange={() => toggleEstadoUsuario(usuario._id, usuario.enabled, usuario.username)}
+                          onChange={() => {
+                            if (puedeInhabilitarUsuario) {
+                              toggleEstadoUsuario(usuario._id, usuario.enabled, usuario.username);
+                            } else {
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Acción no permitida',
+                                text: 'No tienes permisos para esta accion',
+                                confirmButtonText: 'Entendido'
+                              });
+                            }
+                          }}
                         />
                         <span className="slider"></span>
                       </label>
                     </td>
+
+
                     <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
                     <td>
                       {usuario.lastLogin

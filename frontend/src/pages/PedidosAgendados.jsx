@@ -1,121 +1,162 @@
-import React from "react";
-import Fijo from "../components/Fijo";
-import NavVentas from "../components/NavVentas";
-import EncabezadoModulo from "../components/EncabezadoModulo";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { FaExclamationTriangle } from "react-icons/fa";
-import Swal from "sweetalert2";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Fijo from '../components/Fijo';
+import NavVentas from '../components/NavVentas';
+import EncabezadoModulo from '../components/EncabezadoModulo';
+import Swal from 'sweetalert2';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { openModal } from '../funciones/animaciones'
-import EditarPedido from "../components/EditarPedido";
+import { openModal } from '../funciones/animaciones';
+import EditarPedido from '../components/EditarPedido';
 
+export default function Despachos() {
+  const [pedidos, setPedidos] = useState([]);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-
-/****Funcion para exportar a pdf*** */
-
-const exportarPDF = () => {
-  const input = document.getElementById('tabla_pedidos_agendados');
-  const originalWidth = input.style.width; // Guardar ancho original
-
-  // Forzar un ancho fijo (ej: 100% del contenedor o un valor en px)
-  input.style.width = '100%';
-
-  html2canvas(input, {
-    scale: 1, // Evita zoom automático
-    width: input.offsetWidth, // Usa el ancho forzado
-    windowWidth: input.scrollWidth // Captura el ancho completo
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    
-    // Ajustar imagen al ancho del PDF (190mm es el ancho útil de A4)
-    const imgWidth = 190;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    pdf.save('pedidosAgendados.pdf');
-
-    // Restaurar el ancho original
-    input.style.width = originalWidth;
-  });
-};
-
-
-
-// Funcion exportar a Excel
-
-
-const exportToExcel = () => {
-  const table = document.getElementById('tabla_pedidos_agendados');
-  if (!table) return;
-
-  // Ocultar elementos no exportables
-  const elementosNoExport = table.querySelectorAll('.no-export');
-  elementosNoExport.forEach(el => el.style.display = 'none');
-
-  // Convertir tabla a hoja de cálculo
-  const workbook = XLSX.utils.table_to_book(table, { sheet: "Pedidos" });
-  
-  // Ajustar anchos de columna (ejemplo: 20 unidades por columna)
-  workbook.Sheets["Pedidos"]["!cols"] = Array(10).fill({ width: 20 });
-
-  // Generar y descargar archivo
-  XLSX.writeFile(workbook, 'pedidosAgendados.xlsx');
-
-  // Restaurar elementos
-  elementosNoExport.forEach(el => el.style.display = '');
-};
-
-
-
-
-
-export default function PedidosAgendados() {
   const navigate = useNavigate();
-  //cancelar pedido
-  const handleCancelarPedido = () => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Este pedido se cancelará y no podrás revertirlo',
+
+  const mostrarProductos = (pedido) => {
+    setPedidoSeleccionado(pedido);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:3000/api/pedidos', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setPedidos(data.filter(p => p.estado === 'agendado')))
+      .catch(err => console.error('Error al cargar pedidos:', err));
+  }, []);
+
+  const exportarPDF = () => {
+    const input = document.getElementById('tabla_despachos');
+    const originalWidth = input.style.width;
+    input.style.width = '100%';
+
+    html2canvas(input, { scale: 1, width: input.offsetWidth, windowWidth: input.scrollWidth })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 190;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        pdf.save('despachos.pdf');
+
+        input.style.width = originalWidth;
+      });
+  };
+
+  const exportToExcel = () => {
+    const table = document.getElementById('tabla_despachos');
+    if (!table) return;
+
+    const elementosNoExport = table.querySelectorAll('.no-export');
+    elementosNoExport.forEach(el => el.style.display = 'none');
+
+    const workbook = XLSX.utils.table_to_book(table, { sheet: "Despachos" });
+    workbook.Sheets["Despachos"]["!cols"] = Array(10).fill({ width: 20 });
+
+    XLSX.writeFile(workbook, 'despachos.xlsx');
+    elementosNoExport.forEach(el => el.style.display = '');
+  };
+
+  const despacharPedido = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ estado: 'despachado' })
+      });
+
+      if (res.ok) {
+        await res.json();
+        Swal.fire('Despachado', 'El pedido ha sido despachado.', 'success').then(() => {
+          navigate('/PedidosDepachados');
+        });
+      } else {
+        throw new Error('No se pudo despachar el pedido');
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error', 'Hubo un problema al despachar el pedido', 'error');
+    }
+  };
+
+  const cancelarPedido = async (id) => {
+    const token = localStorage.getItem('token');
+    const confirm = await Swal.fire({
+      title: '¿Cancelar pedido?',
+      text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'No, mantener',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // texto despues del si
-        Swal.fire('Cancelado', 'El pedido ha sido cancelado.', 'success');
-        navigate('/PedidosCancelados')
-      }
+      cancelButtonText: 'No'
     });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        Swal.fire('Cancelado', 'El pedido ha sido cancelado', 'success');
+        setPedidos(prev => prev.filter(p => p._id !== id));
+      } else {
+        throw new Error(result.message || 'No se pudo cancelar');
+      }
+    } catch (error) {
+      console.error('Error al cancelar pedido:', error);
+      Swal.fire('Error', 'No se pudo cancelar el pedido', 'error');
+    }
   };
 
-
-  //pedido confirmado
-  const handleConfirmarPedido = () => {
-    Swal.fire({
-      title: 'Marcar como cumplido',
-      text: '¿Se ha cumplido con el pedido 011021',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // texto despues del si
-        Swal.fire('Listo', 'Se ha marcado como cumplido.', 'success');
-        navigate('/PedidosEntregados')
-      }
-    });
+  const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
+    if (!visible) return null;
+    return (
+      <div className="modal-overlay">
+        <div className="modal-compact modal-lg">
+          <div className="modal-header">
+            <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
+            <button className="modal-close" onClick={onClose}>&times;</button>
+          </div>
+          <div className="modal-body">
+            {productos?.length > 0 ? (
+              <ul className="list-group">
+                {productos.map((prod, idx) => (
+                  <li key={idx} className="list-group-item">
+                    <strong>{prod?.product?.name || 'Producto desconocido'}</strong><br />
+                    Cantidad: {prod?.cantidad}<br />
+                    Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
+                    <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay productos asociados a este pedido.</p>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+          </div>
+        </div>
+      </div>
+    );
   };
+
+  const totalPages = Math.ceil(pedidos.length / itemsPerPage);
+  const currentItems = pedidos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div>
@@ -123,126 +164,76 @@ export default function PedidosAgendados() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Pedidos Agendados"
+          <EncabezadoModulo
+            titulo="Pedidos por despachar"
             exportarPDF={exportarPDF}
             exportToExcel={exportToExcel}
-            buscar = 'Buscar pedido'
-            />
-            
-          {/* Tabla */}
+            buscar='Buscar pedido'
+          />
           <div className="container-tabla">
-            <div className="table-container" >
-              <table id="tabla_pedidos_agendados">
-                <thead><br/>
-                  <tr>
-                    <th style={{ textAlign: 'center' }} colSpan="5">Pedido</th>
-                    <th style={{ textAlign: 'center' }} colSpan="4">Cliente</th>
-                  </tr>
+            <div className="table-container">
+              <table id="tabla_despachos">
+                <thead><br />
                   <tr>
                     <th>No</th>
+                    <th>Identificador de Pedido</th>
                     <th>Producto</th>
-                    <th>Cantidad</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
-                    <th>Nombre / Razón Social</th>
+                    <th>Cliente</th>
                     <th>Ciudad</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Observaciones</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-
-                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
-                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
-                      </button>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
-                      >
-                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
-                      </button>
-                    </div>
-
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-
-                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
-                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
-                      </button>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
-                      >
-                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
-                      </button>
-                    </div>
-
-
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Pasto</td>
-                    <td>5</td>
-                    <td>10/04/2025</td>
-                    <td>15/04/2025</td>
-                    <td>Natalia</td>
-                    <td>Bogotá</td>
-                    <td>3153234</td>
-                    <td>Nataliamaria@gmail</td>
-                    <td>N/A</td>
-                    <div className="no-export" style={{ display: 'flex', gap: '0.3rem' }}>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => openModal('editarPedidoModal')}>
-                        <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
-                      </button>
-
-                      <button className="btnTransparente" style={{ height: '35px', width: '50px' }} onClick={handleCancelarPedido}>
-                        <i className="fa-solid fa-cancel fa-xl" style={{ color: 'red' }}></i>
-                      </button>
-                      <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={handleConfirmarPedido}
-                      >
-                        <i className="fa-solid fa-check fa-xl" style={{ color: 'green' }}></i>
-                      </button>
-                    </div>
-
-
-                  </tr>
+                  {currentItems.map((pedido, index) => (
+                    <tr key={pedido._id}>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td>{pedido.numeroPedido || '---'}</td>
+                      <td>
+                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
+                          Productos
+                        </button>
+                      </td>
+                      <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
+                      <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
+                      <td>{pedido.cliente?.nombre}</td>
+                      <td>{pedido.cliente?.ciudad}</td>
+                      <td className="no-export">
+                        <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
+                          Despachar
+                        </button>
+                        &nbsp;
+                        <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
+                          Cancelar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
+              <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={currentPage === i + 1 ? 'active-page' : ''}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
               <EditarPedido />
-
             </div>
           </div>
-
         </div>
-
       </div>
+      <ModalProductosCotizacion
+        visible={!!pedidoSeleccionado}
+        onClose={() => setPedidoSeleccionado(null)}
+        productos={pedidoSeleccionado?.productos || []}
+        cotizacionId={pedidoSeleccionado?._id}
+      />
     </div>
   );
 }
