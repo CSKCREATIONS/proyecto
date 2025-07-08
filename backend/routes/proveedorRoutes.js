@@ -4,6 +4,7 @@ const { check } = require('express-validator');
 const proveedorController = require('../controllers/proveedorControllers');
 const { verifyToken } = require('../middlewares/authJwt');
 const { checkRole } = require('../middlewares/role');
+const { checkPermission } = require('../middlewares/role');
 
 // Validaciones para crear o editar proveedor
 const validateProveedor = [
@@ -17,25 +18,32 @@ const validateProveedor = [
 
 /*** RUTAS ***/
 
-// POST /api/proveedores - Crear proveedor (admin y coordinador)
-router.post('/',    
+// POST /api/proveedores - Crear proveedor 
+router.post('/',
     verifyToken,
     validateProveedor,
+    checkPermission('proveedores.crear'),
     proveedorController.createProveedor
 );
 
-// GET /api/proveedores - Listar todos (admin, coordinador, auxiliar)
+// GET /api/proveedores - Listar proveedores
 router.get('/',
     verifyToken,
+    checkPermission('proveedores.ver'),
     proveedorController.getProveedores
 );
 
 // routes/proveedorRoutes.js
-router.get('/activos', verifyToken, proveedorController.getProveedoresActivos);
+router.get('/activos',
+    verifyToken,
+    checkPermission('proveedores.ver'),
+    proveedorController.getProveedoresActivos
+);
 
 // GET /api/proveedores/:id - Obtener uno por ID
 router.get('/:id',
     verifyToken,
+    checkPermission('proveedores.ver'),
     proveedorController.getProveedorById
 );
 
@@ -43,21 +51,24 @@ router.get('/:id',
 router.put('/:id',
     verifyToken,
     validateProveedor,
+    checkPermission('proveedores.editar'),
     proveedorController.updateProveedor
 );
-
-// DELETE /api/proveedores/:id - Eliminar proveedor
-
 
 // PATCH /api/proveedores/:id/deactivate - Desactivar proveedor
 router.patch('/:id/deactivate',
     verifyToken,
+    checkPermission('proveedores.inactivar'),
     proveedorController.deactivateProveedor
 );
 
 // PATCH /api/proveedores/:id/activate - Activar proveedor
 
-
+router.patch('/:id/activate',
+    verifyToken,
+    checkPermission('proveedores.activar'),
+    proveedorController.activateProveedor
+);
 
 
 

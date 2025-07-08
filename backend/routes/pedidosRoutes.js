@@ -5,6 +5,7 @@ const { verifyToken } = require('../middlewares/authJwt');
 const pedidoController = require('../controllers/pedidoControllers');
 const { checkRole } = require('../middlewares/role');
 const Venta = require('../models/venta');
+const { checkPermission } = require('../middlewares/role');
 
 // Función para generar número de pedido
 async function generarNumeroPedido() {
@@ -20,7 +21,10 @@ async function generarNumeroPedido() {
 //
 
 // Crear pedido
-router.post('/', verifyToken, async (req, res) => {
+router.post('/',
+   verifyToken, 
+   checkPermission('ventas.crear'),
+   async (req, res) => {
   try {
     const { cliente, productos, fechaEntrega, observacion } = req.body;
 
@@ -52,10 +56,23 @@ router.post('/', verifyToken, async (req, res) => {
 
 
 // Obtener todos los pedidos
-router.get('/', verifyToken, pedidoController.getPedidos);
+router.get('/', 
+  verifyToken,
+  checkPermission('pedidos.ver'),
+   pedidoController.getPedidos
+  );
+
+  router.get('/:id', 
+  verifyToken,
+  checkPermission('pedidos.ver'),
+   pedidoController.getPedidoById
+  );
 
 // Cambiar estado del pedido (genérico)
-router.patch('/:id/estado', verifyToken, pedidoController.cambiarEstadoPedido);
+router.patch('/:id/estado',
+   verifyToken, 
+   pedidoController.cambiarEstadoPedido
+  );
 
 
 
@@ -73,9 +90,16 @@ router.put('/:id/entregar', verifyToken, async (req, res) => {
     }
 
     const productosVenta = pedido.productos.map(item => {
-      if (!item.product || typeof item.product.price !== 'number') {
-        throw new Error(`Producto sin precio válido: ${item.product?.nombre || 'Desconocido'}`);
+      if (!item.product) {
+        console.log('🛑 Producto no encontrado (referencia rota):', item);
+        throw new Error('Producto no encontrado en el pedido (referencia rota o eliminado)');
       }
+
+      if (typeof item.product.price !== 'number') {
+        console.log('🛑 Producto sin precio numérico válido:', item.product);
+        throw new Error(`Producto sin precio válido: ${item.product.name || 'Sin nombre'}`);
+      }
+
 
       return {
         producto: item.product._id,

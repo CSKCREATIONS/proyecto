@@ -5,6 +5,7 @@ const clienteController = require('../controllers/clienteControllers');
 const { verifyToken } = require('../middlewares/authJwt');
 const { checkRole } = require('../middlewares/role');
 const Cliente = require('../models/Cliente');
+const { checkPermission } = require('../middlewares/role');
 
 // Validaciones para crear/actualizar cliente
 const validateCliente = [
@@ -19,48 +20,56 @@ const validateCliente = [
 
 // RUTAS
 
-// POST /api/clientes - Crear cliente (solo admin y coordinador)
+// POST /api/clientes - Crear cliente 
 router.post('/',
     verifyToken,
+    checkPermission('clientes.crear'),
     validateCliente,
     clienteController.createCliente
 );
 
-router.get('/estado-de-clientes', verifyToken, clienteController.getClientesConEstado);
+router.get('/estado-de-clientes',
+   verifyToken,
+   checkPermission('clientes.ver'),
+    clienteController.getClientesConEstado
+  );
 
 
-// GET /api/clientes - Obtener todos los clientes (admin, coordinador, auxiliar)
+// GET /api/clientes - Obtener todos los clientes 
 router.get('/', 
   verifyToken,
-  clienteController.getClientes);
+  checkPermission('clientes.ver'),
+  clienteController.getClientes
+);
+
+
 
 // GET /api/clientes/:id - Obtener cliente por ID
 router.get('/:id',
     verifyToken,
+    checkPermission('clientes.ver'),
     clienteController.getClienteById
 );
 
 
 // PUT /api/clientes/:id - Actualizar cliente
-router.put('/clientes/:id', verifyToken, async (req, res) => {
-  try {
-    const clienteActualizado = await Cliente.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(clienteActualizado);
-  } catch (error) {
-    console.error('❌ Error al actualizar cliente:', error);
-    res.status(500).json({ message: 'Error interno del servidor' });
+router.put('/:id',
+  verifyToken,
+  checkPermission('clientes.editar'),
+  async (req, res) => {
+    try {
+      const clienteActualizado = await Cliente.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      res.json(clienteActualizado);
+    } catch (error) {
+      console.error('❌ Error al actualizar cliente:', error);
+      res.status(500).json({ message: 'Error interno del servidor' });
+    }
   }
-});
-
-
-
-
-// DELETE /api/clientes/:id - Eliminar cliente (solo admin)
-
+);
 
 
 

@@ -78,7 +78,7 @@ export default function Despachos() {
       if (res.ok) {
         await res.json();
         Swal.fire('Despachado', 'El pedido ha sido despachado.', 'success').then(() => {
-          navigate('/PedidosDepachados');
+          navigate('/PedidosDespachados');
         });
       } else {
         throw new Error('No se pudo despachar el pedido');

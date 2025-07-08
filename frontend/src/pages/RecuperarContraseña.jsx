@@ -43,31 +43,27 @@ export default function RecuperarContraseña() {
       <h1 className="Titulo">Portal JLA Global Company</h1>
 
       <div className="container-form">
-        <div className="login-container">
-          <form onSubmit={handleRecuperar}>
-            <p>Escribe tu correo electrónico. Allí te será enviada una contraseña provisional</p>
+        <form className="login-container" onSubmit={handleRecuperar}>
+          <p style={{color: "gray"}}>Escribe tu correo electrónico. Allí te será enviada una contraseña provisional</p>
+          <br />
+          <div className="input-container">
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <label htmlFor="email">Correo electrónico</label>
+          </div>
 
-            <div className="input-container">
-              <input
-                type="email"
-                id="email"
-                required
-                placeholder=" "
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label htmlFor="email">Correo electrónico</label>
-            </div>
+          {mensajeError && <p style={{ color: 'red', marginBottom: '0.5rem' }}>{mensajeError}</p>}
+            <button className='btn login-button' type="submit">
+              Recuperar contraseña
+            </button>
+        </form>
 
-            {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
-
-            <div className="buttons">
-              <button className='btn login-button' type="submit">
-                Recuperar contraseña
-              </button>
-            </div>
-          </form>
-        </div>
 
         <div className="recuperar-contraseña">
           <p style={{ color: 'lightgray' }}>¿Recordaste tu contraseña?</p>

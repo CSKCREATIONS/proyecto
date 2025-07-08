@@ -27,15 +27,16 @@ useEffect(() => {
 
       // 2. Si no es cliente real, actualizarlo
       if (!clienteData.esCliente) {
-        await fetch(`http://localhost:5000/api/clientes/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ esCliente: true })
-        });
-      }
+      await fetch(`http://localhost:5000/api/clientes/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ esCliente: true })
+      });
+    }
+
 
     } catch (err) {
       console.error('Error al cargar datos de cliente:', err);

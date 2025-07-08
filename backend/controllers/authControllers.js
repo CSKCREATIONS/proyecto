@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 const sgMail = require('@sendgrid/mail');
 
-/*sgMail.setApiKey('');*/
+sgMail.setApiKey('');
 
 
 // Función para verificar permisos
@@ -196,7 +196,7 @@ exports.signin = async (req, res) => {
   }
 };
 
-/*exports.recoverPassword = async (req, res) => {
+exports.recoverPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
@@ -220,7 +220,7 @@ exports.signin = async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Recuperación de contraseña</h2>
-          <p>Hola <strong>${user.username}</strong>,</p>
+          <p>Hola <strong>${user.firstName}</strong>,</p>
           <p>Tu contraseña provisional es:</p>
           <h3 style="color: #333; background: #f0f0f0; padding: 10px; display: inline-block;">${provisionalPassword}</h3>
           <p>Ingresa al sistema con esta contraseña y cámbiala inmediatamente.</p>
@@ -238,5 +238,5 @@ exports.signin = async (req, res) => {
     console.error('Error al recuperar contraseña:', error);
     return res.status(500).json({ success: false, message: 'Error del servidor' });
   }
-};*/
+};
 

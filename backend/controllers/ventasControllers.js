@@ -11,6 +11,25 @@ exports.obtenerVentas = async (req, res) => {
   }
 };
 
+exports.obtenerVentaPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const venta = await Venta.findById(id)
+      .populate('cliente')
+      .populate('productos.producto');
+
+    if (!venta) {
+      return res.status(404).json({ message: 'Venta no encontrada' });
+    }
+
+    res.status(200).json(venta);
+  } catch (error) {
+    console.error('Error al obtener la venta por ID:', error);
+    res.status(500).json({ message: 'Error al obtener la venta', error });
+  }
+};
+
+
 exports.eliminarVenta = async (req, res) => {
   try {
     await Venta.findByIdAndDelete(req.params.id);
@@ -32,13 +51,13 @@ exports.crearVenta = async (req, res) => {
       const productoDB = await Product.findById(p.producto);
       if (!productoDB) throw new Error('Producto no encontrado');
 
-      const subtotal = productoDB.precio * p.cantidad;
+      const subtotal = productoDB.price * p.cantidad;
       total += subtotal;
 
       return {
         producto: p.producto,
         cantidad: p.cantidad,
-        precioUnitario: productoDB.precio
+        precioUnitario: productoDB.price
       };
     }));
 
