@@ -3,7 +3,7 @@ const productController = require('../controllers/productControllers');
 const router = express.Router();
 const { check } = require('express-validator');
 const { verifyToken } = require('../middlewares/authJwt');
-const { checkRole } = require('../middlewares/role');
+const { checkPermission } = require('../middlewares/role');
 
 
 const validateProduct = [
@@ -18,52 +18,48 @@ const validateProduct = [
 
 /***RUTAS****/
 
-// POST /api/products - Crear producto (admin y coordinador)
+// POST /api/products - Crear producto
 router.post('/',
     verifyToken,
-    validateProduct, productController.createProduct
+    checkPermission('productos.crear'),
+    validateProduct,
+    productController.createProduct
 );
 
-// GET /api/products - obtener todos los productos (todos lo pueden hacer)
+// GET /api/products - obtener todos los productos 
 router.get('/',
     verifyToken,
+    checkPermission('productos.ver'),
     productController.getProducts
 );
 
-// GET /api/products - obtener producto por id (todos lo pueden hacer)
+// GET /api/products - obtener producto por id 
 router.get('/:id',
     verifyToken,
+    checkPermission('productos.ver'),
     productController.getProductById
 );
 
-// PUT /api/products - actualizar producto por id (solo admin y coordinador)
+// PUT /api/products - actualizar producto por id 
 router.put('/:id',
     verifyToken,
+    checkPermission('productos.editar'),
     validateProduct, productController.updateProduct
 );
 
-// DELETE /api/products - eliminar producto especifico por id (solo admin)
-router.delete('/:id',
-    verifyToken,
-    productController.deleteProduct
-);
-
-// PATCH /api/products/:id/deactivate - desactivar producto (admin y coordinador)
+// PATCH /api/products/:id/deactivate - desactivar producto 
 router.patch('/:id/deactivate',
     verifyToken,
+    checkPermission('productos.inactivar'),
     productController.deactivateProduct
 );
 
-// PATCH /api/products/:id/activate - activar producto (admin y coordinador)
+// PATCH /api/products/:id/activate - activar producto
 router.patch('/:id/activate',
     verifyToken,
+    checkPermission('productos.inactivar'),
     productController.activateProduct
 );
 
 
 module.exports = router;
-
-
-
-
-

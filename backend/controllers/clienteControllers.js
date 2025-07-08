@@ -5,12 +5,21 @@ const { validationResult } = require('express-validator');
 
 // Obtener todos los clientes
 exports.getClientes = async (req, res) => {
-  const filtro = {};
-  if (req.query.esCliente !== undefined) {
-    filtro.esCliente = req.query.esCliente === 'true';
+  try {
+    const filtro = {};
+
+    if (req.query.esCliente === 'true') {
+      filtro.esCliente = true;
+    } else if (req.query.esCliente === 'false') {
+      filtro.esCliente = false;
+    }
+
+    const clientes = await Cliente.find(filtro);
+    res.json(clientes);
+  } catch (error) {
+    console.error('Error al obtener clientes', error);
+    res.status(500).json({ message: 'Error al obtener clientes' });
   }
-  const clientes = await Cliente.find(filtro);
-  res.json(clientes);
 };
 
 // Obtener un cliente por ID

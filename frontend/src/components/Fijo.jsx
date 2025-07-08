@@ -48,42 +48,45 @@ export default function Fijo() {
         } catch (error) {
           console.error("Error al cargar rol:", error);
         }
-      }
 
-      setUser(usuario);
+        setUser(usuario);
 
-      const permissions = usuario.permissions || [];
-      setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
-      setPuedeVerRoles(permissions.includes('roles.ver'));
-      setPuedeVerProveedores(permissions.includes('proveedores.ver'));
-      setPuedeVerHCompras(permissions.includes('hcompras.ver'));
-      setPuedeVerReportesCompras(permissions.includes('reportesCompras.ver'));
-      setPuedeVerCategorias(permissions.includes('categorias.ver'));
-      setPuedeVerSubcategorias(permissions.includes('subcategorias.ver'));
-      setPuedeVerProductos(permissions.includes('productos.ver'));
-      setPuedeVerReportesProductos(permissions.includes('reportesProductos.ver'));
-      setPuedeRegistrarCotizacion(permissions.includes('cotizaciones.crear'));
-      setPuedeVerCotizaciones(permissions.includes('cotizaciones.ver'));
-      setPuedeVerVentasAgendadas(permissions.includes('pedidosAgendados.ver'));
-      setPuedeVerPedidosDespachados(permissions.includes('pedidosDespachados.ver'));
-      setPuedeVerPedidosEntregados(permissions.includes('pedidosEntregados.ver'));
-      setPuedeVerPedidosCancelados(permissions.includes('pedidosCancelados.ver'));
-      setPuedeVerPedidosDevueltos(permissions.includes('pedidosDevueltos.ver'));
-      setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
-      setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
-      setPuedeVerProspectos(permissions.includes('prospectos.ver'));
-      setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
-    }
-  };
+        const permissions = usuario.permissions || [];
+        setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
+        setPuedeVerRoles(permissions.includes('roles.ver'));
+        setPuedeVerProveedores(permissions.includes('proveedores.ver'));
+        setPuedeVerHCompras(permissions.includes('hcompras.ver'));
+        setPuedeVerReportesCompras(permissions.includes('reportesCompras.ver'));
+        setPuedeVerCategorias(permissions.includes('categorias.ver'));
+        setPuedeVerSubcategorias(permissions.includes('subcategorias.ver'));
+        setPuedeVerProductos(permissions.includes('productos.ver'));
+        setPuedeVerReportesProductos(usuario.permissions.includes('reportesProductos.ver'));
+        setPuedeRegistrarCotizacion(permissions.includes('cotizaciones.crear'));
+        setPuedeVerCotizaciones(permissions.includes('cotizaciones.ver'));
+        setPuedeVerVentasAgendadas(permissions.includes('pedidosAgendados.ver'));
+        setPuedeVerPedidosDespachados(permissions.includes('pedidosDespachados.ver'));
+        setPuedeVerPedidosEntregados(permissions.includes('pedidosEntregados.ver'));
+        setPuedeVerPedidosCancelados(permissions.includes('pedidosCancelados.ver'));
+        setPuedeVerPedidosDevueltos(permissions.includes('pedidosDevueltos.ver'));
+        setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
+        setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
+        setPuedeVerProspectos(permissions.includes('prospectos.ver'));
+    setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
 
-  // Cargar datos iniciales
-  loadUserAndPermissions();
+  }
+};
+
+// Cargar datos iniciales
+loadUserAndPermissions();
+
+   
 
   // 2. Configurar evento para cambios en localStorage
   const handleStorageChange = () => {
     loadUserAndPermissions();
   };
   window.addEventListener('storage', handleStorageChange);
+
 
   // 3. Manejar click fuera del menú
   const handleClickOutside = (event) => {

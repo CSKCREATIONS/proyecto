@@ -4,7 +4,7 @@ import '../App.css';
 import Fijo from '../components/Fijo';
 import NavCompras from '../components/NavCompras'
 
-const API_URL = 'http://localhost:3000/api/proveedores';
+const API_URL = 'http://localhost:5000/api/proveedores';
 const token = localStorage.getItem('token');
 
 
@@ -259,6 +259,58 @@ const GestionProveedores = () => {
     }
   };
 
+  const toggleEstadoProveedor = async (id, activar = false) => {
+  const confirm = await Swal.fire({
+    title: activar ? '¿Activar proveedor?' : '¿Desactivar proveedor?',
+    text: activar
+      ? 'Este proveedor volverá a estar disponible.'
+      : 'Este proveedor ya no estará disponible.',
+    icon: activar ? 'question' : 'warning',
+    showCancelButton: true,
+    confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!confirm.isConfirmed) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/proveedores/${id}/${activar ? 'activate' : 'deactivate'}`, {
+      method: 'PATCH',
+      headers: {
+        'x-access-token': localStorage.getItem('token')
+      }
+    });
+
+    if (!res.ok) throw new Error('Error al cambiar el estado del proveedor');
+
+    Swal.fire(
+      activar ? 'Proveedor activado' : 'Proveedor desactivado',
+      '',
+      'success'
+    );
+
+    // recargar proveedores
+    loadProveedores();
+  } catch (err) {
+    Swal.fire('Error', err.message, 'error');
+  }
+};
+
+const loadProveedores = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/proveedores', {
+      headers: { 'x-access-token': localStorage.getItem('token') }
+    });
+
+    const result = await res.json();
+    setProveedores(result.proveedores || []);
+  } catch (err) {
+    Swal.fire('Error', 'No se pudieron cargar los proveedores', 'error');
+  }
+};
+
+
+
   return (
     <div>
       <Fijo />
@@ -327,13 +379,26 @@ const GestionProveedores = () => {
                         >
                           <i className="fa-solid fa-pen"></i>
                         </button>{' '}
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => eliminarProveedor(prov._id)}
-                        >
-                          <i className="fa-solid fa-trash"></i>
-                        </button>
+                        
                       </td>
+                      <td>
+                      {prov.activo ? (
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => toggleEstadoProveedor(prov._id, false)}
+                        >
+                          <i className="fa-solid fa-ban"></i> Inhabilitar
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => toggleEstadoProveedor(prov._id, true)}
+                        >
+                          <i className="fa-solid fa-check"></i> Habilitar
+                        </button>
+                      )}
+                    </td>
+
                     </tr>
                   ))
                 ) : (

@@ -39,6 +39,25 @@ exports.createPedido = async (req, res) => {
   }
 };
 
+exports.getPedidoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const pedido = await Pedido.findById(id)
+      .populate('cliente')
+      .populate('productos.product');
+
+    if (!pedido) {
+      return res.status(404).json({ message: 'Pedido no encontrado' });
+    }
+
+    res.status(200).json(pedido);
+  } catch (error) {
+    console.error('❌ Error al obtener pedido por ID:', error);
+    res.status(500).json({ message: 'Error al obtener el pedido', error });
+  }
+};
+
 
 exports.cambiarEstadoPedido = async (req, res) => {
   try {

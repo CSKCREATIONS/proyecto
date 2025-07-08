@@ -1,4 +1,8 @@
 const Category = require('../models/category');
+const Subcategoria = require('../models/Subcategory')
+const Products = require('../models/Products');
+
+
 
 exports.createCategory = async (req, res) =>{
     try{
@@ -150,44 +154,60 @@ exports.updateCategory = async (req, res) =>{
     
 };
 
-exports.deleteCategory = async (req, res) =>{
-    try{
-        const deleteCategory = await Category.findByIdAndDelete(req.params.id);
-        if(!deleteCategory){
-            return res.status(404).json({
-                success: false,
-                message:'Categoria no encontrada'
-            });
-        }
-        res.status(200).json({
-            success:true,
-            message:'categoria eliminada'
-        });
-    }catch(error){
-        console.error('error en deleteCategory:',error);
-        res.status(500).json({
-            success:false,
-            message: 'Error al eliminar categoria'
-        });
-    }
-};
 
-exports.deactivateCategory = async (req, res) => {
+
+// DESACTIVAR Categoría + Subcategorías + Productos
+exports.desactivarCategoriaYRelacionados = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, { activo: false }, { new: true });
-    if (!category) return res.status(404).json({ message: 'Categoría no encontrada' });
-    res.json({ message: 'Categoría desactivada', category });
+    await Category.findByIdAndUpdate(id, { activo: false });
+
+    const subcategorias = await Subcategoria.find({ category: id });
+
+    for (const sub of subcategorias) {
+      await Subcategoria.findByIdAndUpdate(sub._id, { activo: false });
+
+      // CAMBIO AQUÍ 👇
+      const productos = await Products.find({ subcategory: sub._id });
+      console.log(`Productos encontrados para sub ${sub.name}:`, productos.length);
+
+      const result = await Products.updateMany({ subcategory: sub._id }, { activo: false });
+      console.log('Productos desactivados:', result.modifiedCount);
+    }
+
+    res.status(200).json({ message: 'Todo desactivado correctamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al desactivar categoría', error });
+    console.error('Error al desactivar:', error);
+    res.status(500).json({ message: 'Error al desactivar la categoría', error });
   }
 };
 
-exports.activateCategory = async (req, res) => {
+
+// ACTIVAR Categoría + Subcategorías + Productos
+exports.activarCategoriaYRelacionados = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, { activo: true }, { new: true });
-    if (!category) return res.status(404).json({ message: 'Categoría no encontrada' });
-    res.json({ message: 'Categoría activada', category });
+    const categoria = await Category.findByIdAndUpdate(id, { activo: true }, { new: true });
+    if (!categoria) return res.status(404).json({ message: 'Categoría no encontrada' });
+
+    const subcategorias = await Subcategoria.find({ category: id });
+
+    for (const sub of subcategorias) {
+      await Subcategoria.findByIdAndUpdate(sub._id, { activo: true });
+
+      // CAMBIO AQUÍ 👇
+      const productos = await Products.find({ subcategory: sub._id });
+      console.log(`Activando ${productos.length} productos de sub ${sub.name}`);
+
+      const result = await Products.updateMany({ subcategory: sub._id }, { activo: true });
+      console.log('Productos activados:', result.modifiedCount);
+    }
+
+    res.status(200).json({ message: 'Todo activado correctamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al activar categoría', error });
+    console.error('Error al activar:', error);
+    res.status(500).json({ message: 'Error al activar la categoría', error });
   }
 };

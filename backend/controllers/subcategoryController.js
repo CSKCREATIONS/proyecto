@@ -1,5 +1,6 @@
 const Subcategory = require('../models/Subcategory');
 const Category = require('../models/category');
+const Products = require('../models/Products')
 
 // crear subcategoria
 
@@ -169,40 +170,52 @@ exports.deleteSubcategory = async (req,res) =>{
     }
 };
 
-exports.deactivateSubcategory = async (req, res) => {
-  try {
-    const subcategory = await Subcategory.findByIdAndUpdate(
-      req.params.id,
-      { activo: false },
-      { new: true }
-    );
+exports.desactivarSubcategoriaYProductos = async (req, res) => {
+  const { id } = req.params;
 
-    if (!subcategory) {
+  try {
+    const subcategoria = await Subcategory.findByIdAndUpdate(id, { activo: false });
+    if (!subcategoria) {
       return res.status(404).json({ message: 'Subcategoría no encontrada' });
     }
 
-    res.status(200).json({ message: 'Subcategoría desactivada', subcategory });
+    // 🔁 Desactivar productos de esta subcategoría
+    const result = await Products.updateMany({ subcategory: id }, { activo: false });
+    console.log('Productos desactivados:', result.modifiedCount);
+
+    res.status(200).json({ message: 'Subcategoría y productos desactivados correctamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al desactivar', error });
+    console.error('Error al desactivar subcategoría:', error);
+    res.status(500).json({ message: 'Error al desactivar subcategoría', error });
   }
 };
 
-exports.activateSubcategory = async (req, res) => {
-  try {
-    const subcategory = await Subcategory.findByIdAndUpdate(
-      req.params.id,
-      { activo: true },
-      { new: true }
-    );
 
-    if (!subcategory) {
+
+// ✅ ACTIVAR SUBCATEGORÍA
+exports.activarSubcategoriaYProductos = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const subcategoria = await Subcategory.findByIdAndUpdate(id, { activo: true });
+    if (!subcategoria) {
       return res.status(404).json({ message: 'Subcategoría no encontrada' });
     }
 
-    res.status(200).json({ message: 'Subcategoría activada', subcategory });
+    // 🔁 Activar productos de esta subcategoría
+    const result = await Products.updateMany({ subcategory: id }, { activo: true });
+    console.log('Productos activados:', result.modifiedCount);
+
+    res.status(200).json({ message: 'Subcategoría y productos activados correctamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al activar', error });
+    console.error('Error al activar subcategoría:', error);
+    res.status(500).json({ message: 'Error al activar subcategoría', error });
   }
 };
+
+
+
+
+
 
 

@@ -38,7 +38,8 @@ export default function AgregarRol() {
       'productos.editar',
       'productos.inactivar',
       'categorias.ver',
-      'subcategorias.ver'
+      'subcategorias.ver',
+      'reportesProductos.ver'
    ];
    const permisosVentas = [
       'cotizaciones.crear',
@@ -366,6 +367,10 @@ export default function AgregarRol() {
                         </label>
                         <br />
                         <label>
+                        <label>
+                           <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="checkbox" checked={permisos.includes('reportesProductos.ver')} onChange={() => togglePermiso('reportesProductos.ver')} />
+                           Reportes
+                        </label>
                            <input style={{ marginRight: '0.5rem', marginBottom: '.5rem' }} type="radio" name="productosPermissions"
                               onClick={() => toggleGrupoPermisos(permisosProductos)}
                               checked={permisosProductos.every(p => permisos.includes(p))} />

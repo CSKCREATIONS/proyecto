@@ -17,7 +17,7 @@ module.exports = {
     CREAR: 'productos.crear',
     EDITAR: 'productos.editar',
     INACTIVAR: 'productos.inactivar',
-    ELIMINAR: 'productos.eliminar'
+    VERREPORTES: 'reportesProductos.ver'
   },
   CATEGORIAS: {
     VER: 'categorias.ver',
@@ -36,7 +36,7 @@ module.exports = {
     CREAR: 'proveedores.crear',
     EDITAR: 'proveedores.editar',
     INACTIVAR: 'proveedores.inactivar',
-    ELIMINAR: 'proveedores.eliminar'
+    ACTIVAR: 'proveedores.activar'
   },
   COMPRAS: {
     VER: 'hcompras.ver',
@@ -44,6 +44,8 @@ module.exports = {
     VERREPORTES: 'reportesCompras.ver'
   },
   VENTAS: {
+    CREAR: 'ventas.crear',
+    VER: 'pedidos.ver',
     VERGENERALES: 'listaDeVentas.ver',
     VERAGENDADOS: 'pedidosAgendados.ver',
     VERDESPACHADOS: 'pedidosDespachados.ver',

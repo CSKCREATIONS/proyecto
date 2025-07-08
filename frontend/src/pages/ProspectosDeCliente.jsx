@@ -7,6 +7,8 @@ import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 
 
 /****Funcion para exportar a pdf*** */
@@ -62,18 +64,25 @@ const exportToExcel = () => {
 export default function ListaDeClientes() {
   const [prospectos, setProspectos] = useState([]);
 
-  useEffect(() => {
-  const token = localStorage.getItem('token');
+const location = useLocation();
 
-  fetch('http://localhost:5000/api/clientes?esCliente=false', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(res => res.json())
-    .then(data => setProspectos(data))
-    .catch(err => console.error('Error al cargar prospectos', err));
-}, []);
+const fetchProspectos = async () => {
+  const token = localStorage.getItem('token');
+  try {
+    const res = await fetch('http://localhost:5000/api/clientes?esCliente=false', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    setProspectos(data);
+  } catch (err) {
+    console.error('Error al cargar prospectos', err);
+  }
+};
+
+useEffect(() => {
+  fetchProspectos();
+}, [location]);// 👈 así se vuelve a ejecutar cuando vuelves desde otra vista
+
 
 
   return (

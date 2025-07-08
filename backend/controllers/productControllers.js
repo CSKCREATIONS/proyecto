@@ -217,30 +217,7 @@ exports.updateProduct = async (req,res) =>{
     }
 };
 
-exports.deleteProduct = async (req,res) =>{
-    try{
-        const product = await Product.findByIdAndDelete(req.params.id);
 
-        if(!product){
-            return res.status(404).json({
-                success:false,
-                menssage:'Producto no encontrado'
-            });
-        }
-
-        res.status(200).json({
-            success:true,
-            message:'Producto eliminado correctamente',
-            data: product
-        });
-    }catch(error){
-        console.error('Error en deleteProduct',error);
-        res.status(500).json({
-            success:false,
-            message:'Error al eliminar el producto'
-        });
-    }
-};
 
 exports.deactivateProduct = async (req, res) => {
     try {

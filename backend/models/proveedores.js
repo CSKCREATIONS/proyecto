@@ -14,6 +14,6 @@ const ProveedorSchema = new mongoose.Schema({
   productos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   activo: { type: Boolean, default: true },
   fechaCreacion: { type: Date, default: Date.now }
-});
+},{ timestamps: true });
 
 module.exports = mongoose.model('Proveedor', ProveedorSchema);
