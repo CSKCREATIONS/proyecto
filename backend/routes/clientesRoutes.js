@@ -60,10 +60,7 @@ router.put('/clientes/:id', verifyToken, async (req, res) => {
 
 
 // DELETE /api/clientes/:id - Eliminar cliente (solo admin)
-router.delete('/:id',
-    verifyToken,
-    clienteController.deleteCliente
-);
+
 
 
 

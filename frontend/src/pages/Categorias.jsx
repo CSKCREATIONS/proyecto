@@ -4,7 +4,7 @@ import '../App.css';
 import Fijo from '../components/Fijo';
 import NavProductos from '../components/NavProductos'
 
-const API_URL = 'http://localhost:3000/api/categories';
+const API_URL = 'http://localhost:5000/api/categories';
 const token = localStorage.getItem('token');
 
 const CategoriaModal = ({ categoria, onClose, onSave }) => {

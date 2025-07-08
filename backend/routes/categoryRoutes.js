@@ -5,6 +5,7 @@ const { verifyToken } = require('../middlewares/authJwt');
 const { checkPermission } = require('../middlewares/role')
 
 
+
 // POST /api/categories - Crear categoria (admin y coordinador)
 router.post('/',
     verifyToken,
@@ -29,16 +30,13 @@ router.put('/:id',
     categoryController.updateCategory
 );
 
-// DELETE /api/categories - eliminar categoria especifica (solo admin)
-router.delete('/:id',
-    verifyToken,
-    categoryController.deleteCategory
-);
-// Acutualizar el estado de las categorias// desactivado
-router.patch('/:id/deactivate', verifyToken, categoryController.deactivateCategory);
 
-//activado
-router.patch('/:id/activate', verifyToken, categoryController.activateCategory);
+// Acutualizar el estado de las categorias// desactivado
+router.patch('/:id/deactivate', verifyToken, categoryController.desactivarCategoriaYRelacionados);
+router.patch('/:id/activate', verifyToken, categoryController.activarCategoriaYRelacionados);
+
+
+
 
 
 module.exports = router;

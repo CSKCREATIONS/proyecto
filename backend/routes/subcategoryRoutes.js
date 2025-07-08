@@ -37,16 +37,10 @@ router.put('/:id',
 );
 
 // DELETE /api/subcategories - eliminar subcategoria por id (solo admin)
-router.delete('/:id',
-    verifyToken,
-    subcategoryController.deleteSubcategory
-);
+
 // Acutualizar el estado de las categorias// desactivado
 
-router.patch('/:id/deactivate', verifyToken, subcategoryController.deactivateSubcategory);
-
-//activa
-router.patch('/:id/activate', verifyToken, subcategoryController.activateSubcategory);
-
+router.patch('/:id/deactivate', verifyToken, subcategoryController.desactivarSubcategoriaYProductos);
+router.patch('/:id/activate', verifyToken, subcategoryController.activarSubcategoriaYProductos);
 
 module.exports = router;

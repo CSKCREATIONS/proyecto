@@ -147,39 +147,48 @@ const loadCategorias = async () => {
     setModalVisible(true);
   };
 
-  
-    const toggleEstadoSubcategoria = async (id, activar = false) => {
-    const confirm = await Swal.fire({
-      title: activar ? '¿Activar subcategoría?' : '¿Desactivar subcategoría?',
-      text: activar ? 'Estará nuevamente disponible.' : 'Podrás volver a activarla más adelante.',
-      icon: activar ? 'question' : 'warning',
-      showCancelButton: true,
-      confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
-      cancelButtonText: 'Cancelar'
-    });
-  
-    if (!confirm.isConfirmed) return;
-  
-    try {
-      const res = await fetch(`${API_URL}/${id}/${activar ? 'activate' : 'deactivate'}`, {
+
+const toggleEstadoSubcategoria = async (id, activar = false) => {
+  const confirm = await Swal.fire({
+    title: activar ? '¿Activar subcategoría?' : '¿Desactivar subcategoría?',
+    text: activar
+      ? 'Esto hará que vuelva a estar disponible junto con sus productos.'
+      : 'Esto inhabilitará la subcategoría y sus productos relacionados.',
+    icon: activar ? 'question' : 'warning',
+    showCancelButton: true,
+    confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!confirm.isConfirmed) return;
+
+  try {
+    const res = await fetch(
+      `http://localhost:5000/api/subcategories/${id}/${activar ? 'activate' : 'deactivate'}`,
+      {
         method: 'PATCH',
-        headers: { 'x-access-token': token }
-      });
-  
-      if (!res.ok) throw new Error(`No se pudo ${activar ? 'activar' : 'desactivar'} la categoría`);
-  
-      await Swal.fire(
-        activar ? 'Activada' : 'Desactivada',
-        `La subcategoría ha sido ${activar ? 'activada' : 'desactivada'} correctamente.`,
-        'success'
-      );
-  
-      // ✅ IMPORTANTE: vuelve a cargar los datos actualizados
-      await loadSubcategorias();
-    } catch (err) {
-      Swal.fire('Error', err.message, 'error');
-    }
-  };
+        headers: {
+          'x-access-token': localStorage.getItem('token')
+        }
+      }
+    );
+
+    if (!res.ok) throw new Error('Error al cambiar estado de la subcategoría');
+
+    Swal.fire(
+      activar ? 'Activada' : 'Desactivada',
+      `La subcategoría ha sido ${activar ? 'activada' : 'desactivada'} correctamente.`,
+      'success'
+    );
+
+    await loadSubcategorias();
+  } catch (error) {
+    console.error('Error al cambiar estado de subcategoría:', error);
+    Swal.fire('Error', error.message, 'error');
+  }
+};
+
+
 
   return (
     <div>
@@ -217,27 +226,19 @@ const loadCategorias = async () => {
                   <td>{subcat.category?.name || 'Sin categoría'}</td>
                   <td>
                     <button className="btn btn-success btn-sm" onClick={() => handleEdit(subcat)} title="Editar">
-                         <i className="fa-solid fa-pen"></i>  
+                      <i className="fa-solid fa-pen"></i>
                     </button>
-                    &nbsp;&nbsp;
-                   {subcat.activo ? (
-                        <button
-                        className="btn btn-warning btn-sm"
-                        onClick={() => toggleEstadoSubcategoria(subcat._id, false)}
-                        >
-                        <i className="fa-solid fa-ban"></i> Inhabilitar
-                        </button>
-                    ) : (
-                        <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => toggleEstadoSubcategoria(subcat._id, true)}
-                        >
-                        <i className="fa-solid fa-check"></i> Habilitar
-                        </button>
-                    )}
+                    &nbsp;
+                    <button
+                      className={`btn btn-sm ${subcat.activo ? 'btn-warning' : 'btn-success'}`}
+                      onClick={() => toggleEstadoSubcategoria(subcat._id, !subcat.activo)}
+                    >
+                      <i className={`fa-solid ${subcat.activo ? 'fa-ban' : 'fa-check'}`}></i>{' '}
+                      {subcat.activo ? 'Inhabilitar' : 'Habilitar'}
+                    </button>
                   </td>
-
                 </tr>
+
               ))}
             </tbody>
           </table>

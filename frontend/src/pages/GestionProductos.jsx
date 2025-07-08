@@ -11,7 +11,15 @@ const API_PROVEEDORES = 'http://localhost:3000/api/proveedores';
 
 const token = localStorage.getItem('token');
 
-const ProductoModal = ({ producto, onClose, onSave, categorias, subcategorias, proveedores }) => {
+const ProductoModal = ({
+  producto,
+  onClose,
+  onSave,
+  categorias = [],
+  subcategorias = [],
+  proveedores = []
+}) => {
+
   const [form, setForm] = useState({
     name: producto?.name || '',
     description: producto?.description || '',
@@ -66,9 +74,9 @@ const ProductoModal = ({ producto, onClose, onSave, categorias, subcategorias, p
               </select>
               <select name="proveedor" value={form.proveedor} onChange={handleChange} className="form-select" required>
                 <option value="">Seleccione Proveedor</option>
-                {proveedores.map(prov => (
+                {Array.isArray(proveedores) && proveedores.map(prov => (
                   <option key={prov._id} value={prov._id}>
-                    {prov.nombre} ({prov.empresa})
+                    {prov.nombre} ({prov.empresa || 'Sin empresa'})
                   </option>
                 ))}
               </select>
@@ -120,8 +128,25 @@ const GestionProductos = () => {
     loadProductos();
     loadCategorias();
     loadSubcategorias();
-    loadProveedores();
   }, []);
+
+  useEffect(() => {
+  const fetchProveedores = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/proveedores/activos', {
+        headers: { 'x-access-token': token }
+      });
+
+      const data = await res.json();
+      setProveedores(data.proveedores); // o como los guardes
+    } catch (error) {
+      console.error('Error al cargar proveedores', error);
+    }
+  };
+
+  fetchProveedores();
+}, []);
+
 
   const loadProductos = async () => {
     try {
@@ -238,17 +263,7 @@ const GestionProductos = () => {
     setSubcategorias(Array.isArray(data) ? data : []);
   };
 
-  const loadProveedores = async () => {
-    try {
-      const res = await fetch(API_PROVEEDORES, { headers: { 'x-access-token': token } });
-      const result = await res.json();
-      const data = result.proveedores || result.data || result;
-      setProveedores(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setProveedores([]);
-    }
-  };
-
+ 
   return (
     <div>
       <Fijo />
@@ -343,10 +358,10 @@ const GestionProductos = () => {
               producto={productoEditando}
               onClose={() => setModalVisible(false)}
               onSave={handleSave}
-              categorias={categorias}
-              subcategorias={subcategorias}
-              proveedores={proveedores}
-            />
+              categorias={categorias || []}
+              subcategorias={subcategorias || []}
+              proveedores={proveedores || []}
+                        />
           )}
           <div className="pagination">
             {Array.from({ length: totalPaginas }, (_, i) => (

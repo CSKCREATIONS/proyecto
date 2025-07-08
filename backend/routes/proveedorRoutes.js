@@ -30,6 +30,9 @@ router.get('/',
     proveedorController.getProveedores
 );
 
+// routes/proveedorRoutes.js
+router.get('/activos', verifyToken, proveedorController.getProveedoresActivos);
+
 // GET /api/proveedores/:id - Obtener uno por ID
 router.get('/:id',
     verifyToken,
@@ -44,10 +47,7 @@ router.put('/:id',
 );
 
 // DELETE /api/proveedores/:id - Eliminar proveedor
-router.delete('/:id',
-    verifyToken,
-    proveedorController.deleteProveedor
-);
+
 
 // PATCH /api/proveedores/:id/deactivate - Desactivar proveedor
 router.patch('/:id/deactivate',
@@ -56,9 +56,9 @@ router.patch('/:id/deactivate',
 );
 
 // PATCH /api/proveedores/:id/activate - Activar proveedor
-router.patch('/:id/activate',
-    verifyToken,
-    proveedorController.activateProveedor
-);
+
+
+
+
 
 module.exports = router;

@@ -43,10 +43,6 @@ router.put('/:id',
 );
 
 // DELETE /api/products - eliminar producto especifico por id (solo admin)
-router.delete('/:id',
-    verifyToken,
-    productController.deleteProduct
-);
 
 // PATCH /api/products/:id/deactivate - desactivar producto (admin y coordinador)
 router.patch('/:id/deactivate',
