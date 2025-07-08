@@ -45,11 +45,11 @@
     "$date": "2025-06-23T02:15:08.214Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T02:09:34.272Z"
+    "$date": "2025-07-08T04:26:01.635Z"
   },
   "__v": 0,
   "lastLogin": {
-    "$date": "2025-07-07T02:09:34.271Z"
+    "$date": "2025-07-08T04:26:01.627Z"
   },
   "mustChangePassword": false,
   "provisional": true
@@ -109,9 +109,9 @@
   "secondName": "",
   "surname": "Gomez",
   "secondSurname": "",
-  "username": "jla582",
+  "username": "yisus",
   "email": "jesusgomes@gmail.com",
-  "password": "$2b$10$MxiVj1x20wSNyH4sWTfBXeImhvzopfQS/V2auzW0K.M9Tj43UGEJy",
+  "password": "$2b$10$wmKIHQHZiwCTLN5ojaoOKO/Gvg2wAtdYXjvC8KggmC//GT1NKkBZK",
   "role": {
     "$oid": "685a2d1281b79670eea33097"
   },
@@ -120,7 +120,7 @@
     "$date": "2025-06-23T04:43:44.958Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T01:17:48.629Z"
+    "$date": "2025-07-08T04:00:32.441Z"
   },
   "__v": 0
 },
@@ -132,9 +132,9 @@
   "secondName": "",
   "surname": "Forero",
   "secondSurname": "",
-  "username": "jla775",
+  "username": "fsharyk",
   "email": "fsharyk@gmail.com",
-  "password": "$2b$10$mlwi9wzbLuWhEJeEU5pPmeA66uvPamxhvoVfdB5GhHtQ69fTVJQ8O",
+  "password": "$2b$10$9eW1PWPBYD4WagzHWdi5Q.nlamGV8zIiKwJ2WaEAwb/OKO3Figs3O",
   "role": {
     "$oid": "685a2d1281b79670eea33097"
   },
@@ -143,7 +143,7 @@
     "$date": "2025-06-23T05:27:35.354Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T01:17:43.207Z"
+    "$date": "2025-07-08T04:01:25.555Z"
   },
   "__v": 0
 },
@@ -155,9 +155,9 @@
   "secondName": "",
   "surname": "Castro",
   "secondSurname": "",
-  "username": "jla237",
+  "username": "julian",
   "email": "juliancastrogil@gmail.com",
-  "password": "$2b$10$Wu1Lam65AzNw4wXCcEuVQeRaFr2Sjp6kEEsdHAVm5EUlBREvPZfEC",
+  "password": "$2b$10$HmbQ7JYp15uTSj3C00clueHFDbfn2aQRU0bABPJfD4E13WqyTCRf.",
   "role": {
     "$oid": "685a2d1281b79670eea33097"
   },
@@ -166,7 +166,7 @@
     "$date": "2025-06-24T03:47:28.363Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T01:17:36.014Z"
+    "$date": "2025-07-08T04:01:48.962Z"
   },
   "__v": 0
 },
@@ -256,14 +256,14 @@
   "email": "gduarte@teleperformance.com",
   "password": "$2b$10$gxxxzrIDPNqhn4toUxRwsuRmEeNdYp//Po.6Q9no2fQ6kpM8matjq",
   "role": {
-    "$oid": "685a2c7d81b79670eea3308a"
+    "$oid": "686b20b83ad85ce60578d025"
   },
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-26T07:36:47.527Z"
   },
   "updatedAt": {
-    "$date": "2025-06-26T07:36:47.527Z"
+    "$date": "2025-07-08T03:58:58.518Z"
   },
   "__v": 0
 },
@@ -329,7 +329,7 @@
   "email": "admin@jlaglobal.com",
   "password": "$2b$10$B4ZJOxPX0GT1.SdaCdBNHO.5XCl0Rwx1LTrNfF2kYKu3jeZvY2Qa2",
   "role": {
-    "$oid": "685a2c7d81b79670eea3308a"
+    "$oid": "686c9685b3039a5ddd570c51"
   },
   "enabled": true,
   "mustChangePassword": false,
@@ -341,7 +341,7 @@
     "$date": "2025-07-03T07:38:46.131Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T01:11:54.575Z"
+    "$date": "2025-07-08T03:58:46.755Z"
   },
   "__v": 0
 },

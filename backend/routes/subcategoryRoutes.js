@@ -4,6 +4,7 @@ const subcategoryController = require('../controllers/subcategoryController');
 const { check } = require('express-validator');
 const { verifyToken } = require('../middlewares/authJwt');
 const { checkRole } = require('../middlewares/role');
+const { checkPermission } = require('../middlewares/role');
 
 //validaciones
 const validateSubcategory = [
@@ -14,33 +15,44 @@ const validateSubcategory = [
 
 
 /***RUTAS****/
-//POST /api/subcategories solo admin y coordinador pueden crear subcategoria
+//POST /api/subcategories - crear subcategoria
 router.post('/',
     verifyToken,
+    checkPermission('subcategorias.crear'),
     validateSubcategory, subcategoryController.createSubcategory
 );
 
-// GET /api/subcategories - los 3 roles las pueden consultar
-router.get('/', 
+// GET /api/subcategories -  consultar
+router.get('/',
     verifyToken,
+    checkPermission('subcategorias.ver'),
     subcategoryController.getSubcategories
 );
 
-router.get('/:id', 
+router.get('/:id',
     verifyToken,
+    checkPermission('subcategorias.ver'),
     subcategoryController.getSubcategoryById);
 
-// PUT /api/subcategories - Actualizar subcategoria por id (solo admin y coordinador )
+// PUT /api/subcategories - Actualizar subcategoria por id 
 router.put('/:id',
     verifyToken,
+    checkPermission('subcategorias.editar'),
     validateSubcategory, subcategoryController.updateSubcategory
 );
 
-// DELETE /api/subcategories - eliminar subcategoria por id (solo admin)
 
-// Acutualizar el estado de las categorias// desactivado
+// Actualizar el estado de las categorias// desactivado
 
-router.patch('/:id/deactivate', verifyToken, subcategoryController.desactivarSubcategoriaYProductos);
-router.patch('/:id/activate', verifyToken, subcategoryController.activarSubcategoriaYProductos);
+router.patch('/:id/deactivate',
+    verifyToken,
+    checkPermission('subcategorias.inactivar'),
+    subcategoryController.desactivarSubcategoriaYProductos
+);
+router.patch('/:id/activate',
+     verifyToken,
+     checkPermission('subcategorias.inactivar'),
+     subcategoryController.activarSubcategoriaYProductos
+);
 
 module.exports = router;

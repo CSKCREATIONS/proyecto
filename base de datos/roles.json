@@ -15,10 +15,23 @@
     "roles.ver",
     "cotizaciones.crear",
     "cotizaciones.ver",
+    "cotizaciones.editar",
+    "cotizaciones.eliminar",
     "categorias.ver",
+    "categorias.crear",
+    "categorias.editar",
+    "categorias.inactivar",
     "subcategorias.ver",
+    "subcategorias.crear",
+    "subcategorias.editar",
+    "subcategorias.inactivar",
     "productos.ver",
+    "productos.crear",
+    "productos.editar",
+    "productos.inactivar",
     "reportesProductos.ver",
+    "ventas.crear",
+    "pedidos.ver",
     "listaDeVentas.ver",
     "pedidosAgendados.ver",
     "pedidosDespachados.ver",
@@ -27,9 +40,17 @@
     "pedidosDevueltos.ver",
     "reportesVentas.ver",
     "clientes.ver",
+    "clientes.crear",
+    "clientes.editar",
+    "clientes.inactivar",
     "prospectos.ver",
     "hcompras.ver",
+    "compras.crear",
+    "reportesCompras.ver",
     "proveedores.ver",
+    "proveedores.crear",
+    "proveedores.editar",
+    "proveedores.inactivar",
     "reportesCompras.ver"
   ],
   "enabled": true,
@@ -45,17 +66,22 @@
   "_id": {
     "$oid": "686abf02946339bb938cb1b7"
   },
-  "name": "Gerente de ventas",
+  "name": "Vendedor",
   "permissions": [
     "listaDeVentas.ver",
+    "ventas.crear",
     "pedidosAgendados.ver",
     "pedidosDespachados.ver",
     "pedidosEntregados.ver",
     "pedidosCancelados.ver",
     "pedidosDevueltos.ver",
-    "reportesVentas.ver",
     "cotizaciones.ver",
+    "cotizaciones.crear",
+    "cotizaciones.editar",
+    "cotizaciones.eliminar",
     "clientes.ver",
+    "clientes.crear",
+    "clientes.editar",
     "prospectos.ver"
   ],
   "enabled": true,
@@ -71,13 +97,16 @@
   "_id": {
     "$oid": "686b20b83ad85ce60578d025"
   },
-  "name": "Gerente de compras",
+  "name": "Jefe de compras",
   "permissions": [
     "hcompras.ver",
+    "compras.crear",
     "proveedores.ver",
     "reportesCompras.ver",
-    "productos.ver",
-    "reportesProductos.ver"
+    "proveedores.ver",
+    "proveedores.crear",
+    "proveedores.editar",
+    "proveedores.inactivar"
   ],
   "enabled": true,
   "createdAt": {
@@ -85,6 +114,37 @@
   },
   "updatedAt": {
     "$date": "2025-07-07T01:19:52.210Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "686c9685b3039a5ddd570c51"
+  },
+  "name": "Encargado de inventario",
+  "permissions": [
+    "hcompras.ver",
+    "proveedores.ver",
+    "productos.ver",
+    "productos.crear",
+    "productos.editar",
+    "productos.inactivar",
+    "categorias.ver",
+    "categorias.crear",
+    "categorias.editar",
+    "categorias.inactivar",
+    "subcategorias.ver",
+    "subcategorias.crear",
+    "subcategorias.editar",
+    "subcategorias.inactivar",
+    "reportesProductos.ver"
+  ],
+  "enabled": true,
+  "createdAt": {
+    "$date": "2025-07-08T03:54:45.863Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-08T03:54:45.863Z"
   },
   "__v": 0
 }]

@@ -45,41 +45,38 @@ export default function Login() {
       <h1 className="Titulo">Portal JLA Global Company</h1>
 
       <div className="container-form">
-        <div className="login-container">
-          <form onSubmit={handleLogin}>
-            <div className="input-container">
-              <input
-                type="text"
-                id="username"
-                required
-                placeholder=" "
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <label htmlFor="username">Usuario</label>
-            </div>
+        <form className="login-container" onSubmit={handleLogin}>
+          <div className="input-container">
+            <input
+              type="text"
+              id="username"
+              required
+              placeholder=" "
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <label htmlFor="username">Usuario</label>
+          </div>
 
-            <div className="input-container">
-              <input
-                type="password"
-                id="password"
-                required
-                placeholder=" "
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <label htmlFor="password">Contraseña</label>
-            </div>
+          <div className="input-container">
+            <input
+              type="password"
+              id="password"
+              required
+              placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <label htmlFor="password">Contraseña</label>
+          </div>
 
-            {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
+          {mensajeError && <p style={{ color: 'red', marginBottom: '0.5rem' }}>{mensajeError}</p>}
 
-            <div className="buttons">
-              <button className='btn login-button' type="submit">
-                Iniciar sesión
-              </button>
-            </div>
-          </form>
-        </div>
+            <button className='btn login-button' type="submit">
+              Iniciar sesión
+            </button>
+        </form>
+
 
         <div className="recuperar-contraseña">
           <p style={{ color: 'lightgray' }}>¿Has olvidado tu contraseña?</p>

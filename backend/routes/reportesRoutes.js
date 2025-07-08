@@ -1,27 +1,80 @@
 const express = require('express');
 const router = express.Router();
 const reportesController = require('../controllers/reportesController');
+const { checkPermission } = require('../middlewares/role');
+const { verifyToken } = require('../middlewares/authJwt');
 
 
 // Reportes productos
-router.get('/categorias', reportesController.reporteCategorias);
-router.get('/subcategorias', reportesController.reporteSubcategorias);
-router.get('/productos', reportesController.reporteProductos);
-router.get('/consolidado', reportesController.reporteConsolidado);
+router.get(
+    '/categorias',
+    verifyToken,
+    checkPermission('reportesProductos.ver'),
+    reportesController.reporteCategorias
+);
 
- // Reportes de ventas
-router.get('/ventas/por-periodo', reportesController.reporteVentasPorPeriodo);
-router.get('/ventas/por-estado', reportesController.reportePedidosPorEstado);
-router.get('/ventas/cotizaciones', reportesController.reporteCotizaciones);   
- 
+router.get('/subcategorias',
+    verifyToken,
+    checkPermission('reportesProductos.ver'),
+    reportesController.reporteSubcategorias
+);
+
+router.get('/productos',
+    verifyToken,
+    checkPermission('reportesProductos.ver'),
+    reportesController.reporteProductos
+);
+router.get('/consolidado',
+    verifyToken,
+    checkPermission('reportesProductos.ver'),
+    reportesController.reporteConsolidado
+);
+
+// Reportes de ventas
+router.get('/ventas/por-periodo',
+    verifyToken,
+    checkPermission('reportesVentas.ver'),
+    reportesController.reporteVentasPorPeriodo
+);
+router.get('/ventas/por-estado',
+    verifyToken,
+    checkPermission('reportesVentas.ver'),
+    reportesController.reportePedidosPorEstado
+);
+router.get('/ventas/cotizaciones',
+    verifyToken,
+    checkPermission('reportesVentas.ver'),
+    reportesController.reporteCotizaciones
+);
+
 // 🆕 Reporte de clientes
-router.get('/clientes', reportesController.reporteClientes);
+router.get('/clientes',
+    verifyToken,
+    checkPermission('reportesVentas.ver'),
+    reportesController.reporteClientes);
 
 
 // Reportes de proveedores
-router.get('/por-pais', reportesController.reporteProveedoresPorPais);
-router.get('/por-estado', reportesController.reporteEstadoProveedores);
-router.get('/por-productos', reportesController.reporteProductosPorProveedor);
-router.get('/recientes', reportesController.reporteProveedoresRecientes);
+router.get('/por-pais',
+    verifyToken,
+    checkPermission('reportesCompras.ver'),
+    reportesController.reporteProveedoresPorPais
+);
+
+router.get('/por-estado',
+    verifyToken,
+    checkPermission('reportesCompras.ver'),
+    reportesController.reporteEstadoProveedores
+);
+router.get('/por-productos',
+    verifyToken,
+    checkPermission('reportesCompras.ver'),
+    reportesController.reporteProductosPorProveedor
+);
+router.get('/recientes',
+    verifyToken,
+    checkPermission('reportesCompras.ver'),
+    reportesController.reporteProveedoresRecientes
+);
 
 module.exports = router;

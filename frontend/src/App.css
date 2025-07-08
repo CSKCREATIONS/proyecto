@@ -200,6 +200,12 @@ li {
   color: #ccdbdb;
 }
 
+.container-form {
+  width: 90%;
+  max-width: 500px;
+  padding: 0 2rem;
+}
+
 .login-container {
   background-color: white;
   border-radius: 8px;
@@ -215,10 +221,11 @@ li {
 .input-container {
   position: relative;
   margin-bottom: 25px;
+  width: 100%;
 }
 
 .input-container input {
-  width: 300px;
+  width: 100%;
   padding: 10px;
   font-size: 15px;
   border: 1px solid #ccc;
@@ -652,12 +659,7 @@ legend {
 
 
 /*****/
-.container-form {
-  width: 90%;
-  max-width: 700px;
-  padding: 0 2rem;
-  margin-left: 2rem;
-}
+
 
 
 

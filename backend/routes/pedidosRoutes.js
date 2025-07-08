@@ -5,6 +5,7 @@ const { verifyToken } = require('../middlewares/authJwt');
 const pedidoController = require('../controllers/pedidoControllers');
 const { checkRole } = require('../middlewares/role');
 const Venta = require('../models/venta');
+const { checkPermission } = require('../middlewares/role');
 
 // Función para generar número de pedido
 async function generarNumeroPedido() {
@@ -20,7 +21,10 @@ async function generarNumeroPedido() {
 //
 
 // Crear pedido
-router.post('/', verifyToken, async (req, res) => {
+router.post('/',
+   verifyToken, 
+   checkPermission('ventas.crear'),
+   async (req, res) => {
   try {
     const { cliente, productos, fechaEntrega, observacion } = req.body;
 
@@ -52,10 +56,17 @@ router.post('/', verifyToken, async (req, res) => {
 
 
 // Obtener todos los pedidos
-router.get('/', verifyToken, pedidoController.getPedidos);
+router.get('/', 
+  verifyToken,
+  checkPermission('pedidos.ver'),
+   pedidoController.getPedidos
+  );
 
 // Cambiar estado del pedido (genérico)
-router.patch('/:id/estado', verifyToken, pedidoController.cambiarEstadoPedido);
+router.patch('/:id/estado',
+   verifyToken, 
+   pedidoController.cambiarEstadoPedido
+  );
 
 
 

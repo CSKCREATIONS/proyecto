@@ -4,16 +4,20 @@ const { verifyToken } = require('../middlewares/authJwt');
 const { checkRole } = require('../middlewares/role');
 const cotizacionController = require('../controllers/cotizacionControllers');
 const Cotizacion = require('../models/cotizaciones'); // ajusta la ruta si es diferente
-
+const { checkPermission } = require('../middlewares/role');
 
 // ✅ Crear cotización
 router.post('/',
   verifyToken,
+  checkPermission('cotizaciones.crear'),
   cotizacionController.createCotizacion
 );
 
 // Obtener la cotización más reciente de un cliente por su ID (cliente _id)
-router.get('/cliente/:id', verifyToken,  async (req, res) => {
+router.get('/cliente/:id',
+   verifyToken,
+     checkPermission('cotizaciones.ver'),
+    async (req, res) => {
   try {
     const cotizacion = await Cotizacion.findOne({ cliente: req.params.id })
       .sort({ createdAt: -1 }) // más reciente
@@ -28,11 +32,13 @@ router.get('/cliente/:id', verifyToken,  async (req, res) => {
 
 router.get('/ultima',
   verifyToken,
+  checkPermission('cotizaciones.ver'),
   cotizacionController.getUltimaCotizacionPorCliente
 );
 
 router.get('/',
   verifyToken,
+  checkPermission('cotizaciones.ver'),
   cotizacionController.getCotizaciones
 );
 
@@ -43,7 +49,10 @@ router.get('/',
 
 
 // GET /api/cotizaciones/:id
-router.get('/:id', async (req, res) => {
+router.get('/:id',
+  verifyToken,
+    checkPermission('cotizaciones.ver'),
+   async (req, res) => {
   try {
     const cotizacion = await Cotizacion.findById(req.params.id)
       .populate('cliente')
@@ -64,6 +73,7 @@ router.get('/:id', async (req, res) => {
 // ✅ Actualizar cotización
 router.put('/:id',
   verifyToken,
+    checkPermission('cotizaciones.editar'),
   cotizacionController.updateCotizacion
 );
 
@@ -101,6 +111,7 @@ exports.updateCotizacion = async (req, res) => {
 // ✅ Eliminar cotización
 router.delete('/:id',
   verifyToken,
+    checkPermission('cotizaciones.eliminar'),
   cotizacionController.deleteCotizacion // Usa el controlador si ya lo tienes
 );
 
