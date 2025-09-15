@@ -349,6 +349,7 @@ const GestionProductos = () => {
                     </td>
                   </tr>
                 ))}
+                {productos.length === 0 && <tr><td colSpan="9">No hay productos disponibles</td></tr>}
               </tbody>
 
             </table>
@@ -374,8 +375,15 @@ const GestionProductos = () => {
               </button>
             ))}
           </div>
-
+            
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

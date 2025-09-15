@@ -145,7 +145,8 @@ loadUserAndPermissions();
             <Link as={Link} to='/Home'>
               <span
                 id='empresa-nombre'
-                style={{ cursor: 'pointer', color: 'white' }}
+                style={{ cursor: 'pointer', color: 'white', fontFamily: "'Poppins', sans-serif", fontStyle: 'italic'
+ }}
               >
                 JLA Global Company
               </span>

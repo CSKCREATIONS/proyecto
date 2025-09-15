@@ -125,6 +125,7 @@ useEffect(() => {
                     </tr>
                   ))
                 )}
+                {prospectos.length === 0 && <tr><td colSpan="9">No hay prospectos disponibles</td></tr>}
               </tbody>
               </table>
             </div>

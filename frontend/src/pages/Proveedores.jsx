@@ -1,12 +1,12 @@
+// src/pages/Proveedores.jsx
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import NavCompras from '../components/NavCompras'
+import NavCompras from '../components/NavCompras';
 
 const API_URL = 'http://localhost:5000/api/proveedores';
 const token = localStorage.getItem('token');
-
 
 const ProveedorModal = ({ proveedor, onClose, onSave }) => {
   const [form, setForm] = useState({
@@ -24,19 +24,12 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.startsWith('contacto.')) {
       const key = name.split('.')[1];
-      setForm(prev => ({
-        ...prev,
-        contacto: { ...prev.contacto, [key]: value }
-      }));
+      setForm(prev => ({ ...prev, contacto: { ...prev.contacto, [key]: value } }));
     } else if (name.startsWith('direccion.')) {
       const key = name.split('.')[1];
-      setForm(prev => ({
-        ...prev,
-        direccion: { ...prev.direccion, [key]: value }
-      }));
+      setForm(prev => ({ ...prev, direccion: { ...prev.direccion, [key]: value } }));
     } else {
       setForm(prev => ({ ...prev, [name]: value }));
     }
@@ -44,20 +37,11 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const { nombre, contacto, direccion } = form;
-
-    if (
-      !nombre.trim() ||
-      !contacto.telefono.trim() ||
-      !contacto.correo.trim() ||
-      !direccion.calle.trim() ||
-      !direccion.pais.trim()
-    ) {
+    if (!nombre.trim() || !contacto.telefono.trim() || !contacto.correo.trim() || !direccion.calle.trim() || !direccion.pais.trim()) {
       Swal.fire('Error', 'Todos los campos obligatorios deben estar completos', 'warning');
       return;
     }
-
     onSave({ ...proveedor, ...form });
   };
 
@@ -72,71 +56,29 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
           <div className="modal-body">
             <div className="form-group">
               <label className="form-label required">Nombre</label>
-              <input
-                name="nombre"
-                value={form.nombre}
-                onChange={handleChange}
-                className="form-input"
-                required
-              />
+              <input name="nombre" value={form.nombre} onChange={handleChange} className="form-input" required />
             </div>
-
             <div className="form-group">
               <label className="form-label required">Teléfono</label>
-              <input
-                name="contacto.telefono"
-                value={form.contacto.telefono}
-                onChange={handleChange}
-                className="form-input"
-                required
-              />
+              <input name="contacto.telefono" value={form.contacto.telefono} onChange={handleChange} className="form-input" required />
             </div>
-
             <div className="form-group">
               <label className="form-label required">Correo</label>
-              <input
-                name="contacto.correo"
-                type="email"
-                value={form.contacto.correo}
-                onChange={handleChange}
-                className="form-input"
-                required
-              />
+              <input name="contacto.correo" type="email" value={form.contacto.correo} onChange={handleChange} className="form-input" required />
             </div>
-
             <div className="form-group">
               <label className="form-label required">Dirección</label>
-              <input
-                name="direccion.calle"
-                value={form.direccion.calle}
-                onChange={handleChange}
-                className="form-input"
-                required
-              />
+              <input name="direccion.calle" value={form.direccion.calle} onChange={handleChange} className="form-input" required />
             </div>
-
             <div className="form-group">
               <label className="form-label required">País</label>
-              <input
-                name="direccion.pais"
-                value={form.direccion.pais}
-                onChange={handleChange}
-                className="form-input"
-                required
-              />
+              <input name="direccion.pais" value={form.direccion.pais} onChange={handleChange} className="form-input" required />
             </div>
-
             <div className="form-group">
               <label className="form-label">Empresa (opcional)</label>
-              <input
-                name="empresa"
-                value={form.empresa}
-                onChange={handleChange}
-                className="form-input"
-              />
+              <input name="empresa" value={form.empresa} onChange={handleChange} className="form-input" />
             </div>
           </div>
-
           <div className="modal-footer">
             <button type="button" className="btn btn-cancel" onClick={onClose}>Cancelar</button>
             <button type="submit" className="btn btn-save">Guardar</button>
@@ -147,11 +89,8 @@ const ProveedorModal = ({ proveedor, onClose, onSave }) => {
   );
 };
 
-
-
 const ModalProductosProveedor = ({ visible, onClose, productos, proveedor }) => {
   if (!visible) return null;
-
   return (
     <div className="modal-overlay">
       <div className="modal-compact modal-lg">
@@ -168,9 +107,7 @@ const ModalProductosProveedor = ({ visible, onClose, productos, proveedor }) => 
                 </li>
               ))}
             </ul>
-          ) : (
-            <p>Este proveedor no tiene productos asociados.</p>
-          )}
+          ) : <p>Este proveedor no tiene productos asociados.</p>}
         </div>
         <div className="modal-footer">
           <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
@@ -188,20 +125,23 @@ const GestionProveedores = () => {
   const [proveedorNombre, setProveedorNombre] = useState('');
   const [proveedorEditando, setProveedorEditando] = useState(null);
 
-  useEffect(() => {
-    cargarProveedores();
-  }, []);
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = proveedores.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(proveedores.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
-  
+  useEffect(() => { cargarProveedores(); }, []);
 
   const cargarProveedores = async () => {
     try {
       const res = await fetch(API_URL, { headers: { 'x-access-token': token } });
       const result = await res.json();
-      const lista = result.proveedores || result.data || [];
-      setProveedores(result.proveedores || result);
-    } catch (err) {
+      setProveedores(result.proveedores || []);
+    } catch {
       Swal.fire('Error', 'No se pudieron cargar los proveedores', 'error');
     }
   };
@@ -209,107 +149,41 @@ const GestionProveedores = () => {
   const guardarProveedor = async (proveedor) => {
     const url = proveedor._id ? `${API_URL}/${proveedor._id}` : API_URL;
     const method = proveedor._id ? 'PUT' : 'POST';
-
     try {
       const res = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
+        headers: { 'Content-Type': 'application/json', 'x-access-token': token },
         body: JSON.stringify(proveedor)
       });
-
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || 'Error al guardar el proveedor');
       }
-
       Swal.fire('Éxito', 'Proveedor guardado correctamente', 'success');
       setModalVisible(false);
       cargarProveedores();
-    } catch (err) {
-      Swal.fire('Error', err.message, 'error');
-    }
-  };
-
-  const eliminarProveedor = async (id) => {
-    const confirm = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción eliminará el proveedor',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (!confirm.isConfirmed) return;
-
-    try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-access-token': token }
-      });
-
-      if (!res.ok) throw new Error('No se pudo eliminar');
-      Swal.fire('Eliminado', 'Proveedor eliminado', 'success');
-      cargarProveedores();
-    } catch (err) {
-      Swal.fire('Error', err.message, 'error');
-    }
+    } catch (err) { Swal.fire('Error', err.message, 'error'); }
   };
 
   const toggleEstadoProveedor = async (id, activar = false) => {
-  const confirm = await Swal.fire({
-    title: activar ? '¿Activar proveedor?' : '¿Desactivar proveedor?',
-    text: activar
-      ? 'Este proveedor volverá a estar disponible.'
-      : 'Este proveedor ya no estará disponible.',
-    icon: activar ? 'question' : 'warning',
-    showCancelButton: true,
-    confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
-    cancelButtonText: 'Cancelar'
-  });
-
-  if (!confirm.isConfirmed) return;
-
-  try {
-    const res = await fetch(`http://localhost:3000/api/proveedores/${id}/${activar ? 'activate' : 'deactivate'}`, {
-      method: 'PATCH',
-      headers: {
-        'x-access-token': localStorage.getItem('token')
-      }
+    const confirm = await Swal.fire({
+      title: activar ? '¿Activar proveedor?' : '¿Desactivar proveedor?',
+      text: activar ? 'Este proveedor volverá a estar disponible.' : 'Este proveedor ya no estará disponible.',
+      icon: activar ? 'question' : 'warning',
+      showCancelButton: true,
+      confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
+      cancelButtonText: 'Cancelar'
     });
-
-    if (!res.ok) throw new Error('Error al cambiar el estado del proveedor');
-
-    Swal.fire(
-      activar ? 'Proveedor activado' : 'Proveedor desactivado',
-      '',
-      'success'
-    );
-
-    // recargar proveedores
-    loadProveedores();
-  } catch (err) {
-    Swal.fire('Error', err.message, 'error');
-  }
-};
-
-const loadProveedores = async () => {
-  try {
-    const res = await fetch('http://localhost:3000/api/proveedores', {
-      headers: { 'x-access-token': localStorage.getItem('token') }
-    });
-
-    const result = await res.json();
-    setProveedores(result.proveedores || []);
-  } catch (err) {
-    Swal.fire('Error', 'No se pudieron cargar los proveedores', 'error');
-  }
-};
-
-
+    if (!confirm.isConfirmed) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/proveedores/${id}/${activar ? 'activate' : 'deactivate'}`, {
+        method: 'PATCH', headers: { 'x-access-token': token }
+      });
+      if (!res.ok) throw new Error('Error al cambiar el estado del proveedor');
+      Swal.fire(activar ? 'Proveedor activado' : 'Proveedor desactivado', '', 'success');
+      cargarProveedores();
+    } catch (err) { Swal.fire('Error', err.message, 'error'); }
+  };
 
   return (
     <div>
@@ -317,116 +191,73 @@ const loadProveedores = async () => {
       <div className="content">
         <NavCompras/>
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'>
-            <h3>Lista de proveedores</h3>
-          </div>
-          <br />
-          <br />
-
+          <div className='encabezado-modulo'><h3>Lista de proveedores</h3></div><br/>
           <div className="d-flex justify-content-end mb-3">
-            <button className="btn btn-save" onClick={() => {
-              setProveedorEditando(null);
-              setModalVisible(true);
-            }}>
-              + Nuevo Proveedor
-            </button>
-          </div><br />
-
+            <button className="btn btn-save" onClick={() => { setProveedorEditando(null); setModalVisible(true); }}>+ Nuevo Proveedor</button>
+          </div>
+          <br/>
           <div className="table-container">
             <table>
               <thead>
-              <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Dirección</th>
-                <th>País</th>
-                <th>Empresa</th>
-                <th>Productos</th>
-              </tr>
+                <tr>
+                  <th>#</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>País</th><th>Empresa</th><th>Productos</th><th>Acciones</th>
+                </tr>
               </thead>
               <tbody>
-                {Array.isArray(proveedores) && proveedores.length > 0 ? (
-                  proveedores.map((prov, index) => (
-                    <tr key={prov._id}>
-                      <td>{index + 1}</td>
-                      <td>{prov.nombre}</td>
-                      <td>{prov.contacto?.telefono}</td>
-                      <td>{prov.contacto?.correo}</td>
-                      <td>{prov.direccion?.calle}</td>
-                      <td>{prov.direccion?.pais}</td>
-                      <td>{prov.empresa}</td>
-                      <td>
-                        <button
-                          className="btn btn-info btn-sm"
-                          onClick={() => {
-                            setProductosProveedor(prov.productos || []);
-                            setProveedorNombre(prov.nombre);
-                            setModalProductosVisible(true);
-                          }}
-                        >
-                          Ver Productos
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-success btn-sm"
-                          onClick={() => {
-                            setProveedorEditando(prov);
-                            setModalVisible(true);
-                          }}
-                        >
-                          <i className="fa-solid fa-pen"></i>
-                        </button>{' '}
-                        
-                      </td>
-                      <td>
-                      {prov.activo ? (
-                        <button
-                          className="btn btn-warning btn-sm"
-                          onClick={() => toggleEstadoProveedor(prov._id, false)}
-                        >
+                {currentItems.map((prov, index) => (
+                  <tr key={prov._id}>
+                    <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                    <td>{prov.nombre}</td>
+                    <td>{prov.contacto?.telefono}</td>
+                    <td>{prov.contacto?.correo}</td>
+                    <td>{prov.direccion?.calle}</td>
+                    <td>{prov.direccion?.pais}</td>
+                    <td>{prov.empresa}</td>
+                    <td>
+                      <button className="btn btn-info btn-sm" onClick={() => { setProductosProveedor(prov.productos || []); setProveedorNombre(prov.nombre); setModalProductosVisible(true); }}>
+                        Ver Productos
+                      </button>
+                    </td>
+                    <td>
+                      <button className='btnTransparente' onClick={() => { setProveedorEditando(prov); setModalVisible(true); }}>
+                        <i className="fa-solid fa-pen-to-square"></i>
+                      </button>{' '}
+                      {prov.activo ?
+                        <button className="btn btn-warning btn-sm" onClick={() => toggleEstadoProveedor(prov._id, false)}>
                           <i className="fa-solid fa-ban"></i> Inhabilitar
                         </button>
-                      ) : (
-                        <button
-                          className="btn btn-success btn-sm"
-                          onClick={() => toggleEstadoProveedor(prov._id, true)}
-                        >
+                        :
+                        <button className="btn btn-success btn-sm" onClick={() => toggleEstadoProveedor(prov._id, true)}>
                           <i className="fa-solid fa-check"></i> Habilitar
                         </button>
-                      )}
+                      }
                     </td>
-
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="9">No hay proveedores disponibles</td>
                   </tr>
-                )}
+                ))}
+                {currentItems.length === 0 && <tr><td colSpan="9">No hay proveedores disponibles</td></tr>}
               </tbody>
-
-
             </table>
           </div>
 
-          {modalVisible && (
-            <ProveedorModal
-              proveedor={proveedorEditando}
-              onClose={() => setModalVisible(false)}
-              onSave={guardarProveedor}
-            />
-          )}
+          {/* Paginación */}
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button key={i + 1} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active-page' : ''}>
+                {i + 1}
+              </button>
+            ))}
+          </div>
 
-          <ModalProductosProveedor
-            visible={modalProductosVisible}
-            onClose={() => setModalProductosVisible(false)}
-            productos={productosProveedor}
-            proveedor={proveedorNombre}
-          />
+          {modalVisible && <ProveedorModal proveedor={proveedorEditando} onClose={() => setModalVisible(false)} onSave={guardarProveedor} />}
+          <ModalProductosProveedor visible={modalProductosVisible} onClose={() => setModalProductosVisible(false)} productos={productosProveedor} proveedor={proveedorNombre} />
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

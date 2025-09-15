@@ -5,7 +5,6 @@ import { openModal } from '../funciones/animaciones';
 import EditarPerfil from '../components/EditarPerfil';
 import Swal from 'sweetalert2';
 
-
 export default function Perfil() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -19,11 +18,9 @@ export default function Perfil() {
     };
 
     loadUser();
-
     window.addEventListener('storage', loadUser);
     return () => window.removeEventListener('storage', loadUser);
   }, []);
-
 
   const handleClick = async () => {
     const result = await Swal.fire({
@@ -41,38 +38,91 @@ export default function Perfil() {
     }
   };
 
-  if (!user) return <div className='contenido-modulo'><p>Inicie sesion primero abeja</p></div>;
+  if (!user) {
+    return (
+      <div className="contenido-modulo text-center py-10">
+        <p className="text-gray-400">Inicie sesión primero 🐝</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <Fijo />
-      <div className="content">
-        <div className='contenido-modulo'>
-          
-          <div className="autenticated-user">
-            <h1>{user.firstName} {user.surname}</h1>
-            <button onClick={() => openModal('editar-perfil')} style={{ background: 'transparent', cursor: 'pointer' }}>◀ Editar</button>
-          </div>
+      <div class="content">
+        <div className="contenido-modulo">
+          <div className="content flex justify-center items-center">
+            <div className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-xl transform rotate-1">
 
-          <div className="containerPerfil">
-            <div className="user-info">
-              <div className="info-item"><strong>Nombre(s)</strong><p>{user.firstName} {user.secondName}</p></div>
-              <div className="info-item"><strong>Apellidos</strong><p>{user.surname} {user.secondSurname}</p></div>
-              <div className="info-item"><strong>Correo electrónico</strong><p>{user.email}</p></div>
-              <div className="info-item"><strong>Nombre de usuario</strong><p>{user.username}</p></div>
-              <div className="info-item"><strong>Rol</strong><p>{typeof user.role === 'string' ? user.role : user.role?.name || 'Sin rol'}</p>
+              {/* Encabezado */}
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">
+                  {user.firstName} {user.surname}
+                </h1><br />
+                <button
+                  onClick={() => openModal('editar-perfil')}
+                  className="btn-modern btn-edit"
+                >
+                  ✏️ Editar
+                </button>
               </div>
+              <br />
+              {/* Información */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                  <strong className="block text-gray-500">Nombre(s)</strong>
+                  <p className="font-medium">{user.firstName} {user.secondName}</p>
+                </div>
 
-              <button className="btn btn-primary" onClick={handleClick}>
-                Cerrar sesión
-              </button>
+                <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                  <strong className="block text-gray-500">Apellidos</strong>
+                  <p className="font-medium">{user.surname} {user.secondSurname}</p>
+                </div>
+
+                <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                  <strong className="block text-gray-500">Correo</strong>
+                  <p className="font-medium">{user.email}</p>
+                </div>
+
+                <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                  <strong className="block text-gray-500">Usuario</strong>
+                  <p className="font-medium">{user.username}</p>
+                </div>
+
+                <div className="bg-gray-100 p-4 rounded-lg shadow-sm sm:col-span-2">
+                  <strong className="block text-gray-500">Rol</strong>
+                  <p className="font-medium">
+                    {typeof user.role === 'string' ? user.role : user.role?.name || 'Sin rol'}
+                  </p>
+                </div>
+              </div>
+              <br />
+              {/* Botón cerrar sesión */}
+              <div className="text-center mt-8">
+                <button
+                  onClick={handleClick}
+                  className="btn-modern btn-logout"
+                >
+                  🚪 Cerrar sesión
+                </button>
+              </div>
             </div>
+            <br /><br />
+            
           </div>
+          <EditarPerfil />
+
         </div>
+        <div className="flex justify-center mt-10 border-t border-gray-700 pt-6">
+              <p className="text-sm text-gray-400 tracking-wide text-center">
+                © 2025{" "}
+                <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+                  JLA Global Company
+                </span>
+                . Todos los derechos reservados.
+              </p>
+            </div>
       </div>
-
-      <EditarPerfil />
-
     </div>
   );
 }

@@ -77,6 +77,17 @@ export default function RolesYPermisos() {
     }
   };
 
+  const mostrarPermisos = (rol) => {
+    Swal.fire({
+      title: `Permisos de ${rol.name}`,
+      html: rol.permissions.join('<br />'), // cada permiso en una línea
+      icon: 'info',
+      confirmButtonText: 'Cerrar',
+      width: '400px',
+    });
+  };
+
+
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem('user'));
@@ -137,6 +148,7 @@ export default function RolesYPermisos() {
                   <th>Creado</th>
                   <th>Permisos</th>
                   <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
 
@@ -146,7 +158,15 @@ export default function RolesYPermisos() {
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{rol.name}</td>
                     <td>{new Date(rol.createdAt).toLocaleDateString()}</td>
-                    <td className="td-multiline">{rol.permissions.join(' - ')}</td>
+                    <td>
+                      <button
+                        className="btn-permisos"
+                        onClick={() => mostrarPermisos(rol)}
+                      >
+                        Ver permisos
+                      </button>
+                    </td>
+
                     <td>
                       <label className="switch">
                         <input
@@ -174,19 +194,19 @@ export default function RolesYPermisos() {
                       {puedeEditarRol && (
                         <button
                           className='btnTransparente'
-                          style={{ height: '35px', width: '50px' }}
                           onClick={() => {
                             setRolSeleccionado(rol); // <- Aquí guardamos el rol a editar
                             openModal('edit-role-modal'); // <- Abre el modal
                           }}
                         >
-                          <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                          <i className="fa-solid fa-pen-to-square"></i>
                         </button>
                       )}
                     </td>
 
                   </tr>
                 ))}
+                {roles.length === 0 && <tr><td colSpan="9">No hay roles disponibles</td></tr>}
               </tbody>
 
 
@@ -207,11 +227,17 @@ export default function RolesYPermisos() {
           </div>
 
         </div>
-
+          <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
       <AgregarRol />
       <EditarRol rol={rolSeleccionado} />
-
+      
     </div>
   )
 }

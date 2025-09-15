@@ -306,6 +306,7 @@ return (
                       </td>
                     </tr>
                   ))}
+                  {cotizaciones.length === 0 && <tr><td colSpan="9">No hay cotizaciones disponibles</td></tr>}
                 </tbody>
               </table>
             </div>

@@ -196,6 +196,7 @@ export default function PedidosEntregados() {
                       </td>
                     </tr>
                   ))}
+                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos entregados disponibles</td></tr>}
                 </tbody>
               </table>
             </div>

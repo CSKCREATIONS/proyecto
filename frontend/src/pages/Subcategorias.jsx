@@ -50,15 +50,14 @@ const SubcategoriaModal = ({ subcategoria, categorias, onClose, onSave }) => {
                 required
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                >
+              >
                 <option value="">Seleccione una categoría</option>
                 {categorias.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                  <option key={cat._id} value={cat._id}>
                     {cat.name}
-                    </option>
+                  </option>
                 ))}
-                </select>
-
+              </select>
             </div>
           </div>
           <div className="modal-footer">
@@ -77,47 +76,43 @@ const GestionSubcategorias = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [subcategoriaEditando, setSubcategoriaEditando] = useState(null);
 
+  // 🔹 Estado para paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Cambia este valor para mostrar más/menos filas
+
   useEffect(() => {
     loadSubcategorias();
     loadCategorias();
   }, []);
 
   const loadSubcategorias = async () => {
-  try {
-    const res = await fetch(API_URL, {
-      headers: { 'x-access-token': token }
-    });
+    try {
+      const res = await fetch(API_URL, {
+        headers: { 'x-access-token': token }
+      });
 
-    const result = await res.json();
-    
-    // Normaliza la respuesta para que siempre sea un array
-    const data = result.subcategories || result.data || result || [];
-    
-    setSubcategorias(Array.isArray(data) ? data : []);
-  } catch (err) {
-    Swal.fire('Error', 'No se pudieron cargar las subcategorías', 'error');
-  }
-};
+      const result = await res.json();
+      const data = result.subcategories || result.data || result || [];
+      setSubcategorias(Array.isArray(data) ? data : []);
+    } catch (err) {
+      Swal.fire('Error', 'No se pudieron cargar las subcategorías', 'error');
+    }
+  };
 
-const loadCategorias = async () => {
-  try {
-    const res = await fetch('http://localhost:5000/api/categories', {
-      headers: { 'x-access-token': token }
-    });
+  const loadCategorias = async () => {
+    try {
+      const res = await fetch(CATEGORY_API_URL, {
+        headers: { 'x-access-token': token }
+      });
 
-    const result = await res.json();
-    const data = result.categories || result.data || result || [];
-
-    // Filtrar solo categorías activas
-    const activas = Array.isArray(data) ? data.filter(cat => cat.activo) : [];
-
-    setCategorias(activas);
-  } catch (err) {
-    Swal.fire('Error', 'No se pudieron cargar las categorías', 'error');
-  }
-};
-
-
+      const result = await res.json();
+      const data = result.categories || result.data || result || [];
+      const activas = Array.isArray(data) ? data.filter(cat => cat.activo) : [];
+      setCategorias(activas);
+    } catch (err) {
+      Swal.fire('Error', 'No se pudieron cargar las categorías', 'error');
+    }
+  };
 
   const handleSave = async ({ id, name, description, categoryId }) => {
     const url = id ? `${API_URL}/${id}` : API_URL;
@@ -147,113 +142,133 @@ const loadCategorias = async () => {
     setModalVisible(true);
   };
 
+  const toggleEstadoSubcategoria = async (id, activar = false) => {
+    const confirm = await Swal.fire({
+      title: activar ? '¿Activar subcategoría?' : '¿Desactivar subcategoría?',
+      text: activar
+        ? 'Esto hará que vuelva a estar disponible junto con sus productos.'
+        : 'Esto inhabilitará la subcategoría y sus productos relacionados.',
+      icon: activar ? 'question' : 'warning',
+      showCancelButton: true,
+      confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
+      cancelButtonText: 'Cancelar'
+    });
 
-const toggleEstadoSubcategoria = async (id, activar = false) => {
-  const confirm = await Swal.fire({
-    title: activar ? '¿Activar subcategoría?' : '¿Desactivar subcategoría?',
-    text: activar
-      ? 'Esto hará que vuelva a estar disponible junto con sus productos.'
-      : 'Esto inhabilitará la subcategoría y sus productos relacionados.',
-    icon: activar ? 'question' : 'warning',
-    showCancelButton: true,
-    confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
-    cancelButtonText: 'Cancelar'
-  });
+    if (!confirm.isConfirmed) return;
 
-  if (!confirm.isConfirmed) return;
-
-  try {
-    const res = await fetch(
-      `http://localhost:5000/api/subcategories/${id}/${activar ? 'activate' : 'deactivate'}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'x-access-token': localStorage.getItem('token')
+    try {
+      const res = await fetch(
+        `${API_URL}/${id}/${activar ? 'activate' : 'deactivate'}`,
+        {
+          method: 'PATCH',
+          headers: { 'x-access-token': localStorage.getItem('token') }
         }
-      }
-    );
+      );
 
-    if (!res.ok) throw new Error('Error al cambiar estado de la subcategoría');
+      if (!res.ok) throw new Error('Error al cambiar estado de la subcategoría');
 
-    Swal.fire(
-      activar ? 'Activada' : 'Desactivada',
-      `La subcategoría ha sido ${activar ? 'activada' : 'desactivada'} correctamente.`,
-      'success'
-    );
+      Swal.fire(
+        activar ? 'Activada' : 'Desactivada',
+        `La subcategoría ha sido ${activar ? 'activada' : 'desactivada'} correctamente.`,
+        'success'
+      );
 
-    await loadSubcategorias();
-  } catch (error) {
-    console.error('Error al cambiar estado de subcategoría:', error);
-    Swal.fire('Error', error.message, 'error');
-  }
-};
+      await loadSubcategorias();
+    } catch (error) {
+      console.error('Error al cambiar estado de subcategoría:', error);
+      Swal.fire('Error', error.message, 'error');
+    }
+  };
 
+  // 🔹 Lógica de paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = subcategorias.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(subcategorias.length / itemsPerPage);
 
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div>
       <Fijo />
       <div className="content">
-        <NavProductos/>
+        <NavProductos />
         <div className="contenido-modulo">
-
-            <div className='encabezado-modulo'>
-            <h3>Gestion de subcategorias</h3>
+          <div className='encabezado-modulo'>
+            <h3>Gestión de Subcategorías</h3>
           </div>
           <br />
-            <br />
-        <div className="d-flex justify-content-end mb-3">
-          <button className="btn btn-save" onClick={() => { setSubcategoriaEditando(null); setModalVisible(true); }}>
-            + Nueva Subcategoría
-          </button>
-        </div>
-        <br />
-        <div className="table-conteiner">
-          <table className="table table-bordered table-hover shadow-sm">
-            <thead className="table-primary">
-              <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subcategorias.map((subcat) => (
-                <tr key={subcat._id}>
-                  <td>{subcat.name}</td>
-                  <td>{subcat.description}</td>
-                  <td>{subcat.category?.name || 'Sin categoría'}</td>
-                  <td>
-                    <button className="btn btn-success btn-sm" onClick={() => handleEdit(subcat)} title="Editar">
-                      <i className="fa-solid fa-pen"></i>
-                    </button>
-                    &nbsp;
-                    <button
-                      className={`btn btn-sm ${subcat.activo ? 'btn-warning' : 'btn-success'}`}
-                      onClick={() => toggleEstadoSubcategoria(subcat._id, !subcat.activo)}
-                    >
-                      <i className={`fa-solid ${subcat.activo ? 'fa-ban' : 'fa-check'}`}></i>{' '}
-                      {subcat.activo ? 'Inhabilitar' : 'Habilitar'}
-                    </button>
-                  </td>
+          <div className="d-flex justify-content-end mb-3">
+            <button className="btn btn-save" onClick={() => { setSubcategoriaEditando(null); setModalVisible(true); }}>
+              + Nueva Subcategoría
+            </button>
+          </div>
+          <br />
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Categoría</th>
+                  <th>Acciones</th>
                 </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((subcat) => (
+                  <tr key={subcat._id}>
+                    <td>{subcat.name}</td>
+                    <td>{subcat.description}</td>
+                    <td>{subcat.category?.name || 'Sin categoría'}</td>
+                    <td>
+                      <button className="btn btn-success btn-sm" onClick={() => handleEdit(subcat)} title="Editar">
+                        <i className="fa-solid fa-pen"></i>
+                      </button>
+                      &nbsp;
+                      <button
+                        className={`btn btn-sm ${subcat.activo ? 'btn-warning' : 'btn-success'}`}
+                        onClick={() => toggleEstadoSubcategoria(subcat._id, !subcat.activo)}
+                      >
+                        <i className={`fa-solid ${subcat.activo ? 'fa-ban' : 'fa-check'}`}></i>{' '}
+                        {subcat.activo ? 'Inhabilitar' : 'Habilitar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {subcategorias.length === 0 && <tr><td colSpan="9">No hay subcategorias disponibles</td></tr>}
+              </tbody>
+            </table>
+          </div>
 
-              ))}
-            </tbody>
-          </table>
-        </div>
+          {/* Paginación */}
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
 
-        {modalVisible && (
-          <SubcategoriaModal
-            subcategoria={subcategoriaEditando}
-            categorias={categorias}
-            onClose={() => setModalVisible(false)}
-            onSave={handleSave}
-          />
-        )}
+          {modalVisible && (
+            <SubcategoriaModal
+              subcategoria={subcategoriaEditando}
+              categorias={categorias}
+              onClose={() => setModalVisible(false)}
+              onSave={handleSave}
+            />
+          )}
         </div>
-        
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

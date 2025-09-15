@@ -274,8 +274,44 @@ export default function ListaDeUsuarios() {
           <div className='encabezado-modulo'>
             <div>
               <h3>Lista de usuarios</h3>
-              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={() => exportToExcel(todosLosUsuarios)}><i className="fa-solid fa-file-excel"></i> <span>Exportar a Excel</span></button>
-              <button style={{ background: 'transparent', cursor: 'pointer' }} onClick={exportarPDF}><i className="fa-solid fa-file-pdf"></i><span> Exportar a PDF</span></button>
+              <button
+                onClick={() => exportToExcel(todosLosUsuarios)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #16a34a', borderRadius: '8px', background: 'transparent', color: '#16a34a',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#16a34a';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#16a34a';
+                }}
+              >
+                <i className="fa-solid fa-file-excel" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a Excel</span>
+              </button>
+
+              <button
+                onClick={exportarPDF}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #dc2626', borderRadius: '8px', background: 'transparent', color: '#dc2626',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dc2626';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#dc2626';
+                }}
+              >
+                <i className="fa-solid fa-file-pdf" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a PDF</span>
+              </button>
+
             </div>
             {puedeCrearUsuario && (
               <button onClick={() => openModal('agregar-usuario')} type='submit' className='btn-agregar'>+ Crear usuario</button>
@@ -346,6 +382,7 @@ export default function ListaDeUsuarios() {
                   <th>Estado</th>
                   <th>Creado</th>
                   <th>Último acceso</th>
+                  <th>Acciones</th>
 
                 </tr>
               </thead>
@@ -396,18 +433,16 @@ export default function ListaDeUsuarios() {
                     {(puedeEditarUsuario || puedeEliminarUsuario) && (
                       <td>
                         {puedeEditarUsuario && (
-                          <button className='btnTransparente' style={{ height: '35px', width: '50px' }} onClick={() => { setUsuarioEditando(usuario); openModal('editUserModal'); }}>
-                            <i className="fa-solid fa-pen fa-xl" style={{ color: 'orange' }}></i>
+                          <button className='btnTransparente'  onClick={() => { setUsuarioEditando(usuario); openModal('editUserModal'); }}>
+                            <i className="fa-solid fa-pen-to-square"></i>
                           </button>
                         )}
                         {puedeEliminarUsuario && usuario.lastLogin === null && (
                           <button
                             className='btnTransparente'
-                            style={{ height: '35px', width: '50px' }}
-                            type="button"
                             onClick={() => eliminarUsuario(usuario)}
                           >
-                            <i className="fa-solid fa-trash fa-xl" style={{ color: 'red' }}></i>
+                            <i className="fa-solid fa-trash" style={{ color: '#dc3545' }} ></i>
                           </button>
                         )}
 
@@ -416,11 +451,10 @@ export default function ListaDeUsuarios() {
 
                   </tr>
                 ))}
+                {usuarios.length === 0 && <tr><td colSpan="9">No hay usuarios disponibles</td></tr>}
+
               </tbody>
             </table>
-
-            {usuarios.length === 0 && <p>No hay usuarios disponibles.</p>}
-
 
           </div>
           <div className="pagination">
@@ -434,11 +468,22 @@ export default function ListaDeUsuarios() {
               </button>
             ))}
           </div>
+          
+          
         </div>
-
+            
         <EditarUsuario usuario={usuarioEditando} fetchUsuarios={fetchUsuarios} />
         <AgregarUsuario />
+
+         <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
+      
     </div>
   );
 }

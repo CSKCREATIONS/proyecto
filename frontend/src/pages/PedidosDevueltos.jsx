@@ -112,6 +112,7 @@ export default function PedidosDevueltos() {
                       <td>{pedido.estado}</td>
                     </tr>
                   ))}
+                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos devueltos disponibles</td></tr>}
                 </tbody>
               </table>
             </div>

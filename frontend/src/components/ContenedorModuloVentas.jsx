@@ -30,121 +30,115 @@ export default function ContenedorModuloVentas() {
       setPuedeVerReportesVentas(usuario.permissions.includes('reportesVentas.ver'));
     }
   }, []);
+
   return (
-    <div className="contenedor-modulo">
-      {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
-        <section className="seccion">
-          <fieldset>
-            <legend>Ventas</legend>
-            <div className="botones-container">
+    <section className="p-4 flex justify-center">
+      <fieldset className="border-2 border-yellow-500 rounded-2xl p-6 shadow-lg bg-gradient-to-b from-black via-gray-900 to-gray-950 w-fit mx-auto">
+        <legend className="px-2 text-lg font-bold text-yellow-400">
+          Ventas
+        </legend>
+        <br/>
+        <div className="flex flex-wrap gap-6 mt-4" style={{ display: "grid", gap: "16px", justifyContent: "center", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))"}}>
+          {puedeRegistrarCotizacion && (
+            <Link to="/RegistrarCotizacion">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/14185/14185243.png" alt="Registrar cotización" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Registrar cotización</span>
+              </button>
+            </Link>
+          )}
 
-              {/* Separador Cotizaciones */}
-              {puedeRegistrarCotizacion && (
-                <Link to="/RegistrarCotizacion">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/14185/14185243.png" alt="Registrar cotización" className="icono" />
-                    <span>Registrar cotización</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerCotizaciones && (
+            <Link to="/ListaDeCotizaciones">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/2666/2666436.png" alt="Lista de cotizaciones" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Lista de cotizaciones</span>
+              </button>
+            </Link>
+          )}
 
+          {puedeVerVentasAgendadas && (
+            <Link to="/PedidosAgendados">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos agendados" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Pedidos por despachar</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerCotizaciones && (
-                <Link to="/ListaDeCotizaciones">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/2666/2666436.png" alt="Lista de cotizaciones" className="icono" />
-                    <span>Lista de cotizaciones</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerPedidosDespachados && (
+            <Link to="/PedidosDespachados">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos despachados" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Pedidos despachados</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerVentasAgendadas && (
-                <Link to="/PedidosAgendados">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos agendados" className="icono" />
-                    <span>Pedidos por despachar</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerPedidosEntregados && (
+            <Link to="/PedidosEntregados">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/2711/2711224.png" alt="Pedidos entregados" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Pedidos entregados</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerPedidosDespachados && (
-                <Link to="/PedidosDespachados">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos agendados" className="icono" />
-                    <span>Pedidos despachados</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerPedidosCancelados && (
+            <Link to="/PedidosCancelados">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/1136/1136923.png" alt="Pedidos cancelados" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Pedidos cancelados</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerPedidosEntregados && (
-                <Link to="/PedidosEntregados">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/2711/2711224.png" alt="Pedidos entregados" className="icono" />
-                    <span>Pedidos entregados</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerPedidosDevueltos && (
+            <Link to="/PedidosDevueltos">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/14185/14185243.png" alt="Pedidos devueltos" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Pedidos devueltos</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerPedidosCancelados && (
-                <Link to="/PedidosCancelados">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/1136/1136923.png" alt="Pedidos cancelados" className="icono" />
-                    <span>Pedidos cancelados</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerListaDeVentas && (
+            <Link to="/Ventas">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/2666/2666436.png" alt="Lista de ventas" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Lista de ventas</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerPedidosDevueltos && (
-                <Link to="/PedidosDevueltos">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/14185/14185243.png" alt="Registrar cotización" className="icono" />
-                    <span>Pedidos devueltos</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerListaDeClientes && (
+            <Link to="/ListaDeClientes">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/3239/3239045.png" alt="Lista de clientes" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Lista de clientes</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerListaDeVentas && (
-                <Link to="/Ventas">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/2666/2666436.png" alt="Lista de cotizaciones" className="icono" />
-                    <span>Lista de ventas</span>
-                  </button>
-                </Link>
-              )}
+          {puedeVerProspectos && (
+            <Link to="/ProspectosDeClientes">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/901/901407.png" alt="Prospectos de cliente" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Prospectos de cliente</span>
+              </button>
+            </Link>
+          )}
 
-              {puedeVerListaDeClientes && (
-                <Link to="/ListaDeClientes">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/3239/3239045.png" alt="Lista de clientes" className="icono" />
-                    <span>Lista de clientes</span>
-                  </button>
-                </Link>
-              )}
-
-              {puedeVerProspectos && (
-                <Link to="/ProspectosDeClientes">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/901/901407.png" alt="Prospectos de cliente" className="icono" />
-                    <span>Prospectos de cliente</span>
-                  </button>
-                </Link>
-              )}
-
-              {puedeVerReportesVentas && (
-                <Link to="/ReportessVentas">
-                  <button className="boton">
-                    <img src="https://cdn-icons-png.freepik.com/256/901/901407.png" alt="Prospectos de cliente" className="icono" />
-                    <span>Reportes</span>
-                  </button>
-                </Link>
-              )}
-
-
-            </div>
-          </fieldset>
-        </section>
-      )}
-
-    </div>
+          {puedeVerReportesVentas && (
+            <Link to="/ReportessVentas">
+              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
+                <img src="https://cdn-icons-png.freepik.com/256/901/901407.png" alt="Reportes ventas" style={{ width: "80px", height: "80px" }} />
+                <span className="text-sm font-medium">Reportes</span>
+              </button>
+            </Link>
+          )}
+        </div>
+      </fieldset>
+    </section>
   );
 }

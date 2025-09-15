@@ -123,6 +123,7 @@ const mostrarProductos = (pedido) => {
                       <td>{pedido.estado}</td>
                     </tr>
                   ))}
+                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos cancelados disponibles</td></tr>}
                 </tbody>
               </table>
             </div>

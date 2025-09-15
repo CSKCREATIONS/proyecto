@@ -15,7 +15,7 @@ export default function Home() {
   const [puedeVerCategorias, setPuedeVerCategorias] = useState(false);
   const [puedeVerSubcategorias, setPuedeVerSubcategorias] = useState(false);
   const [puedeVerProductos, setPuedeVerProductos] = useState(false);
-    const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
+  const [puedeVerReportesProductos, setPuedeVerReportesProductos] = useState(false);
   const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
   const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
   const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
@@ -60,18 +60,31 @@ export default function Home() {
           {(puedeVerRoles || puedeVerUsuarios) && (
             <ContenedorModuloUsuarios />
           )}
+          <br />
           {(puedeVerProveedores || puedeVerHCompras) && (
             <ContenedorModuloCompras />
           )}
+          <br />
           {(puedeVerCategorias || puedeVerSubcategorias || puedeVerProductos || puedeVerReportesProductos) && (
             <ContenedorModuloProductos />
           )}
+          <br />
           {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
-          <ContenedorModuloVentas />
+            <ContenedorModuloVentas />
           )}
         </div>
+        <div className="flex justify-center mt-10 border-t border-gray-700 pt-6">
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
-
+      </div>
+      
     </div>
+
   )
 }

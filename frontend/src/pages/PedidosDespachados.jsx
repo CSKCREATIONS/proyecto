@@ -193,6 +193,7 @@ export default function PedidosDespachados() {
                       </td>
                     </tr>
                   ))}
+                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos despachados disponibles disponibles</td></tr>}
                 </tbody>
               </table>
               <div className="pagination">

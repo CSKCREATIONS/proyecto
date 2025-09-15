@@ -20,6 +20,16 @@ export default function HistorialCompras() {
   const [cantidad, setCantidad] = useState(1);
   const [editandoId, setEditandoId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = compras.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(compras.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
 
   const fetchCompras = async () => {
     const token = localStorage.getItem('token');
@@ -183,7 +193,7 @@ export default function HistorialCompras() {
     <div>
       <Fijo />
       <div className="content">
-        <NavCompras/>
+        <NavCompras />
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <div>
@@ -211,6 +221,7 @@ export default function HistorialCompras() {
                   <th>Productos</th>
                   <th>Condiciones de Pago</th>
                   <th>Observaciones</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -238,18 +249,29 @@ export default function HistorialCompras() {
                       </button>
                     </td>
                     <td>
-                      <button className="btn btn-warning btn-sm me-1" onClick={() => editarCompra(compra)}>
-                        <i className="fa-solid fa-pen"></i>
+                      <button className='btnTransparente' onClick={() => editarCompra(compra)}>
+                        <i className="fa-solid fa-pen-to-square"></i>
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => eliminarCompra(compra._id)}>
-                        <i className="fa-solid fa-trash"></i>
+                      <button className='btnTransparente' onClick={() => eliminarCompra(compra._id)}>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />     
                       </button>
                     </td>
                   </tr>
                 ))}
+                {compras.length === 0 && <tr><td colSpan="9">No hay compras registradas</td></tr>}
               </tbody>
             </table>
-            {compras.length === 0 && <p>No hay compras registradas.</p>}
+          </div>
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
 
           {/* Modal observaciones */}
@@ -351,6 +373,13 @@ export default function HistorialCompras() {
             </div>
           )}
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            JLA Global Company
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );
