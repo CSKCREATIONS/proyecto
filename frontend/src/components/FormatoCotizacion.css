@@ -1,0 +1,53 @@
+.modal-cotizacion-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-cotizacion {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  position: relative;
+}
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+.modal-title {
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.empresa-info {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.descripcion-cotizacion {
+  margin-bottom: 1rem;
+}
+.tabla-cotizacion {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.tabla-cotizacion th, .tabla-cotizacion td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.condiciones-pago {
+  margin-top: 1rem;
+}

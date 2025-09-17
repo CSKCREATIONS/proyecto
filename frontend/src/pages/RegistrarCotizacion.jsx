@@ -8,7 +8,7 @@ import FormatoCotizacion from '../components/FormatoCotizacion';
 
 export default function RegistrarCotizacion() {
   const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
   const descripcionRef = useRef(null);
   const condicionesPagoRef = useRef(null);
   const [productos, setProductos] = useState([]);
@@ -29,12 +29,12 @@ export default function RegistrarCotizacion() {
   }, []);
 
   useEffect(() => {
-  const storedUser = localStorage.getItem('user');
-  if (storedUser) {
-    const usuario = JSON.parse(storedUser);
-    setUser(usuario);
-  }
-}, []); 
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const usuario = JSON.parse(storedUser);
+      setUser(usuario);
+    }
+  }, []);
 
 
   const agregarProducto = () => {
@@ -126,7 +126,8 @@ export default function RegistrarCotizacion() {
     return `${year}-${month}-${day}`;
   }
 
-  const handleGuardarCotizacion = async (enviar = false) => {
+
+  const handleGuardarCotizacion = async (enviar = false, mostrarModal = false) => {
     const inputs = document.querySelectorAll('.cuadroTexto');
 
     const clienteData = {
@@ -162,7 +163,8 @@ export default function RegistrarCotizacion() {
       }))
     };
 
-    if (enviar) {
+
+    if (mostrarModal) {
       setDatosFormato(datos);
       setMostrarFormato(true);
       return;
@@ -219,185 +221,62 @@ export default function RegistrarCotizacion() {
     }
   };
 
-  const guardarSinEnviar = async () => {
-  const inputs = document.querySelectorAll('.cuadroTexto');
-
-  const clienteData = {
-    nombre: inputs[0]?.value.trim() || '',
-    ciudad: inputs[1]?.value.trim() || '',
-    direccion: inputs[2]?.value.trim() || '',
-    telefono: inputs[3]?.value.trim() || '',
-    correo: inputs[4]?.value.trim() || '',
-    esCliente: false
-  };
-
-  if (!clienteData.nombre || !clienteData.correo || !clienteData.telefono || !clienteData.ciudad) {
-    Swal.fire('Error', 'Todos los campos del cliente son obligatorios.', 'warning');
-    return;
-  }
-
-  const datos = {
-    cliente: clienteData,
-    ciudad: clienteData.ciudad,
-    telefono: clienteData.telefono,
-    correo: clienteData.correo,
-    responsable: user.firstName,
-    fecha: obtenerFechaLocal(inputs[5]?.value),
-    descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
-    condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
-    productos: productosSeleccionados.map(p => ({
-      producto: p.producto,
-      descripcion: p.descripcion,
-      cantidad: parseFloat(p.cantidad || 0),
-      valorUnitario: parseFloat(p.valorUnitario || 0),
-      descuento: parseFloat(p.descuento || 0),
-      valorTotal: parseFloat(p.valorTotal || 0)
-    }))
-  };
-
-  const token = localStorage.getItem('token');
-
-  try {
-    const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(clienteData)
-    });
-
-    const clienteResult = await clienteResponse.json();
-
-    if (!clienteResponse.ok) {
-      Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
-      return;
-    }
-
-    const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        ...datos,
-        cliente: clienteResult.data || clienteResult,
-        clientePotencial: true,
-        enviadoCorreo: false
-      })
-    });
-
-    const cotizacionResult = await cotizacionResponse.json();
-
-    if (!cotizacionResponse.ok) {
-      Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
-      return;
-    }
-
-    Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success').then(() => {
-      navigate('/ListaDeCotizaciones');
-    });
-
-  } catch (error) {
-    console.error('Error en la solicitud de cotización:', error);
-    Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
-  }
-};
-
+  
 
   const guardarCotizacionFinal = async () => {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-  try {
-    const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(datosFormato.cliente)
-    });
-
-    const clienteResult = await clienteResponse.json();
-
-    if (!clienteResponse.ok) {
-      Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
-      return;
-    }
-
-    const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        ...datosFormato,
-        cliente: clienteResult.data || clienteResult,
-        clientePotencial: true,
-        enviadoCorreo: true
-      })
-    });
-
-    const cotizacionResult = await cotizacionResponse.json();
-
-    if (!cotizacionResponse.ok) {
-      Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
-      return;
-    }
-
-    Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success')
-      .then(() => {
-        navigate('/ListaDeCotizaciones'); // ✅ Redirige después del mensaje
+    try {
+      const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(datosFormato.cliente)
       });
 
-  } catch (error) {
-    console.error('Error en la solicitud de cotización:', error);
-    Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
-  }
-};
+      const clienteResult = await clienteResponse.json();
 
+      if (!clienteResponse.ok) {
+        Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
+        return;
+      }
 
-  const prepararEnvio = () => {
-  const inputs = document.querySelectorAll('.cuadroTexto');
+      const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...datosFormato,
+          cliente: clienteResult.data || clienteResult,
+          clientePotencial: true,
+          enviadoCorreo: true
+        })
+      });
 
-  const clienteData = {
-    nombre: inputs[0]?.value.trim() || '',
-    ciudad: inputs[1]?.value.trim() || '',
-    direccion: inputs[2]?.value.trim() || '',
-    telefono: inputs[3]?.value.trim() || '',
-    correo: inputs[4]?.value.trim() || '',
-    esCliente: false
+      const cotizacionResult = await cotizacionResponse.json();
+
+      if (!cotizacionResponse.ok) {
+        Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
+        return;
+      }
+
+      Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success')
+        .then(() => {
+          navigate('/ListaDeCotizaciones'); // ✅ Redirige después del mensaje
+        });
+
+    } catch (error) {
+      console.error('Error en la solicitud de cotización:', error);
+      Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
+    }
   };
 
-  if (!clienteData.nombre || !clienteData.correo || !clienteData.telefono || !clienteData.ciudad) {
-    Swal.fire('Error', 'Todos los campos del cliente son obligatorios.', 'warning');
-    return;
-  }
 
-  const datos = {
-    cliente: clienteData,
-    ciudad: clienteData.ciudad,
-    telefono: clienteData.telefono,
-    correo: clienteData.correo,
-    responsable: user.firstName,
-    fecha: obtenerFechaLocal(inputs[5]?.value),
-    descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
-    condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
-    productos: productosSeleccionados.map(p => ({
-      producto: p.producto,
-      descripcion: p.descripcion,
-      cantidad: parseFloat(p.cantidad || 0),
-      valorUnitario: parseFloat(p.valorUnitario || 0),
-      descuento: parseFloat(p.descuento || 0),
-      valorTotal: parseFloat(p.valorTotal || 0)
-    }))
-  };
-
-  setDatosFormato(datos);
-  setMostrarFormato(true);
-};
+  
 
 
   return (
@@ -411,18 +290,6 @@ export default function RegistrarCotizacion() {
           </div>
           <br />
           <br />
-
-          {mostrarFormato && datosFormato && (
-            <div className="modal-formato-overlay">
-              <div className="modal-formato-content">
-                <FormatoCotizacion
-                  datos={datosFormato}
-                  onCancelar={() => setMostrarFormato(false)}
-                  onConfirmarEnvio={guardarCotizacionFinal}
-                />
-              </div>
-            </div>
-          )}
 
           {/* FORMULARIO ORIGINAL A INSERTAR AQUÍ */}
           {/* ... tu formulario completo sigue aquí como ya está construido */}
@@ -441,13 +308,13 @@ export default function RegistrarCotizacion() {
               </thead>
               <tbody>
                 <tr>
-                  <td><input type="text" className="cuadroTexto" placeholder="Nombre o razón social" /></td>
-                  <td><input type="text" className="cuadroTexto" placeholder="Ciudad" /></td>
-                  <td><input type="text" className="cuadroTexto" placeholder="Dirección" /></td>
-                  <td><input type="number" className="cuadroTexto" placeholder="Teléfono" /></td>
-                  <td><input type="email" className="cuadroTexto" placeholder="Correo electrónico" /></td>
-                  <td><span>{user? user.firstName : ''} {user? user.surname : ''}</span></td>
-                  <td><input type="date" className="cuadroTexto" /></td>
+                  <td><input id='cliente' type="text" className="cuadroTexto" placeholder="Nombre o razón social" /></td>
+                  <td><input id='ciudad' type="text" className="cuadroTexto" placeholder="Ciudad" /></td>
+                  <td><input id='direccion' type="text" className="cuadroTexto" placeholder="Dirección" /></td>
+                  <td><input id='telefono' type="number" className="cuadroTexto" placeholder="Teléfono" /></td>
+                  <td><input id='email' type="email" className="cuadroTexto" placeholder="Correo electrónico" /></td>
+                  <td><span id='vendedor'>{user ? user.firstName : ''} {user ? user.surname : ''}</span></td>
+                  <td><input id='fecha' type="date" className="cuadroTexto" /></td>
                 </tr>
               </tbody>
             </table>
@@ -456,7 +323,7 @@ export default function RegistrarCotizacion() {
           <br />
           <label className="labelDOCS">Descripción cotización</label>
           <br /><br />
-          <Editor
+          <Editor id='descripcion-cotizacion'
             onInit={(evt, editor) => (descripcionRef.current = editor)}
             apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
             textareaName="Descripcion"
@@ -474,7 +341,7 @@ export default function RegistrarCotizacion() {
                   <th>Cantidad</th>
                   <th>Valor unitario</th>
                   <th>% Descuento</th>
-                  <th>Valor total</th>
+                  <th>Subtotal</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -525,16 +392,23 @@ export default function RegistrarCotizacion() {
             init={{ height: 300, menubar: false }}
           />
 
-          
+
           <div className="buttons">
             <button className="btn btn-primary-cancel" onClick={() => setProductosSeleccionados([])}>Cancelar</button>
-            <button className="btn btn-primary-guardar" onClick={guardarSinEnviar}>Guardar</button>
-            <button className="btn btn-primary-env" onClick={prepararEnvio}>
+            <button className="btn btn-primary-guardar" onClick={() => handleGuardarCotizacion(false, true)}>Guardar</button>
+            <button className="btn btn-primary-env">
               Guardar y Enviar
             </button>
           </div>
 
-          
+          {mostrarFormato && datosFormato && (
+            <FormatoCotizacion
+              datos={datosFormato}
+              onClose={() => setMostrarFormato(false)}
+            />
+          )}
+
+
 
         </div>
         <p className="text-sm text-gray-400 tracking-wide text-center">

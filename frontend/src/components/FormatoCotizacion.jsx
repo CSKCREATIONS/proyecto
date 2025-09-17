@@ -1,186 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './FormatoCotizacion.css';
 
-const Cotizacion = () => {
-  // Estados del formulario
-  const [empresa, setEmpresa] = useState('');
-  const [para, setPara] = useState('');
-  const [paraError, setParaError] = useState(''); // Nuevo estado para error del campo Para
-  const [nit, setNit] = useState('');
-  const [cantidad, setCantidad] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [fechaError, setFechaError] = useState('');
-  const [fechaActual, setFechaActual] = useState('');
-
-  // Función para bloquear caracteres no permitidos en el NIT
-  const handleNitKeyPress = (e) => {
-    const allowedChars = /[0-9.-]/;
-    if (!allowedChars.test(e.key)) {
-      e.preventDefault(); // Cancela la entrada si no es número, guión o punto
-    }
+export default function FormatoCotizacion({ datos, onClose }) {
+  const navigate = useNavigate();
+  const [showEnviarModal, setShowEnviarModal] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [asunto, setAsunto] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  // Generar código de cotización COT-####
+  const generarCodigo = () => {
+    // Puedes cambiar la lógica para obtener el número real
+    const random = Math.floor(1000 + Math.random() * 9000);
+    return `COT-${random}`;
   };
 
-  // Obtener fecha actual al cargar el componente
-  useEffect(() => {
-    const hoy = new Date();
-    const fechaFormateada = hoy.toISOString().split('T')[0];
-    setFechaActual(fechaFormateada);
-    setFecha(fechaFormateada); // Establecer fecha actual como valor inicial
-  }, []);
+  const codigoCotizacion = generarCodigo();
 
-  // Validar fecha al cambiar
-  const handleFechaChange = (e) => {
-    const selectedDate = e.target.value;
-    setFecha(selectedDate);
-    
-    if (selectedDate < fechaActual) {
-      setFechaError('No se puede seleccionar una fecha pasada');
-    } else {
-      setFechaError('');
-    }
-  };
-
-  // Validar campo Para que contenga @
-  const validatePara = (value) => {
-    if (!value.includes('@')) {
-      setParaError('El campo debe terminar en: @exaple.com');
-      return false;
-    }
-    setParaError('');
-    return true;
-  };
-
-  // Manejar cambio en campo Para
-  const handleParaChange = (e) => {
-    const value = e.target.value;
-    setPara(value);
-    validatePara(value);
-  };
-
-  // Manejar envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Validación del campo Para
-    const isParaValid = validatePara(para);
-    
-    // Validación final de fecha
-    if (fecha < fechaActual) {
-      setFechaError('No se puede enviar una cotización con fecha pasada');
-      return;
-    }
-    
-    // Si hay errores, no enviar 
-    if (fechaError || !isParaValid) {
-      return;
-    }
-
-    alert(`Cotización enviada para: ${para}\nFecha: ${formatFechaDisplay(fecha)}`);
-    // Aquí iría la lógica para enviar los datos
-  };
-
-  // Función para formatear la fecha visualmente (DD/MM/AAAA)
-  const formatFechaDisplay = (dateString) => {
-    if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
-    return `${day}/${month}/${year}`;
-  };
-
-  // Función para imprimir
-  const handlePrint = () => {
-    window.print();
+  // Datos de empresa (puedes cambiar por los reales)
+  const empresa = {
+    nombre: 'PANGEA S.A.S.',
+    direccion: 'Cra 123 #45-67, Bogotá',
   };
 
   return (
-    <div className="cotizacion-container">
-      <form onSubmit={handleSubmit}>
-        <div className="cotizacion-header">
-          <h1>Cotización N.1</h1>
-          <div className="action-buttons">
-            <button type="button" className="edit-btn">Editar</button>
-            <button type="button" className="cancel-btn">Cancelar</button>
-            <button type="submit" className="send-btn">Enviar</button>
-            <button type="button" onClick={handlePrint} className="print-btn">Imprimir</button>
-          </div>
+    <div className="modal-cotizacion-overlay">
+      <div className="modal-cotizacion">
+        <button className="close-modal" onClick={onClose}>×</button>
+        <h2 className="modal-title">{codigoCotizacion}</h2>
+        <div className="botones-cotizacion" style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '1rem' }}>
+          <button className="btn-editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>Editar</button>
+          <button className="btn-remisionar" onClick={() => {}}>Remisionar</button>
+          <button className="btn-enviar" onClick={() => setShowEnviarModal(true)}>Enviar</button>
+          <button className="btn-imprimir" onClick={() => window.print()}>Imprimir</button>
+        </div>
+  <div className="empresa-info">
+          <div><strong>{empresa.nombre}</strong></div>
+          <div>{empresa.direccion}</div>
+          <div>Fecha: {datos.fecha}</div>
+          <div>Cliente: {datos.cliente?.nombre}</div>
+        </div>
+        <hr />
+        <div className="descripcion-cotizacion">
+          <h4>Descripción cotización</h4>
+          <div dangerouslySetInnerHTML={{ __html: datos.descripcion }} />
+        </div>
+        <hr />
+        <table className="tabla-cotizacion">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Descripción</th>
+              <th>Cantidad</th>
+              <th>Valor Unitario</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {datos.productos.map((p, idx) => (
+              <tr key={idx}>
+                <td>{p.producto}</td>
+                <td>{p.descripcion}</td>
+                <td>{p.cantidad}</td>
+                <td>{p.valorUnitario}</td>
+                <td>{p.valorTotal}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <hr />
+        <div className="condiciones-pago">
+          <h4>Condiciones de pago</h4>
+          <div dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
         </div>
 
-        <div className="cotizacion-body">
-          <div className="company-info">
-            <div className="company-name">
-              <label htmlFor="empresa">Nombre empresa</label>
-              <input
-                type="text"
-                id="empresa"
-                value={empresa}
-                onChange={(e) => setEmpresa(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="company-logo">
-              <label>JLA</label>
-              <div className="logo-placeholder">
-                {empresa ? empresa.charAt(0).toUpperCase() : 'Logo'}
+        {showEnviarModal && (
+          <div className="modal-cotizacion-overlay">
+            <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
+              <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
+              <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Correo destinatario:</label>
+                <input type="email" className="cuadroTexto" value={correo} onChange={e => setCorreo(e.target.value)} style={{ width: '100%' }} />
               </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Asunto:</label>
+                <input type="text" className="cuadroTexto" value={asunto} onChange={e => setAsunto(e.target.value)} style={{ width: '100%' }} />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Mensaje:</label>
+                <input type="text" className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%' }} />
+              </div>
+              <button className="btn-enviar-modal" style={{ width: '100%' }} onClick={() => {}}>Enviar</button>
             </div>
           </div>
-
-          <div className="recipient-info">
-            <div className="info-row">
-              <label htmlFor="para">Para</label>
-              <input
-                type="text"
-                id="para"
-                value={para}
-                onChange={handleParaChange}  // llama la función para que nesesite el @ obligatorio
-                required
-              />
-              {paraError && <div className="error-message">{paraError}</div>}  {/* Mensaje de error */}
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="nit">NIT</label>
-              <input
-                type="text"
-                id="nit"
-                value={nit}
-                onChange={(e) => setNit(e.target.value)}
-                onKeyPress={handleNitKeyPress} // se utiliza para que la funcion no deje entrar otros caracteres que no sean "0-9.-"
-                required
-              />
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="cantidad">Cantidad</label>
-              <input
-                type="number"
-                id="cantidad"
-                value={cantidad}
-                onChange={(e) => setCantidad(e.target.value)}
-                min="1"
-                required
-              />
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="fecha">Fecha</label>
-              <input
-                type="date"
-                id="fecha"
-                value={fecha}
-                onChange={handleFechaChange}
-                min={fechaActual}
-                required
-              />
-              {fechaError && <div className="error-message">{fechaError}</div>}
-              <div className="fecha-display">
-                {formatFechaDisplay(fecha)}
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
+        )}
+      </div>
     </div>
   );
-};
-
-export default Cotizacion;
+}
