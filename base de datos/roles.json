@@ -47,19 +47,19 @@
     "hcompras.ver",
     "compras.crear",
     "reportesCompras.ver",
+    "proveedores.ver",
     "proveedores.crear",
     "proveedores.editar",
     "proveedores.inactivar",
     "reportesCompras.ver",
-    "proveedores.ver",
-    "proveedores.activar"
+    "ordenes.generar"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-06-24T04:44:02.345Z"
   },
   "updatedAt": {
-    "$date": "2025-07-08T07:16:46.252Z"
+    "$date": "2025-07-07T01:30:40.207Z"
   },
   "__v": 0
 },
@@ -83,16 +83,14 @@
     "clientes.ver",
     "clientes.crear",
     "clientes.editar",
-    "prospectos.ver",
-    "reportesVentas.ver",
-    "pedidos.ver"
+    "prospectos.ver"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-07-06T18:22:58.609Z"
   },
   "updatedAt": {
-    "$date": "2025-07-08T08:23:44.098Z"
+    "$date": "2025-07-06T18:22:58.609Z"
   },
   "__v": 0
 },
@@ -148,52 +146,6 @@
   },
   "updatedAt": {
     "$date": "2025-07-08T03:54:45.863Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "686cb74a8cd5670555cab9d2"
-  },
-  "name": "Gerente",
-  "permissions": [
-    "reportesCompras.ver",
-    "reportesProductos.ver",
-    "reportesVentas.ver"
-  ],
-  "enabled": true,
-  "createdAt": {
-    "$date": "2025-07-08T06:14:34.728Z"
-  },
-  "updatedAt": {
-    "$date": "2025-07-08T08:47:03.972Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "686cd6a6bc43cb477329a029"
-  },
-  "name": "Venta",
-  "permissions": [
-    "reportesVentas.ver",
-    "prospectos.ver",
-    "clientes.ver",
-    "pedidosDevueltos.ver",
-    "listaDeVentas.ver",
-    "cotizaciones.crear",
-    "cotizaciones.ver",
-    "pedidosAgendados.ver",
-    "pedidosEntregados.ver",
-    "pedidosCancelados.ver",
-    "pedidosDespachados.ver"
-  ],
-  "enabled": false,
-  "createdAt": {
-    "$date": "2025-07-08T08:28:22.350Z"
-  },
-  "updatedAt": {
-    "$date": "2025-07-08T08:28:42.968Z"
   },
   "__v": 0
 }]
