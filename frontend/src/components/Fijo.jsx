@@ -160,7 +160,6 @@ export default function Fijo() {
           </div>
         </header>
 
-        <span id='close-menu' className="close-menu" onClick={cerrarMenu}>x</span>
         <div id='menu' className="menu">
           <div className="usuarioYModulos" style={{ width: '100%' }}>
             <Link as={Link} to="/Perfil"><div className="preview-usuario">

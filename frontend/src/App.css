@@ -136,16 +136,7 @@ header {
   height: 0;
 }
 
-/* Boton cerrar (x) del menú lateral */
-.close-menu {
-  position: absolute;
-  top: 3rem;
-  font-size: 35px;
-  left: 17rem;
-  cursor: pointer;
-  color: black;
-  display: none;
-}
+
 
 /* Por defecto, submenus ocultos */
 .dropdown {

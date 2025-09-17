@@ -10,11 +10,9 @@ export function toggleSubMenu(menuId){
 
 /***Los elementos son traidos con su id**/
 export function mostrarMenu(){
-    const closeMenu = document.querySelector('#close-menu')
     const menuLateral = document.querySelector('#menu')
     const companyName = document.querySelector('#empresa-nombre')
     const contenido = document.querySelector('.content')
-    closeMenu.classList.toggle('visible')
     menuLateral.classList.toggle('mostrar-menu')
 
     if (window.innerWidth > 768) {
@@ -30,12 +28,10 @@ export function mostrarMenu(){
 }
 
 export function cerrarMenu(){
-    const closeMenu = document.querySelector('#close-menu')
     const menuLateral = document.querySelector('#menu')
     const companyName = document.querySelector('#empresa-nombre')
     companyName.style.marginLeft = '0px'
     menuLateral.classList.toggle('mostrar-menu')
-    closeMenu.classList.toggle('visible')
     const contenido = document.querySelector('.content')
     contenido.style.marginLeft = '0 '
     menuLateral.style.boxShadow= 'none';
