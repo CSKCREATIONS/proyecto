@@ -2,12 +2,52 @@ import React, { useState, useEffect } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export default function Ventas() {
   const [ventas, setVentas] = useState([]);
   const [filtroFecha, setFiltroFecha] = useState('');
   const [filtroCliente, setFiltroCliente] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('');
+
+  const exportarPDF = () => {
+  const input = document.getElementById('lista-ventas');
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 190;
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save('listaVentas.pdf');
+  });
+};
+
+
+const exportToExcel = () => {
+  const table = document.getElementById('lista-ventas');
+  if (!table) return;
+  const workbook = XLSX.utils.table_to_book(table);
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, 'listaVentas.xlsx');
+}
 
   useEffect(() => {
   const token = localStorage.getItem('token');
@@ -33,6 +73,17 @@ export default function Ventas() {
     return coincideFecha && coincideCliente && coincideEstado;
   });
 
+  /*** PAGINACIÓN ***/
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+  
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = ventasFiltradas.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(ventasFiltradas.length / itemsPerPage);
+  
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const cargarVentas = () => {
   const token = localStorage.getItem('token');
   fetch('http://localhost:3000/api/ventas', {
@@ -54,11 +105,33 @@ useEffect(() => {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo
-            titulo="Lista de ventas"
-            buscar="Buscar venta"
-          />
+          <div className='encabezado-modulo'>
+            <div>
+              <h3 className='titulo-profesional'>Lista de ventas</h3>
+              {/* BOTONES EXPORTAR */}
+              <button
+                onClick={() => exportToExcel(ventas)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #16a34a', borderRadius: '8px', background: 'transparent', color: '#16a34a',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+              >
+                <i className="fa-solid fa-file-excel" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a Excel</span>
+              </button>
 
+              <button
+                onClick={exportarPDF}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #dc2626', borderRadius: '8px', background: 'transparent', color: '#dc2626',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+              >
+                <i className="fa-solid fa-file-pdf" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a PDF</span>
+              </button>
+            </div>
+          </div>
           <div className="filtros-tabla">
             <div className="filtro-grupo">
               <label>Fecha:</label>
@@ -98,7 +171,7 @@ useEffect(() => {
 
           <div className="container-tabla">
             <div className="table-container">
-              <table>
+              <table id='lista-ventas'>
                 <thead>
                   <tr>
                     <th># Venta</th>
@@ -128,9 +201,28 @@ useEffect(() => {
                   )}
                 </tbody>
               </table>
+              {/* PAGINACIÓN */}
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => paginate(i + 1)}
+            className={currentPage === i + 1 ? 'active-page' : ''}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
             </div>
           </div>
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            PANGEA
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

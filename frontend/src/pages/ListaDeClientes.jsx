@@ -3,17 +3,37 @@ import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo from '../components/EncabezadoModulo';
-import { Link } from 'react-router-dom';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver';
 
 export default function ListaDeClientes() {
   const [clientes, setClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [filtroTexto, setFiltroTexto] = useState(""); // 👉 filtro agregado
+
+  /*** PAGINACIÓN ***/
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // número de registros por página
+
+  // 👉 primero filtramos
+  const clientesFiltrados = clientes.filter((cliente) => {
+    const texto = filtroTexto.toLowerCase();
+    return (
+      cliente.nombre?.toLowerCase().includes(texto) ||
+      cliente.correo?.toLowerCase().includes(texto)
+    );
+  });
+
+  // 👉 después aplicamos paginación sobre los filtrados
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = clientesFiltrados.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(clientesFiltrados.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -83,8 +103,6 @@ export default function ListaDeClientes() {
   };
 
   /*** FUNCIONES EXPORTAR ***/
-
-  // Exportar PDF
   const exportarPDF = () => {
     const input = document.getElementById('tabla_clientes');
 
@@ -114,7 +132,6 @@ export default function ListaDeClientes() {
     });
   };
 
-  // Exportar Excel
   const exportToExcel = (todosLosClientes) => {
     if (!todosLosClientes || todosLosClientes.length === 0) {
       Swal.fire("Error", "No hay datos para exportar", "warning");
@@ -197,49 +214,51 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo titulo="Lista de clientes" buscar="Buscar cliente" />
-          <br />
+          <div className='encabezado-modulo'> 
+            <div>
+              <h3 className='titulo-profesional'>Lista de clientes</h3>
 
-          {/* BOTONES EXPORTAR */}
-
-  <button
+              {/* BOTONES EXPORTAR */}
+              <button
                 onClick={() => exportToExcel(clientes)}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #16a34a', borderRadius: '8px', background: 'transparent', color: '#16a34a',
                   fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#16a34a';
-                  e.currentTarget.style.color = 'white';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#16a34a';
                 }}
               >
                 <i className="fa-solid fa-file-excel" style={{ color: 'inherit', fontSize: '16px' }}></i>
                 <span>Exportar a Excel</span>
               </button>
 
-  <button
+              <button
                 onClick={exportarPDF}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #dc2626', borderRadius: '8px', background: 'transparent', color: '#dc2626',
                   fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#dc2626';
-                  e.currentTarget.style.color = 'white';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#dc2626';
-                }}
               >
                 <i className="fa-solid fa-file-pdf" style={{ color: 'inherit', fontSize: '16px' }}></i>
                 <span>Exportar a PDF</span>
               </button>
+            </div>
+          </div><br/>
 
+          {/* FILTRO DE BÚSQUEDA */}
+          <div className="filtros-tabla">
+            <div className="filtro-grupo">
+              <input
+                className='filtro-input'
+                type="text"
+                placeholder="Buscar por nombre o correo"
+                value={filtroTexto}
+                onChange={(e) => {
+                  setFiltroTexto(e.target.value);
+                  setCurrentPage(1); // reset a la página 1 cuando filtras
+                }}
+                style={{ marginRight: '10px' }}
+              />
+            </div>
+          </div>
 
           <div className="table-container">
             <table id='tabla_clientes'>
@@ -253,7 +272,7 @@ export default function ListaDeClientes() {
                 </tr>
               </thead>
               <tbody>
-                {clientes.map((cliente) => (
+                {currentItems.map((cliente) => (
                   <tr key={cliente._id}>
                     <td>{cliente.nombre || cliente.clienteInfo?.nombre || 'Sin nombre'}</td>
                     <td>{cliente.ciudad || cliente.clienteInfo?.ciudad || 'N/A'}</td>
@@ -269,7 +288,7 @@ export default function ListaDeClientes() {
                     </td>
                   </tr>
                 ))}
-                {clientes.length === 0 && <tr><td colSpan="9">No hay clientes disponibles</td></tr>}
+                {currentItems.length === 0 && <tr><td colSpan="9">No hay clientes disponibles</td></tr>}
               </tbody>
             </table>
 
@@ -281,11 +300,24 @@ export default function ListaDeClientes() {
               />
             )}
           </div>
+
+          {/* PAGINACIÓN */}
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active-page' : ''}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            JLA Global Company
+            PANGEA
           </span>
           . Todos los derechos reservados.
         </p>

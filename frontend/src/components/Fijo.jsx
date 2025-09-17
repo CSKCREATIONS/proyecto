@@ -73,13 +73,13 @@ export default function Fijo() {
         setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
         setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
         setPuedeVerProspectos(permissions.includes('prospectos.ver'));
-    setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
+        setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
 
-  }
-};
+      }
+    };
 
-// Cargar datos iniciales
-loadUserAndPermissions();
+    // Cargar datos iniciales
+    loadUserAndPermissions();
 
     // 2. Configurar evento para cambios en localStorage
     const handleStorageChange = () => {
@@ -134,24 +134,21 @@ loadUserAndPermissions();
         <header>
           <div className="izquierda">
             <button onClick={(e) => {
-              e.stopPropagation(); // evita propagación
+              e.stopPropagation();
               mostrarMenu();
             }} id="btn-menu">
-
-              <div class="palito"></div>
-              <div class="palito"></div>
-              <div class="palito"></div>
+              <div className="palito"></div>
+              <div className="palito"></div>
+              <div className="palito"></div>
             </button>
             <Link as={Link} to='/Home'>
               <span
                 id='empresa-nombre'
-                style={{ cursor: 'pointer', color: 'white', fontFamily: "'Poppins', sans-serif", fontStyle: 'italic'
- }}
+                style={{ cursor: 'pointer', color: 'white', fontFamily: "'Poppins', sans-serif", fontStyle: 'italic' }}
               >
                 JLA Global Company
               </span>
             </Link>
-
           </div>
           <div className="user">
             {user && (
@@ -159,7 +156,6 @@ loadUserAndPermissions();
                 <span style={{ color: 'white' }}>{user.firstName}</span>
               </Link>
             )}
-
             <Link as={Link} to="/Perfil"><img style={{ color: 'white' }} src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" className='icono' /></Link>
           </div>
         </header>
@@ -167,143 +163,124 @@ loadUserAndPermissions();
         <span id='close-menu' className="close-menu" onClick={cerrarMenu}>x</span>
         <div id='menu' className="menu">
           <div className="usuarioYModulos" style={{ width: '100%' }}>
-
             <Link as={Link} to="/Perfil"><div className="preview-usuario">
               <img src="https://cdn-icons-png.freepik.com/256/17740/17740782.png?ga=GA1.1.755740385.1744083497&semt=ais_hybrid" alt="" style={{ width: "80px" }} />
               <div className="datos-usuario">
                 {user && (
                   <span className="usuario-nombre">{user.firstName} {user.surname}</span>
                 )}
-
                 <br />
                 {user && (
                   <span className="usuario-rol">
                     {typeof user.role === 'object' ? user.role.name : user.role}
                   </span>
                 )}
-
               </div>
             </div></Link>
-
             <div className="modulos-menu">
-              {(puedeVerUsuarios || puedeVerRoles) && (
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
-                    Usuarios
-                  </li>
-                  <ul className="dropdown" id="submenuUsuarios">
-                    {puedeVerUsuarios && (
-                      <Link to="/ListaDeUsuarios"><li>Lista de Usuarios</li></Link>
-                    )}
-                    {puedeVerRoles && (
-                      <Link to="/RolesYPermisos"><li>Roles y permisos</li></Link>
-                    )}
-                  </ul>
-                </nav>
-              )}
+              <div className="menu-title">MÓDULOS</div>  
+              <div className="modulos-menu">
+                {(puedeVerUsuarios || puedeVerRoles) && (
+                  <nav>
+                    <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuUsuarios')}>
+                      <i class="fas fa-users"></i> Usuarios
+                    </li>
+                    <ul className="dropdown" id="submenuUsuarios">
+                      {puedeVerUsuarios && (
+                        <Link to="/ListaDeUsuarios"><li><i class="fas fa-list"></i> Lista de Usuarios</li></Link>
+                      )}
+                      {puedeVerRoles && (
+                        <Link to="/RolesYPermisos"><li><i class="fas fa-user-shield"></i> Roles y permisos</li></Link>
+                      )}
+                    </ul>
+                  </nav>
+                )}
+                
+                {(puedeVerHCompras || puedeVerProveedores || puedeVerReportesCompras) && (
+                  <nav>
+                    <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuCompras')}><i class="fas fa-shopping-cart"></i> Compras</li>
+                    <ul id="submenuCompras" className="dropdown" >
+                      {puedeVerHCompras && (
+                        <Link as={Link} to="/HistorialCompras"><li><i class="fas fa-history"></i> Historial de compras</li></Link>
+                      )}
+                      {puedeVerProveedores && (
+                        <Link as={Link} to="/Proveedores"><li><i class="fas fa-truck"></i> Lista de proveedores</li></Link>
+                      )}
+                      {puedeVerReportesCompras && (
+                        <Link as={Link} to="/ReporteProveedores"><li> <i class="fas fa-chart-bar"></i> Reportes de compras</li></Link>
+                      )}
+                    </ul>
+                  </nav>
+                )}
 
-              {(puedeVerHCompras || puedeVerProveedores || puedeVerReportesCompras) && (
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuCompras')}>Compras</li>
-                  <ul id="submenuCompras" className="dropdown" >
-                    {puedeVerHCompras && (
-                      <Link as={Link} to="/HistorialCompras"><li>Historial de compras </li></Link>
-                    )}
-                    {puedeVerProveedores && (
-                      <Link as={Link} to="/Proveedores"><li>Lista de proveedores</li></Link>
-                    )}
-                    {puedeVerReportesCompras && (
-                      <Link as={Link} to="/ReporteProveedores"><li>Reportes de compras</li></Link>
-                    )}
+                {(puedeVerCategorias || puedeVerSubcategorias || puedeVerProductos) && (
+                  <nav>
+                    <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuProductos')}><i class="fas fa-boxes"></i> Productos</li>
+                    <ul id="submenuProductos" className="dropdown">
+                      {puedeVerCategorias && (
+                        <Link as={Link} to="/Categorias"><li><i class="fas fa-tags"></i> Categorias</li></Link>
+                      )}
+                      {puedeVerSubcategorias && (
+                        <Link as={Link} to="/Subcategorias"><li><i class="fas fa-tag"></i> Subcategorias</li></Link>
+                      )}
+                      {puedeVerProductos && (
+                        <Link as={Link} to="/GestionProductos"><li><i class="fas fa-box"></i> Lista de productos</li></Link>
+                      )}
+                      {puedeVerReportesProductos && (
+                        <Link as={Link} to="/ReporteProductos"><li> <i class="fas fa-chart-bar"></i> Reportes de productos</li></Link>
+                      )}
+                    </ul>
+                  </nav>
+                )}
 
-                  </ul>
-                </nav>
-              )}
-
-              {(puedeVerCategorias || puedeVerSubcategorias || puedeVerProductos) && (
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuProductos')}>Productos</li>
-                  <ul id="submenuProductos" className="dropdown">
-                    {puedeVerCategorias && (
-                      <Link as={Link} to="/Categorias"><li>Categorias</li></Link>
-                    )}
-
-                    {puedeVerSubcategorias && (
-                      <Link as={Link} to="/Subcategorias"><li>Subcategorias</li></Link>
-                    )}
-
-                    {puedeVerProductos && (
-                      <Link as={Link} to="/GestionProductos"><li>Lista de productos</li></Link>
-                    )}
-                    {puedeVerReportesProductos && (
-                      <Link as={Link} to="/ReporteProductos"><li>Reportes de productos</li></Link>
-                    )}
-
-                  </ul>
-                </nav>
-              )}
-
-              {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
-                <nav>
-                  <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}>Ventas</li>
-                  <ul id="submenuVentas" className="dropdown">
-
-                    {puedeRegistrarCotizacion && (
-                      <Link as={Link} to="/RegistrarCotizacion"><li>Registrar cotizacion</li></Link>
-                    )}
-
-                    {puedeVerCotizaciones && (
-                      <Link as={Link} to="/ListaDeCotizaciones"><li>Lista de cotizaciones</li></Link>
-                    )}
-
-                    {puedeVerVentasAgendadas && (
-                      <Link as={Link} to="/PedidosAgendados"><li>Pedidos por despachar</li></Link>
-                    )}
-
-                    {puedeVerPedidosDespachados && (
-                      <Link as={Link} to="/PedidosDespachados"><li>Pedidos despachados</li></Link>
-                    )}
-
-                    {puedeVerPedidosEntregados && (
-                      <Link as={Link} to="/PedidosEntregados"><li>Pedidos entregados</li></Link>
-                    )}
-
-                    {puedeVerPedidosCancelados && (
-                      <Link as={Link} to="/PedidosCancelados"><li>Pedidos cancelados</li></Link>
-                    )}
-
-                    {puedeVerPedidosDevueltos && (
-                      <Link as={Link} to="/PedidosDevueltos"><li>Pedidos devueltos</li></Link>
-                    )}
-
-                    {puedeVerListaDeVentas && (
-                      <Link as={Link} to="/Ventas"><li>Lista de ventas</li></Link>
-                    )}
-
-                    {puedeVerListaDeClientes && (
-                      <Link as={Link} to="/ListaDeClientes"><li>Lista de clientes</li></Link>
-                    )}
-
-                    {puedeVerProspectos && (
-                      <Link as={Link} to="/ProspectosDeClientes"><li>Prospectos de cliente</li></Link>
-                    )}
-
-                    {puedeVerReportesVentas && (
-                      <Link as={Link} to="/ReporteVentas"><li>Reportes</li></Link>
-                    )}
-                  </ul>
-                </nav>
-              )}
+                {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
+                  <nav>
+                    <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}><i class="fas fa-cash-register"></i> Ventas</li>
+                    <ul id="submenuVentas" className="dropdown">
+                      {puedeRegistrarCotizacion && (
+                        <Link as={Link} to="/RegistrarCotizacion"><li><i class="fas fa-file-invoice-dollar"></i> Registrar cotizacion</li></Link>
+                      )}
+                      {puedeVerCotizaciones && (
+                        <Link as={Link} to="/ListaDeCotizaciones"><li><i class="fas fa-list-alt"></i> Lista de cotizaciones</li></Link>
+                      )}
+                      {puedeVerVentasAgendadas && (
+                        <Link as={Link} to="/PedidosAgendados"><li><i class="fas fa-calendar-check"></i> Pedidos por despachar</li></Link>
+                      )}
+                      {puedeVerPedidosDespachados && (
+                        <Link as={Link} to="/PedidosDespachados"><li><i class="fas fa-calendar-check"></i> Pedidos despachados</li></Link>
+                      )}
+                      {puedeVerPedidosEntregados && (
+                        <Link as={Link} to="/PedidosEntregados"><li><i class="fas fa-check-circle"></i> Pedidos entregados</li></Link>
+                      )}
+                      {puedeVerPedidosCancelados && (
+                        <Link as={Link} to="/PedidosCancelados"><li><i class="fas fa-times-circle"></i> Pedidos cancelados</li></Link>
+                      )}
+                      {puedeVerPedidosDevueltos && (
+                        <Link as={Link} to="/PedidosDevueltos"><li><i class="fas fa-undo-alt"></i> Pedidos devueltos</li></Link>
+                      )}
+                      {puedeVerListaDeVentas && (
+                        <Link as={Link} to="/Ventas"><li> <i class="fas fa-address-book"></i> Lista de ventas</li></Link>
+                      )}
+                      {puedeVerListaDeClientes && (
+                        <Link as={Link} to="/ListaDeClientes"><li> <i class="fas fa-address-book"></i> Lista de clientes</li></Link>
+                      )}
+                      {puedeVerProspectos && (
+                        <Link as={Link} to="/ProspectosDeClientes"><li><i class="fas fa-user-plus"></i> Prospectos de cliente</li></Link>
+                      )}
+                      {puedeVerReportesVentas && (
+                        <Link as={Link} to="/ReporteVentas"><li><i class="fas fa-chart-bar"></i> Reportes</li></Link>
+                      )}
+                    </ul>
+                  </nav>
+                )}
+              </div>
             </div>
+
+            <button className="logout-btn" onClick={handleClick}>
+              Cerrar sesión
+            </button>
           </div>
-
-          <button className="logout-btn" onClick={handleClick}>
-            Cerrar sesión
-          </button>
-
-
         </div>
-
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 // pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -41,48 +40,43 @@ export default function Login() {
   };
 
   return (
-    <div className='container'>
-      <h1 className="Titulo">Portal JLA Global Company</h1>
+    <div className="login-page">
+      <div className="login-box">
+        <h1 className="login-title">Portal JLA Global Company</h1>
 
-      <div className="container-form">
-        <form className="login-container" onSubmit={handleLogin}>
-          <div className="input-container">
+        <form className="login-form" onSubmit={handleLogin}>
+          <div className="login-input-container">
             <input
               type="text"
               id="username"
               required
-              placeholder=" "
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Usuario"
             />
-            <label htmlFor="username">Usuario</label>
           </div>
 
-          <div className="input-container">
+          <div className="login-input-container">
             <input
               type="password"
               id="password"
               required
-              placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Contraseña"
             />
-            <label htmlFor="password">Contraseña</label>
           </div>
 
-          {mensajeError && <p style={{ color: 'red', marginBottom: '0.5rem' }}>{mensajeError}</p>}
+          {mensajeError && <p className="login-error">{mensajeError}</p>}
 
-            <button className='btn login-button' type="submit">
-              Iniciar sesión
-            </button>
+          <button className="login-button" type="submit">
+            Iniciar sesión
+          </button>
         </form>
 
-
-        <div className="recuperar-contraseña">
-          <p style={{ color: 'lightgray' }}>¿Has olvidado tu contraseña?</p>
-          <Link to="/RecuperarContraseña" style={{ color: 'lightgray' }}>
-            <u>Recupérala aquí</u>
-          </Link>
+        <div className="login-footer">
+          <p>¿Has olvidado tu contraseña?</p>
+          <Link to="/RecuperarContraseña">Recupérala aquí</Link>
         </div>
       </div>
     </div>

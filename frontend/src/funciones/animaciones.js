@@ -62,3 +62,9 @@ export function toggleCheckboxes(setSelected) {
       return Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: allChecked }), {});
     });
   }
+
+
+
+
+
+  

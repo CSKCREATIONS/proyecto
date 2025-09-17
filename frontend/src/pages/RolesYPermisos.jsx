@@ -129,7 +129,7 @@ export default function RolesYPermisos() {
 
           <div className='encabezado-modulo'>
             <div>
-              <h3>Roles y permisos</h3>
+              <h3 className='titulo-profesional'>Roles y permisos</h3>
             </div>
             {puedeCrearRol && (
               <button id='agregar-rol' onClick={() => openModal('crear-rol')} className='btn-agregar'>
@@ -230,7 +230,7 @@ export default function RolesYPermisos() {
           <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            JLA Global Company
+            PANGEA
           </span>
           . Todos los derechos reservados.
         </p>

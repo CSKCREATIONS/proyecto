@@ -39,37 +39,36 @@ export default function RecuperarContraseña() {
   };
 
   return (
-    <div className='container'>
-      <h1 className="Titulo">Portal JLA Global Company</h1>
+    <div className="login-page">
+      <div className="login-box">
+        <h1 className="login-title">Portal JLA Global Company</h1>
 
-      <div className="container-form">
-        <form className="login-container" onSubmit={handleRecuperar}>
-          <p style={{color: "gray"}}>Escribe tu correo electrónico. Allí te será enviada una contraseña provisional</p>
-          <br />
-          <div className="input-container">
+        <form onSubmit={handleRecuperar}>
+          <p style={{ color: "#333", marginBottom: "1rem" }}>
+            Escribe tu correo electrónico. Allí te será enviada una contraseña provisional
+          </p>
+
+          <div className="login-input-container">
             <input
               type="email"
               id="email"
               required
-              placeholder=" "
+              placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <label htmlFor="email">Correo electrónico</label>
           </div>
 
-          {mensajeError && <p style={{ color: 'red', marginBottom: '0.5rem' }}>{mensajeError}</p>}
-            <button className='btn login-button' type="submit">
-              Recuperar contraseña
-            </button>
+          {mensajeError && <p className="login-error">{mensajeError}</p>}
+
+          <button className="login-button" type="submit">
+            Recuperar contraseña
+          </button>
         </form>
 
-
-        <div className="recuperar-contraseña">
-          <p style={{ color: 'lightgray' }}>¿Recordaste tu contraseña?</p>
-          <Link to="/" style={{ color: 'lightgray' }}>
-            <u>Inicia sesión aquí</u>
-          </Link>
+        <div className="login-footer">
+          <p>¿Recordaste tu contraseña?</p>
+          <Link to="/">Inicia sesión aquí</Link>
         </div>
       </div>
     </div>

@@ -197,7 +197,7 @@ export default function HistorialCompras() {
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <div>
-              <h3>Historial de compras</h3>
+              <h3 className='titulo-profesional'>Historial de compras</h3>
             </div>
           </div>
 
@@ -376,7 +376,7 @@ export default function HistorialCompras() {
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            JLA Global Company
+            PANGEA
           </span>
           . Todos los derechos reservados.
         </p>

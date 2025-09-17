@@ -148,12 +148,33 @@ export default function PedidosEntregados() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <EncabezadoModulo
-            titulo="Pedidos Entregados"
-            exportarPDF={exportarPDF}
-            exportToExcel={exportToExcel}
-            buscar='Buscar pedido'
-          />
+          <div className='encabezado-modulo'>
+            <div>
+              <h3 className='titulo-profesional'>Pedidos entregados</h3>
+              {/* BOTONES EXPORTAR */}
+              <button
+                onClick={() => exportToExcel(pedidos)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #16a34a', borderRadius: '8px', background: 'transparent', color: '#16a34a',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+              >
+                <i className="fa-solid fa-file-excel" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a Excel</span>
+              </button>
+
+              <button
+                onClick={exportarPDF}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.45rem 0.9rem', border: '1.5px solid #dc2626', borderRadius: '8px', background: 'transparent', color: '#dc2626',
+                  fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease'
+                }}
+              >
+                <i className="fa-solid fa-file-pdf" style={{ color: 'inherit', fontSize: '16px' }}></i>
+                <span>Exportar a PDF</span>
+              </button>
+            </div>
+          </div>
           <div className="container-tabla">
             <div className="table-container">
               <table id="tabla_entregados">
@@ -202,6 +223,13 @@ export default function PedidosEntregados() {
             </div>
           </div>
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            PANGEA
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
 
       <ModalProductosCotizacion

@@ -195,7 +195,7 @@ const GestionSubcategorias = () => {
         <NavProductos />
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
-            <h3>Gestión de Subcategorías</h3>
+            <h3 className='titulo-profesional'>Gestión de Subcategorías</h3>
           </div>
           <br />
           <div className="d-flex justify-content-end mb-3">
@@ -265,7 +265,7 @@ const GestionSubcategorias = () => {
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            JLA Global Company
+            PANGEA
           </span>
           . Todos los derechos reservados.
         </p>

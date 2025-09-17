@@ -407,7 +407,7 @@ export default function RegistrarCotizacion() {
         <NavVentas />
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
-            <h3>Registrar cotizacion</h3>
+            <h3 className='titulo-profesional'>Registrar cotizacion</h3>
           </div>
           <br />
           <br />
@@ -537,6 +537,13 @@ export default function RegistrarCotizacion() {
           
 
         </div>
+        <p className="text-sm text-gray-400 tracking-wide text-center">
+          © 2025{" "}
+          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
+            PANGEA
+          </span>
+          . Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

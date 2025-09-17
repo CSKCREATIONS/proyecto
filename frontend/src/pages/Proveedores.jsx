@@ -191,7 +191,7 @@ const GestionProveedores = () => {
       <div className="content">
         <NavCompras/>
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'><h3>Lista de proveedores</h3></div><br/>
+          <div className='encabezado-modulo'><h3 className='titulo-profesional'>Lista de proveedores</h3></div><br/>
           <div className="d-flex justify-content-end mb-3">
             <button className="btn btn-save" onClick={() => { setProveedorEditando(null); setModalVisible(true); }}>+ Nuevo Proveedor</button>
           </div>
@@ -254,7 +254,7 @@ const GestionProveedores = () => {
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            JLA Global Company
+            PANGEA
           </span>
           . Todos los derechos reservados.
         </p>
