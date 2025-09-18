@@ -130,27 +130,48 @@ export default function RegistrarCotizacion() {
   const handleGuardarCotizacion = async (enviar = false, mostrarModal = false) => {
     const inputs = document.querySelectorAll('.cuadroTexto');
 
-    const clienteData = {
-      nombre: inputs[0]?.value.trim() || '',
-      ciudad: inputs[1]?.value.trim() || '',
-      direccion: inputs[2]?.value.trim() || '',
-      telefono: inputs[3]?.value.trim() || '',
-      correo: inputs[4]?.value.trim() || '',
-      esCliente: false
-    };
+    // Validar campos obligatorios
+    const nombre = inputs[0]?.value.trim();
+    const ciudad = inputs[1]?.value.trim();
+    const direccion = inputs[2]?.value.trim();
+    const telefono = inputs[3]?.value.trim();
+    const correo = inputs[4]?.value.trim();
+    const fecha = inputs[6]?.value;
 
-    if (!clienteData.nombre || !clienteData.correo || !clienteData.telefono || !clienteData.ciudad) {
-      Swal.fire('Error', 'Todos los campos del cliente son obligatorios.', 'warning');
+    if (!nombre || !ciudad || !direccion || !telefono || !correo || !fecha) {
+      Swal.fire('Error', 'Todos los campos del cliente y la fecha son obligatorios.', 'warning');
       return;
     }
 
-    const datos = {
+    if (productosSeleccionados.length === 0) {
+      Swal.fire('Error', 'Debes agregar al menos un producto a la cotización.', 'warning');
+      return;
+    }
+
+    // Validar que los productos tengan cantidad y valor unitario
+    for (const prod of productosSeleccionados) {
+      if (!prod.producto || !prod.cantidad || !prod.valorUnitario) {
+        Swal.fire('Error', 'Todos los productos deben cantidad y valor unitario.', 'warning');
+        return;
+      }
+    }
+
+    const clienteData = {
+      nombre,
+      ciudad,
+      direccion,
+      telefono,
+      correo,
+      esCliente: false
+    };
+
+    const datosCotizacion = {
       cliente: clienteData,
-      ciudad: clienteData.ciudad,
-      telefono: clienteData.telefono,
-      correo: clienteData.correo,
+      ciudad,
+      telefono,
+      correo,
       responsable: user?.firstName,
-      fecha: obtenerFechaLocal(inputs[5]?.value),
+      fecha: obtenerFechaLocal(fecha),
       descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
       condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
       productos: productosSeleccionados.map(p => ({
@@ -160,61 +181,36 @@ export default function RegistrarCotizacion() {
         valorUnitario: parseFloat(p.valorUnitario || 0),
         descuento: parseFloat(p.descuento || 0),
         valorTotal: parseFloat(p.valorTotal || 0)
-      }))
+      })),
+      clientePotencial: true,
+      enviadoCorreo: enviar
     };
 
-
-    if (mostrarModal) {
-      setDatosFormato(datos);
-      setMostrarFormato(true);
-      return;
-    }
-
+    // Mostrar el modal de FormatoCotizacion
+    setDatosFormato(datosCotizacion);
+    setMostrarFormato(true);
+  };
+  // Función para guardar cotización desde el modal
+  const guardarCotizacionDesdeModal = async () => {
+    if (!datosFormato) return;
     const token = localStorage.getItem('token');
-
     try {
-      const clienteResponse = await fetch('http://localhost:5000/api/clientes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(clienteData)
-      });
-
-      const clienteResult = await clienteResponse.json();
-
-      if (!clienteResponse.ok) {
-        Swal.fire('Error', clienteResult.message || 'No se pudo guardar el cliente.', 'error');
-        return;
-      }
-
-      const datosCotizacion = {
-        ...datos,
-        cliente: clienteResult.data || clienteResult,
-        clientePotencial: true,
-        enviadoCorreo: enviar
-      };
-
       const cotizacionResponse = await fetch('http://localhost:5000/api/cotizaciones', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(datosCotizacion)
+        body: JSON.stringify(datosFormato)
       });
-
       const cotizacionResult = await cotizacionResponse.json();
-
       if (!cotizacionResponse.ok) {
         Swal.fire('Error', cotizacionResult.message || 'No se pudo guardar la cotización.', 'error');
         return;
       }
-
       Swal.fire('Éxito', 'Cotización registrada correctamente.', 'success');
+      setMostrarFormato(false);
       navigate('/ListaDeCotizaciones');
-
     } catch (error) {
       console.error('Error en la solicitud de cotización:', error);
       Swal.fire('Error', 'Error de red al guardar cotización.', 'error');
@@ -405,6 +401,7 @@ export default function RegistrarCotizacion() {
             <FormatoCotizacion
               datos={datosFormato}
               onClose={() => setMostrarFormato(false)}
+              onGuardar={guardarCotizacionDesdeModal}
             />
           )}
 
