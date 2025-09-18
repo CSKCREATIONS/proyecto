@@ -112,8 +112,23 @@ export default function RegistrarCotizacion() {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
+        // Limpiar todos los inputs del formulario principal
+        const inputIds = ['cliente', 'ciudad', 'direccion', 'telefono', 'email', 'fecha'];
+        inputIds.forEach(id => {
+          const input = document.getElementById(id);
+          if (input) input.value = '';
+        });
+
+        // Limpiar productos seleccionados
         setProductosSeleccionados([]);
-        Swal.fire('Borrada', 'Registro borrado exitosamente.', 'success');
+
+        // Limpiar editores TinyMCE
+        if (descripcionRef.current) {
+          descripcionRef.current.setContent('');
+        }
+        if (condicionesPagoRef.current) {
+          condicionesPagoRef.current.setContent('');
+        }
       }
     });
   };
@@ -272,9 +287,6 @@ export default function RegistrarCotizacion() {
   };
 
 
-  
-
-
   return (
     <div>
       <Fijo />
@@ -381,7 +393,7 @@ export default function RegistrarCotizacion() {
           <br />
           <label className="labelDOCS">Condiciones de pago</label>
           <br /><br />
-          <Editor
+          <Editor id='condiciones-pago'
             onInit={(evt, editor) => (condicionesPagoRef.current = editor)}
             apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
             textareaName="Condiciones"
@@ -390,7 +402,7 @@ export default function RegistrarCotizacion() {
 
 
           <div className="buttons">
-            <button className="btn btn-primary-cancel" onClick={() => setProductosSeleccionados([])}>Cancelar</button>
+            <button className="btn btn-primary-cancel" onClick={ handleCancelado}>Cancelar</button>
             <button className="btn btn-primary-guardar" onClick={() => handleGuardarCotizacion(false, true)}>Guardar</button>
             <button className="btn btn-primary-env">
               Guardar y Enviar

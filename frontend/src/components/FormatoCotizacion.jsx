@@ -25,6 +25,13 @@ export default function FormatoCotizacion({ datos, onClose }) {
     direccion: 'Cra 123 #45-67, Bogotá',
   };
 
+  // Obtener lista de productos para mostrar el nombre
+  const productosLista = datos.productosLista || [];
+  const getNombreProducto = (id) => {
+    const prod = productosLista.find(p => p._id === id);
+    return prod ? prod.name : id;
+  };
+
   return (
     <div className="modal-cotizacion-overlay">
       <div className="modal-cotizacion">
@@ -38,41 +45,33 @@ export default function FormatoCotizacion({ datos, onClose }) {
             <button className="btn-imprimir" onClick={() => {
               const pdfBlock = document.getElementById('pdf-cotizacion-block');
               if (!pdfBlock) return window.print();
-              // Obtener los estilos de FormatoCotizacion.css
-              fetch('/src/components/FormatoCotizacion.css')
-                .then(res => res.text())
-                .then(css => {
-                  const printWindow = window.open('', '', 'width=900,height=700');
-                  printWindow.document.write(`
-                    <html>
-                      <head>
-                        <title>Cotización</title>
-                        <style>
-                          ${css}
-                        </style>
-                      </head>
-                      <body>${pdfBlock.outerHTML}</body>
-                    </html>
-                  `);
-                  printWindow.document.close();
-                  printWindow.focus();
-                  printWindow.print();
-                  printWindow.close();
-                })
-                .catch(() => {
-                  // Si falla, imprime sin estilos
-                  const printWindow = window.open('', '', 'width=900,height=700');
-                  printWindow.document.write(`
-                    <html>
-                      <head><title>Cotización</title></head>
-                      <body>${pdfBlock.outerHTML}</body>
-                    </html>
-                  `);
-                  printWindow.document.close();
-                  printWindow.focus();
-                  printWindow.print();
-                  printWindow.close();
-                });
+              // Obtener los estilos de FormatoCotizacion.css desde el DOM
+              let css = '';
+              const styleSheets = Array.from(document.styleSheets);
+              styleSheets.forEach(sheet => {
+                try {
+                  if (sheet.href && sheet.href.includes('FormatoCotizacion.css')) {
+                    for (let rule of sheet.cssRules) {
+                      css += rule.cssText;
+                    }
+                  }
+                } catch (e) {}
+              });
+              const printWindow = window.open('', '', 'width=900,height=700');
+              printWindow.document.write(`
+                <html>
+                  <head>
+                    <style>
+                      ${css}
+                    </style>
+                  </head>
+                  <body>${pdfBlock.outerHTML}</body>
+                </html>
+              `);
+              printWindow.document.close();
+              printWindow.focus();
+              printWindow.print();
+              printWindow.close();
             }}>Imprimir</button>
           </div>
         </div>
@@ -81,20 +80,28 @@ export default function FormatoCotizacion({ datos, onClose }) {
         <div
           className="pdf-cotizacion"
           id="pdf-cotizacion-block"
-          style={{ display: 'flex', flexDirection: 'column',background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
+          style={{ display: 'flex', flexDirection: 'column', background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
           onCopy={e => e.preventDefault()}
         >
-          <h2>Cotizacion</h2>
-          <div className="empresa-info">
-            <div className='cotizacion-logo'></div>
+          <div className="cotizacion-encabezado">
+            <h2>Cotizacion</h2>
+            <div className="cot-fecha">
+              <p style={{fontSize: '0.7rem'}}>{codigoCotizacion}</p>
+              <p style={{fontSize: '0.7rem'}}>{datos.fecha || ''}</p>
+            </div>
+          </div>
+          <div className="client-company-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p> {datos.cliente?.nombre || ''}</p>
+              <p>{datos.cliente?.direccion || ''} {datos.cliente?.ciudad || ''}</p>
+              <p>{datos.cliente?.telefono || ''}</p>
+              <p>{datos.cliente?.correo || ''}</p>
+            </div>
             <div style={{ textAlign: 'right' }}>
-              <p>{codigoCotizacion}</p>
+              <p>{empresa.nombre}</p>
               <p>{empresa.direccion}</p>
-              <p>Fecha: {datos.fecha}</p>
-              <p>Cliente: {datos.cliente?.nombre}</p>
               <p>Vendedor: {usuario.firstName || ''} {usuario.surname || ''}</p>
             </div>
-
           </div>
           <hr />
           <div className="descripcion-cotizacion">
@@ -115,7 +122,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
             <tbody>
               {datos.productos.map((p, idx) => (
                 <tr key={idx}>
-                  <td>{p.producto}</td>
+                  <td>{getNombreProducto(p.producto)}</td>
                   <td>{p.descripcion}</td>
                   <td>{p.cantidad}</td>
                   <td>{p.valorUnitario}</td>
@@ -131,7 +138,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
             <div dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
           </div>
           <br />
-          <p>Cotizacion valida por 30 dias</p>
+          <div>Cotizacion valida por 15 dias</div>
         </div>
 
         {showEnviarModal && (
