@@ -324,6 +324,7 @@ export default function RegistrarCotizacion() {
                   <td><span id='vendedor'>{user ? user.firstName : ''} {user ? user.surname : ''}</span></td>
                   <td><input id='fecha' type="date" className="cuadroTexto" /></td>
                 </tr>
+                
               </tbody>
             </table>
           </div>
