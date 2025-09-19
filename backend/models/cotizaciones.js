@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const CotizacionSchema = new mongoose.Schema({
+  codigo: String,
   cliente: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cliente',
@@ -26,7 +27,7 @@ const CotizacionSchema = new mongoose.Schema({
       cantidad: Number,
       valorUnitario: Number,
       descuento: Number,
-      valorTotal: Number
+      subtotal: Number
     }
   ],
   clientePotencial: {

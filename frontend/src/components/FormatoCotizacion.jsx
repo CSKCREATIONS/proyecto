@@ -10,14 +10,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
   const [correo, setCorreo] = useState('');
   const [asunto, setAsunto] = useState('');
   const [mensaje, setMensaje] = useState('');
-  // Generar código de cotización COT-####
-  const generarCodigo = () => {
-    // Puedes cambiar la lógica para obtener el número real
-    const random = Math.floor(1000 + Math.random() * 9000);
-    return `COT-${random}`;
-  };
 
-  const codigoCotizacion = generarCodigo();
 
   // Datos de empresa (puedes cambiar por los reales)
   const empresa = {
@@ -27,52 +20,33 @@ export default function FormatoCotizacion({ datos, onClose }) {
 
   // Obtener lista de productos para mostrar el nombre
   const productosLista = datos.productosLista || [];
-  const getNombreProducto = (id) => {
-    const prod = productosLista.find(p => p._id === id);
-    return prod ? prod.name : id;
-  };
+
+
+  console.log("productosLista:", productosLista);
 
   return (
+
     <div className="modal-cotizacion-overlay">
       <div className="modal-cotizacion">
         <button className="close-modal" onClick={onClose}>×</button>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className='modal-title'>{codigoCotizacion}</span>
-          <div className="botones-cotizacion" style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '1rem' }}>
-            <button className="btn-editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>Editar</button>
-            <button className="btn-remisionar" onClick={() => { }}>Remisionar</button>
-            <button className="btn-enviar" onClick={() => setShowEnviarModal(true)}>Enviar</button>
-            <button className="btn-imprimir" onClick={() => {
-              const pdfBlock = document.getElementById('pdf-cotizacion-block');
-              if (!pdfBlock) return window.print();
-              // Obtener los estilos de FormatoCotizacion.css desde el DOM
-              let css = '';
-              const styleSheets = Array.from(document.styleSheets);
-              styleSheets.forEach(sheet => {
-                try {
-                  if (sheet.href && sheet.href.includes('FormatoCotizacion.css')) {
-                    for (let rule of sheet.cssRules) {
-                      css += rule.cssText;
-                    }
-                  }
-                } catch (e) {}
-              });
-              const printWindow = window.open('', '', 'width=900,height=700');
-              printWindow.document.write(`
-                <html>
-                  <head>
-                    <style>
-                      ${css}
-                    </style>
-                  </head>
-                  <body>${pdfBlock.outerHTML}</body>
-                </html>
-              `);
-              printWindow.document.close();
-              printWindow.focus();
-              printWindow.print();
-              printWindow.close();
-            }}>Imprimir</button>
+          <span className='modal-title'>{datos.codigo ? datos.codigo : ''}</span>
+          <div className="botones-cotizacion" style={{ display: 'flex', gap: '18px', justifyContent: 'center', marginBottom: '1rem' }}>
+            <button className="btn-cotizacion moderno" title="Editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>
+              <i className="fa-solid fa-pen" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+              Editar
+            </button>
+            <button className="btn-cotizacion moderno" title="Remisionar" onClick={() => { }}>
+              <i className="fa-solid fa-file-invoice" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+              Remisionar
+            </button>
+            <button className="btn-cotizacion moderno" title="Enviar" onClick={() => setShowEnviarModal(true)}>
+              <i className="fa-solid fa-envelope" style={{ fontSize: '1rem', color: '#EA4335', marginRight: '6px' }}></i>
+              Enviar
+            </button>
+            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => window.print()}>
+              <i className="fa-solid fa-print" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+            </button>
           </div>
         </div>
 
@@ -86,11 +60,11 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <div className="cotizacion-encabezado">
             <h2>Cotizacion</h2>
             <div className="cot-fecha">
-              <p style={{fontSize: '0.7rem'}}>{codigoCotizacion}</p>
-              <p style={{fontSize: '0.7rem'}}>{datos.fecha || ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{datos.codigo ? datos.codigo : ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{datos.fecha || ''}</p>
             </div>
           </div>
-          <div className="client-company-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
             <div>
               <p> {datos.cliente?.nombre || ''}</p>
               <p>{datos.cliente?.direccion || ''} {datos.cliente?.ciudad || ''}</p>
@@ -100,7 +74,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
             <div style={{ textAlign: 'right' }}>
               <p>{empresa.nombre}</p>
               <p>{empresa.direccion}</p>
-              <p>Vendedor: {usuario.firstName || ''} {usuario.surname || ''}</p>
+              <p>{usuario.firstName || ''} {usuario.surname || ''}</p>
             </div>
           </div>
           <hr />
@@ -116,22 +90,49 @@ export default function FormatoCotizacion({ datos, onClose }) {
                 <th>Descripción</th>
                 <th>Cantidad</th>
                 <th>Valor Unitario</th>
+                <th>% Descuento</th>
                 <th>Subtotal</th>
               </tr>
             </thead>
             <tbody>
               {datos.productos.map((p, idx) => (
                 <tr key={idx}>
-                  <td>{getNombreProducto(p.producto)}</td>
+                  <td>{p.producto?.name || 'Desconocido'}</td>
                   <td>{p.descripcion}</td>
                   <td>{p.cantidad}</td>
                   <td>{p.valorUnitario}</td>
-                  <td>{p.valorTotal}</td>
+                  <td>{p.descuento}</td>
+                  <td>{
+                    (() => {
+                      const cantidad = parseFloat(p.cantidad) || 0;
+                      const valorUnitario = parseFloat(p.valorUnitario) || 0;
+                      const descuento = parseFloat(p.descuento) || 0;
+                      const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
+                      return subtotal.toFixed(2);
+                    })()
+                  }</td>
                 </tr>
               ))}
+              {/* Fila de total */}
+              {datos.productos.length > 0 && (
+                <tr>
+                  <td colSpan={4}></td>
+                  <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
+                  <td style={{ fontWeight: 'bold' }}>
+                    {datos.productos
+                      .reduce((acc, p) => {
+                        const cantidad = parseFloat(p.cantidad) || 0;
+                        const valorUnitario = parseFloat(p.valorUnitario) || 0;
+                        const descuento = parseFloat(p.descuento) || 0;
+                        const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
+                        return acc + subtotal;
+                      }, 0)
+                      .toFixed(2)}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
-          <b>Total: </b><p></p>
           <hr />
           <div className="condiciones-pago">
             <h4>Condiciones de pago</h4>
@@ -142,7 +143,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
         </div>
 
         {showEnviarModal && (
-          <div className="modal-cotizacion-overlay">
+          <div className="enviar-cotizacion-overlay">
             <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
               <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
               <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
@@ -156,12 +157,13 @@ export default function FormatoCotizacion({ datos, onClose }) {
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label>Mensaje:</label>
-                <input type="text" className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%' }} />
+                <textarea className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%', minHeight: '80px' }} />
               </div>
               <button className="btn-enviar-modal" style={{ width: '100%' }} onClick={() => { }}>Enviar</button>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -12,51 +12,85 @@ exports.createCotizacion = async (req, res) => {
   }
 
   try {
-    // Extraer datos del cliente
     const {
-      cliente: nombre,
-      ciudad,
-      telefono,
-      correo,
+      cliente,
       clientePotencial,
-      fecha
+      fecha,
+      descripcion,
+      condicionesPago,
+      productos,
+      responsable,
+      enviadoCorreo
     } = req.body;
 
-    // Buscar cliente existente por correo
-    let clienteExistente = await Cliente.findOne({ correo });
-
-    // Si no existe, se crea
-    if (!clienteExistente) {
-      clienteExistente = new Cliente({
-        nombre,
-        ciudad,
-        telefono,
-        correo,
-        esCliente: !clientePotencial
-      });
-      await clienteExistente.save();
+    if (!cliente || !cliente.correo) {
+      return res.status(400).json({ message: 'Datos de cliente inválidos' });
     }
 
-    // Crear cotización con referencia al _id del cliente
-    const cotizacion = new Cotizacion({
-    cliente: clienteExistente._id,
-    ciudad,
-    telefono,
-    correo,
-    responsable: req.body.responsable,
-    fecha: new Date(fecha),
-    descripcion: req.body.descripcion,
-    condicionesPago: req.body.condicionesPago,
-    productos: req.body.productos,
-    clientePotencial,
-    enviadoCorreo: req.body.enviadoCorreo
-  });
+    // Buscar cliente existente por correo
+    let clienteExistente = await Cliente.findOne({ correo: cliente.correo });
 
+    if (!clienteExistente) {
+      // Crear cliente potencial
+      clienteExistente = new Cliente({
+        nombre: cliente.nombre,
+        ciudad: cliente.ciudad,
+        direccion: cliente.direccion,
+        telefono: cliente.telefono,
+        correo: cliente.correo,
+        esCliente: !clientePotencial // true si es cliente, false si prospecto
+      });
+      await clienteExistente.save();
+    } else {
+      // Si ya existe, asegúrate de que se marque como cliente
+      if (!clienteExistente.esCliente && !clientePotencial) {
+        clienteExistente.esCliente = true;
+        await clienteExistente.save();
+      }
+    }
+
+    let fechaCotizacion = null;
+
+    if (fecha && !isNaN(new Date(fecha).getTime())) {
+      fechaCotizacion = new Date(fecha);
+    } else {
+      fechaCotizacion = new Date(); // si no viene, usa la fecha actual
+    }
+
+
+
+    // Generar código aleatorio COT-XXXX (letras y números)
+    function generarCodigoCotizacion() {
+      const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
+      let codigo = '';
+      for (let i = 0; i < 4; i++) {
+        codigo += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `COT-${codigo}`;
+    }
+
+    // Crear cotización con referencia al cliente
+    const cotizacion = new Cotizacion({
+      codigo: generarCodigoCotizacion(),
+      cliente: clienteExistente._id,
+      ciudad: cliente.ciudad,
+      telefono: cliente.telefono,
+      correo: cliente.correo,
+      responsable,
+      fecha: fechaCotizacion,
+      descripcion,
+      condicionesPago,
+      productos,
+      clientePotencial,
+      enviadoCorreo
+    });
 
     await cotizacion.save();
 
-  const cotizacionConCliente = await Cotizacion.findById(cotizacion._id).populate('cliente', 'nombre');
-  res.status(201).json({ message: 'Cotización creada', data: cotizacionConCliente });
+    const cotizacionConCliente = await Cotizacion.findById(cotizacion._id)
+      .populate('cliente', 'nombre correo ciudad telefono esCliente');
+
+    res.status(201).json({ message: 'Cotización creada', data: cotizacionConCliente });
 
   } catch (error) {
     console.error('❌ Error al crear cotización:', error);
@@ -65,12 +99,13 @@ exports.createCotizacion = async (req, res) => {
 };
 
 
+
 // Obtener todas las cotizaciones
 exports.getCotizaciones = async (req, res) => {
   try {
     const cotizaciones = await Cotizacion
       .find()
-      .populate('productos.producto', 'name') 
+      .populate('productos.producto', 'name')
       .populate('cliente', 'nombre correo telefono ciudad'); // ✅ Incluye todos los campos necesarios
 
     res.json(cotizaciones);
@@ -111,7 +146,13 @@ exports.updateCotizacion = async (req, res) => {
   }
 
   try {
-    const cotizacion = await Cotizacion.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // No permitir cambiar el código ni el _id
+    const { codigo, _id, ...rest } = req.body;
+    const cotizacion = await Cotizacion.findByIdAndUpdate(
+      req.params.id,
+      rest,
+      { new: true }
+    );
     if (!cotizacion) return res.status(404).json({ message: 'Cotización no encontrada' });
     res.status(200).json({ message: 'Cotización actualizada', data: cotizacion });
   } catch (error) {

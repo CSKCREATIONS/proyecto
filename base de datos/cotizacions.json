@@ -47,7 +47,8 @@
   "updatedAt": {
     "$date": "2025-07-06T02:38:44.733Z"
   },
-  "__v": 0
+  "__v": 0,
+  "codigo": "COT-Ac3F"
 },
 {
   "_id": {
@@ -134,7 +135,8 @@
   "updatedAt": {
     "$date": "2025-07-06T02:37:40.750Z"
   },
-  "__v": 0
+  "__v": 0,
+  "codigo": "COT-h7dE"
 },
 {
   "_id": {
@@ -688,6 +690,1502 @@
   },
   "updatedAt": {
     "$date": "2025-07-08T09:02:12.591Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccb7999032aed7ec45b5ee"
+  },
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "cucuta",
+  "telefono": "8976876876",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T01:53:29.936Z"
+  },
+  "descripcion": "<p>gg</p>",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a28280fba650e43fdd72"
+      },
+      "descripcion": "para patios y áreas de descanso. Incluye base perforada para escurrimiento de agua",
+      "cantidad": 5,
+      "valorUnitario": 684597,
+      "descuento": 0,
+      "valorTotal": 3422985,
+      "_id": {
+        "$oid": "68ccb7999032aed7ec45b5ef"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T01:53:29.949Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T01:53:29.949Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccdf183d4536c78a0b6cda"
+  },
+  "codigo": "COT-9M40",
+  "cliente": {
+    "$oid": "68ccdf183d4536c78a0b6cd8"
+  },
+  "ciudad": "tulua",
+  "telefono": "89768",
+  "correo": "lupi@miau.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T04:42:00.331Z"
+  },
+  "descripcion": "<p>miau</p>",
+  "condicionesPago": "<p>con maullidos</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a85e80fba650e43fdd9b"
+      },
+      "descripcion": "de cualquier color vale lo mismo",
+      "cantidad": 8,
+      "valorUnitario": 70000,
+      "descuento": 0,
+      "valorTotal": 560000,
+      "_id": {
+        "$oid": "68ccdf183d4536c78a0b6cdb"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T04:42:00.336Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T04:42:00.336Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccef24640c2825a6d61410"
+  },
+  "codigo": "COT-ctAM",
+  "cliente": {
+    "$oid": "68ccef24640c2825a6d6140e"
+  },
+  "ciudad": "soacha",
+  "telefono": "3021547856",
+  "correo": "elbarrio@gmail.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T05:50:28.074Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 54,
+      "valorUnitario": 468541,
+      "descuento": 5,
+      "_id": {
+        "$oid": "68ccef24640c2825a6d61411"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T05:50:28.082Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T05:50:28.082Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccefe5640c2825a6d61419"
+  },
+  "codigo": "COT-XS83",
+  "cliente": {
+    "$oid": "68ccef24640c2825a6d6140e"
+  },
+  "ciudad": "soacha",
+  "telefono": "3021547856",
+  "correo": "elbarrio@gmail.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T05:53:41.888Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 54,
+      "valorUnitario": 468541,
+      "descuento": 5,
+      "_id": {
+        "$oid": "68ccefe5640c2825a6d6141a"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T05:53:41.891Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T05:53:41.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf15c640c2825a6d6142e"
+  },
+  "codigo": "COT-lZrV",
+  "cliente": {
+    "$oid": "68ccdf183d4536c78a0b6cd8"
+  },
+  "ciudad": "yg",
+  "telefono": "6857687",
+  "correo": "lupi@miau.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T05:59:56.766Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a88b80fba650e43fdda2"
+      },
+      "descripcion": "de cualquier color vale lo mismo",
+      "cantidad": 5,
+      "valorUnitario": 120000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf15c640c2825a6d6142f"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T05:59:56.769Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T05:59:56.769Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf192640c2825a6d61443"
+  },
+  "codigo": "COT-CINq",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "cartagena",
+  "telefono": "345678",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:00:50.311Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 6,
+      "valorUnitario": 468541,
+      "descuento": 1,
+      "_id": {
+        "$oid": "68ccf192640c2825a6d61444"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:00:50.312Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:00:50.312Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf280640c2825a6d61458"
+  },
+  "codigo": "COT-xqDY",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:04:48.238Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684796b380fba650e43fdd37"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 600000,
+      "descuento": 50,
+      "_id": {
+        "$oid": "68ccf280640c2825a6d61459"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:04:48.240Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:04:48.240Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf429640c2825a6d61461"
+  },
+  "codigo": "COT-nUF0",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:11:53.816Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684796b380fba650e43fdd37"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 600000,
+      "descuento": 50,
+      "_id": {
+        "$oid": "68ccf429640c2825a6d61462"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847973d80fba650e43fdd3e"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 1600000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68ccf429640c2825a6d61463"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847958580fba650e43fdd30"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 7,
+      "valorUnitario": 150000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68ccf429640c2825a6d61464"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:11:53.818Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:11:53.818Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf46b640c2825a6d6146e"
+  },
+  "codigo": "COT-zK0p",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:12:59.486Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684796b380fba650e43fdd37"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 600000,
+      "descuento": 50,
+      "_id": {
+        "$oid": "68ccf46b640c2825a6d6146f"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847973d80fba650e43fdd3e"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 1600000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68ccf46b640c2825a6d61470"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847958580fba650e43fdd30"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 7,
+      "valorUnitario": 150000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68ccf46b640c2825a6d61471"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:12:59.488Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:12:59.488Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf4ef640c2825a6d6147b"
+  },
+  "codigo": "COT-pXay",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:15:11.489Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf4ef640c2825a6d6147c"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:15:11.490Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:15:11.490Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf59b640c2825a6d61484"
+  },
+  "codigo": "COT-IArh",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:18:03.422Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf59b640c2825a6d61485"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:18:03.424Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:18:03.424Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf5be640c2825a6d6148d"
+  },
+  "codigo": "COT-SvDz",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:18:38.293Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf5be640c2825a6d6148e"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:18:38.295Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:18:38.295Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf5fa640c2825a6d61496"
+  },
+  "codigo": "COT-zaES",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:19:38.757Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf5fa640c2825a6d61497"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:19:38.758Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:19:38.758Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf607640c2825a6d6149f"
+  },
+  "codigo": "COT-2aa8",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:19:51.742Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf607640c2825a6d614a0"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:19:51.743Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:19:51.743Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf61f640c2825a6d614a8"
+  },
+  "codigo": "COT-6gGQ",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:20:15.824Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf61f640c2825a6d614a9"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:20:15.825Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:20:15.825Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf62f640c2825a6d614b1"
+  },
+  "codigo": "COT-9QU2",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:20:31.966Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf62f640c2825a6d614b2"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:20:31.968Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:20:31.968Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf640640c2825a6d614ba"
+  },
+  "codigo": "COT-xXxa",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:20:48.580Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf640640c2825a6d614bb"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:20:48.582Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:20:48.582Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf64f640c2825a6d614c3"
+  },
+  "codigo": "COT-rp5d",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:21:03.942Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf64f640c2825a6d614c4"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:21:03.943Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:21:03.943Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf65f640c2825a6d614cc"
+  },
+  "codigo": "COT-QCtJ",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:21:19.630Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf65f640c2825a6d614cd"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:21:19.631Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:21:19.631Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf672640c2825a6d614d5"
+  },
+  "codigo": "COT-S4p0",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:21:38.517Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf672640c2825a6d614d6"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:21:38.518Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:21:38.518Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf7cb640c2825a6d614de"
+  },
+  "codigo": "COT-4GG5",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:27:23.047Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf7cb640c2825a6d614df"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:27:23.048Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:27:23.048Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccf997640c2825a6d614e7"
+  },
+  "codigo": "COT-2Toz",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:35:03.103Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccf997640c2825a6d614e8"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:35:03.104Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:35:03.104Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccfa49640c2825a6d614f0"
+  },
+  "codigo": "COT-pZvO",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:38:01.063Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccfa49640c2825a6d614f1"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:38:01.064Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:38:01.064Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccfcd6640c2825a6d614f9"
+  },
+  "codigo": "COT-6BAo",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:48:54.295Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccfcd6640c2825a6d614fa"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:48:54.297Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:48:54.297Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccfd72640c2825a6d61502"
+  },
+  "codigo": "COT-3Zha",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:51:30.087Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccfd72640c2825a6d61503"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:51:30.088Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:51:30.088Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68ccfe1cd9e3aff232b843b7"
+  },
+  "codigo": "COT-q4MH",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T06:54:20.507Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68ccfe1cd9e3aff232b843b8"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T06:54:20.520Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T06:54:20.520Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd0141d9e3aff232b843c0"
+  },
+  "codigo": "COT-QiKW",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T07:07:45.733Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68cd0141d9e3aff232b843c1"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T07:07:45.736Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T07:07:45.736Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd017ed9e3aff232b843c9"
+  },
+  "codigo": "COT-DRNk",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T07:08:46.137Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 3,
+      "valorUnitario": 1600000,
+      "descuento": 2,
+      "_id": {
+        "$oid": "68cd017ed9e3aff232b843ca"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T07:08:46.139Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T07:08:46.139Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd0450fb6ff41287b65742"
+  },
+  "codigo": "COT-hTta",
+  "cliente": {
+    "$oid": "68cd0450fb6ff41287b65740"
+  },
+  "ciudad": "jhgjhgjk",
+  "telefono": "2134567",
+  "correo": "pepito@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T07:20:48.696Z"
+  },
+  "descripcion": "<p>jjjjjjdtydudt</p>",
+  "condicionesPago": "<p>zi</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 2,
+      "valorUnitario": 468541,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd0450fb6ff41287b65743"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T07:20:48.702Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T07:20:48.702Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd07cefb6ff41287b65b9b"
+  },
+  "codigo": "COT-aGnV",
+  "cliente": {
+    "$oid": "68cd0450fb6ff41287b65740"
+  },
+  "ciudad": "cucuta",
+  "telefono": "635653",
+  "correo": "pepito@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T07:35:42.803Z"
+  },
+  "descripcion": "",
+  "condicionesPago": "<p>uuuu</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "684797f480fba650e43fdd45"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 2,
+      "valorUnitario": 1600000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd07cefb6ff41287b65b9c"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T07:35:42.807Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T07:35:42.807Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd0d6efb6ff41287b664f3"
+  },
+  "codigo": "COT-zPng",
+  "cliente": {
+    "$oid": "68ccdf183d4536c78a0b6cd8"
+  },
+  "ciudad": "cartagena",
+  "telefono": "7858",
+  "correo": "lupi@miau.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T07:59:42.204Z"
+  },
+  "descripcion": "<p>gfdg</p>",
+  "condicionesPago": "<p>gfd</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 74,
+      "valorUnitario": 468541,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd0d6efb6ff41287b664f4"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T07:59:42.208Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T07:59:42.208Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd1077fb6ff41287b66ca4"
+  },
+  "codigo": "COT-9Pj1",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "cucuta",
+  "telefono": "87687",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T08:12:39.590Z"
+  },
+  "descripcion": "<p>h</p>",
+  "condicionesPago": "<p>t</p>",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a38480fba650e43fdd79"
+      },
+      "descripcion": "Alta resistencia al desgaste, incluye relleno de caucho y arena para mejor desempeño",
+      "cantidad": 7,
+      "valorUnitario": 468541,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd1077fb6ff41287b66ca5"
+      }
+    },
+    {
+      "producto": {
+        "$oid": "6847a67f80fba650e43fdd8e"
+      },
+      "descripcion": "UCI, quirófanos, hospitales de alta demanda",
+      "cantidad": 7,
+      "valorUnitario": 94572,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd1077fb6ff41287b66ca6"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T08:12:39.592Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T08:12:39.592Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd1093fb6ff41287b66cbb"
+  },
+  "codigo": "COT-mhAR",
+  "cliente": {
+    "$oid": "68ccb4a729d9d098699e1a36"
+  },
+  "ciudad": "cucuta",
+  "telefono": "786",
+  "correo": "jhgkjgh@kakjf.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T08:13:07.140Z"
+  },
+  "descripcion": "<p>utuy</p>",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847a28280fba650e43fdd72"
+      },
+      "descripcion": "para patios y áreas de descanso. Incluye base perforada para escurrimiento de agua",
+      "cantidad": 6,
+      "valorUnitario": 684597,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd1093fb6ff41287b66cbc"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T08:13:07.142Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T08:13:07.142Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd13e8fb6ff41287b66fbb"
+  },
+  "codigo": "COT-eXqg",
+  "cliente": {
+    "$oid": "68cd13e8fb6ff41287b66fb9"
+  },
+  "ciudad": "pereira",
+  "telefono": "4554354",
+  "correo": "pepito@gmail.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T08:27:20.877Z"
+  },
+  "descripcion": "<p>gfhg</p>",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "68479f0d80fba650e43fdd5e"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 4,
+      "valorUnitario": 380000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd13e8fb6ff41287b66fbc"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T08:27:20.879Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T08:27:20.879Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68cd149ffb6ff41287b671d7"
+  },
+  "codigo": "COT-pxvB",
+  "cliente": {
+    "$oid": "68cd13e8fb6ff41287b66fb9"
+  },
+  "ciudad": "cucuta",
+  "telefono": "878",
+  "correo": "pepito@gmail.com",
+  "responsable": "Natalia",
+  "fecha": {
+    "$date": "2025-09-19T08:30:23.764Z"
+  },
+  "descripcion": "<p>jgh</p>",
+  "condicionesPago": "",
+  "productos": [
+    {
+      "producto": {
+        "$oid": "6847973d80fba650e43fdd3e"
+      },
+      "descripcion": "lhajlfjalkjfa",
+      "cantidad": 6,
+      "valorUnitario": 1600000,
+      "descuento": 0,
+      "_id": {
+        "$oid": "68cd149ffb6ff41287b671d8"
+      }
+    }
+  ],
+  "clientePotencial": true,
+  "enviadoCorreo": false,
+  "createdAt": {
+    "$date": "2025-09-19T08:30:23.766Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-19T08:30:23.766Z"
   },
   "__v": 0
 }]

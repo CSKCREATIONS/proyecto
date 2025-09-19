@@ -1,3 +1,26 @@
+/* Modern action buttons for cotizacion */
+.btn-cotizacion.moderno {
+  background: linear-gradient(90deg, #f5f6fa 0%, #e9ecef 100%);
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.btn-cotizacion.moderno:hover {
+  background: linear-gradient(90deg, #e2e6ea 0%, #f5f6fa 100%);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+.botones-cotizacion {
+  gap: 18px !important;
+}
 .modal-cotizacion-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -46,7 +69,7 @@
   margin-bottom: 1rem;
 }
 .descripcion-cotizacion {
-  margin-bottom: 1rem;
+  margin: 1rem 0 1rem 0;
 }
 .tabla-cotizacion {
   border-collapse: collapse;
@@ -60,3 +83,32 @@
 .condiciones-pago {
   margin-top: 1rem;
 }
+
+/* 🔹 Para impresión */
+@media print {
+  body * {
+    visibility: hidden; /* Oculta todo */
+  }
+
+  #pdf-cotizacion-block,
+  #pdf-cotizacion-block * {
+    visibility: visible; /* Solo muestra este bloque */
+  }
+
+  #pdf-cotizacion-block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%; /* Asegura que ocupe toda la página */
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Opcional: márgenes de la página */
+  @page {
+    margin: 15mm;
+  }
+}
+
+
+
