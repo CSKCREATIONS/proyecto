@@ -23,6 +23,7 @@ exports.createCotizacion = async (req, res) => {
       enviadoCorreo
     } = req.body;
 
+    
     if (!cliente || !cliente.correo) {
       return res.status(400).json({ message: 'Datos de cliente inválidos' });
     }
