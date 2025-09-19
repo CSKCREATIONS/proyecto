@@ -271,6 +271,7 @@ export default function ListaDeCotizaciones() {
           </div>
           <div className="filtros-tabla">
             <div className="filtro-grupo">
+              
               <label>Fecha:</label>
               <input type="date" className="filtro-input" value={filtroFecha} onChange={(e) => setFiltroFecha(e.target.value)} />
             </div>
