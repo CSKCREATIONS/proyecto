@@ -167,22 +167,34 @@ export default function RegistrarCotizacion() {
     const clienteData = { nombre, ciudad, direccion, telefono, correo, esCliente: false };
 
     const datosCotizacion = {
-      cliente: clienteData,
-      ciudad,
-      telefono,
-      correo,
-      responsable: user?.firstName,
+      cliente: {
+        referencia: user?._id, // Si tienes el id del cliente, cámbialo aquí
+        ...clienteData
+      },
+      responsable: {
+        id: user?._id,
+        firstName: user?.firstName,
+        secondName: user?.secondName,
+        surname: user?.surname,
+        secondSurname: user?.secondSurname
+      },
       fecha: obtenerFechaLocal(fecha),
       descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
       condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
-      productos: productosSeleccionados.map(p => ({
-        producto: p.producto,
-        descripcion: p.descripcion,
-        cantidad: parseFloat(p.cantidad || 0),
-        valorUnitario: parseFloat(p.valorUnitario || 0),
-        descuento: parseFloat(p.descuento || 0),
-        valorTotal: parseFloat(p.valorTotal || 0)
-      })),
+      productos: productosSeleccionados.map(p => {
+        const prodObj = productos.find(prod => prod._id === p.producto);
+        return {
+          producto: {
+            id: p.producto,
+            name: prodObj?.name || ''
+          },
+          descripcion: p.descripcion,
+          cantidad: parseFloat(p.cantidad || 0),
+          valorUnitario: parseFloat(p.valorUnitario || 0),
+          descuento: parseFloat(p.descuento || 0),
+          subtotal: parseFloat(p.valorTotal || 0)
+        };
+      }),
       clientePotencial: true,
       enviadoCorreo: enviar
     };

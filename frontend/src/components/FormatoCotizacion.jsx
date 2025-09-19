@@ -66,15 +66,18 @@ export default function FormatoCotizacion({ datos, onClose }) {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
             <div>
-              <p> {datos.cliente?.nombre || ''}</p>
+              <p>{datos.cliente?.nombre || ''}</p>
               <p>{datos.cliente?.direccion || ''} {datos.cliente?.ciudad || ''}</p>
-              <p>{datos.cliente?.telefono || ''}</p>
-              <p>{datos.cliente?.correo || ''}</p>
+              <p> {datos.cliente?.direccion || ''}</p>
+              <p> {datos.cliente?.telefono || ''}</p>
+              <p> {datos.cliente?.correo || ''}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
               <p>{empresa.nombre}</p>
               <p>{empresa.direccion}</p>
-              <p>{usuario.firstName || ''} {usuario.surname || ''}</p>
+              <p>
+                {usuario.firstName || ''} {usuario.surname || ''}
+              </p>
             </div>
           </div>
           <hr />
@@ -97,7 +100,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
             <tbody>
               {datos.productos.map((p, idx) => (
                 <tr key={idx}>
-                  <td>{p.producto?.name || 'Desconocido'}</td>
+                  <td>{p.nombre || 'Desconocido'}</td>
                   <td>{p.descripcion}</td>
                   <td>{p.cantidad}</td>
                   <td>{p.valorUnitario}</td>

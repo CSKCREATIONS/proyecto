@@ -23,6 +23,11 @@ exports.createCotizacion = async (req, res) => {
       enviadoCorreo
     } = req.body;
 
+    // Validar que responsable.id sea un ObjectId válido
+    if (!responsable || !responsable.id || !responsable.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'El responsable debe ser el id del usuario registrado.' });
+    }
+
     
     if (!cliente || !cliente.correo) {
       return res.status(400).json({ message: 'Datos de cliente inválidos' });
@@ -70,26 +75,59 @@ exports.createCotizacion = async (req, res) => {
       return `COT-${codigo}`;
     }
 
-    // Crear cotización con referencia al cliente
+    // Mapear productos con nombre
+    const productosConNombre = await Promise.all(
+      productos.map(async (prod) => {
+        let productoInfo = null;
+        if (prod.producto && prod.producto.id) {
+          productoInfo = await Producto.findById(prod.producto.id).lean();
+        }
+        return {
+          producto: {
+            id: prod.producto.id,
+            name: productoInfo ? productoInfo.name : prod.producto.name
+          },
+          descripcion: prod.descripcion,
+          cantidad: prod.cantidad,
+          valorUnitario: prod.valorUnitario,
+          descuento: prod.descuento,
+          subtotal: prod.subtotal
+        };
+      })
+    );
+
+    // Crear cotización con todos los datos embebidos y referencias
     const cotizacion = new Cotizacion({
       codigo: generarCodigoCotizacion(),
-      cliente: clienteExistente._id,
-      ciudad: cliente.ciudad,
-      telefono: cliente.telefono,
-      correo: cliente.correo,
-      responsable,
+      cliente: {
+        referencia: clienteExistente._id,
+        nombre: clienteExistente.nombre,
+        ciudad: clienteExistente.ciudad,
+        direccion: clienteExistente.direccion,
+        telefono: clienteExistente.telefono,
+        correo: clienteExistente.correo,
+        esCliente: clienteExistente.esCliente
+      },
+      responsable: {
+        id: responsable.id,
+        firstName: responsable.firstName,
+        secondName: responsable.secondName,
+        surname: responsable.surname,
+        secondSurname: responsable.secondSurname
+      },
       fecha: fechaCotizacion,
       descripcion,
       condicionesPago,
-      productos,
+      productos: productosConNombre,
       clientePotencial,
       enviadoCorreo
     });
 
     await cotizacion.save();
 
+    // Obtener datos completos del cliente
     const cotizacionConCliente = await Cotizacion.findById(cotizacion._id)
-      .populate('cliente', 'nombre correo ciudad telefono esCliente');
+      .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente');
 
     res.status(201).json({ message: 'Cotización creada', data: cotizacionConCliente });
 
@@ -106,8 +144,7 @@ exports.getCotizaciones = async (req, res) => {
   try {
     const cotizaciones = await Cotizacion
       .find()
-      .populate('productos.producto', 'name')
-      .populate('cliente', 'nombre correo telefono ciudad'); // ✅ Incluye todos los campos necesarios
+      .populate('cliente.referencia', 'nombre correo telefono ciudad esCliente');
 
     res.json(cotizaciones);
   } catch (err) {
@@ -125,7 +162,7 @@ exports.getCotizaciones = async (req, res) => {
 exports.getCotizacionById = async (req, res) => {
   try {
     const cotizacion = await Cotizacion.findById(req.params.id)
-      .populate('cliente', 'nombre')
+      .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente')
       .populate('proveedor', 'nombre')
       .populate('productos.producto', 'name price');
 
@@ -149,6 +186,10 @@ exports.updateCotizacion = async (req, res) => {
   try {
     // No permitir cambiar el código ni el _id
     const { codigo, _id, ...rest } = req.body;
+    // Si se actualiza cliente, asegurar estructura embebida
+    if (rest.cliente && rest.cliente.referencia) {
+      // Mantener formato embebido
+    }
     const cotizacion = await Cotizacion.findByIdAndUpdate(
       req.params.id,
       rest,
@@ -194,9 +235,10 @@ exports.getUltimaCotizacionPorCliente = async (req, res) => {
   const { cliente } = req.query;
 
   try {
-    const cotizacion = await Cotizacion.findOne({ cliente })
+    const cotizacion = await Cotizacion.findOne({ 'cliente.referencia': cliente })
       .sort({ createdAt: -1 })
-      .populate('productos.producto'); // para que traiga el objeto producto
+      .populate('productos.producto')
+      .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente');
 
     if (!cotizacion) return res.status(404).json({ message: 'No hay cotización' });
 

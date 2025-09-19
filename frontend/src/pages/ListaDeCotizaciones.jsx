@@ -274,12 +274,10 @@ export default function ListaDeCotizaciones() {
               <label>Fecha:</label>
               <input type="date" className="filtro-input" value={filtroFecha} onChange={(e) => setFiltroFecha(e.target.value)} />
             </div>
-
-            <br /><br />
             <div className="filtro-grupo">
               <label>Cliente:</label>
               <input type="text" className="filtro-input" placeholder="Buscar cliente..." value={filtroCliente} onChange={(e) => setFiltroCliente(e.target.value)} />
-            </div><br />
+            </div>
             <div className="filtro-grupo"><br></br>
               <label>Enviado:</label>
               <select className="filtro-select" value={filtroEnviado} onChange={(e) => setFiltroEnviado(e.target.value)}>
