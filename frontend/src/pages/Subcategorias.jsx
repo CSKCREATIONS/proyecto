@@ -221,8 +221,8 @@ const GestionSubcategorias = () => {
                     <td>{subcat.description}</td>
                     <td>{subcat.category?.name || 'Sin categoría'}</td>
                     <td>
-                      <button className="btn btn-success btn-sm" onClick={() => handleEdit(subcat)} title="Editar">
-                        <i className="fa-solid fa-pen"></i>
+                      <button className="btnTransparente" onClick={() => handleEdit(subcat)} title="Editar">
+                        <i className="fa-solid fa-pen-to-square"></i>
                       </button>
                       &nbsp;
                       <button

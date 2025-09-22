@@ -5,6 +5,7 @@ export default function NavUsuarios() {
 const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
   const [puedeVerHCompras, setPuedeVerHCompras] = useState(false);
   const [puedeVerReportesCompras, setPuedeVerReportesCompras] = useState(false);
+  const [puedeVerOrdenes, setPuedeVerOrdenes] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -12,6 +13,7 @@ const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
     if (storedUser) {
       const usuario = JSON.parse(storedUser);
       if (usuario.permissions) {
+        setPuedeVerOrdenes(usuario.permissions.includes('ordenCompra.ver'));
         setPuedeVerHCompras(usuario.permissions.includes('hcompras.ver'));
         setPuedeVerProveedores(usuario.permissions.includes('proveedores.ver'));
         setPuedeVerReportesCompras(usuario.permissions.includes('reportesCompras.ver'));
@@ -24,6 +26,16 @@ const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
       <h2>Compras</h2>
       <div className="nav-modulo-wrapper">
         <nav className="nav-modulo" id="usuarios-nav">
+          {puedeVerOrdenes && (
+            <Link
+              to="/OrdenCompra"
+              className={
+                location.pathname === '/OrdenCompra' ? 'nav-item active' : 'nav-item'
+              }
+            >
+                Orden de compras
+            </Link>
+          )}
           {puedeVerHCompras && (
             <Link
               to="/HistorialCompras"

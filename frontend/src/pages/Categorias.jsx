@@ -253,8 +253,8 @@ const GestionCategorias = () => {
                     )}
                   </td>
                     <td>
-                      <button className="btn btn-success btn-sm" onClick={() => handleEdit(cat)}>
-                        <i className="fa-solid fa-pen"></i>
+                      <button className="btnTransparente" onClick={() => handleEdit(cat)}>
+                        <i className="fa-solid fa-pen-to-square"></i>
                       </button>
                       
                     </td>

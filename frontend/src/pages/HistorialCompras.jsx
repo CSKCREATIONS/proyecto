@@ -3,23 +3,12 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
 import Fijo from '../components/Fijo';
-import NavCompras from '../components/NavCompras'
+import NavCompras from '../components/NavCompras';
 
 export default function HistorialCompras() {
   const [compras, setCompras] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalObservacionesVisible, setModalObservacionesVisible] = useState(false);
-  const [observacionesCompra, setObservacionesCompra] = useState('');
-  const [modalProductosVisible, setModalProductosVisible] = useState(false);
-  const [productosCompra, setProductosCompra] = useState([]);
-  const [proveedores, setProveedores] = useState([]);
-  const [productos, setProductos] = useState([]);
-  const [productosFiltrados, setProductosFiltrados] = useState([]);
-  const [compra, setCompra] = useState({ proveedor: '', productos: [], observaciones: '', condicionesPago: '' });
-  const [productoId, setProductoId] = useState('');
-  const [cantidad, setCantidad] = useState(1);
-  const [editandoId, setEditandoId] = useState(null);
-
+  const [modalDetallesVisible, setModalDetallesVisible] = useState(false);
+  const [compraSeleccionada, setCompraSeleccionada] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -29,165 +18,31 @@ export default function HistorialCompras() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
-
   const fetchCompras = async () => {
-    const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:5000/api/compras', {
-      headers: { 'x-access-token': token }
-    });
-    const data = await res.json();
-    if (data.success) {
-      setCompras(data.data);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/compras', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCompras(data.data || data);
+      } else {
+        Swal.fire('Error', data.message || 'No se pudieron cargar las compras', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
     }
-  };
-
-  const editarCompra = (compraEdit) => {
-    setCompra({
-      proveedor: compraEdit.proveedor._id || compraEdit.proveedor,
-      productos: compraEdit.productos.map(p => ({
-        producto: p.producto,
-        cantidad: p.cantidad,
-        precioUnitario: p.precioUnitario
-      })),
-      condicionesPago: compraEdit.condicionesPago || '',
-      observaciones: compraEdit.observaciones || ''
-    });
-    setEditandoId(compraEdit._id);
-    handleProveedorChange(compraEdit.proveedor._id || compraEdit.proveedor);
-    setModalVisible(true);
-  };
-
-  const eliminarCompra = async (id) => {
-    const confirm = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esto eliminará la compra permanentemente.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
-    if (!confirm.isConfirmed) return;
-    const token = localStorage.getItem('token');
-    const res = await fetch(`http://localhost:5000/api/compras/${id}`, {
-      method: 'DELETE',
-      headers: { 'x-access-token': token }
-    });
-    const data = await res.json();
-    if (data.success) {
-      Swal.fire('Eliminado', '', 'success');
-      fetchCompras();
-    } else {
-      Swal.fire('Error', data.message || 'No se pudo eliminar', 'error');
-    }
-  };
-
-  const fetchDatos = async () => {
-    const token = localStorage.getItem('token');
-    const headers = { 'x-access-token': token };
-    const [resProv, resProd] = await Promise.all([
-      fetch('http://localhost:5000/api/proveedores', { headers }),
-      fetch('http://localhost:5000/api/products', { headers })
-    ]);
-    const dataProv = await resProv.json();
-    const dataProd = await resProd.json();
-    setProveedores(dataProv.proveedores || dataProv.data || []);
-    setProductos(dataProd.data || []);
   };
 
   useEffect(() => {
     fetchCompras();
-    fetchDatos();
   }, []);
 
-  const abrirObservacionesModal = (observaciones) => {
-    setObservacionesCompra(observaciones);
-    setModalObservacionesVisible(true);
+  const verDetallesCompra = (compra) => {
+    setCompraSeleccionada(compra);
+    setModalDetallesVisible(true);
   };
-
-  const abrirProductosModal = (productos) => {
-    setProductosCompra(productos);
-    setModalProductosVisible(true);
-  };
-
-  const handleProveedorChange = (idProveedor) => {
-    setCompra({ ...compra, proveedor: idProveedor, productos: [] });
-
-    const filtrados = productos.filter(p => {
-      const proveedorId = typeof p.proveedor === 'object' ? p.proveedor._id : p.proveedor;
-      return proveedorId === idProveedor;
-    });
-
-    setProductosFiltrados(filtrados);
-  };
-
-  const agregarProducto = () => {
-    if (!productoId || !cantidad) return;
-
-    const productoSeleccionado = productos.find(p => p._id === productoId);
-    if (!productoSeleccionado) return;
-
-    const yaExiste = compra.productos.find(p => p.producto._id === productoId);
-    if (yaExiste) return Swal.fire('Advertencia', 'Producto ya agregado', 'warning');
-
-    const precioUnitario = parseFloat(productoSeleccionado.price || productoSeleccionado.precio);
-    if (isNaN(precioUnitario)) {
-      return Swal.fire('Error', 'Precio inválido para el producto seleccionado', 'error');
-    }
-
-    setCompra(prev => ({
-      ...prev,
-      productos: [...prev.productos, {
-        producto: productoSeleccionado, // guardamos todo el objeto
-        cantidad,
-        precioUnitario
-      }]
-    }));
-
-    setProductoId('');
-    setCantidad(1);
-  };
-
-  const total = compra.productos.reduce((acc, p) => acc + (p.cantidad * p.precioUnitario), 0);
-
-  const guardarCompra = async () => {
-    if (!compra.proveedor || compra.productos.length === 0) {
-      return Swal.fire('Error', 'Completa todos los campos', 'error');
-    }
-
-    const token = localStorage.getItem('token');
-    const metodo = editandoId ? 'PUT' : 'POST';
-    const url = editandoId
-      ? `http://localhost:5000/api/compras/${editandoId}`
-      : 'http://localhost:5000/api/compras';
-
-    const res = await fetch(url, {
-      method: metodo,
-      headers: { 'Content-Type': 'application/json', 'x-access-token': token },
-      body: JSON.stringify({
-        ...compra,
-        productos: compra.productos.map(p => ({
-          producto: p.producto._id || p.producto,
-          cantidad: p.cantidad,
-          precioUnitario: p.precioUnitario
-        })),
-        total
-      })
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      Swal.fire('Éxito', editandoId ? 'Compra actualizada' : 'Compra registrada', 'success');
-      fetchCompras();
-      setModalVisible(false);
-      setCompra({ proveedor: '', productos: [], condicionesPago: '', observaciones: '' });
-      setProductosFiltrados([]);
-      setEditandoId(null); // ✅ Importante: limpiar estado de edición
-    } else {
-      Swal.fire('Error', data.message || 'Error al guardar', 'error');
-    }
-  };
-
 
   return (
     <div>
@@ -197,189 +52,170 @@ export default function HistorialCompras() {
         <div className="contenido-modulo">
           <div className='encabezado-modulo'>
             <div>
-              <h3 className='titulo-profesional'>Historial de compras</h3>
+              <h3 className='titulo-profesional'>Historial de Compras</h3>
+              <p className='subtitulo'>Compras realizadas a partir de órdenes de compra</p>
             </div>
           </div>
 
           <br />
-          <br />
-          <div className="d-flex justify-content-end mb-3">
-            <button className="btn btn-save" onClick={() => setModalVisible(true)}>
-              + Registrar Compra
-            </button>
-            <br />
-            <br />
-          </div>
           <div className="table-container">
             <table>
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Número Orden</th>
                   <th>Proveedor</th>
                   <th>Total</th>
                   <th>Fecha</th>
-                  <th>Productos</th>
-                  <th>Condiciones de Pago</th>
-                  <th>Observaciones</th>
-                  <th>Acciones</th>
+                  <th>Solicitado Por</th>
                 </tr>
               </thead>
               <tbody>
-                {compras.map((compra, index) => (
+                {currentItems.map((compra, index) => (
                   <tr key={compra._id}>
-                    <td>{index + 1}</td>
-                    <td>{compra.proveedor?.nombre}</td>
-                    <td>${compra.total.toLocaleString()}</td>
-                    <td>{new Date(compra.fechaCompra || compra.fecha).toLocaleDateString()}</td>
+                    <td>{indexOfFirstItem + index + 1}</td>
                     <td>
-                      <button
-                        onClick={() => abrirProductosModal(compra.productos)}
-                        className="btn btn-info btn-sm"
+                      <button 
+                        onClick={() => verDetallesCompra(compra)} 
+                        className="btn btn-link btn-sm p-0"
+                        style={{textDecoration: 'none', color: '#007bff', fontWeight: 'bold'}}
                       >
-                        Ver Productos
+                        {compra.numeroOrden || 'N/A'}
                       </button>
                     </td>
-                    <td>{compra.condicionesPago || 'N/A'}</td>
-                    <td>
-                      <button
-                        onClick={() => abrirObservacionesModal(compra.observaciones || '')}
-                        className="btn btn-secondary btn-sm"
-                      >
-                        Ver Observaciones
-                      </button>
-                    </td>
-                    <td>
-                      <button className='btnTransparente' onClick={() => editarCompra(compra)}>
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </button>
-                      <button className='btnTransparente' onClick={() => eliminarCompra(compra._id)}>
-                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />     
-                      </button>
-                    </td>
+                    <td>{compra.proveedor?.nombre || compra.proveedor || 'Proveedor no especificado'}</td>
+                    <td>${compra.total?.toLocaleString()}</td>
+                    <td>{new Date(compra.fecha || compra.fechaCompra).toLocaleDateString()}</td>
+                    <td>{compra.solicitadoPor || compra.responsable || 'No especificado'}</td>
                   </tr>
                 ))}
-                {compras.length === 0 && <tr><td colSpan="9">No hay compras registradas</td></tr>}
+                {compras.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="text-center">No hay compras registradas en el historial</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-          <div className="pagination">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => paginate(i + 1)}
-                className={currentPage === i + 1 ? 'active-page' : ''}
+
+          {/* Paginación */}
+          {compras.length > 0 && (
+            <div className="pagination">
+              <button 
+                onClick={() => paginate(currentPage - 1)} 
+                disabled={currentPage === 1}
+                className="pagination-btn"
               >
-                {i + 1}
+                Anterior
               </button>
-            ))}
-          </div>
-
-          {/* Modal observaciones */}
-          {modalObservacionesVisible && (
-            <div className="modal-overlay">
-              <div className="modal-compact">
-                <div className="modal-header">
-                  <h5 className="modal-title">Observaciones</h5>
-                  <button className="modal-close" onClick={() => setModalObservacionesVisible(false)}>&times;</button>
-                </div>
-                <div className="modal-body">
-                  <p>{observacionesCompra || 'Sin observaciones'}</p>
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={() => setModalObservacionesVisible(false)}>Cerrar</button>
-                </div>
-              </div>
+              
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => paginate(i + 1)}
+                  className={currentPage === i + 1 ? 'active-page' : 'pagination-btn'}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              
+              <button 
+                onClick={() => paginate(currentPage + 1)} 
+                disabled={currentPage === totalPages}
+                className="pagination-btn"
+              >
+                Siguiente
+              </button>
             </div>
           )}
 
-          {/* Modal productos */}
-          {modalProductosVisible && (
+          {/* Modal de detalles de la compra */}
+          {modalDetallesVisible && compraSeleccionada && (
             <div className="modal-overlay">
               <div className="modal-compact modal-lg">
                 <div className="modal-header">
-                  <h5 className="modal-title">Productos de la Compra</h5>
-                  <button className="modal-close" onClick={() => setModalProductosVisible(false)}>&times;</button>
+                  <h5>Detalles de la Compra: {compraSeleccionada.numeroOrden}</h5>
+                  <button className="modal-close" onClick={() => setModalDetallesVisible(false)}>&times;</button>
                 </div>
                 <div className="modal-body">
-                  <ul className="list-group">
-                    {productosCompra.map((p, i) => (
-                      <li key={i} className="list-group-item">
-                        <strong>{p.producto?.name}</strong> – {p.cantidad} x ${p.precioUnitario}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Proveedor:</strong> {compraSeleccionada.proveedor?.nombre || compraSeleccionada.proveedor || 'No especificado'}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Fecha:</strong> {new Date(compraSeleccionada.fecha || compraSeleccionada.fechaCompra).toLocaleDateString()}
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Solicitado Por:</strong> {compraSeleccionada.solicitadoPor || compraSeleccionada.responsable || 'No especificado'}
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-4">
+                      <strong>Subtotal:</strong> ${compraSeleccionada.subtotal?.toLocaleString()}
+                    </div>
+                    <div className="col-md-4">
+                      <strong>IVA (19%):</strong> ${compraSeleccionada.impuestos?.toLocaleString()}
+                    </div>
+                    <div className="col-md-4">
+                      <strong>Total:</strong> ${compraSeleccionada.total?.toLocaleString()}
+                    </div>
+                  </div>
+
+                  {compraSeleccionada.observaciones && (
+                    <div className="row mb-3">
+                      <div className="col-md-12">
+                        <strong>Observaciones:</strong> {compraSeleccionada.observaciones}
+                      </div>
+                    </div>
+                  )}
+
+                  <h6>Productos:</h6>
+                  <div className="table-responsive">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th>Descripción</th>
+                          <th>Cantidad</th>
+                          <th>Precio Unitario</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {compraSeleccionada.productos?.map((p, i) => (
+                          <tr key={i}>
+                            <td>{p.producto?.name || p.producto || 'Producto no especificado'}</td>
+                            <td>{p.descripcion || p.producto?.description || 'N/A'}</td>
+                            <td>{p.cantidad}</td>
+                            <td>${p.precioUnitario?.toLocaleString()}</td>
+                            <td>${((p.cantidad || 0) * (p.precioUnitario || 0))?.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={() => setModalProductosVisible(false)}>Cerrar</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Modal registrar compra */}
-          {modalVisible && (
-            <div className="modal-overlay">
-              <div className="modal-compact modal-lg">
-                <div className="modal-header">
-                  <h5 className="modal-title">{editandoId ? 'Editar Compra' : 'Registrar Compra'}</h5>
-                  <button className="modal-close" onClick={() => setModalVisible(false)}>&times;</button>
-                </div>
-                <div className="modal-body">
-                  <div className="form-group">
-                    <label>Proveedor:</label>
-                    <select value={compra.proveedor} onChange={(e) => handleProveedorChange(e.target.value)}>
-                      <option value="">Seleccione proveedor</option>
-                      {proveedores.map(p => <option key={p._id} value={p._id}>{p.nombre}</option>)}
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Producto:</label>
-                    <select value={productoId} onChange={(e) => setProductoId(e.target.value)}>
-                      <option value="">Seleccione producto</option>
-                      {productosFiltrados.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
-                    </select>
-                    <input type="number" value={cantidad} min="1" onChange={(e) => setCantidad(parseInt(e.target.value))} placeholder="Cantidad" />
-                    <button className="btn btn-save btn-sm" type="button" onClick={agregarProducto}>+ Agregar</button>
-                  </div>
-
-                  <div>
-                    <ul>
-                      {compra.productos.map((p, i) => (
-                        <li key={i}> {p.producto?.name} - Cant: {p.cantidad} - ${p.precioUnitario} </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Condiciones de Pago:</label>
-                    <textarea value={compra.condicionesPago} onChange={(e) => setCompra({ ...compra, condicionesPago: e.target.value })} />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Observaciones:</label>
-                    <textarea value={compra.observaciones} onChange={(e) => setCompra({ ...compra, observaciones: e.target.value })} />
-                  </div>
-
-                  <div className="form-group"><strong>Total:</strong> ${total.toLocaleString()}</div>
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={() => setModalVisible(false)}>Cancelar</button>
-                  <button className="btn btn-save" onClick={guardarCompra}>
-                    {editandoId ? 'Actualizar' : 'Guardar'}
+                  <button className="btn btn-cancel" onClick={() => setModalDetallesVisible(false)}>
+                    Cerrar
                   </button>
                 </div>
               </div>
             </div>
           )}
+
+          <p className="text-sm text-gray-400 tracking-wide text-center">
+            © 2025{" "}
+            <span className="text-yellow-400 font-semibold">
+              PANGEA
+            </span>
+            . Todos los derechos reservados.
+          </p>
         </div>
-        <p className="text-sm text-gray-400 tracking-wide text-center">
-          © 2025{" "}
-          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            PANGEA
-          </span>
-          . Todos los derechos reservados.
-        </p>
       </div>
     </div>
   );

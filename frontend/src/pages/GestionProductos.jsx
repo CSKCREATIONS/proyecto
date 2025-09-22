@@ -334,8 +334,8 @@ const GestionProductos = () => {
                     <td>{prod.subcategory?.name || '-'}</td>
                     <td>{prod.proveedor?.nombre || '-'}</td>
                     <td>
-                      <button className="btn btn-success btn-sm me-1" onClick={() => handleEdit(prod)}>
-                        <i className="fa-solid fa-pen"></i>
+                      <button className="btnTransparente" onClick={() => handleEdit(prod)}>
+                        <i className="fa-solid fa-pen-to-square"></i>
                       </button>
                       <button
                         className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`}
@@ -343,8 +343,8 @@ const GestionProductos = () => {
                       >
                         {prod.activo ? <i className="fa-solid fa-ban"></i> : <i className="fa-solid fa-check"></i>}
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(prod._id)}>
-                        <i className="fa-solid fa-trash"></i>
+                      <button className="btnTransparente" onClick={() => handleDelete(prod._id)}>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
                       </button>
                     </td>
                   </tr>

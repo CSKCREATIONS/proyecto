@@ -1,42 +1,25 @@
 const Compra = require('../models/compras');
 
-// Crear una nueva compra
-// Crear una nueva compra
+// Crear una nueva compra (solo desde Orden de Compra)
+// Crear nueva compra
 const crearCompra = async (req, res) => {
   try {
-    const { proveedor, productos, condicionesPago, observaciones } = req.body;
-
-    if (!proveedor || !productos || productos.length === 0) {
-      return res.status(400).json({ message: 'Faltan datos obligatorios' });
+    // Si viene marcada como creada desde orden, no la volvemos a guardar
+    if (req.body._fromOrden) {
+      return res.status(200).json({
+        success: true,
+        message: 'Compra creada desde Orden de Compra (no duplicada)'
+      });
     }
 
-    // Calcular el total
-    const total = productos.reduce((acc, item) => {
-      return acc + item.cantidad * item.precioUnitario;
-    }, 0);
-
-    // Guardar nueva compra
-    const nuevaCompra = await Compra.create({
-      proveedor,
-      productos,
-      condicionesPago,
-      observaciones,
-      total,
-      fecha: new Date()
-    });
-
-    // Obtener con populate
-    const compraConDatos = await Compra.findById(nuevaCompra._id)
-      .populate('proveedor', 'nombre')
-      .populate('productos.producto', 'name price')
-
-    return res.status(201).json({ success: true, data: compraConDatos });
-
+    const nuevaCompra = await Compra.create(req.body);
+    res.status(201).json({ success: true, data: nuevaCompra });
   } catch (error) {
-    console.error('Error al registrar la compra:', error);
-    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    res.status(500).json({ success: false, message: 'Error en el servidor', error: error.message });
   }
 };
+
+
 
 
 // Obtener historial de compras por proveedor

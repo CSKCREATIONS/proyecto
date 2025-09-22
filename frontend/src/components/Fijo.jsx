@@ -11,6 +11,7 @@ export default function Fijo() {
   const [puedeVerRoles, setPuedeVerRoles] = useState(false);
   const [puedeVerUsuarios, setPuedeVerUsuarios] = useState(false);
   const [puedeGenerarOrden, setPuedeGenerarOrden] = useState(false);
+  const [puedeVerOrdenes, setPuedeVerOrdenes] = useState(false);
   const [puedeVerProveedores, setPuedeVerProveedores] = useState(false);
   const [puedeVerHCompras, setPuedeVerHCompras] = useState(false);
   const [puedeVerReportesCompras, setPuedeVerReportesCompras] = useState(false);
@@ -58,6 +59,7 @@ export default function Fijo() {
         setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
         setPuedeVerRoles(permissions.includes('roles.ver'));
         setPuedeGenerarOrden(permissions.includes('ordenes.generar'));
+        setPuedeVerOrdenes(permissions.includes('ordenCompra.ver'));
         setPuedeVerProveedores(permissions.includes('proveedores.ver'));
         setPuedeVerHCompras(permissions.includes('hcompras.ver'));
         setPuedeVerReportesCompras(permissions.includes('reportesCompras.ver'));
@@ -197,12 +199,12 @@ export default function Fijo() {
                   </nav>
                 )}
                 
-                {(puedeGenerarOrden || puedeVerHCompras || puedeVerProveedores || puedeVerReportesCompras) && (
+                {(puedeGenerarOrden || puedeVerHCompras || puedeVerProveedores || puedeVerReportesCompras || puedeVerOrdenes) && (
                   <nav>
                     <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuCompras')}><i class="fas fa-shopping-cart"></i> Compras</li>
                     <ul id="submenuCompras" className="dropdown" >
                       {puedeGenerarOrden && (
-                        <Link as={Link} to="/Home"><li><i class="fas fa-history"></i> Ordenes de compra</li></Link>
+                        <Link as={Link} to="/OrdenCompra"><li><i class="fas fa-history"></i> Ordenes de compra</li></Link>
                       )}
                       {puedeVerHCompras && (
                         <Link as={Link} to="/HistorialCompras"><li><i class="fas fa-history"></i> Historial de compras</li></Link>

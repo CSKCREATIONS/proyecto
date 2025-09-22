@@ -43,6 +43,13 @@ module.exports = {
     CREAR: 'compras.crear',
     VERREPORTES: 'reportesCompras.ver'
   },
+  ORDENES: {
+    VER: 'ordenesCompra.ver',
+    CREAR: 'ordenes.generar',
+    EDITAR: 'ordenes.editar',
+    ELIMINAR: 'ordenes.eliminar',
+    APROBAR: 'ordenes.aprobar'
+  },
   VENTAS: {
     CREAR: 'ventas.crear',
     VER: 'pedidos.ver',

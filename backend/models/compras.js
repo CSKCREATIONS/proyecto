@@ -1,22 +1,22 @@
+// models/Compra.js
 const mongoose = require('mongoose');
 
 const CompraSchema = new mongoose.Schema({
-  proveedor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Proveedor',
-    required: true
-  },
-  productos: [
-    {
-      producto: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-      cantidad: { type: Number, required: true },
-      precioUnitario: { type: Number, required: true }
-    }
-  ],
-  fecha: { type: Date, default: Date.now }, // <-- nombre sincronizado con el resto del sistema
-  total: { type: Number, required: true },
-  condicionesPago: { type: String },
-  observaciones: { type: String }
+  numeroOrden: { type: String, required: true, unique: true },
+  proveedor: { type: String, required: true },
+  solicitadoPor: { type: String, required: true },
+  observaciones: String,
+  fecha: { type: Date, default: Date.now },
+  productos: [{
+    producto: String,
+    descripcion: String,
+    cantidad: Number,
+    precioUnitario: Number
+  }],
+  subtotal: Number,
+  impuestos: Number,
+  total: Number,
+  estado: { type: String, default: 'Completada' }
 });
 
-module.exports = mongoose.models.Compra || mongoose.model('Compra', CompraSchema);
+module.exports = mongoose.model('compras', CompraSchema);

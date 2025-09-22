@@ -30,7 +30,7 @@ import PedidosDespachados from './pages/PedidosDespachados';
 import Ventas from './pages/Ventas';
 import ReporteProveedores from './pages/ReporteProveedores';
 import ReporteProductos from './pages/ReporteProductos';
-
+import OrdenCompra from './pages/OrdenCompra';
 
 
 const App = () => {
@@ -92,6 +92,16 @@ const App = () => {
           <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
 
           {/***Rutas modulo compras ****/}
+          <Route
+            path='/OrdenCompra'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="ordenesCompra.ver">
+                  <OrdenCompra />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path='/HistorialCompras'
