@@ -119,6 +119,7 @@ exports.createCotizacion = async (req, res) => {
       descripcion,
       condicionesPago,
       productos: productosConNombre,
+      empresa: req.body.empresa || undefined,
       clientePotencial,
       enviadoCorreo
     });
@@ -161,16 +162,28 @@ exports.getCotizaciones = async (req, res) => {
 // Obtener cotización por ID
 exports.getCotizacionById = async (req, res) => {
   try {
-    const cotizacion = await Cotizacion.findById(req.params.id)
+    let cotizacion = await Cotizacion.findById(req.params.id)
       .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente')
       .populate('proveedor', 'nombre')
-      .populate('productos.producto', 'name price');
+      .populate('productos.producto.id', 'name price');
 
     if (!cotizacion) {
       return res.status(404).json({ message: 'Cotización no encontrada' });
     }
 
-    res.status(200).json(cotizacion);
+    // Flatten populated product data for easier frontend consumption
+    const cotObj = cotizacion.toObject();
+    if (Array.isArray(cotObj.productos)) {
+      cotObj.productos = cotObj.productos.map(p => {
+        if (p.producto && p.producto.id) {
+          p.producto.name = p.producto.id.name || p.producto.name;
+          p.producto.price = p.producto.id.price || p.producto.price;
+        }
+        return p;
+      });
+    }
+
+    res.status(200).json({ data: cotObj });
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener cotización', error: error.message });
   }
@@ -235,14 +248,25 @@ exports.getUltimaCotizacionPorCliente = async (req, res) => {
   const { cliente } = req.query;
 
   try {
-    const cotizacion = await Cotizacion.findOne({ 'cliente.referencia': cliente })
+    let cotizacion = await Cotizacion.findOne({ 'cliente.referencia': cliente })
       .sort({ createdAt: -1 })
-      .populate('productos.producto')
+      .populate('productos.producto.id', 'name price')
       .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente');
 
     if (!cotizacion) return res.status(404).json({ message: 'No hay cotización' });
 
-    res.json(cotizacion);
+    const cotObj = cotizacion.toObject();
+    if (Array.isArray(cotObj.productos)) {
+      cotObj.productos = cotObj.productos.map(p => {
+        if (p.producto && p.producto.id) {
+          p.producto.name = p.producto.id.name || p.producto.name;
+          p.producto.price = p.producto.id.price || p.producto.price;
+        }
+        return p;
+      });
+    }
+
+    res.json({ data: cotObj });
   } catch (error) {
     console.error('[ERROR getUltimaCotizacionPorCliente]', error);
     res.status(500).json({ message: 'Error al obtener la cotización' });

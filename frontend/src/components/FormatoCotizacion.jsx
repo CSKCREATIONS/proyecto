@@ -67,14 +67,13 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
             <div>
               <p>{datos.cliente?.nombre || ''}</p>
-              <p>{datos.cliente?.direccion || ''} {datos.cliente?.ciudad || ''}</p>
-              <p> {datos.cliente?.direccion || ''}</p>
+              <p>{datos.cliente?.direccion || ''} - {datos.cliente?.ciudad || ''}</p>
               <p> {datos.cliente?.telefono || ''}</p>
               <p> {datos.cliente?.correo || ''}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <p>{empresa.nombre}</p>
-              <p>{empresa.direccion}</p>
+              <p>{datos.empresa?.nombre || empresa.nombre}</p>
+              <p>{datos.empresa?.direccion || empresa.direccion}</p>
               <p>
                 {usuario.firstName || ''} {usuario.surname || ''}
               </p>
@@ -145,8 +144,10 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <div>Cotizacion valida por 15 dias</div>
         </div>
 
-        {showEnviarModal && (
-          <div className="enviar-cotizacion-overlay">
+      </div>
+
+      {showEnviarModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
             <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
               <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
               <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
@@ -166,8 +167,6 @@ export default function FormatoCotizacion({ datos, onClose }) {
             </div>
           </div>
         )}
-
-      </div>
     </div>
   );
 }

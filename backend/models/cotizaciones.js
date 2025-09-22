@@ -48,6 +48,10 @@ const CotizacionSchema = new mongoose.Schema({
       subtotal: Number
     }
   ],
+  empresa: {
+    nombre: { type: String },
+    direccion: { type: String }
+  },
   clientePotencial: {
     type: Boolean,
     default: false

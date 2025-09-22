@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import FormatoCotizacion from '../components/FormatoCotizacion';
+import CotizacionPreview from '../components/CotizacionPreview';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom'; // ya lo tienes o debes agregarlo
 
@@ -15,6 +15,7 @@ export default function ListaDeCotizaciones() {
   const [productos, setProductos] = useState([]);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
   const modalRef = useRef();
   const navigate = useNavigate();
 
@@ -256,17 +257,7 @@ export default function ListaDeCotizaciones() {
                 <span>Exportar a PDF</span>
               </button>
 
-              {cotizacionSeleccionada && ReactDOM.createPortal(
-                <FormatoCotizacion
-                  datos={cotizacionSeleccionada}
-                  onClose={() => setCotizacionSeleccionada(null)}
-                />,
-                document.body
-              )}
-
-
-
-
+              
             </div>
           </div>
           <div className="filtros-tabla">
@@ -304,7 +295,28 @@ export default function ListaDeCotizaciones() {
                 <tbody>
                   {currentItems.map((cot, index) => (
                     <tr key={cot._id}>
-                      <td><a>{cot.codigo}</a></td>
+                      <td>
+                        <a
+                          style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                          onClick={async () => {
+                            try {
+                              const token = localStorage.getItem('token');
+                              const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                              });
+                              if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                              const data = await res.json();
+                              const cotizacionCompleta = data.data || data;
+                              setCotizacionSeleccionada(cotizacionCompleta);
+                              setMostrarPreview(true);
+                            } catch (err) {
+                              Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                            }
+                          }}
+                        >
+                          {cot.codigo}
+                        </a>
+                      </td>
                       <td>{new Date(cot.fecha).toLocaleDateString()}</td>
                       <td>{cot.cliente?.nombre || 'Sin nombre'}</td>
                       <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
@@ -370,8 +382,11 @@ export default function ListaDeCotizaciones() {
       </div>
 
 
-    </div>
+      {mostrarPreview && cotizacionSeleccionada && (
+        <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
+      )}
 
+    </div>
 
   )
 };

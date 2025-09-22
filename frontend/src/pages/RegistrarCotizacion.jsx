@@ -199,6 +199,18 @@ export default function RegistrarCotizacion() {
       enviadoCorreo: enviar
     };
 
+    // Añadir información de la empresa si está disponible en la UI
+    try {
+      const empresaNombreEl = document.getElementById('empresa-nombre');
+      const empresaNombre = empresaNombreEl ? empresaNombreEl.innerText.trim() : '';
+      if (empresaNombre) {
+        datosCotizacion.empresa = { nombre: empresaNombre, direccion: '' };
+      }
+    } catch (err) {
+      // no bloquear si no se puede obtener
+      console.warn('No se pudo obtener información de la empresa desde la UI', err);
+    }
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/api/cotizaciones', {
@@ -217,11 +229,35 @@ export default function RegistrarCotizacion() {
         return;
       }
 
-  // Mostrar el formato de cotización en el modal
-  setDatosFormato(datosCotizacion);
-  setMostrarFormato(true);
-  setNotificacion('Cotización guardada');
-  setTimeout(() => setNotificacion(null), 5000);
+      // Mostrar el formato de cotización en el modal
+      setDatosFormato(datosCotizacion);
+      setMostrarFormato(true);
+      setNotificacion('Cotización guardada');
+      setTimeout(() => setNotificacion(null), 5000);
+
+      // Limpiar todos los inputs de la vista después de guardar correctamente
+      try {
+        // Limpiar inputs con la clase usada en el formulario
+        const allInputs = document.querySelectorAll('.cuadroTexto');
+        if (allInputs && allInputs.length) {
+          allInputs.forEach(input => {
+            if (input) input.value = '';
+          });
+        }
+
+        // Limpiar productos seleccionados
+        setProductosSeleccionados([]);
+
+        // Limpiar contenidos de los editores (si existen)
+        if (descripcionRef.current) {
+          descripcionRef.current.setContent('');
+        }
+        if (condicionesPagoRef.current) {
+          condicionesPagoRef.current.setContent('');
+        }
+      } catch (err) {
+        console.warn('No se pudieron limpiar todos los campos automáticamente:', err);
+      }
 
     } catch (error) {
       console.error('Error en la solicitud de cotización:', error);
@@ -315,7 +351,7 @@ export default function RegistrarCotizacion() {
                     </td>
                     <td><input type="text" name="descripcion" className='cuadroTexto' value={prod.descripcion} onChange={(e) => handleChange(index, e)} /></td>
                     <td><input type="number" name="cantidad" className='cuadroTexto' value={prod.cantidad} onChange={(e) => handleChange(index, e)} /></td>
-                    <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly/></td>
+                    <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly /></td>
                     <td><input type="number" name="descuento" className='cuadroTexto' value={prod.descuento} onChange={(e) => handleChange(index, e)} /></td>
                     <td><input type="number" name="subtotal" className='cuadroTexto' value={prod.subtotal} readOnly /></td>
                     <td><button className="btn btn-danger" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
@@ -337,14 +373,15 @@ export default function RegistrarCotizacion() {
               </tbody>
             </table>
             <br />
-            <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
-            {productosSeleccionados.length > 0 && (
-              <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
-                Eliminar Todos
-              </button>
-            )}
-          </div>
 
+          </div>
+          <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
+          {productosSeleccionados.length > 0 && (
+            <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
+              Eliminar Todos
+            </button>
+          )}
+          <br />
           <br />
           <label className="labelDOCS">Condiciones de pago</label>
           <br /><br />
