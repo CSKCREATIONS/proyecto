@@ -97,16 +97,17 @@ exports.createCotizacion = async (req, res) => {
     );
 
     // Crear cotización con todos los datos embebidos y referencias
+    // IMPORTANT: embed exactly the data provided in the request inputs (no automatic fetch-overwrite)
     const cotizacion = new Cotizacion({
       codigo: generarCodigoCotizacion(),
       cliente: {
-        referencia: clienteExistente._id,
-        nombre: clienteExistente.nombre,
-        ciudad: clienteExistente.ciudad,
-        direccion: clienteExistente.direccion,
-        telefono: clienteExistente.telefono,
-        correo: clienteExistente.correo,
-        esCliente: clienteExistente.esCliente
+        referencia: clienteExistente ? clienteExistente._id : undefined,
+        nombre: cliente.nombre,
+        ciudad: cliente.ciudad,
+        direccion: cliente.direccion,
+        telefono: cliente.telefono,
+        correo: cliente.correo,
+        esCliente: cliente.esCliente
       },
       responsable: {
         id: responsable.id,

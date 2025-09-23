@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo from '../components/EncabezadoModulo';
 import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { openModal } from '../funciones/animaciones';
 import EditarPedido from '../components/EditarPedido';
 
 export default function Despachos() {
@@ -198,6 +195,7 @@ export default function Despachos() {
                   <tr>
                     <th>No</th>
                     <th>Identificador de Pedido</th>
+                    <th>Cotización</th>
                     <th>Producto</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
@@ -210,6 +208,7 @@ export default function Despachos() {
                   {currentItems.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td></td>
                       <td>{pedido.numeroPedido || '---'}</td>
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>

@@ -152,6 +152,13 @@ export default function RegistrarCotizacion() {
       return;
     }
 
+    // Validación básica de formato de correo antes de enviar
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(correo)) {
+      Swal.fire('Error', 'El correo del cliente debe tener un formato válido.', 'warning');
+      return;
+    }
+
     if (productosSeleccionados.length === 0) {
       Swal.fire('Error', 'Debes agregar al menos un producto a la cotización.', 'warning');
       return;
@@ -229,6 +236,44 @@ export default function RegistrarCotizacion() {
         return;
       }
 
+      // MARCAR: check if client with this email exists; if not, create as prospect
+      try {
+        const token = localStorage.getItem('token');
+        const clientesRes = await fetch('http://localhost:5000/api/clientes', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const clientes = await clientesRes.json();
+        const existe = Array.isArray(clientes) && clientes.some(c => (c.correo || '').toLowerCase() === correo.toLowerCase());
+        if (!existe) {
+          // crear prospecto (esCliente: false)
+          const nuevoCliente = {
+            nombre,
+            correo,
+            telefono,
+            direccion,
+            ciudad,
+            esCliente: false
+          };
+
+          const createRes = await fetch('http://localhost:5000/api/clientes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(nuevoCliente)
+          });
+
+          if (createRes.ok) {
+            Swal.fire('Prospecto creado', 'El correo no existía en la base de datos y se creó como prospecto.', 'success');
+          } else {
+            const err = await createRes.json();
+            console.warn('No se pudo crear prospecto:', err);
+          }
+        }
+      } catch (err) {
+        console.warn('Error al verificar/crear prospecto:', err);
+      }
       // Mostrar el formato de cotización en el modal
       setDatosFormato(datosCotizacion);
       setMostrarFormato(true);

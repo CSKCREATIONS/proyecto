@@ -257,12 +257,12 @@ export default function ListaDeCotizaciones() {
                 <span>Exportar a PDF</span>
               </button>
 
-              
+
             </div>
           </div>
           <div className="filtros-tabla">
             <div className="filtro-grupo">
-              
+
               <label>Fecha:</label>
               <input type="date" className="filtro-input" value={filtroFecha} onChange={(e) => setFiltroFecha(e.target.value)} />
             </div>
@@ -322,7 +322,7 @@ export default function ListaDeCotizaciones() {
                       <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
                       <td>
                         <button className='btnTransparente' onClick={() => handleEliminarCotizacion(cot._id)}>
-                          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} title='Eliminar cotización'/>
                         </button>
                         <button
                           className='btnTransparente'
@@ -340,7 +340,7 @@ export default function ListaDeCotizaciones() {
                             }
                           }}
                         >
-                          <i className="fa-solid fa-pen-to-square"></i>
+                          <i className="fa-solid fa-pen-to-square" title='Editar cotización'></i>
                         </button>
 
 

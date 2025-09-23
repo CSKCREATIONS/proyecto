@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import React, { useState, useEffect } from 'react';
+import CotizacionPreview from '../components/CotizacionPreview';
 
 /**** Funcion para exportar a pdf ***/
 const exportarPDF = () => {
@@ -50,6 +51,10 @@ const exportToExcel = () => {
 
 export default function ListaDeClientes() {
   const [prospectos, setProspectos] = useState([]);
+  const [cotizacionesMap, setCotizacionesMap] = useState({});
+  const [mostrarPreview, setMostrarPreview] = useState(false);
+  const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
+  const [expandedEmails, setExpandedEmails] = useState({});
   const [filtroTexto, setFiltroTexto] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const registrosPorPagina = 10;
@@ -59,11 +64,48 @@ export default function ListaDeClientes() {
   const fetchProspectos = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/clientes?esCliente=false', {
-        headers: { Authorization: `Bearer ${token}` }
+      // avoid cached 304 responses by forcing no-store and adding a cache-buster
+      const url = `http://localhost:5000/api/clientes?esCliente=false&t=${Date.now()}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+        method: 'GET'
       });
+
+      if (!res.ok) {
+        console.error('Error fetching prospectos:', res.status, res.statusText);
+        setProspectos([]);
+        return;
+      }
+
       const data = await res.json();
-      setProspectos(data);
+      // controller returns array of clientes
+      const listaProspectos = Array.isArray(data) ? data : (data.data || []);
+      setProspectos(listaProspectos);
+
+      // Also fetch cotizaciones once and build a map by client email
+      try {
+        const cotRes = await fetch(`http://localhost:5000/api/cotizaciones?t=${Date.now()}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        if (cotRes.ok) {
+          const cotData = await cotRes.json();
+          const cotList = Array.isArray(cotData) ? cotData : (cotData.data || []);
+          const map = {};
+          cotList.forEach(cot => {
+            const email = (cot.cliente?.correo || '').toLowerCase();
+            if (!email) return;
+            if (!map[email]) map[email] = [];
+            if (cot.codigo) map[email].push({ codigo: cot.codigo, id: cot._id });
+          });
+          setCotizacionesMap(map);
+        } else {
+          console.warn('No se pudieron cargar cotizaciones para el listado de prospectos');
+        }
+      } catch (err) {
+        console.error('Error al cargar cotizaciones:', err);
+      }
     } catch (err) {
       console.error('Error al cargar prospectos', err);
     }
@@ -151,6 +193,7 @@ export default function ListaDeClientes() {
               <table id='tabla_prospectos'>
                 <thead>
                   <tr>
+                    <th>Cotización</th>
                     <th>Cliente</th>
                     <th>Ciudad</th>
                     <th>Teléfono</th>
@@ -165,11 +208,49 @@ export default function ListaDeClientes() {
                   ) : (
                     prospectosPaginados.map((cliente, index) => (
                       <tr key={index}>
-                        <td>{cliente.nombre}</td>
-                        <td>{cliente.ciudad}</td>
-                        <td>{cliente.telefono}</td>
-                        <td>{cliente.correo}</td>
-                      </tr>
+                          <td style={{ whiteSpace: 'nowrap' }}>
+                            {(() => {
+                              const emailKey = (cliente.correo || '').toLowerCase();
+                              const list = cotizacionesMap[emailKey] || [];
+                              const isExpanded = !!expandedEmails[emailKey];
+                              const toShow = isExpanded ? list : list.slice(0, 3);
+
+                              return (
+                                <div>
+                                  {toShow.map((c) => (
+                                    <div key={c.id} style={{ display: 'block', marginBottom: 6 }}>
+                                      <a href="#" onClick={async (e) => { e.preventDefault();
+                                        try {
+                                          const token = localStorage.getItem('token');
+                                          const res = await fetch(`http://localhost:5000/api/cotizaciones/${c.id}`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+                                          if (res.ok) {
+                                            const data = await res.json();
+                                            setCotizacionSeleccionada(data);
+                                            setMostrarPreview(true);
+                                          } else {
+                                            console.warn('No se pudo cargar la cotización');
+                                          }
+                                        } catch (err) { console.error(err); }
+                                      }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>{c.codigo}</a>
+                                    </div>
+                                  ))}
+
+                                  {list.length > 3 && (
+                                    <div>
+                                      <a href="#" onClick={(e) => { e.preventDefault(); setExpandedEmails(prev => ({ ...prev, [emailKey]: !prev[emailKey] })); }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>
+                                        {isExpanded ? 'mostrar menos' : '...'}
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()}
+                          </td>
+                          <td>{cliente.nombre}</td>
+                          <td>{cliente.ciudad}</td>
+                          <td>{cliente.telefono}</td>
+                          <td>{cliente.correo}</td>
+                        </tr>
                     ))
                   )}
                 </tbody>
@@ -197,6 +278,9 @@ export default function ListaDeClientes() {
             ))}
           </div>
         </div>
+        {mostrarPreview && cotizacionSeleccionada && (
+          <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
+        )}
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}
           <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
