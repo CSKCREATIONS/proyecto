@@ -27,6 +27,7 @@ export default function Home() {
   const [puedeVerListaDeClientes, setPuedeVerListaDeClientes] = useState(false);
   const [puedeVerProspectos, setPuedeVerProspectos] = useState(false);
   const [puedeVerReportesVentas, setPuedeVerReportesVentas] = useState(false);
+  const [puedeVerOrdenes, setPuedeVerOrdenes] = useState(false);
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem('user'));
@@ -50,6 +51,7 @@ export default function Home() {
       setPuedeVerListaDeClientes(usuario.permissions.includes('clientes.ver'));
       setPuedeVerProspectos(usuario.permissions.includes('prospectos.ver'));
       setPuedeVerReportesVentas(usuario.permissions.includes('reportesVentas.ver'));
+      setPuedeVerOrdenes(usuario.permissions.includes('ordenesCompra.ver'));
     }
   }, []);
   return (
@@ -61,7 +63,7 @@ export default function Home() {
             <ContenedorModuloUsuarios />
           )}
           <br />
-          {(puedeVerProveedores || puedeVerHCompras) && (
+          {(puedeVerOrdenes || puedeVerProveedores || puedeVerHCompras) && (
             <ContenedorModuloCompras />
           )}
           <br />
@@ -73,13 +75,13 @@ export default function Home() {
             <ContenedorModuloVentas />
           )}
         </div>
+        
+      </div>
         <div className="custom-footer">
           <p className="custom-footer-text">
             © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
           </p>
         </div>
-      </div>
-
     </div>
 
   )

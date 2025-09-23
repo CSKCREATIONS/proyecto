@@ -475,13 +475,13 @@ export default function ListaDeUsuarios() {
         <EditarUsuario usuario={usuarioEditando} fetchUsuarios={fetchUsuarios} />
         <AgregarUsuario />
 
-         <div className="custom-footer">
+         
+      </div>
+      <div className="custom-footer">
           <p className="custom-footer-text">
             © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
           </p>
         </div>
-      </div>
-      
     </div>
   );
 }

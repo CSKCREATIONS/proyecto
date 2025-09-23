@@ -59,7 +59,7 @@ export default function Fijo() {
         setPuedeVerUsuarios(permissions.includes('usuarios.ver'));
         setPuedeVerRoles(permissions.includes('roles.ver'));
         setPuedeGenerarOrden(permissions.includes('ordenes.generar'));
-        setPuedeVerOrdenes(permissions.includes('ordenCompra.ver'));
+        setPuedeVerOrdenes(permissions.includes('ordenesCompra.ver'));
         setPuedeVerProveedores(permissions.includes('proveedores.ver'));
         setPuedeVerHCompras(permissions.includes('hcompras.ver'));
         setPuedeVerReportesCompras(permissions.includes('reportesCompras.ver'));

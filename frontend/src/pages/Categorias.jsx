@@ -272,15 +272,13 @@ const GestionCategorias = () => {
             onSave={handleSave}
           />
         )}
-        <p className="text-sm text-gray-400 tracking-wide text-center">
-          © 2025{" "}
-          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            PANGEA
-          </span>
-          . Todos los derechos reservados.
-        </p>
+        
       </div>
-      
+      <div className="custom-footer">
+          <p className="custom-footer-text">
+            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+          </p>
+        </div>
     </div>
   );
 };

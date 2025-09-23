@@ -75,10 +75,10 @@ export default function HistorialCompras() {
                   <tr key={compra._id}>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>
-                      <button 
-                        onClick={() => verDetallesCompra(compra)} 
+                      <button
+                        onClick={() => verDetallesCompra(compra)}
                         className="btn btn-link btn-sm p-0"
-                        style={{textDecoration: 'none', color: '#007bff', fontWeight: 'bold'}}
+                        style={{ textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}
                       >
                         {compra.numeroOrden || 'N/A'}
                       </button>
@@ -101,14 +101,14 @@ export default function HistorialCompras() {
           {/* Paginación */}
           {compras.length > 0 && (
             <div className="pagination">
-              <button 
-                onClick={() => paginate(currentPage - 1)} 
+              <button
+                onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className="pagination-btn"
               >
                 Anterior
               </button>
-              
+
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i + 1}
@@ -118,9 +118,9 @@ export default function HistorialCompras() {
                   {i + 1}
                 </button>
               ))}
-              
-              <button 
-                onClick={() => paginate(currentPage + 1)} 
+
+              <button
+                onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className="pagination-btn"
               >
@@ -208,15 +208,14 @@ export default function HistorialCompras() {
             </div>
           )}
 
-          <p className="text-sm text-gray-400 tracking-wide text-center">
-            © 2025{" "}
-            <span className="text-yellow-400 font-semibold">
-              PANGEA
-            </span>
-            . Todos los derechos reservados.
-          </p>
+          
         </div>
       </div>
+      <div className="custom-footer">
+          <p className="custom-footer-text">
+            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+          </p>
+        </div>
     </div>
   );
 }

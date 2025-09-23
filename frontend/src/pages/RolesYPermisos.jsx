@@ -227,15 +227,14 @@ export default function RolesYPermisos() {
           </div>
 
         </div>
-        <div className="custom-footer">
+      </div>
+      <AgregarRol />
+      <EditarRol rol={rolSeleccionado} />
+      <div className="custom-footer">
           <p className="custom-footer-text">
             © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
           </p>
         </div>
-      </div>
-      <AgregarRol />
-      <EditarRol rol={rolSeleccionado} />
-      
     </div>
   )
 }
