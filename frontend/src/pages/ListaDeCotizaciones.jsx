@@ -346,11 +346,84 @@ export default function ListaDeCotizaciones() {
 
                         <button
                           className='btnTransparente'
-                          onClick={() => {
-                            if (cot.cliente?._id) {
-                              navigate(`/AgendarVenta/${cot.cliente._id}`);
-                            } else {
-                              Swal.fire('Error', 'Esta cotización no tiene un cliente válido asignado.', 'warning');
+                          onClick={async () => {
+                            try {
+                              const token = localStorage.getItem('token');
+                              // Obtener cotización completa para asegurar productos y cliente
+                              const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                              });
+                              if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                              const data = await res.json();
+                              const cotizacion = data.data || data;
+
+                              const confirm = await Swal.fire({
+                                title: `¿Agendar la cotización '${cotizacion.codigo}' como pedido?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sí, agendar',
+                                cancelButtonText: 'No'
+                              });
+                              if (!confirm.isConfirmed) return;
+                              
+
+                              const clienteId = (
+                                cotizacion?.cliente?.referencia?._id ||
+                                cotizacion?.cliente?.referencia ||
+                                cot?.cliente?._id ||
+                                cot?.cliente?.referencia?._id ||
+                                cot?.cliente?.referencia
+                              );
+
+
+                              // Mapear productos al formato de pedido
+                              const productosPedido = (cotizacion.productos || []).map(p => {
+                                const productId = (p?.producto?.id && (p.producto.id._id || p.producto.id)) || p?.producto;
+                                if (!productId) return null;
+                                const cantidadNum = Number(p?.cantidad);
+                                const precioNum = p?.valorUnitario != null ? Number(p.valorUnitario) : Number(p?.producto?.price);
+                                return {
+                                  product: productId,
+                                  cantidad: Number.isFinite(cantidadNum) && cantidadNum > 0 ? cantidadNum : 1,
+                                  precioUnitario: Number.isFinite(precioNum) ? precioNum : 0,
+                                };
+                              }).filter(Boolean);
+
+                              if (productosPedido.length === 0) {
+                                return Swal.fire('Error', 'La cotización no tiene productos.', 'warning');
+                              }
+
+                              // Fecha de entrega: por ahora 7 días después de la fecha de la cotización o de hoy
+                              const baseDate = cotizacion.fecha ? new Date(cotizacion.fecha) : new Date();
+                              const fechaEntrega = new Date(baseDate.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+                              const crearRes = await fetch('http://localhost:5000/api/pedidos', {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                  cliente: clienteId,
+                                  productos: productosPedido,
+                                  fechaEntrega,
+                                  observacion: `Agendado desde cotización ${cotizacion.codigo}`,
+                                  cotizacionReferenciada: cotizacion._id,
+                                  cotizacionCodigo: cotizacion.codigo
+                                })
+                              });
+
+                              if (!crearRes.ok) {
+                                const errText = await crearRes.text();
+                                throw new Error(errText || 'No se pudo agendar el pedido');
+                              }
+
+                              await crearRes.json();
+                              await Swal.fire('Agendado', 'La cotización fue agendada como pedido.', 'success');
+                              navigate('/PedidosAgendados');
+                            } catch (error) {
+                              console.error(error);
+                              Swal.fire('Error', error.message || 'Hubo un problema al agendar la cotización', 'error');
                             }
                           }}
                         >
@@ -387,6 +460,5 @@ export default function ListaDeCotizaciones() {
       )}
 
     </div>
-
   )
 };

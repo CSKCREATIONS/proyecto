@@ -274,8 +274,9 @@ export default function RegistrarCotizacion() {
       } catch (err) {
         console.warn('Error al verificar/crear prospecto:', err);
       }
-      // Mostrar el formato de cotización en el modal
-      setDatosFormato(datosCotizacion);
+  // Mostrar el formato de cotización en el modal usando la respuesta del servidor
+  // El backend devuelve { message, data: cotizacion }
+  setDatosFormato(result.data || result);
       setMostrarFormato(true);
       setNotificacion('Cotización guardada');
       setTimeout(() => setNotificacion(null), 5000);

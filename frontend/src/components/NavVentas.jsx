@@ -43,7 +43,6 @@ export default function NavVentas() {
     { path: "/RegistrarCotizacion", label: "Registrar cotización", visible: puedeRegistrarCotizacion },
     { path: "/ListaDeCotizaciones", label: "Lista de cotizaciones", visible: puedeVerCotizaciones },
     { path: "/PedidosAgendados", label: "Pedidos agendados", visible: puedeVerVentasAgendadas },
-    { path: "/PedidosDespachados", label: "Pedidos despachados", visible: puedeVerPedidosDespachados },
 
     { path: "/PedidosEntregados", label: "Pedidos Entregados", visible: puedeVerPedidosEntregados },
 
@@ -59,7 +58,6 @@ export default function NavVentas() {
     puedeRegistrarCotizacion,
     puedeVerCotizaciones,
     puedeVerVentasAgendadas,
-    puedeVerPedidosDespachados,
     puedeVerPedidosEntregados,
     puedeVerPedidosCancelados,
     puedeVerPedidosDevueltos,

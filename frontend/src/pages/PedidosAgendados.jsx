@@ -7,14 +7,17 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import EditarPedido from '../components/EditarPedido';
+import CotizacionPreview from '../components/CotizacionPreview';
 
 export default function Despachos() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
+  const [cotizacionPreview, setCotizacionPreview] = useState(null);
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
@@ -22,7 +25,7 @@ export default function Despachos() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -66,7 +69,7 @@ export default function Despachos() {
   const despacharPedido = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/estado`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ estado: 'despachado' })
@@ -100,7 +103,7 @@ export default function Despachos() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/cancelar`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       });
@@ -208,8 +211,33 @@ export default function Despachos() {
                   {currentItems.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td></td>
                       <td>{pedido.numeroPedido || '---'}</td>
+                      <td>
+                        {pedido.cotizacionCodigo ? (
+                          <a
+                            style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                            onClick={async () => {
+                              try {
+                                const token = localStorage.getItem('token');
+                                const id = pedido.cotizacionReferenciada || pedido.cotizacionId;
+                                if (!id) return;
+                                const res = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
+                                  headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                const data = await res.json();
+                                const cotizacionCompleta = data.data || data;
+                                setCotizacionPreview(cotizacionCompleta);
+                                setMostrarPreview(true);
+                              } catch (err) {
+                                Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                              }
+                            }}
+                          >
+                            {pedido.cotizacionCodigo}
+                          </a>
+                        ) : '---'}
+                      </td>
                       <td>
                         <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
                           Productos
@@ -263,6 +291,12 @@ export default function Despachos() {
         productos={pedidoSeleccionado?.productos || []}
         cotizacionId={pedidoSeleccionado?._id}
       />
+      {mostrarPreview && cotizacionPreview && (
+        <CotizacionPreview
+          datos={cotizacionPreview}
+          onClose={() => { setMostrarPreview(false); setCotizacionPreview(null); }}
+        />
+      )}
     </div>
   );
 }

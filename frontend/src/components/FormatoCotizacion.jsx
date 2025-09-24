@@ -18,8 +18,11 @@ export default function FormatoCotizacion({ datos, onClose }) {
     direccion: 'Cra 123 #45-67, Bogotá',
   };
 
+  // Normalize datos (accept { data: cot } or cot)
+  const cot = datos && datos.data ? datos.data : datos || {};
+
   // Obtener lista de productos para mostrar el nombre
-  const productosLista = datos.productosLista || [];
+  const productosLista = cot.productosLista || cot.productos || [];
 
 
   console.log("productosLista:", productosLista);
@@ -60,20 +63,28 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <div className="cotizacion-encabezado">
             <h2>Cotizacion</h2>
             <div className="cot-fecha">
-              <p style={{ fontSize: '0.7rem' }}>{datos.codigo ? datos.codigo : ''}</p>
-              <p style={{ fontSize: '0.7rem' }}>{datos.fecha || ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{cot.codigo || ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{
+                (function() {
+                  const f = cot.fecha ? new Date(cot.fecha) : new Date();
+                  const yyyy = f.getFullYear();
+                  const mm = String(f.getMonth() + 1).padStart(2, '0');
+                  const dd = String(f.getDate()).padStart(2, '0');
+                  return `${yyyy}-${mm}-${dd}`;
+                })()
+              }</p>
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
             <div>
-              <p>{datos.cliente?.nombre || ''}</p>
-              <p>{datos.cliente?.direccion || ''} - {datos.cliente?.ciudad || ''}</p>
-              <p> {datos.cliente?.telefono || ''}</p>
-              <p> {datos.cliente?.correo || ''}</p>
+              <p>{cot.cliente?.nombre || ''}</p>
+              <p>{cot.cliente?.direccion || ''} - {cot.cliente?.ciudad || ''}</p>
+              <p> {cot.cliente?.telefono || ''}</p>
+              <p> {cot.cliente?.correo || ''}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <p>{datos.empresa?.nombre || empresa.nombre}</p>
-              <p>{datos.empresa?.direccion || empresa.direccion}</p>
+              <p>{cot.empresa?.nombre || empresa.nombre}</p>
+              <p>{cot.empresa?.direccion || empresa.direccion}</p>
               <p>
                 {usuario.firstName || ''} {usuario.surname || ''}
               </p>
@@ -82,7 +93,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <hr />
           <div className="descripcion-cotizacion">
             <h4>Descripción cotización</h4>
-            <div dangerouslySetInnerHTML={{ __html: datos.descripcion }} />
+            <div dangerouslySetInnerHTML={{ __html: cot.descripcion }} />
           </div>
           <hr />
           <table className="tabla-cotizacion">
@@ -97,7 +108,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
               </tr>
             </thead>
             <tbody>
-              {datos.productos.map((p, idx) => (
+              {(cot.productos || []).map((p, idx) => (
                 <tr key={idx}>
                   <td>{p.nombre || 'Desconocido'}</td>
                   <td>{p.descripcion}</td>
@@ -116,12 +127,12 @@ export default function FormatoCotizacion({ datos, onClose }) {
                 </tr>
               ))}
               {/* Fila de total */}
-              {datos.productos.length > 0 && (
+              {(cot.productos && cot.productos.length > 0) && (
                 <tr>
                   <td colSpan={4}></td>
                   <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
                   <td style={{ fontWeight: 'bold' }}>
-                    {datos.productos
+                    {(cot.productos || [])
                       .reduce((acc, p) => {
                         const cantidad = parseFloat(p.cantidad) || 0;
                         const valorUnitario = parseFloat(p.valorUnitario) || 0;
@@ -138,7 +149,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <hr />
           <div className="condiciones-pago">
             <h4>Condiciones de pago</h4>
-            <div dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
+            <div dangerouslySetInnerHTML={{ __html: cot.condicionesPago }} />
           </div>
           <br />
           <div>Cotizacion valida por 15 dias</div>
