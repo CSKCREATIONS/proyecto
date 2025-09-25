@@ -1,0 +1,179 @@
+
+# Metodología Ágil Aplicada al Proyecto Pangea (App Móvil)
+
+## 1. Definición de Objetivos y Alcance
+- ✅ Se realizó una sesión de lluvia de ideas para definir los objetivos y el alcance del proyecto (ver sección de objetivos en este documento).
+- Objetivo general: Crear una app móvil de gestión empresarial para usuarios, productos, ventas y compras.
+- Objetivos específicos: Gestión de usuarios, productos, categorías, compras, ventas, reportes y notificaciones.
+
+## 2. Recopilación de Requisitos
+- Se realizó una sesión de recopilación de requisitos con los stakeholders (empresa solicitante).
+- Se identificaron necesidades clave: facilidad de uso móvil, gestión de roles, reportes, integración de notificaciones, optimización de procesos.
+
+## 3. Product Backlog
+- Cada ítem del backlog está documentado con descripción, criterios de aceptación y estimación de esfuerzo (ver sección de backlog en este documento).
+- Ejemplo de ítem:
+	- "Como administrador, quiero crear y editar usuarios para gestionar el acceso al sistema."
+	- Criterios de aceptación: CRUD funcional, validación de datos, asignación de roles.
+	- Estimación: 5 puntos.
+
+	- "Como encargado de inventario, quiero gestionar productos (crear, editar, eliminar, listar) para mantener actualizado el stock."
+	- Criterios de aceptación: CRUD de productos, validación de datos, integración con categorías y subcategorías.
+	- Estimación: 8 puntos.
+
+	- "Como usuario, quiero ver el listado de productos con filtros y búsqueda para encontrar fácilmente lo que necesito."
+	- Criterios de aceptación: Filtros por categoría, subcategoría, búsqueda por nombre/código, paginación.
+	- Estimación: 5 puntos.
+
+	- "Como jefe de compras, quiero gestionar proveedores y registrar compras para controlar el abastecimiento."
+	- Criterios de aceptación: CRUD de proveedores, registro de compras, validación de datos, integración con productos.
+	- Estimación: 8 puntos.
+
+	- "Como administrador, quiero gestionar categorías y subcategorías para organizar los productos."
+	- Criterios de aceptación: CRUD de categorías y subcategorías, validación de duplicados, integración con productos.
+	- Estimación: 5 puntos.
+
+	- "Como usuario, quiero recibir notificaciones sobre cambios importantes (nuevas cotizaciones, cambios de estado, etc.) para estar informado en tiempo real."
+	- Criterios de aceptación: Notificaciones visibles en la app, integración con eventos clave, pruebas de recepción.
+	- Estimación: 5 puntos.
+
+	- "Como encargado de inventario, quiero accesos directos a las funciones más usadas para agilizar mi trabajo diario."
+	- Criterios de aceptación: Accesos directos configurables, visibilidad según rol, pruebas de usabilidad.
+	- Estimación: 3 puntos.
+
+	- "Como usuario, quiero un dashboard personalizable con widgets para ver la información más relevante para mi rol."
+	- Criterios de aceptación: Widgets configurables, persistencia de preferencias, pruebas de personalización.
+	- Estimación: 8 puntos.
+
+	- "Como administrador, quiero ver reportes y estadísticas de ventas, compras y stock para tomar decisiones informadas."
+	- Criterios de aceptación: Reportes visuales, filtros por fecha y categoría, exportación de datos.
+	- Estimación: 8 puntos.
+
+	- "Como QA/desarrollador, quiero que existan pruebas unitarias y de integración para asegurar la calidad del sistema."
+	- Criterios de aceptación: Cobertura mínima del 80%, pruebas automáticas en CI, documentación de casos de prueba.
+	- Estimación: 5 puntos.
+
+	- "Como usuario, quiero que la app funcione correctamente en pantallas pequeñas para una experiencia móvil óptima."
+	- Criterios de aceptación: Responsive design, pruebas en diferentes dispositivos, corrección de bugs visuales.
+	- Estimación: 5 puntos.
+
+	- "Como administrador, quiero gestionar roles y permisos para controlar el acceso a las funcionalidades."
+	- Criterios de aceptación: CRUD de roles, asignación de permisos, pruebas de acceso restringido.
+	- Estimación: 5 puntos.
+
+	- "Como usuario, quiero autenticación segura y recuperación de contraseña para proteger mi cuenta."
+	- Criterios de aceptación: Login seguro, recuperación por email, validación de tokens.
+	- Estimación: 5 puntos.
+
+	- "Como usuario, quiero soporte para notificaciones push para recibir alertas incluso fuera de la app."
+	- Criterios de aceptación: Integración con servicios push, pruebas en Android/iOS, configuración de preferencias.
+	- Estimación: 5 puntos.
+
+	- "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros."
+	- Criterios de aceptación: Documentación técnica y de usuario, actualización continua, accesibilidad para el equipo.
+	- Estimación: 3 puntos.
+
+## 4. Planificación de Sprints
+
+### Propuesta de Sprints
+
+#### Sprint 1 (Fundamentos y Módulos Críticos)
+- Gestión de usuarios (CRUD, roles y permisos)
+- Autenticación segura y recuperación de contraseña
+- Gestión de productos (CRUD)
+- Gestión de categorías y subcategorías
+- Responsive design para móviles
+- Pruebas unitarias básicas
+
+**Asignación de tareas Sprint 1:**
+- FullStack (Julian Castro): Gestión de usuarios, autenticación, roles y permisos
+- Frontend (Natalia Cardenas): Responsive design, UI de productos y categorías
+- Backend (Jesus Gomez): API de productos, categorías y subcategorías
+- QA (Sharyk Forero): Pruebas unitarias básicas
+
+#### Sprint 2 (Compras, Proveedores y Notificaciones)
+- Gestión de proveedores (CRUD)
+- Registro de compras
+- Sistema de notificaciones visibles en la app
+- Accesos directos para roles específicos
+- Filtros y búsqueda de productos
+- Pruebas de integración
+
+**Asignación de tareas Sprint 2:**
+- FullStack (Julian Castro): Gestión de proveedores, registro de compras
+- Frontend (Natalia Cardenas): Notificaciones visibles, accesos directos, filtros/búsqueda
+- Backend (Jesus Gomez): Integración compras-proveedores-productos
+- QA (Sharyk Forero): Pruebas de integración
+
+#### Sprint 3 (Dashboard, Reportes y Optimización)
+- Dashboard personalizable con widgets
+- Reportes y estadísticas (ventas, compras, stock)
+- Notificaciones push
+- Optimización de carga y rendimiento
+- Documentación técnica y de usuario
+- Workshops internos y code review
+
+**Asignación de tareas Sprint 3:**
+- FullStack (Julian Castro):
+		- Implementar lógica de dashboard personalizable
+			(Backlog: "Como usuario, quiero un dashboard personalizable con widgets para ver la información más relevante para mi rol.")
+		- Desarrollar generación de reportes y estadísticas (ventas, compras, stock)
+			(Backlog: "Como administrador, quiero ver reportes y estadísticas de ventas, compras y stock para tomar decisiones informadas.")
+		- Integrar widgets con datos en tiempo real
+			(Backlog: "Como usuario, quiero un dashboard personalizable con widgets para ver la información más relevante para mi rol.")
+Frontend (Natalia Cardenas):
+		- Diseñar e implementar widgets personalizables
+			(Backlog: "Como usuario, quiero un dashboard personalizable con widgets para ver la información más relevante para mi rol.")
+		- Optimizar la interfaz de usuario para el dashboard
+			(Backlog: "Como usuario, quiero que la app funcione correctamente en pantallas pequeñas para una experiencia móvil óptima.")
+		- Redactar y actualizar la documentación de usuario
+			(Backlog: "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros.")
+Backend (Jesus Gomez):
+		- Desarrollar endpoints para reportes y estadísticas
+			(Backlog: "Como administrador, quiero ver reportes y estadísticas de ventas, compras y stock para tomar decisiones informadas.")
+		- Implementar notificaciones push (integración con servicios externos)
+			(Backlog: "Como usuario, quiero soporte para notificaciones push para recibir alertas incluso fuera de la app.")
+		- Optimizar la carga y rendimiento de la API
+			(Backlog: "Como usuario, quiero que la app funcione correctamente en pantallas pequeñas para una experiencia móvil óptima.")
+QA (Sharyk Forero):
+		- Realizar pruebas funcionales y de usuario sobre el dashboard y widgets
+			(Backlog: "Como QA/desarrollador, quiero que existan pruebas unitarias y de integración para asegurar la calidad del sistema.")
+		- Validar el rendimiento y la estabilidad de la app
+			(Backlog: "Como usuario, quiero que la app funcione correctamente en pantallas pequeñas para una experiencia móvil óptima.")
+		- Documentar casos de prueba y resultados
+			(Backlog: "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros.")
+Todos (Equipo completo):
+		- Participar en workshops internos
+			(Backlog: "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros.")
+		- Realizar code review cruzado
+			(Backlog: "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros.")
+		- Mantener y actualizar la documentación técnica
+			(Backlog: "Como equipo, queremos documentación clara y actualizada para facilitar el desarrollo y la incorporación de nuevos miembros.")
+
+Al final de cada sprint se realiza una entrega funcional, se recoge feedback y se ajusta el backlog para el siguiente ciclo.
+- Se documentan bloqueos y avances en reuniones diarias (stand-ups).
+
+## 6. Feedback y Ajuste del Backlog
+- Al final de cada sprint, se recoge feedback de los stakeholders y usuarios reales.
+- El backlog se ajusta según necesidades reales y prioridades detectadas.
+- Se usan encuestas y entrevistas para validar la experiencia de usuario (ver sección de feedback en este documento).
+
+## 7. Revisión y Retrospectiva
+- Se evalúa qué funcionó bien y qué puede mejorar en cada sprint.
+- Se documentan conclusiones y acciones de mejora para el próximo sprint.
+- Se fomenta la mejora continua y la adaptación del proceso.
+
+## 8. Entrega Incremental y Validación
+- Se entregan versiones funcionales al final de cada sprint (MVP, módulos completos, etc.).
+- Se realizan pruebas de usuario para validar que los requisitos se cumplen.
+- Se documentan los resultados y se planifican los siguientes pasos.
+
+## 9. Adaptación y Optimización
+- El backlog se revisa y ajusta regularmente según feedback y prioridades.
+- Se priorizan tareas de mayor valor para el usuario final.
+- Se implementan mejoras en procesos y colaboración (pair programming, code review, workshops internos).
+- Se promueve la formación y aprendizaje continuo del equipo.
+
+---
+
+**Este documento resume cómo se aplica la metodología ágil en el desarrollo de la app móvil Pangea, con ejemplos y actividades reales del equipo y el producto.**
