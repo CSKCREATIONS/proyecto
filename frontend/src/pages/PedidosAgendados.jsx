@@ -191,80 +191,82 @@ export default function Despachos() {
               </button>
             </div>
           </div>
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id="tabla_despachos">
-                <thead><br />
-                  <tr>
-                    <th>No</th>
-                    <th>Identificador de Pedido</th>
-                    <th>Cotización</th>
-                    <th>Producto</th>
-                    <th>F. Agendamiento</th>
-                    <th>F. Entrega</th>
-                    <th>Cliente</th>
-                    <th>Ciudad</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems.map((pedido, index) => (
-                    <tr key={pedido._id}>
-                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td>{pedido.numeroPedido || '---'}</td>
-                      <td>
-                        {pedido.cotizacionCodigo ? (
-                          <a
-                            style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
-                            onClick={async () => {
-                              try {
-                                const token = localStorage.getItem('token');
-                                const id = pedido.cotizacionReferenciada || pedido.cotizacionId;
-                                if (!id) return;
-                                const res = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
-                                  headers: { 'Authorization': `Bearer ${token}` }
-                                });
-                                if (!res.ok) throw new Error('No se pudo obtener la cotización');
-                                const data = await res.json();
-                                const cotizacionCompleta = data.data || data;
-                                setCotizacionPreview(cotizacionCompleta);
-                                setMostrarPreview(true);
-                              } catch (err) {
-                                Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
-                              }
-                            }}
-                          >
-                            {pedido.cotizacionCodigo}
-                          </a>
-                        ) : '---'}
-                      </td>
-                      <td>
-                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                          Productos
-                        </button>
-                      </td>
-                      <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
-                      <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
-                      <td>{pedido.cliente?.nombre}</td>
-                      <td>{pedido.cliente?.ciudad}</td>
-                      <td className="no-export">
-                        <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
-                          Despachar
-                        </button>
-                        &nbsp;
-                        <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
-                          Cancelar
-                        </button>
-                      </td>
+
+          <div className="max-width">
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id="tabla_despachos">
+                  <thead><br />
+                    <tr>
+                      <th>No</th>
+                      <th>Identificador de Pedido</th>
+                      <th>Cotización</th>
+                      <th>Producto</th>
+                      <th>F. Agendamiento</th>
+                      <th>F. Entrega</th>
+                      <th>Cliente</th>
+                      <th>Ciudad</th>
+                      <th>Acciones</th>
                     </tr>
-                  ))}
-                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos disponibles</td></tr>}
-                </tbody>
-              </table>
-              
-              <EditarPedido />
-            </div>
-            <div className="pagination">
+                  </thead>
+                  <tbody>
+                    {currentItems.map((pedido, index) => (
+                      <tr key={pedido._id}>
+                        <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                        <td>{pedido.numeroPedido || '---'}</td>
+                        <td>
+                          {pedido.cotizacionCodigo ? (
+                            <a
+                              style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                              onClick={async () => {
+                                try {
+                                  const token = localStorage.getItem('token');
+                                  const id = pedido.cotizacionReferenciada || pedido.cotizacionId;
+                                  if (!id) return;
+                                  const res = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                  });
+                                  if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                  const data = await res.json();
+                                  const cotizacionCompleta = data.data || data;
+                                  setCotizacionPreview(cotizacionCompleta);
+                                  setMostrarPreview(true);
+                                } catch (err) {
+                                  Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                                }
+                              }}
+                            >
+                              {pedido.cotizacionCodigo}
+                            </a>
+                          ) : '---'}
+                        </td>
+                        <td>
+                          <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
+                            Productos
+                          </button>
+                        </td>
+                        <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
+                        <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
+                        <td>{pedido.cliente?.nombre}</td>
+                        <td>{pedido.cliente?.ciudad}</td>
+                        <td className="no-export">
+                          <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
+                            Despachar
+                          </button>
+                          &nbsp;
+                          <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
+                            Cancelar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos disponibles</td></tr>}
+                  </tbody>
+                </table>
+
+                <EditarPedido />
+              </div>
+              <div className="pagination">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i + 1}
@@ -275,7 +277,10 @@ export default function Despachos() {
                   </button>
                 ))}
               </div>
+            </div>
           </div>
+
+
         </div>
         <p className="text-sm text-gray-400 tracking-wide text-center">
           © 2025{" "}

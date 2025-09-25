@@ -26,7 +26,6 @@ import ReportessVentas from './pages/ReportessVentas';
 import PrivateRoute from './routes/PrivateRoute';
 import PermisoRoute from './routes/PermisoRoute';
 import PedidosDevueltos from './pages/PedidosDevueltos';
-import Ventas from './pages/Ventas';
 import ReporteProveedores from './pages/ReporteProveedores';
 import ReporteProductos from './pages/ReporteProductos';
 
@@ -247,16 +246,6 @@ const App = () => {
             }
           />
 
-          <Route
-            path='/Ventas'
-            element={
-              <PrivateRoute>
-                <PermisoRoute permiso="listaDeVentas.ver">
-                  <Ventas />
-                </PermisoRoute>
-              </PrivateRoute>
-            }
-          />
 
           <Route
             path='/ListaDeClientes'

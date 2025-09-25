@@ -514,10 +514,14 @@ li {
   background-color: #cfcfcf;
 }
 
+.max-width{
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
 /*Estilos para todas las <table>*/
 /* Contenedor general de tabla */
 .table-container {
-  max-width: 1100px;
   overflow-x: auto;
   scrollbar-width: thin;
   margin: 0 auto;

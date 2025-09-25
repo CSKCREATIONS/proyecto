@@ -70,7 +70,6 @@ export default function Fijo() {
         setPuedeVerPedidosEntregados(permissions.includes('pedidosEntregados.ver'));
         setPuedeVerPedidosCancelados(permissions.includes('pedidosCancelados.ver'));
         setPuedeVerPedidosDevueltos(permissions.includes('pedidosDevueltos.ver'));
-        setPuedeVerListaDeVentas(permissions.includes('listaDeVentas.ver'));
         setPuedeVerListaDeClientes(permissions.includes('clientes.ver'));
         setPuedeVerProspectos(permissions.includes('prospectos.ver'));
         setPuedeVerReportesVentas(permissions.includes('reportesVentas.ver'));
@@ -235,7 +234,7 @@ export default function Fijo() {
                   </nav>
                 )}
 
-                {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados  || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
+                {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerPedidosCancelados  || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
                   <nav>
                     <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}><i class="fas fa-cash-register"></i> Ventas</li>
                     <ul id="submenuVentas" className="dropdown">
@@ -256,9 +255,6 @@ export default function Fijo() {
                       )}
                       {puedeVerPedidosDevueltos && (
                         <Link as={Link} to="/PedidosDevueltos"><li><i class="fas fa-undo-alt"></i> Pedidos devueltos</li></Link>
-                      )}
-                      {puedeVerListaDeVentas && (
-                        <Link as={Link} to="/Ventas"><li> <i class="fas fa-address-book"></i> Lista de ventas</li></Link>
                       )}
                       {puedeVerListaDeClientes && (
                         <Link as={Link} to="/ListaDeClientes"><li> <i class="fas fa-address-book"></i> Lista de clientes</li></Link>

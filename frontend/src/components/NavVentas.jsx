@@ -50,7 +50,6 @@ export default function NavVentas() {
 
     { path: "/PedidosDevueltos", label: "Pedidos devueltos", visible: puedeVerPedidosDevueltos },
     
-    { path: "/Ventas", label: "Lista de ventas", visible: puedeVerListaDeVentas },
     { path: "/ListaDeClientes", label: "Lista de clientes", visible: puedeVerListaDeClientes },
     { path: "/ProspectosDeClientes", label: "Prospectos de clientes", visible: puedeVerProspectos },
     { path: "/ReportessVentas", label: "Reportes", visible: puedeVerReportesVentas }

@@ -17,8 +17,8 @@ const exportarPDF = () => {
     const pdf = new jsPDF('p', 'mm', 'a4');
 
     const imgWidth = 190;
-    const pageHeight = 297; 
-    const imgHeight = (canvas.height * imgWidth) / canvas.width; 
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     let heightLeft = imgHeight;
     let position = 10;
@@ -174,9 +174,9 @@ export default function ListaDeClientes() {
               type="text"
               placeholder="Buscar cliente..."
               value={filtroTexto}
-              onChange={(e) => { 
-                setFiltroTexto(e.target.value); 
-                setPaginaActual(1); 
+              onChange={(e) => {
+                setFiltroTexto(e.target.value);
+                setPaginaActual(1);
               }}
               style={{
                 padding: "8px 12px",
@@ -187,27 +187,28 @@ export default function ListaDeClientes() {
             />
           </div>
 
-          {/* TABLA */}
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id='tabla_prospectos'>
-                <thead>
-                  <tr>
-                    <th>Cotización</th>
-                    <th>Cliente</th>
-                    <th>Ciudad</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {prospectosPaginados.length === 0 ? (
+          <div className="max-width">
+            {/* TABLA */}
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id='tabla_prospectos'>
+                  <thead>
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'center' }}>No hay prospectos registrados.</td>
+                      <th>Cotización</th>
+                      <th>Cliente</th>
+                      <th>Ciudad</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
                     </tr>
-                  ) : (
-                    prospectosPaginados.map((cliente, index) => (
-                      <tr key={index}>
+                  </thead>
+                  <tbody>
+                    {prospectosPaginados.length === 0 ? (
+                      <tr>
+                        <td colSpan="4" style={{ textAlign: 'center' }}>No hay prospectos registrados.</td>
+                      </tr>
+                    ) : (
+                      prospectosPaginados.map((cliente, index) => (
+                        <tr key={index}>
                           <td style={{ whiteSpace: 'nowrap' }}>
                             {(() => {
                               const emailKey = (cliente.correo || '').toLowerCase();
@@ -219,7 +220,8 @@ export default function ListaDeClientes() {
                                 <div>
                                   {toShow.map((c) => (
                                     <div key={c.id} style={{ display: 'block', marginBottom: 6 }}>
-                                      <a href="#" onClick={async (e) => { e.preventDefault();
+                                      <a href="#" onClick={async (e) => {
+                                        e.preventDefault();
                                         try {
                                           const token = localStorage.getItem('token');
                                           const res = await fetch(`http://localhost:5000/api/cotizaciones/${c.id}`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
@@ -251,12 +253,14 @@ export default function ListaDeClientes() {
                           <td>{cliente.telefono}</td>
                           <td>{cliente.correo}</td>
                         </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+
 
           {/* PAGINACIÓN */}
           <div style={{ marginTop: "15px", display: "flex", justifyContent: "center", gap: "8px" }}>

@@ -274,9 +274,9 @@ export default function RegistrarCotizacion() {
       } catch (err) {
         console.warn('Error al verificar/crear prospecto:', err);
       }
-  // Mostrar el formato de cotización en el modal usando la respuesta del servidor
-  // El backend devuelve { message, data: cotizacion }
-  setDatosFormato(result.data || result);
+      // Mostrar el formato de cotización en el modal usando la respuesta del servidor
+      // El backend devuelve { message, data: cotizacion }
+      setDatosFormato(result.data || result);
       setMostrarFormato(true);
       setNotificacion('Cotización guardada');
       setTimeout(() => setNotificacion(null), 5000);
@@ -324,119 +324,123 @@ export default function RegistrarCotizacion() {
 
           {/* FORMULARIO ORIGINAL A INSERTAR AQUÍ */}
           {/* ... tu formulario completo sigue aquí como ya está construido */}
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Ciudad</th>
-                  <th>Dirección</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                  <th>Responsable cotización</th>
-                  <th>Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><input id='cliente' type="text" className="cuadroTexto" placeholder="Nombre o razón social" /></td>
-                  <td><input id='ciudad' type="text" className="cuadroTexto" placeholder="Ciudad" /></td>
-                  <td><input id='direccion' type="text" className="cuadroTexto" placeholder="Dirección" /></td>
-                  <td><input id='telefono' type="number" className="cuadroTexto" placeholder="Teléfono" /></td>
-                  <td><input id='email' type="email" className="cuadroTexto" placeholder="Correo electrónico" /></td>
-                  <td><span id='vendedor'>{user ? user.firstName : ''} {user ? user.surname : ''}</span></td>
-                  <td><input id='fecha' type="date" className="cuadroTexto" /></td>
-                </tr>
-
-              </tbody>
-            </table>
-          </div>
-
-          <br />
-          <label className="labelDOCS">Descripción cotización</label>
-          <br /><br />
-          <Editor id='descripcion-cotizacion'
-            onInit={(evt, editor) => (descripcionRef.current = editor)}
-            apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
-            textareaName="Descripcion"
-            init={{ height: 250, menubar: false }}
-          />
-
-          <br />
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Producto</th>
-                  <th>Descripción</th>
-                  <th>Cantidad</th>
-                  <th>Valor unitario</th>
-                  <th>% Descuento</th>
-                  <th>Subtotal</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productosSeleccionados.map((prod, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <select
-                        className="cuadroTexto"
-                        value={prod.producto}
-                        onChange={(e) => handleProductoChange(index, e.target.value)}
-                      >
-                        <option value="">Seleccione un producto</option>
-                        {productos.map(p => (
-                          <option key={p._id} value={p._id}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td><input type="text" name="descripcion" className='cuadroTexto' value={prod.descripcion} onChange={(e) => handleChange(index, e)} /></td>
-                    <td><input type="number" name="cantidad" className='cuadroTexto' value={prod.cantidad} onChange={(e) => handleChange(index, e)} /></td>
-                    <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly /></td>
-                    <td><input type="number" name="descuento" className='cuadroTexto' value={prod.descuento} onChange={(e) => handleChange(index, e)} /></td>
-                    <td><input type="number" name="subtotal" className='cuadroTexto' value={prod.subtotal} readOnly /></td>
-                    <td><button className="btn btn-danger" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
-                  </tr>
-                ))}
-                {/* Fila de total */}
-                {productosSeleccionados.length > 0 && (
+          <div className="max-width">
+            <div className="table-container">
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={5}></td>
-                    <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
-                    <td style={{ fontWeight: 'bold' }}>
-                      {productosSeleccionados
-                        .reduce((acc, prod) => acc + (parseFloat(prod.subtotal) || 0), 0)
-                        .toFixed(2)}
-                    </td>
-                    <td></td>
+                    <th>Cliente</th>
+                    <th>Ciudad</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Responsable cotización</th>
+                    <th>Fecha</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input id='cliente' type="text" className="cuadroTexto" placeholder="Nombre o razón social" /></td>
+                    <td><input id='ciudad' type="text" className="cuadroTexto" placeholder="Ciudad" /></td>
+                    <td><input id='direccion' type="text" className="cuadroTexto" placeholder="Dirección" /></td>
+                    <td><input id='telefono' type="number" className="cuadroTexto" placeholder="Teléfono" /></td>
+                    <td><input id='email' type="email" className="cuadroTexto" placeholder="Correo electrónico" /></td>
+                    <td><span id='vendedor'>{user ? user.firstName : ''} {user ? user.surname : ''}</span></td>
+                    <td><input id='fecha' type="date" className="cuadroTexto" /></td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+            <br />
+            <label className="labelDOCS">Descripción cotización</label>
+            <br /><br />
+            <Editor id='descripcion-cotizacion'
+              onInit={(evt, editor) => (descripcionRef.current = editor)}
+              apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
+              textareaName="Descripcion"
+              init={{ height: 250, menubar: false }}
+            />
+
             <br />
 
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Valor unitario</th>
+                    <th>% Descuento</th>
+                    <th>Subtotal</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productosSeleccionados.map((prod, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        <select
+                          className="cuadroTexto"
+                          value={prod.producto}
+                          onChange={(e) => handleProductoChange(index, e.target.value)}
+                        >
+                          <option value="">Seleccione un producto</option>
+                          {productos.map(p => (
+                            <option key={p._id} value={p._id}>
+                              {p.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td><input type="text" name="descripcion" className='cuadroTexto' value={prod.descripcion} onChange={(e) => handleChange(index, e)} /></td>
+                      <td><input type="number" name="cantidad" className='cuadroTexto' value={prod.cantidad} onChange={(e) => handleChange(index, e)} /></td>
+                      <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly /></td>
+                      <td><input type="number" name="descuento" className='cuadroTexto' value={prod.descuento} onChange={(e) => handleChange(index, e)} /></td>
+                      <td><input type="number" name="subtotal" className='cuadroTexto' value={prod.subtotal} readOnly /></td>
+                      <td><button className="btn btn-danger" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
+                    </tr>
+                  ))}
+                  {/* Fila de total */}
+                  {productosSeleccionados.length > 0 && (
+                    <tr>
+                      <td colSpan={5}></td>
+                      <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
+                      <td style={{ fontWeight: 'bold' }}>
+                        {productosSeleccionados
+                          .reduce((acc, prod) => acc + (parseFloat(prod.subtotal) || 0), 0)
+                          .toFixed(2)}
+                      </td>
+                      <td></td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              <br />
+
+            </div>
+            <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
+            {productosSeleccionados.length > 0 && (
+              <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
+                Eliminar Todos
+              </button>
+            )}
+            <br />
+            <br />
+            <label className="labelDOCS">Condiciones de pago</label>
+            <br /><br />
+            <Editor id='condiciones-pago'
+              onInit={(evt, editor) => (condicionesPagoRef.current = editor)}
+              apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
+              textareaName="Condiciones"
+              init={{ height: 250, menubar: false }}
+            />
           </div>
-          <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
-          {productosSeleccionados.length > 0 && (
-            <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
-              Eliminar Todos
-            </button>
-          )}
-          <br />
-          <br />
-          <label className="labelDOCS">Condiciones de pago</label>
-          <br /><br />
-          <Editor id='condiciones-pago'
-            onInit={(evt, editor) => (condicionesPagoRef.current = editor)}
-            apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
-            textareaName="Condiciones"
-            init={{ height: 300, menubar: false }}
-          />
+
 
           <div className="buttons">
             <button className="btn btn-primary-cancel" onClick={handleCancelado}>Cancelar</button>

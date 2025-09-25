@@ -9,7 +9,6 @@ export default function ContenedorModuloVentas() {
   const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
   const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
   const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
-  const [puedeVerListaDeVentas, setPuedeVerListaDeVentas] = useState(false);
   const [puedeVerListaDeClientes, setPuedeVerListaDeClientes] = useState(false);
   const [puedeVerProspectos, setPuedeVerProspectos] = useState(false);
   const [puedeVerReportesVentas, setPuedeVerReportesVentas] = useState(false);
@@ -24,7 +23,6 @@ export default function ContenedorModuloVentas() {
       setPuedeVerPedidosEntregados(usuario.permissions.includes('pedidosEntregados.ver'));
       setPuedeVerPedidosCancelados(usuario.permissions.includes('pedidosCancelados.ver'));
       setPuedeVerPedidosDevueltos(usuario.permissions.includes('pedidosDevueltos.ver'));
-      setPuedeVerListaDeVentas(usuario.permissions.includes('listaDeVentas.ver'));
       setPuedeVerListaDeClientes(usuario.permissions.includes('clientes.ver'));
       setPuedeVerProspectos(usuario.permissions.includes('prospectos.ver'));
       setPuedeVerReportesVentas(usuario.permissions.includes('reportesVentas.ver'));
@@ -98,15 +96,6 @@ export default function ContenedorModuloVentas() {
               <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
                 <img src="https://cdn-icons-png.freepik.com/256/14185/14185243.png" alt="Pedidos devueltos" style={{ width: "80px", height: "80px" }} />
                 <span className="text-sm font-medium">Pedidos devueltos</span>
-              </button>
-            </Link>
-          )}
-
-          {puedeVerListaDeVentas && (
-            <Link to="/Ventas">
-              <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
-                <img src="https://cdn-icons-png.freepik.com/256/2666/2666436.png" alt="Lista de ventas" style={{ width: "80px", height: "80px" }} />
-                <span className="text-sm font-medium">Lista de ventas</span>
               </button>
             </Link>
           )}
