@@ -93,28 +93,48 @@ const ModalProductosProveedor = ({ visible, onClose, productos, proveedor }) => 
   if (!visible) return null;
   return (
     <div className="modal-overlay">
-      <div className="modal-compact modal-lg">
+      <div className="modal-card">
+        {/* Header */}
         <div className="modal-header">
-          <h5 className="modal-title">Productos de {proveedor}</h5>
-          <button className="modal-close" onClick={onClose}>&times;</button>
+          <h5 className="modal-title">
+            <i className="fas fa-boxes"></i> Productos de {proveedor}
+          </h5>
+          <button className="modal-close" onClick={onClose}>
+            &times;
+          </button>
         </div>
+
+        {/* Body */}
         <div className="modal-body">
           {productos.length > 0 ? (
-            <ul className="list-group">
-              {productos.map(prod => (
-                <li key={prod._id} className="list-group-item">
-                  <strong>{prod.name}</strong> – ${prod.price} – Stock: {prod.stock}
+            <ul className="product-list">
+              {productos.map((prod) => (
+                <li key={prod._id} className="product-item">
+                  <div className="product-info">
+                    <strong>{prod.name}</strong>
+                    <span className="price">${prod.price}</span>
+                  </div>
+                  <span className="stock">Stock: {prod.stock}</span>
                 </li>
               ))}
             </ul>
-          ) : <p>Este proveedor no tiene productos asociados.</p>}
+          ) : (
+            <p className="empty-text">
+              <i className="fas fa-exclamation-circle"></i> Este proveedor no tiene productos asociados.
+            </p>
+          )}
         </div>
+
+        {/* Footer */}
         <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+          <button className="btn btn-close" onClick={onClose}>
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
   );
+
 };
 
 const GestionProveedores = () => {
@@ -189,13 +209,13 @@ const GestionProveedores = () => {
     <div>
       <Fijo />
       <div className="content">
-        <NavCompras/>
+        <NavCompras />
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'><h3 className='titulo-profesional'>Lista de proveedores</h3></div><br/>
+          <div className='encabezado-modulo'><h3 className='titulo-profesional'>Lista de proveedores</h3></div><br />
           <div className="d-flex justify-content-end mb-3">
             <button className="btn btn-save" onClick={() => { setProveedorEditando(null); setModalVisible(true); }}>+ Nuevo Proveedor</button>
           </div>
-          <br/>
+          <br />
           <div className="table-container">
             <table>
               <thead>
@@ -251,13 +271,13 @@ const GestionProveedores = () => {
           {modalVisible && <ProveedorModal proveedor={proveedorEditando} onClose={() => setModalVisible(false)} onSave={guardarProveedor} />}
           <ModalProductosProveedor visible={modalProductosVisible} onClose={() => setModalProductosVisible(false)} productos={productosProveedor} proveedor={proveedorNombre} />
         </div>
-        
+
       </div>
       <div className="custom-footer">
-          <p className="custom-footer-text">
-            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-          </p>
-        </div>
+        <p className="custom-footer-text">
+          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+        </p>
+      </div>
     </div>
   );
 };

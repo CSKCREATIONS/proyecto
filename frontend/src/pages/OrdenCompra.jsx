@@ -12,14 +12,19 @@ export default function OrdenCompra() {
   const [modalDetallesVisible, setModalDetallesVisible] = useState(false);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalEditarVisible, setModalEditarVisible] = useState(false);
-  
+  const [cargando, setCargando] = useState(false);
+  const [cargandoProductos, setCargandoProductos] = useState(false);
+  const [errores, setErrores] = useState({});
   const [nuevaOrden, setNuevaOrden] = useState({
     productos: [],
     condicionesPago: "Contado",
     estado: 'Pendiente',
     solicitadoPor: '',
-    proveedor: ''
+    proveedor: '',
+    proveedorId: ''
   });
+  const [modalConfirmacionVisible, setModalConfirmacionVisible] = useState(false);
+  const [ordenAConfirmar, setOrdenAConfirmar] = useState(null);
 
   const [ordenEditando, setOrdenEditando] = useState({
     _id: '',
@@ -36,7 +41,8 @@ export default function OrdenCompra() {
     descripcion: '',
     cantidad: 1,
     valorUnitario: 0,
-    descuento: 0
+    descuento: 0,
+    productoId: ''
   });
 
   const [productoEditando, setProductoEditando] = useState({
@@ -88,47 +94,228 @@ export default function OrdenCompra() {
     }
   };
 
-  // Función para obtener productos de un proveedor específico
+  // Función para obtener productos por proveedor
   const fetchProductosPorProveedor = async (proveedorId) => {
     if (!proveedorId) {
       setProductosProveedor([]);
       return;
     }
-    
+
     try {
+      setCargandoProductos(true);
+      console.log('Buscando productos para proveedor ID:', proveedorId);
+
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5000/api/proveedores/${proveedorId}/productos`, {
+
+      // Cargar TODOS los productos
+      const res = await fetch('http://localhost:5000/api/products', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'x-access-token': token
         }
       });
 
-      const data = await res.json();
-
-      if (data.success) {
-        setProductosProveedor(data.data || data.productos || []);
-      } else if (data.productos) {
-        setProductosProveedor(data.productos);
-      } else {
-        setProductosProveedor([]);
-        console.error('No se pudieron cargar los productos del proveedor:', data.message);
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
+
+      const data = await res.json();
+      console.log('Todos los productos cargados:', data);
+
+      // Obtener el array de productos (diferentes estructuras posibles)
+      let todosProductos = [];
+
+      if (data.products) {
+        todosProductos = data.products;
+      } else if (data.data) {
+        todosProductos = data.data;
+      } else if (Array.isArray(data)) {
+        todosProductos = data;
+      }
+
+      console.log('Productos extraídos:', todosProductos);
+
+      // Filtrar productos por proveedor
+      const productosFiltrados = todosProductos.filter(producto => {
+        console.log('Analizando producto:', {
+          nombre: producto.name,
+          proveedor: producto.proveedor,
+          tipo: typeof producto.proveedor
+        });
+
+        // Diferentes formas en que puede estar el proveedor
+        const proveedorProducto = producto.proveedor;
+
+        // Caso 1: proveedor es objeto con _id
+        if (proveedorProducto && typeof proveedorProducto === 'object' && proveedorProducto._id) {
+          const coincide = proveedorProducto._id === proveedorId;
+          console.log('Caso objeto con _id:', coincide);
+          return coincide;
+        }
+        // Caso 2: proveedor es string ID
+        else if (proveedorProducto && typeof proveedorProducto === 'string') {
+          const coincide = proveedorProducto === proveedorId;
+          console.log('Caso string ID:', coincide);
+          return coincide;
+        }
+        // Caso 3: proveedor es objeto con id (sin underscore)
+        else if (proveedorProducto && typeof proveedorProducto === 'object' && proveedorProducto.id) {
+          const coincide = proveedorProducto.id === proveedorId;
+          console.log('Caso objeto con id:', coincide);
+          return coincide;
+        }
+        // Caso 4: campo proveedorId directo
+        else if (producto.proveedorId) {
+          const coincide = producto.proveedorId === proveedorId;
+          console.log('Caso proveedorId:', coincide);
+          return coincide;
+        }
+
+        console.log('No coincide');
+        return false;
+      });
+
+      console.log('Productos filtrados encontrados:', productosFiltrados);
+      setProductosProveedor(productosFiltrados);
+
     } catch (error) {
-      console.error('Error al cargar productos del proveedor:', error);
+      console.error('Error al cargar productos:', error);
+      Swal.fire('Error', 'No se pudieron cargar los productos', 'error');
       setProductosProveedor([]);
+    } finally {
+      setCargandoProductos(false);
     }
   };
 
   useEffect(() => {
     fetchOrdenes();
     fetchProveedores();
+
+    // Debug: Ver estructura de productos
+    const debugProductos = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/products', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'x-access-token': token
+          }
+        });
+        const data = await res.json();
+        console.log('=== ESTRUCTURA DE PRODUCTOS ===', data);
+
+        if (data.products && data.products.length > 0) {
+          console.log('=== PRIMER PRODUCTO DETALLADO ===', data.products[0]);
+        }
+      } catch (error) {
+        console.error('Error en debug:', error);
+      }
+    };
+
+    debugProductos();
   }, []);
 
-  // Obtener órdenes pendientes para mostrar en la tabla
-  const ordenesPendientes = ordenes.filter(orden => orden.estado === 'Pendiente');
+  // Función para agregar producto desde la lista desplegable (AGREGAR)
+  const agregarProductoDesdeLista = () => {
+    if (!productoTemp.productoId) {
+      Swal.fire('Error', 'Por favor selecciona un producto de la lista', 'error');
+      return;
+    }
 
-  // Cuando se selecciona un proveedor en AGREGAR, cargar sus productos
+    const productoSeleccionado = productosProveedor.find(p => p._id === productoTemp.productoId);
+
+    if (!productoSeleccionado) {
+      Swal.fire('Error', 'Producto no encontrado', 'error');
+      return;
+    }
+
+    const valorTotal = (productoSeleccionado.price || productoSeleccionado.precio || 0) * productoTemp.cantidad;
+
+    const nuevoProducto = {
+      producto: productoSeleccionado.name || productoSeleccionado.nombre,
+      descripcion: productoSeleccionado.description || productoSeleccionado.descripcion || '',
+      cantidad: productoTemp.cantidad,
+      valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
+      descuento: productoTemp.descuento,
+      valorTotal: valorTotal,
+      productoId: productoSeleccionado._id
+    };
+
+    setNuevaOrden({
+      ...nuevaOrden,
+      productos: [...nuevaOrden.productos, nuevoProducto]
+    });
+
+    // Resetear el formulario temporal
+    setProductoTemp({
+      producto: '',
+      descripcion: '',
+      cantidad: 1,
+      valorUnitario: 0,
+      descuento: 0,
+      productoId: ''
+    });
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Producto agregado',
+      text: `${productoSeleccionado.name || productoSeleccionado.nombre} se ha agregado a la orden`,
+      timer: 1500,
+      showConfirmButton: false
+    });
+  };
+
+  // Función para agregar producto en edición (EDITAR)
+  const agregarProductoEdicion = () => {
+    if (!productoTemp.productoId) {
+      Swal.fire('Error', 'Por favor selecciona un producto de la lista', 'error');
+      return;
+    }
+
+    const productoSeleccionado = productosProveedor.find(p => p._id === productoTemp.productoId);
+
+    if (!productoSeleccionado) {
+      Swal.fire('Error', 'Producto no encontrado', 'error');
+      return;
+    }
+
+    const valorTotal = (productoSeleccionado.price || productoSeleccionado.precio || 0) * productoTemp.cantidad;
+
+    const nuevoProducto = {
+      producto: productoSeleccionado.name || productoSeleccionado.nombre,
+      descripcion: productoSeleccionado.description || productoSeleccionado.descripcion || '',
+      cantidad: productoTemp.cantidad,
+      valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
+      descuento: productoTemp.descuento,
+      valorTotal: valorTotal,
+      productoId: productoSeleccionado._id
+    };
+
+    setOrdenEditando({
+      ...ordenEditando,
+      productos: [...ordenEditando.productos, nuevoProducto]
+    });
+
+    // Resetear el formulario temporal
+    setProductoTemp({
+      producto: '',
+      descripcion: '',
+      cantidad: 1,
+      valorUnitario: 0,
+      descuento: 0,
+      productoId: ''
+    });
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Producto agregado',
+      text: `${productoSeleccionado.name || productoSeleccionado.nombre} se ha agregado a la orden`,
+      timer: 1500,
+      showConfirmButton: false
+    });
+  };
+
+  // Cuando se selecciona un proveedor (AGREGAR)
   const handleProveedorChange = async (e) => {
     const proveedorId = e.target.value;
     const proveedorSeleccionado = proveedores.find(p => p._id === proveedorId);
@@ -136,6 +323,7 @@ export default function OrdenCompra() {
     setNuevaOrden({
       ...nuevaOrden,
       proveedor: proveedorSeleccionado ? proveedorSeleccionado.nombre : '',
+      proveedorId: proveedorId,
       productos: [] // Limpiar productos al cambiar proveedor
     });
 
@@ -144,13 +332,18 @@ export default function OrdenCompra() {
       descripcion: '',
       cantidad: 1,
       valorUnitario: 0,
-      descuento: 0
+      descuento: 0,
+      productoId: ''
     });
 
-    await fetchProductosPorProveedor(proveedorId);
+    if (proveedorId) {
+      await fetchProductosPorProveedor(proveedorId);
+    } else {
+      setProductosProveedor([]);
+    }
   };
 
-  // Cuando se selecciona un proveedor en EDITAR, cargar sus productos
+  // Cuando se selecciona un proveedor (EDITAR)
   const handleProveedorChangeEditar = async (e) => {
     const proveedorId = e.target.value;
     const proveedorSeleccionado = proveedores.find(p => p._id === proveedorId);
@@ -161,38 +354,75 @@ export default function OrdenCompra() {
       proveedorId: proveedorId
     });
 
-    await fetchProductosPorProveedor(proveedorId);
+    if (proveedorId) {
+      await fetchProductosPorProveedor(proveedorId);
+    } else {
+      setProductosProveedor([]);
+    }
   };
 
-  // Cuando se selecciona un producto del proveedor, autocompletar información (AGREGAR)
+  // Cuando se selecciona un producto de la lista desplegable (AGREGAR)
   const handleProductoChange = (e) => {
     const productoId = e.target.value;
+
+    if (!productoId) {
+      setProductoTemp({
+        producto: '',
+        descripcion: '',
+        cantidad: 1,
+        valorUnitario: 0,
+        descuento: 0,
+        productoId: ''
+      });
+      return;
+    }
+
     const productoSeleccionado = productosProveedor.find(p => p._id === productoId);
 
     if (productoSeleccionado) {
       setProductoTemp({
-        ...productoTemp,
         producto: productoSeleccionado.name || productoSeleccionado.nombre,
         descripcion: productoSeleccionado.description || productoSeleccionado.descripcion || '',
-        valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0
+        cantidad: 1,
+        valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
+        descuento: 0,
+        productoId: productoSeleccionado._id
       });
     }
   };
 
-  // Cuando se selecciona un producto del proveedor, autocompletar información (EDITAR)
+  // Cuando se selecciona un producto de la lista desplegable (EDITAR)
   const handleProductoChangeEditar = (e) => {
     const productoId = e.target.value;
+
+    if (!productoId) {
+      setProductoTemp({
+        producto: '',
+        descripcion: '',
+        cantidad: 1,
+        valorUnitario: 0,
+        descuento: 0,
+        productoId: ''
+      });
+      return;
+    }
+
     const productoSeleccionado = productosProveedor.find(p => p._id === productoId);
 
     if (productoSeleccionado) {
       setProductoTemp({
-        ...productoTemp,
         producto: productoSeleccionado.name || productoSeleccionado.nombre,
         descripcion: productoSeleccionado.description || productoSeleccionado.descripcion || '',
-        valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0
+        cantidad: 1,
+        valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
+        descuento: 0,
+        productoId: productoSeleccionado._id
       });
     }
   };
+
+  // Obtener órdenes pendientes para mostrar en la tabla
+  const ordenesPendientes = ordenes.filter(orden => orden.estado === 'Pendiente');
 
   const verDetallesOrden = (orden) => {
     setOrdenSeleccionada(orden);
@@ -200,9 +430,8 @@ export default function OrdenCompra() {
   };
 
   const abrirModalEditar = async (orden) => {
-    // Buscar el ID del proveedor basado en el nombre
     const proveedorEncontrado = proveedores.find(p => p.nombre === orden.proveedor);
-    
+
     setOrdenEditando({
       _id: orden._id,
       numeroOrden: orden.numeroOrden,
@@ -214,7 +443,6 @@ export default function OrdenCompra() {
       proveedorId: proveedorEncontrado ? proveedorEncontrado._id : ''
     });
 
-    // Cargar productos del proveedor si existe
     if (proveedorEncontrado) {
       await fetchProductosPorProveedor(proveedorEncontrado._id);
     }
@@ -251,7 +479,7 @@ export default function OrdenCompra() {
     }
   };
 
-  // Función para marcar orden como completada con SweetAlert2
+  // Función para marcar orden como completada
   const marcarComoCompletada = async (orden) => {
     const confirm = await Swal.fire({
       title: '¿Estás seguro?',
@@ -321,16 +549,19 @@ export default function OrdenCompra() {
       condicionesPago: "Contado",
       estado: 'Pendiente',
       solicitadoPor: '',
-      proveedor: ''
+      proveedor: '',
+      proveedorId: ''
     });
     setProductoTemp({
       producto: '',
       descripcion: '',
       cantidad: 1,
       valorUnitario: 0,
-      descuento: 0
+      descuento: 0,
+      productoId: ''
     });
     setProductosProveedor([]);
+    setErrores({});
   };
 
   const calcularValorTotalProducto = (p) => {
@@ -352,7 +583,8 @@ export default function OrdenCompra() {
       cantidad: productoTemp.cantidad,
       valorUnitario: productoTemp.valorUnitario,
       descuento: productoTemp.descuento,
-      valorTotal: valorTotal
+      valorTotal: valorTotal,
+      productoId: productoTemp.productoId
     };
 
     setNuevaOrden({
@@ -365,7 +597,8 @@ export default function OrdenCompra() {
       descripcion: '',
       cantidad: 1,
       valorUnitario: 0,
-      descuento: 0
+      descuento: 0,
+      productoId: ''
     });
   };
 
@@ -423,36 +656,6 @@ export default function OrdenCompra() {
     setOrdenEditando({
       ...ordenEditando,
       productos: nuevosProductos
-    });
-  };
-
-  const agregarProductoEdicion = () => {
-    if (!productoTemp.producto || productoTemp.cantidad < 1 || productoTemp.valorUnitario < 0) {
-      Swal.fire('Error', 'Los campos Producto, Cantidad y Valor Unitario son obligatorios y no pueden ser negativos.', 'error');
-      return;
-    }
-
-    const valorTotal = calcularValorTotalProducto(productoTemp);
-    const nuevoProducto = {
-      producto: productoTemp.producto,
-      descripcion: productoTemp.descripcion,
-      cantidad: productoTemp.cantidad,
-      valorUnitario: productoTemp.valorUnitario,
-      descuento: productoTemp.descuento,
-      valorTotal: valorTotal
-    };
-
-    setOrdenEditando({
-      ...ordenEditando,
-      productos: [...ordenEditando.productos, nuevoProducto]
-    });
-
-    setProductoTemp({
-      producto: '',
-      descripcion: '',
-      cantidad: 1,
-      valorUnitario: 0,
-      descuento: 0
     });
   };
 
@@ -532,9 +735,20 @@ export default function OrdenCompra() {
     }
   };
 
+  const validarOrdenEdicion = (orden) => {
+    const nuevosErrores = {};
+
+    if (!orden.proveedor) nuevosErrores.proveedor = 'Seleccione un proveedor';
+    if (!orden.solicitadoPor.trim()) nuevosErrores.solicitadoPor = 'Ingrese el solicitante';
+    if (orden.productos.length === 0) nuevosErrores.productos = 'Agregue al menos un producto';
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
   const actualizarOrden = async () => {
-    if (ordenEditando.productos.length === 0) {
-      Swal.fire('Error', 'Debe haber al menos un producto en la orden.', 'error');
+    if (!validarOrdenEdicion(ordenEditando)) {
+      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
       return;
     }
 
@@ -562,6 +776,7 @@ export default function OrdenCompra() {
     };
 
     try {
+      setCargando(true);
       const token = localStorage.getItem('token');
       const res = await fetch(`http://localhost:5000/api/ordenes-compra/${ordenEditando._id}`, {
         method: 'PUT',
@@ -583,6 +798,8 @@ export default function OrdenCompra() {
       }
     } catch (error) {
       Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -593,10 +810,12 @@ export default function OrdenCompra() {
       condicionesPago: "Contado",
       estado: 'Pendiente',
       solicitadoPor: '',
-      proveedor: ''
+      proveedor: '',
+      proveedorId: ''
     });
-    setProductoTemp({ producto: '', descripcion: '', cantidad: 1, valorUnitario: 0, descuento: 0 });
+    setProductoTemp({ producto: '', descripcion: '', cantidad: 1, valorUnitario: 0, descuento: 0, productoId: '' });
     setProductosProveedor([]);
+    setErrores({});
   };
 
   const cerrarModalEditar = () => {
@@ -619,11 +838,78 @@ export default function OrdenCompra() {
       index: null
     });
     setProductosProveedor([]);
+    setErrores({});
   };
 
   const cerrarModalDetalles = () => {
     setModalDetallesVisible(false);
     setOrdenSeleccionada(null);
+  };
+
+  // Función para hacer el modal movible
+  const hacerModalMovible = () => {
+    const modal = document.getElementById('modalMovible');
+    if (!modal) return;
+
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const dragMouseDown = (e) => {
+      e = e || window.event;
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+      e = e || window.event;
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      modal.style.top = (modal.offsetTop - pos2) + "px";
+      modal.style.left = (modal.offsetLeft - pos1) + "px";
+    };
+
+    const closeDragElement = () => {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    };
+
+    const header = modal.querySelector('.modal-header-realista');
+    if (header) {
+      header.onmousedown = dragMouseDown;
+    }
+  };
+
+  useEffect(() => {
+    if (modalDetallesVisible) {
+      setTimeout(hacerModalMovible, 100);
+    }
+  }, [modalDetallesVisible]);
+
+  const abrirModalConfirmacion = (orden) => {
+    setOrdenAConfirmar(orden);
+    setModalConfirmacionVisible(true);
+  };
+
+  const confirmarCompletada = async () => {
+    if (ordenAConfirmar) {
+      try {
+        await marcarComoCompletada(ordenAConfirmar);
+        setModalConfirmacionVisible(false);
+        setOrdenAConfirmar(null);
+      } catch (error) {
+        console.error('Error al completar la orden:', error);
+      }
+    }
+  };
+
+  const cancelarConfirmacion = () => {
+    setModalConfirmacionVisible(false);
+    setOrdenAConfirmar(null);
   };
 
   return (
@@ -671,12 +957,15 @@ export default function OrdenCompra() {
                     <td>
                       {orden.estado === 'Pendiente' ? (
                         <button
-                          onClick={() => marcarComoCompletada(orden)}
+                          onClick={() => abrirModalConfirmacion(orden)}
                           className="btn btn-warning btn-sm"
                           style={{
                             padding: '0.25rem 0.5rem',
                             fontSize: '0.75rem',
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            background: '#ffc107',
+                            border: 'none',
+                            borderRadius: '4px'
                           }}
                         >
                           Pendiente
@@ -715,126 +1004,223 @@ export default function OrdenCompra() {
           {/* Modal para agregar nueva orden */}
           {modalAgregarVisible && (
             <div className="modal-overlay">
-              <div className="modal-compact modal-lg">
-                <div className="modal-header">
-                  <h5>Nueva Orden de Compra</h5>
-                  <button className="modal-close" onClick={cerrarModalAgregar}>&times;</button>
+              <div className="modal-realista modal-lg" style={{ maxWidth: '900px' }}>
+                <div className="modal-header-realista">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <h5>
+                      <i className="fa-solid fa-file-invoice-dollar" style={{ marginRight: '10px' }}></i>
+                      Nueva Orden de Compra
+                    </h5>
+                    <button className="modal-close-realista" onClick={cerrarModalAgregar}>&times;</button>
+                  </div>
                 </div>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label>Proveedor *</label>
-                    <select
-                      value={proveedores.find(p => p.nombre === nuevaOrden.proveedor)?._id || ''}
-                      onChange={handleProveedorChange}
-                      required
-                      className="form-input"
-                    >
-                      <option value="">Seleccione un proveedor</option>
-                      {proveedores.map(proveedor => (
-                        <option key={proveedor._id} value={proveedor._id}>
-                          {proveedor.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
 
-                  <div className="mb-3">
-                    <label>Solicitado Por *</label>
-                    <input
-                      type="text"
-                      value={nuevaOrden.solicitadoPor}
-                      onChange={e => setNuevaOrden({ ...nuevaOrden, solicitadoPor: e.target.value })}
-                      required
-                      className="form-input"
-                      placeholder="Nombre de quien solicita la orden"
-                    />
-                  </div>
+                <div className="modal-body" style={{ padding: '2rem', maxHeight: '70vh', overflowY: 'auto' }}>
+                  {/* Información Básica */}
+                  <div className="modal-section">
+                    <h6>
+                      <i className="fa-solid fa-info-circle" style={{ marginRight: '8px' }}></i>
+                      Información de la Orden
+                    </h6>
+                    <div className="form-grid">
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Proveedor *</label>
+                        <select
+                          value={nuevaOrden.proveedorId || ''}
+                          onChange={handleProveedorChange}
+                          required
+                          className="form-input-profesional"
+                        >
+                          <option value="">Seleccione un proveedor</option>
+                          {proveedores.map(proveedor => (
+                            <option key={proveedor._id} value={proveedor._id}>
+                              {proveedor.nombre}
+                            </option>
+                          ))}
+                        </select>
+                        {errores.proveedor && <span style={{ color: '#e74c3c', fontSize: '0.8rem' }}>{errores.proveedor}</span>}
+                      </div>
 
-                  <h6>Agregar producto</h6>
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Solicitado Por *</label>
+                        <input
+                          type="text"
+                          value={nuevaOrden.solicitadoPor}
+                          onChange={e => setNuevaOrden({ ...nuevaOrden, solicitadoPor: e.target.value })}
+                          required
+                          className="form-input-profesional"
+                          placeholder="Nombre del solicitante"
+                        />
+                        {errores.solicitadoPor && <span style={{ color: '#e74c3c', fontSize: '0.8rem' }}>{errores.solicitadoPor}</span>}
+                      </div>
 
-                  {productosProveedor.length > 0 && (
-                    <div className="mb-3">
-                      <label>Seleccionar producto del proveedor</label>
-                      <select
-                        value={productosProveedor.find(p => p.name === productoTemp.producto)?._id || ''}
-                        onChange={handleProductoChange}
-                        className="form-input"
-                      >
-                        <option value="">Seleccione un producto</option>
-                        {productosProveedor.map(producto => (
-                          <option key={producto._id} value={producto._id}>
-                            {producto.name || producto.nombre} - ${producto.price || producto.precio}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-                    <div>
-                      <label>Producto *</label>
-                      <input
-                        value={productoTemp.producto}
-                        onChange={e => setProductoTemp({ ...productoTemp, producto: e.target.value })}
-                        required
-                        className="form-input"
-                        placeholder="Nombre del producto"
-                      />
-                    </div>
-                    <div>
-                      <label>Descripción</label>
-                      <input
-                        value={productoTemp.descripcion}
-                        onChange={e => setProductoTemp({ ...productoTemp, descripcion: e.target.value })}
-                        className="form-input"
-                        placeholder="Descripción del producto"
-                      />
-                    </div>
-                    <div>
-                      <label>Cantidad *</label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={productoTemp.cantidad}
-                        onChange={e => setProductoTemp({ ...productoTemp, cantidad: Number(e.target.value) })}
-                        required
-                        className="form-input"
-                      />
-                    </div>
-                    <div>
-                      <label>Valor Unitario *</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={productoTemp.valorUnitario}
-                        onChange={e => setProductoTemp({ ...productoTemp, valorUnitario: Number(e.target.value) })}
-                        required
-                        className="form-input"
-                      />
-                    </div>
-                    <div>
-                      <label>Descuento</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={productoTemp.descuento}
-                        onChange={e => setProductoTemp({ ...productoTemp, descuento: Number(e.target.value) })}
-                        className="form-input"
-                      />
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Condiciones de Pago</label>
+                        <select
+                          value={nuevaOrden.condicionesPago}
+                          onChange={e => setNuevaOrden({ ...nuevaOrden, condicionesPago: e.target.value })}
+                          className="form-input-profesional"
+                        >
+                          <option value="Contado">Contado</option>
+                          <option value="Crédito 15 días">Crédito 15 días</option>
+                          <option value="Crédito 30 días">Crédito 30 días</option>
+                          <option value="Crédito 60 días">Crédito 60 días</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
-                  <button className="btn btn-info btn-sm" onClick={agregarProducto}>
-                    Agregar producto
-                  </button>
+                  {/* Selección de Productos */}
+                  <div className="modal-section">
+                    <h6>
+                      <i className="fa-solid fa-cart-plus" style={{ marginRight: '8px' }}></i>
+                      Agregar Productos
+                    </h6>
 
+                    {nuevaOrden.proveedorId ? (
+                      <>
+                        <div className="form-group-profesional">
+                          <label className="form-label-profesional">
+                            Producto *
+                            {cargandoProductos && (
+                              <small style={{ marginLeft: '10px', color: '#3498db' }}>
+                                <i className="fa-solid fa-spinner fa-spin"></i> Cargando productos...
+                              </small>
+                            )}
+                          </label>
+
+                          <select
+                            value={productoTemp.productoId || ''}
+                            onChange={handleProductoChange}
+                            className="form-input-profesional"
+                            disabled={cargandoProductos}
+                          >
+                            <option value="">Seleccione un producto</option>
+                            {productosProveedor.length > 0 ? (
+                              productosProveedor.map(producto => (
+                                <option key={producto._id} value={producto._id}>
+                                  {producto.name || producto.nombre} -
+                                  ${(producto.price || producto.precio)?.toLocaleString()} -
+                                  Stock: {producto.stock || 'N/A'}
+                                </option>
+                              ))
+                            ) : (
+                              <option value="" disabled>
+                                {cargandoProductos ? 'Cargando...' : 'Este proveedor no tiene productos asociados'}
+                              </option>
+                            )}
+                          </select>
+
+                          {productosProveedor.length === 0 && !cargandoProductos && (
+                            <div style={{
+                              background: '#fff3cd',
+                              border: '1px solid #ffeaa7',
+                              borderRadius: '4px',
+                              padding: '0.75rem',
+                              marginTop: '0.5rem',
+                              color: '#856404',
+                              fontSize: '0.9rem'
+                            }}>
+                              <i className="fa-solid fa-info-circle" style={{ marginRight: '5px' }}></i>
+                              Este proveedor no tiene productos asociados. Por favor, regístrelos en el módulo de Gestión de Productos.
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="form-grid">
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Descripción</label>
+                            <input
+                              value={productoTemp.descripcion}
+                              onChange={e => setProductoTemp({ ...productoTemp, descripcion: e.target.value })}
+                              className="form-input-profesional"
+                              placeholder="Descripción del producto"
+                              disabled
+                            />
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Cantidad *</label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={productoTemp.cantidad}
+                              onChange={e => setProductoTemp({ ...productoTemp, cantidad: Number(e.target.value) })}
+                              required
+                              className="form-input-profesional"
+                            />
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Valor Unitario *</label>
+                            <div style={{ position: 'relative' }}>
+                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666' }}>$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={productoTemp.valorUnitario}
+                                onChange={e => setProductoTemp({ ...productoTemp, valorUnitario: Number(e.target.value) })}
+                                required
+                                className="form-input-profesional"
+                                style={{ paddingLeft: '30px' }}
+                                disabled
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Descuento</label>
+                            <div style={{ position: 'relative' }}>
+                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666' }}>$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={productoTemp.descuento}
+                                onChange={e => setProductoTemp({ ...productoTemp, descuento: Number(e.target.value) })}
+                                className="form-input-profesional"
+                                style={{ paddingLeft: '30px' }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-group-profesional" style={{ display: 'flex', alignItems: 'flex-end' }}>
+                            <button
+                              className="btn-profesional btn-primary-profesional"
+                              onClick={agregarProductoDesdeLista}
+                              disabled={!productoTemp.productoId || productoTemp.cantidad < 1}
+                            >
+                              <i className="fa-solid fa-plus"></i>
+                              Agregar Producto
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{
+                        background: '#f8f9fa',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '4px',
+                        padding: '1rem',
+                        textAlign: 'center',
+                        color: '#6c757d'
+                      }}>
+                        <i className="fa-solid fa-hand-pointer" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}></i>
+                        <p style={{ margin: '0' }}>Seleccione un proveedor para ver sus productos disponibles</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Lista de Productos Agregados */}
                   {nuevaOrden.productos.length > 0 && (
-                    <div style={{ marginTop: '2rem' }}>
-                      <h6>Productos agregados:</h6>
+                    <div className="modal-section">
+                      <h6>
+                        <i className="fa-solid fa-list-check" style={{ marginRight: '8px' }}></i>
+                        Productos en la Orden ({nuevaOrden.productos.length})
+                      </h6>
                       <div className="table-responsive">
-                        <table className="table" style={{ width: '100%' }}>
+                        <table className="table-profesional">
                           <thead>
                             <tr>
                               <th>Producto</th>
@@ -849,18 +1235,35 @@ export default function OrdenCompra() {
                           <tbody>
                             {nuevaOrden.productos.map((p, i) => (
                               <tr key={i}>
-                                <td>{p.producto}</td>
+                                <td>
+                                  <strong>{p.producto}</strong>
+                                </td>
                                 <td>{p.descripcion || 'N/A'}</td>
-                                <td>{p.cantidad}</td>
+                                <td>
+                                  <span className="badge-profesional" style={{ background: '#e3f2fd', color: '#1976d2' }}>
+                                    {p.cantidad}
+                                  </span>
+                                </td>
                                 <td>${p.valorUnitario.toLocaleString()}</td>
-                                <td>${p.descuento.toLocaleString()}</td>
-                                <td>${p.valorTotal.toLocaleString()}</td>
+                                <td>
+                                  {p.descuento > 0 ? (
+                                    <span style={{ color: '#e74c3c', fontWeight: '600' }}>
+                                      -${p.descuento.toLocaleString()}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: '#95a5a6' }}>$0</span>
+                                  )}
+                                </td>
+                                <td>
+                                  <strong>${p.valorTotal.toLocaleString()}</strong>
+                                </td>
                                 <td>
                                   <button
-                                    className="btn btn-danger btn-sm"
+                                    className="btn-profesional btn-danger-profesional"
                                     onClick={() => eliminarProducto(i)}
+                                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
                                   >
-                                    Eliminar
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </td>
                               </tr>
@@ -870,20 +1273,57 @@ export default function OrdenCompra() {
                       </div>
                     </div>
                   )}
+
+                  {/* Resumen de Totales */}
+                  {nuevaOrden.productos.length > 0 && (
+                    <div className="totales-destacados">
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>Subtotal</div>
+                          <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>
+                            ${calcularTotales(nuevaOrden.productos).subtotal.toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>IVA (19%)</div>
+                          <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>
+                            ${calcularTotales(nuevaOrden.productos).impuestos.toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>Total</div>
+                          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f39c12' }}>
+                            ${calcularTotales(nuevaOrden.productos).total.toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="modal-footer">
+
+                <div className="modal-footer" style={{ padding: '1.5rem 2rem', borderTop: '1px solid #e0e0e0', background: '#f8f9fa' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <div>
-                      <strong>Subtotal: ${calcularTotales(nuevaOrden.productos).subtotal.toLocaleString()}</strong><br />
-                      <strong>IVA (19%): ${calcularTotales(nuevaOrden.productos).impuestos.toLocaleString()}</strong><br />
-                      <strong>Total: ${calcularTotales(nuevaOrden.productos).total.toLocaleString()}</strong>
+                      <span style={{ color: '#7f8c8d', fontSize: '0.9rem' }}>
+                        {nuevaOrden.productos.length} producto(s) agregado(s)
+                      </span>
                     </div>
-                    <div>
-                      <button className="btn btn-success" onClick={guardarOrden}>
-                        Guardar Orden
-                      </button>
-                      <button className="btn btn-cancel" onClick={cerrarModalAgregar} style={{ marginLeft: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <button
+                        className="btn-profesional"
+                        onClick={cerrarModalAgregar}
+                        style={{ background: '#95a5a6', color: 'white' }}
+                      >
+                        <i className="fa-solid fa-times"></i>
                         Cancelar
+                      </button>
+                      <button
+                        className="btn-profesional btn-success-profesional"
+                        onClick={guardarOrden}
+                        disabled={nuevaOrden.productos.length === 0}
+                      >
+                        <i className="fa-solid fa-check"></i>
+                        Guardar Orden
                       </button>
                     </div>
                   </div>
@@ -895,190 +1335,357 @@ export default function OrdenCompra() {
           {/* Modal para editar orden */}
           {modalEditarVisible && (
             <div className="modal-overlay">
-              <div className="modal-compact modal-lg">
-                <div className="modal-header">
-                  <h5>Editar Orden de Compra: {ordenEditando.numeroOrden}</h5>
-                  <button className="modal-close" onClick={cerrarModalEditar}>&times;</button>
+              <div className="modal-realista modal-lg" style={{ maxWidth: '900px' }}>
+                <div className="modal-header-realista">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <h5>
+                      <i className="fa-solid fa-edit" style={{ marginRight: '10px' }}></i>
+                      Editar Orden de Compra: <span style={{ color: '#f39c12' }}>{ordenEditando.numeroOrden}</span>
+                    </h5>
+                    <button className="modal-close-realista" onClick={cerrarModalEditar}>&times;</button>
+                  </div>
                 </div>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label>Proveedor *</label>
-                    <select
-                      value={ordenEditando.proveedorId}
-                      onChange={handleProveedorChangeEditar}
-                      required
-                      className="form-input"
-                    >
-                      <option value="">Seleccione un proveedor</option>
-                      {proveedores.map(proveedor => (
-                        <option key={proveedor._id} value={proveedor._id}>
-                          {proveedor.nombre}
-                        </option>
-                      ))}
-                    </select>
+
+                <div className="modal-body" style={{ padding: '2rem', maxHeight: '70vh', overflowY: 'auto' }}>
+                  {/* Información Básica */}
+                  <div className="modal-section">
+                    <h6>
+                      <i className="fa-solid fa-info-circle" style={{ marginRight: '8px' }}></i>
+                      Información de la Orden
+                    </h6>
+                    <div className="form-grid">
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Proveedor *</label>
+                        <select
+                          value={ordenEditando.proveedorId}
+                          onChange={handleProveedorChangeEditar}
+                          required
+                          className="form-input-profesional"
+                        >
+                          <option value="">Seleccione un proveedor</option>
+                          {proveedores.map(proveedor => (
+                            <option key={proveedor._id} value={proveedor._id}>
+                              {proveedor.nombre}
+                            </option>
+                          ))}
+                        </select>
+                        {errores.proveedor && <span style={{ color: '#e74c3c', fontSize: '0.8rem' }}>{errores.proveedor}</span>}
+                      </div>
+
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Solicitado Por *</label>
+                        <input
+                          type="text"
+                          value={ordenEditando.solicitadoPor}
+                          onChange={e => setOrdenEditando({ ...ordenEditando, solicitadoPor: e.target.value })}
+                          required
+                          className="form-input-profesional"
+                          placeholder="Nombre del solicitante"
+                        />
+                        {errores.solicitadoPor && <span style={{ color: '#e74c3c', fontSize: '0.8rem' }}>{errores.solicitadoPor}</span>}
+                      </div>
+
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Condiciones de Pago</label>
+                        <select
+                          value={ordenEditando.condicionesPago}
+                          onChange={e => setOrdenEditando({ ...ordenEditando, condicionesPago: e.target.value })}
+                          className="form-input-profesional"
+                        >
+                          <option value="Contado">Contado</option>
+                          <option value="Crédito 15 días">Crédito 15 días</option>
+                          <option value="Crédito 30 días">Crédito 30 días</option>
+                          <option value="Crédito 60 días">Crédito 60 días</option>
+                        </select>
+                      </div>
+
+                      <div className="form-group-profesional">
+                        <label className="form-label-profesional">Estado</label>
+                        <div>
+                          <span className={`badge-profesional ${ordenEditando.estado === 'Pendiente' ? 'badge-pendiente' : 'badge-completada'}`}>
+                            {ordenEditando.estado}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mb-3">
-                    <label>Solicitado Por *</label>
-                    <input
-                      type="text"
-                      value={ordenEditando.solicitadoPor}
-                      onChange={e => setOrdenEditando({ ...ordenEditando, solicitadoPor: e.target.value })}
-                      required
-                      className="form-input"
-                      placeholder="Nombre de quien solicita la orden"
-                    />
+                  {/* Selección de Productos para Edición */}
+                  <div className="modal-section">
+                    <h6>
+                      <i className="fa-solid fa-cart-plus" style={{ marginRight: '8px' }}></i>
+                      Agregar Nuevos Productos
+                    </h6>
+
+                    {ordenEditando.proveedorId ? (
+                      <>
+                        <div className="form-group-profesional">
+                          <label className="form-label-profesional">
+                            Producto *
+                            {cargandoProductos && (
+                              <small style={{ marginLeft: '10px', color: '#3498db' }}>
+                                <i className="fa-solid fa-spinner fa-spin"></i> Cargando productos...
+                              </small>
+                            )}
+                          </label>
+
+                          <select
+                            value={productoTemp.productoId || ''}
+                            onChange={handleProductoChangeEditar}
+                            className="form-input-profesional"
+                            disabled={cargandoProductos}
+                          >
+                            <option value="">Seleccione un producto</option>
+                            {productosProveedor.length > 0 ? (
+                              productosProveedor.map(producto => (
+                                <option key={producto._id} value={producto._id}>
+                                  {producto.name || producto.nombre} -
+                                  ${(producto.price || producto.precio)?.toLocaleString()} -
+                                  Stock: {producto.stock || 'N/A'}
+                                </option>
+                              ))
+                            ) : (
+                              <option value="" disabled>
+                                {cargandoProductos ? 'Cargando...' : 'Este proveedor no tiene productos asociados'}
+                              </option>
+                            )}
+                          </select>
+                        </div>
+
+                        <div className="form-grid">
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Descripción</label>
+                            <input
+                              value={productoTemp.descripcion}
+                              onChange={e => setProductoTemp({ ...productoTemp, descripcion: e.target.value })}
+                              className="form-input-profesional"
+                              placeholder="Descripción del producto"
+                              disabled
+                            />
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Cantidad *</label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={productoTemp.cantidad}
+                              onChange={e => setProductoTemp({ ...productoTemp, cantidad: Number(e.target.value) })}
+                              required
+                              className="form-input-profesional"
+                            />
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Valor Unitario *</label>
+                            <div style={{ position: 'relative' }}>
+                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666' }}>$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={productoTemp.valorUnitario}
+                                onChange={e => setProductoTemp({ ...productoTemp, valorUnitario: Number(e.target.value) })}
+                                required
+                                className="form-input-profesional"
+                                style={{ paddingLeft: '30px' }}
+                                disabled
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-group-profesional">
+                            <label className="form-label-profesional">Descuento</label>
+                            <div style={{ position: 'relative' }}>
+                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666' }}>$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={productoTemp.descuento}
+                                onChange={e => setProductoTemp({ ...productoTemp, descuento: Number(e.target.value) })}
+                                className="form-input-profesional"
+                                style={{ paddingLeft: '30px' }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-group-profesional" style={{ display: 'flex', alignItems: 'flex-end' }}>
+                            <button
+                              className="btn-profesional btn-primary-profesional"
+                              onClick={agregarProductoEdicion}
+                              disabled={!productoTemp.productoId || productoTemp.cantidad < 1}
+                            >
+                              <i className="fa-solid fa-plus"></i>
+                              Agregar Producto
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{
+                        background: '#f8f9fa',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '4px',
+                        padding: '1rem',
+                        textAlign: 'center',
+                        color: '#6c757d'
+                      }}>
+                        <i className="fa-solid fa-hand-pointer" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}></i>
+                        <p style={{ margin: '0' }}>Seleccione un proveedor para ver sus productos disponibles</p>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="mb-3">
-                    <label>Condiciones de Pago</label>
-                    <select
-                      value={ordenEditando.condicionesPago}
-                      onChange={e => setOrdenEditando({ ...ordenEditando, condicionesPago: e.target.value })}
-                      className="form-input"
-                    >
-                      <option value="Contado">Contado</option>
-                      <option value="Crédito 15 días">Crédito 15 días</option>
-                      <option value="Crédito 30 días">Crédito 30 días</option>
-                      <option value="Crédito 60 días">Crédito 60 días</option>
-                    </select>
+                  {/* Lista de Productos Existente */}
+                  <div className="modal-section">
+                    <h6>
+                      <i className="fa-solid fa-list-check" style={{ marginRight: '8px' }}></i>
+                      Productos en la Orden ({ordenEditando.productos.length})
+                      {errores.productos && <span style={{ color: '#e74c3c', fontSize: '0.8rem', marginLeft: '1rem' }}>{errores.productos}</span>}
+                    </h6>
+
+                    {ordenEditando.productos.length > 0 ? (
+                      <div className="table-responsive">
+                        <table className="table-profesional">
+                          <thead>
+                            <tr>
+                              <th>Producto</th>
+                              <th>Descripción</th>
+                              <th>Cantidad</th>
+                              <th>Valor Unit.</th>
+                              <th>Descuento</th>
+                              <th>Total</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {ordenEditando.productos.map((p, i) => (
+                              <tr key={i} className={productoEditando.index === i ? 'highlighted-row' : ''}>
+                                <td>
+                                  <strong>{p.producto}</strong>
+                                  {productoEditando.index === i && (
+                                    <span style={{ color: '#f39c12', marginLeft: '5px', fontSize: '0.8rem' }}>
+                                      (Editando)
+                                    </span>
+                                  )}
+                                </td>
+                                <td>{p.descripcion || 'N/A'}</td>
+                                <td>
+                                  <span className="badge-profesional" style={{ background: '#e3f2fd', color: '#1976d2' }}>
+                                    {p.cantidad}
+                                  </span>
+                                </td>
+                                <td>${p.valorUnitario?.toLocaleString()}</td>
+                                <td>
+                                  {p.descuento > 0 ? (
+                                    <span style={{ color: '#e74c3c', fontWeight: '600' }}>
+                                      -${p.descuento?.toLocaleString() || '0'}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: '#95a5a6' }}>$0</span>
+                                  )}
+                                </td>
+                                <td>
+                                  <strong>${p.valorTotal?.toLocaleString()}</strong>
+                                </td>
+                                <td>
+                                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                                    <button
+                                      className="btn-profesional btn-warning-profesional"
+                                      onClick={() => editarProducto(i)}
+                                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
+                                      disabled={productoEditando.index !== null && productoEditando.index !== i}
+                                    >
+                                      <i className="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button
+                                      className="btn-profesional btn-danger-profesional"
+                                      onClick={() => eliminarProductoEdicion(i)}
+                                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
+                                      disabled={productoEditando.index !== null}
+                                    >
+                                      <i className="fa-solid fa-trash"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '2rem', color: '#7f8c8d' }}>
+                        <i className="fa-solid fa-cart-shopping" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block' }}></i>
+                        <p>No hay productos en esta orden. Agrega al menos un producto.</p>
+                      </div>
+                    )}
                   </div>
 
-                  <h6>Productos de la orden</h6>
-
-                  {/* Edición de producto existente */}
-                  {productoEditando.index !== null && (
-                    <div style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem' }}>
-                      <h6>Editando Producto</h6>
+                  {/* Resumen de Totales */}
+                  {ordenEditando.productos.length > 0 && (
+                    <div className="totales-destacados">
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                         <div>
-                          <label>Producto *</label>
-                          <input
-                            value={productoEditando.producto}
-                            onChange={e => setProductoEditando({ ...productoEditando, producto: e.target.value })}
-                            required
-                            className="form-input"
-                          />
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>Subtotal</div>
+                          <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>
+                            ${calcularTotales(ordenEditando.productos).subtotal.toLocaleString()}
+                          </div>
                         </div>
                         <div>
-                          <label>Descripción</label>
-                          <input
-                            value={productoEditando.descripcion}
-                            onChange={e => setProductoEditando({ ...productoEditando, descripcion: e.target.value })}
-                            className="form-input"
-                          />
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>IVA (19%)</div>
+                          <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>
+                            ${calcularTotales(ordenEditando.productos).impuestos.toLocaleString()}
+                          </div>
                         </div>
                         <div>
-                          <label>Cantidad *</label>
-                          <input
-                            type="number"
-                            min="1"
-                            value={productoEditando.cantidad}
-                            onChange={e => setProductoEditando({ ...productoEditando, cantidad: Number(e.target.value) })}
-                            required
-                            className="form-input"
-                          />
-                        </div>
-                        <div>
-                          <label>Valor Unitario *</label>
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={productoEditando.valorUnitario}
-                            onChange={e => setProductoEditando({ ...productoEditando, valorUnitario: Number(e.target.value) })}
-                            required
-                            className="form-input"
-                          />
-                        </div>
-                        <div>
-                          <label>Descuento</label>
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={productoEditando.descuento}
-                            onChange={e => setProductoEditando({ ...productoEditando, descuento: Number(e.target.value) })}
-                            className="form-input"
-                          />
+                          <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>Total</div>
+                          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f39c12' }}>
+                            ${calcularTotales(ordenEditando.productos).total.toLocaleString()}
+                          </div>
                         </div>
                       </div>
-                      <div style={{ marginTop: '1rem' }}>
-                        <button className="btn btn-success btn-sm" onClick={actualizarProducto}>
-                          Actualizar Producto
-                        </button>
-                        <button 
-                          className="btn btn-cancel btn-sm" 
-                          onClick={() => setProductoEditando({ producto: '', descripcion: '', cantidad: 1, valorUnitario: 0, descuento: 0, index: null })}
-                          style={{ marginLeft: '0.5rem' }}
-                        >
-                          Cancelar
-                        </button>
-                      </div>
                     </div>
-                  )}
-
-                  {/* Lista de productos existentes */}
-                  {ordenEditando.productos.length > 0 ? (
-                    <div className="table-responsive">
-                      <table className="table" style={{ width: '100%' }}>
-                        <thead>
-                          <tr>
-                            <th>Producto</th>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                            <th>Valor Unit.</th>
-                            <th>Descuento</th>
-                            <th>Total</th>
-                            <th>Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ordenEditando.productos.map((p, i) => (
-                            <tr key={i}>
-                              <td>{p.producto}</td>
-                              <td>{p.descripcion || 'N/A'}</td>
-                              <td>{p.cantidad}</td>
-                              <td>${p.valorUnitario?.toLocaleString()}</td>
-                              <td>${p.descuento?.toLocaleString() || '0'}</td>
-                              <td>${p.valorTotal?.toLocaleString()}</td>
-                              <td>
-                                <button
-                                  className="btn btn-warning btn-sm"
-                                  onClick={() => editarProducto(i)}
-                                  style={{ marginRight: '0.5rem' }}
-                                >
-                                  Editar
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() => eliminarProductoEdicion(i)}
-                                >
-                                  Eliminar
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <p>No hay productos en esta orden.</p>
                   )}
                 </div>
-                <div className="modal-footer">
+
+                <div className="modal-footer" style={{ padding: '1.5rem 2rem', borderTop: '1px solid #e0e0e0', background: '#f8f9fa' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <div>
-                      <strong>Subtotal: ${calcularTotales(ordenEditando.productos).subtotal.toLocaleString()}</strong><br />
-                      <strong>IVA (19%): ${calcularTotales(ordenEditando.productos).impuestos.toLocaleString()}</strong><br />
-                      <strong>Total: ${calcularTotales(ordenEditando.productos).total.toLocaleString()}</strong>
+                      <span style={{ color: '#7f8c8d', fontSize: '0.9rem' }}>
+                        {ordenEditando.productos.length} producto(s) en la orden
+                      </span>
+                      {ordenEditando.estado === 'Completada' && (
+                        <span className="badge-profesional badge-completada" style={{ marginLeft: '1rem' }}>
+                          <i className="fa-solid fa-check"></i> Completada
+                        </span>
+                      )}
                     </div>
-                    <div>
-                      <button className="btn btn-success" onClick={actualizarOrden}>
-                        Actualizar Orden
-                      </button>
-                      <button className="btn btn-cancel" onClick={cerrarModalEditar} style={{ marginLeft: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <button
+                        className="btn-profesional"
+                        onClick={cerrarModalEditar}
+                        style={{ background: '#95a5a6', color: 'white' }}
+                      >
+                        <i className="fa-solid fa-times"></i>
                         Cancelar
+                      </button>
+                      <button
+                        className="btn-profesional btn-success-profesional"
+                        onClick={actualizarOrden}
+                        disabled={ordenEditando.productos.length === 0 || cargando}
+                      >
+                        {cargando ? (
+                          <>
+                            <i className="fa-solid fa-spinner fa-spin"></i>
+                            Guardando...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-check"></i>
+                            Actualizar Orden
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -1087,98 +1694,435 @@ export default function OrdenCompra() {
             </div>
           )}
 
-          {/* Modal de detalles */}
+          {/* Modal de Detalles */}
+          {/* Modal de Detalles */}
           {modalDetallesVisible && ordenSeleccionada && (
             <div className="modal-overlay">
-              <div className="modal-compact modal-lg">
-                <div className="modal-header">
-                  <h5>Detalles de la Orden: {ordenSeleccionada.numeroOrden}</h5>
-                  <button className="modal-close" onClick={cerrarModalDetalles}>&times;</button>
-                </div>
-                <div className="modal-body">
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Proveedor:</strong> {ordenSeleccionada.proveedor || 'No especificado'}
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Fecha:</strong> {new Date(ordenSeleccionada.fechaOrden).toLocaleDateString()}
-                    </div>
-                  </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Estado:</strong>
-                      <span className={`badge ${ordenSeleccionada.estado === 'Pendiente' ? 'bg-warning' : ordenSeleccionada.estado === 'Completada' ? 'bg-success' : 'bg-danger'}`}>
-                        {ordenSeleccionada.estado}
-                      </span>
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Solicitado Por:</strong> {ordenSeleccionada.solicitadoPor || 'No especificado'}
-                    </div>
-                  </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-4">
-                      <strong>Subtotal:</strong> ${ordenSeleccionada.subtotal?.toLocaleString()}
-                    </div>
-                    <div className="col-md-4">
-                      <strong>IVA (19%):</strong> ${ordenSeleccionada.impuestos?.toLocaleString()}
-                    </div>
-                    <div className="col-md-4">
-                      <strong>Total:</strong> ${ordenSeleccionada.total?.toLocaleString()}
-                    </div>
-                  </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-12">
-                      <strong>Condiciones de Pago:</strong> {ordenSeleccionada.condicionesPago}
-                    </div>
-                  </div>
-
-                  <h6>Productos:</h6>
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Producto</th>
-                          <th>Descripción</th>
-                          <th>Cantidad</th>
-                          <th>Valor Unitario</th>
-                          <th>Descuento</th>
-                          <th>Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ordenSeleccionada.productos && ordenSeleccionada.productos.map((p, i) => (
-                          <tr key={i}>
-                            <td>{p.producto}</td>
-                            <td>{p.descripcion || 'N/A'}</td>
-                            <td>{p.cantidad}</td>
-                            <td>${p.valorUnitario?.toLocaleString()}</td>
-                            <td>${p.descuento?.toLocaleString() || '0'}</td>
-                            <td>${p.valorTotal?.toLocaleString()}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+              <div
+                className="modal-realista modal-md"
+                style={{
+                  maxWidth: '700px',
+                  width: '90%',
+                  position: 'fixed',
+                  cursor: 'move'
+                }}
+                id="modalMovible"
+              >
+                <div className="modal-header-realista" style={{ cursor: 'move' }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                    padding: '0.5rem 1rem'
+                  }}>
+                    <h5 style={{ margin: 0 }}>
+                      <i className="fa-solid fa-file-invoice" style={{ marginRight: '10px' }}></i>
+                      Orden: {ordenSeleccionada.numeroOrden}
+                    </h5>
+                    <button
+                      className="modal-close-realista"
+                      onClick={cerrarModalDetalles}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontSize: '1.5rem',
+                        cursor: 'pointer',
+                        color: '#666',
+                        padding: '0',
+                        width: '30px',
+                        height: '30px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      &times;
+                    </button>
                   </div>
                 </div>
-                <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={cerrarModalDetalles}>
-                    Cerrar
+
+                <div className="modal-body" style={{ padding: '0', maxHeight: '70vh', overflowY: 'auto' }}>
+                  {/* Encabezado de la orden */}
+                  <div style={{
+                    background: 'linear-gradient(135deg, #2c3e50, #34495e)',
+                    color: 'white',
+                    padding: '1.5rem',
+                    borderBottom: '3px solid #f39c12'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                          ORDEN DE COMPRA
+                        </h2>
+                        <p style={{ margin: '0', opacity: '0.9', fontSize: '1rem' }}>
+                          N°: <strong>{ordenSeleccionada.numeroOrden}</strong>
+                        </p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{
+                          background: 'rgba(255,255,255,0.1)',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.2)'
+                        }}>
+                          <p style={{ margin: '0', fontSize: '0.8rem', opacity: '0.8' }}>Fecha</p>
+                          <p style={{ margin: '0', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            {new Date(ordenSeleccionada.fechaOrden).toLocaleDateString('es-ES')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Información de la orden */}
+                  <div style={{ padding: '1.5rem' }}>
+                    {/* Información básica */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                      <div>
+                        <h6 style={{ color: '#2c3e50', marginBottom: '0.5rem', borderBottom: '1px solid #ecf0f1', paddingBottom: '0.25rem' }}>
+                          <i className="fa-solid fa-truck" style={{ marginRight: '8px' }}></i>
+                          Proveedor
+                        </h6>
+                        <p style={{ margin: '0', fontWeight: '500' }}>{ordenSeleccionada.proveedor || 'No especificado'}</p>
+                      </div>
+
+                      <div>
+                        <h6 style={{ color: '#2c3e50', marginBottom: '0.5rem', borderBottom: '1px solid #ecf0f1', paddingBottom: '0.25rem' }}>
+                          <i className="fa-solid fa-user" style={{ marginRight: '8px' }}></i>
+                          Solicitado Por
+                        </h6>
+                        <p style={{ margin: '0', fontWeight: '500' }}>{ordenSeleccionada.solicitadoPor || 'No especificado'}</p>
+                      </div>
+
+                      <div>
+                        <h6 style={{ color: '#2c3e50', marginBottom: '0.5rem', borderBottom: '1px solid #ecf0f1', paddingBottom: '0.25rem' }}>
+                          <i className="fa-solid fa-credit-card" style={{ marginRight: '8px' }}></i>
+                          Condiciones de Pago
+                        </h6>
+                        <p style={{ margin: '0', fontWeight: '500' }}>{ordenSeleccionada.condicionesPago || 'Contado'}</p>
+                      </div>
+
+                      <div>
+                        <h6 style={{ color: '#2c3e50', marginBottom: '0.5rem', borderBottom: '1px solid #ecf0f1', paddingBottom: '0.25rem' }}>
+                          <i className="fa-solid fa-flag" style={{ marginRight: '8px' }}></i>
+                          Estado
+                        </h6>
+                        <span className={`badge ${ordenSeleccionada.estado === 'Pendiente' ? 'bg-warning' : 'bg-success'}`}>
+                          {ordenSeleccionada.estado}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Lista de productos */}
+                    <div>
+                      <h6 style={{
+                        color: '#2c3e50',
+                        marginBottom: '1rem',
+                        borderBottom: '2px solid #3498db',
+                        paddingBottom: '0.5rem',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}>
+                        <i className="fa-solid fa-boxes" style={{ marginRight: '8px' }}></i>
+                        Productos ({ordenSeleccionada.productos?.length || 0})
+                      </h6>
+
+                      {ordenSeleccionada.productos && ordenSeleccionada.productos.length > 0 ? (
+                        <div className="table-responsive">
+                          <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                              <tr style={{ background: '#f8f9fa' }}>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'left' }}>Producto</th>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'left' }}>Descripción</th>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'center' }}>Cantidad</th>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right' }}>Valor Unit.</th>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right' }}>Descuento</th>
+                                <th style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right' }}>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {ordenSeleccionada.productos.map((producto, index) => (
+                                <tr key={index}>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6' }}>
+                                    <strong>{producto.producto}</strong>
+                                  </td>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6' }}>
+                                    {producto.descripcion || 'N/A'}
+                                  </td>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                                    <span className="badge bg-primary">{producto.cantidad}</span>
+                                  </td>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right' }}>
+                                    ${(producto.valorUnitario || producto.precioUnitario || 0).toLocaleString()}
+                                  </td>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right' }}>
+                                    ${(producto.descuento || 0).toLocaleString()}
+                                  </td>
+                                  <td style={{ padding: '0.75rem', border: '1px solid #dee2e6', textAlign: 'right', fontWeight: 'bold' }}>
+                                    ${(producto.valorTotal ||
+                                      ((producto.cantidad || 0) * (producto.valorUnitario || producto.precioUnitario || 0) - (producto.descuento || 0))
+                                    ).toLocaleString()}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div style={{
+                          textAlign: 'center',
+                          padding: '2rem',
+                          color: '#7f8c8d',
+                          background: '#f8f9fa',
+                          borderRadius: '4px',
+                          border: '1px dashed #dee2e6'
+                        }}>
+                          <i className="fa-solid fa-cart-shopping" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block' }}></i>
+                          <p>No hay productos en esta orden</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Totales */}
+                    {ordenSeleccionada.productos && ordenSeleccionada.productos.length > 0 && (
+                      <div style={{
+                        marginTop: '1.5rem',
+                        padding: '1rem',
+                        background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+                        borderRadius: '6px',
+                        border: '1px solid #dee2e6'
+                      }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Subtotal</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#2c3e50' }}>
+                              ${(ordenSeleccionada.subtotal || calcularTotalesOrden(ordenSeleccionada.productos).subtotal).toLocaleString()}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>IVA (19%)</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#2c3e50' }}>
+                              ${(ordenSeleccionada.impuestos || calcularTotalesOrden(ordenSeleccionada.productos).impuestos).toLocaleString()}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Total</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#e74c3c' }}>
+                              ${(ordenSeleccionada.total || calcularTotalesOrden(ordenSeleccionada.productos).total).toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="modal-footer" style={{
+                  padding: '1rem',
+                  borderTop: '1px solid #e0e0e0',
+                  background: '#f8f9fa',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ color: '#7f8c8d', fontSize: '0.8rem' }}>
+                    <i className="fa-solid fa-clock" style={{ marginRight: '5px' }}></i>
+                    {new Date(ordenSeleccionada.fechaOrden).toLocaleDateString()}
+                  </span>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => window.print()}
+                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
+                    >
+                      <i className="fa-solid fa-print"></i>
+                      Imprimir
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={cerrarModalDetalles}
+                      style={{
+                        padding: '0.4rem 0.8rem',
+                        fontSize: '0.8rem'
+                      }}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal de Confirmación */}
+          {modalConfirmacionVisible && ordenAConfirmar && (
+            <div className="modal-overlay">
+              <div className="modal-realista modal-confirmacion"
+                style={{
+                  maxWidth: '500px',
+                  width: '90%',
+                  background: 'linear-gradient(135deg, #ffffff, #f8f9fa)'
+                }}>
+
+                <div className="modal-header-realista" style={{
+                  background: 'linear-gradient(135deg, #2c3e50, #34495e)',
+                  color: 'white',
+                  padding: '1.5rem',
+                  borderTopLeftRadius: '10px',
+                  borderTopRightRadius: '10px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%'
+                  }}>
+                    <h5 style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
+                      <i className="fa-solid fa-clipboard-check" style={{ marginRight: '10px' }}></i>
+                      Confirmar Orden de Compra
+                    </h5>
+                    <button
+                      className="modal-close-realista"
+                      onClick={cancelarConfirmacion}
+                      style={{
+                        background: 'rgba(255,255,255,0.2)',
+                        border: 'none',
+                        color: 'white',
+                        fontSize: '1.5rem',
+                        cursor: 'pointer',
+                        borderRadius: '50%',
+                        width: '30px',
+                        height: '30px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                </div>
+
+                <div className="modal-body" style={{ padding: '1.5rem' }}>
+                  <div style={{
+                    background: 'white',
+                    border: '2px dashed #e0e0e0',
+                    borderRadius: '8px',
+                    padding: '1.5rem',
+                    marginBottom: '1.5rem'
+                  }}>
+                    <h6 style={{
+                      color: '#2c3e50',
+                      borderBottom: '2px solid #3498db',
+                      paddingBottom: '0.5rem',
+                      marginBottom: '1rem'
+                    }}>
+                      <i className="fa-solid fa-file-lines" style={{ marginRight: '8px' }}></i>
+                      Vista Previa de la Orden
+                    </h6>
+
+                    <div style={{ display: 'grid', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '600', color: '#666' }}>Número:</span>
+                        <span style={{ fontWeight: 'bold' }}>{ordenAConfirmar.numeroOrden}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '600', color: '#666' }}>Proveedor:</span>
+                        <span>{ordenAConfirmar.proveedor || 'No especificado'}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '600', color: '#666' }}>Total:</span>
+                        <span style={{ fontWeight: 'bold', color: '#e74c3c' }}>
+                          ${ordenAConfirmar.total?.toLocaleString()}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '600', color: '#666' }}>Solicitado por:</span>
+                        <span>{ordenAConfirmar.solicitadoPor || 'No especificado'}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '600', color: '#666' }}>Fecha:</span>
+                        <span>{new Date(ordenAConfirmar.fechaOrden).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{
+                    background: '#fffbf0',
+                    border: '1px solid #ffeaa7',
+                    borderRadius: '6px',
+                    padding: '1rem',
+                    textAlign: 'center'
+                  }}>
+                    <i className="fa-solid fa-exclamation-triangle" style={{
+                      color: '#f39c12',
+                      fontSize: '1.5rem',
+                      marginBottom: '0.5rem'
+                    }}></i>
+                    <p style={{ margin: '0', color: '#856404', fontWeight: '500' }}>
+                      ¿Estás seguro de que deseas marcar esta orden como <strong>COMPLETADA</strong>?
+                    </p>
+                    <small style={{ color: '#666', display: 'block', marginTop: '0.5rem' }}>
+                      Esta acción no se puede deshacer
+                    </small>
+                  </div>
+                </div>
+
+                <div className="modal-footer" style={{
+                  padding: '1.5rem',
+                  borderTop: '1px solid #e0e0e0',
+                  background: '#f8f9fa',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: '1rem',
+                  borderBottomLeftRadius: '10px',
+                  borderBottomRightRadius: '10px'
+                }}>
+                  <button
+                    onClick={cancelarConfirmacion}
+                    className="btn-profesional"
+                    style={{
+                      background: '#95a5a6',
+                      color: 'white',
+                      padding: '0.5rem 1.5rem',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <i className="fa-solid fa-times" style={{ marginRight: '8px' }}></i>
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={confirmarCompletada}
+                    className="btn-profesional btn-primary-profesional"
+                    style={{
+                      background: 'linear-gradient(135deg, #27ae60, #2ecc71)',
+                      color: 'white',
+                      padding: '0.5rem 1.5rem',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 4px rgba(39, 174, 96, 0.3)'
+                    }}
+                  >
+                    <i className="fa-solid fa-check" style={{ marginRight: '8px' }}></i>
+                    Marcar como Completada
                   </button>
                 </div>
               </div>
             </div>
           )}
-
         </div>
       </div>
       <div className="custom-footer">
-          <p className="custom-footer-text">
-            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-          </p>
-        </div>
+        <p className="custom-footer-text">
+          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+        </p>
+      </div>
     </div>
   );
 }
