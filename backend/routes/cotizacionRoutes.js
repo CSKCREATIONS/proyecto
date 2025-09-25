@@ -21,7 +21,7 @@ router.get('/cliente/:id',
   try {
     const cotizacion = await Cotizacion.findOne({ cliente: req.params.id })
       .sort({ createdAt: -1 }) // más reciente
-      .populate('productos.producto'); // <-- ¡Esto es esencial!
+    .populate('productos.producto.id'); // <-- ¡Esto es esencial!
 
     res.json(cotizacion);
   } catch (err) {
@@ -56,7 +56,7 @@ router.get('/:id',
   try {
     const cotizacion = await Cotizacion.findById(req.params.id)
       .populate('cliente')
-      .populate('productos.producto'); // Asegura que los productos vengan completos
+  .populate('productos.producto.id'); // Asegura que los productos vengan completos
 
     if (!cotizacion) {
       return res.status(404).json({ message: 'Cotización no encontrada' });

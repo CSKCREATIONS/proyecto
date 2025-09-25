@@ -3,14 +3,29 @@ const mongoose = require('mongoose');
 const CotizacionSchema = new mongoose.Schema({
   codigo: String,
   cliente: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cliente',
-    required: true
+    referencia: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Cliente',
+      required: true
+    },
+    nombre: String,
+    ciudad: String,
+    direccion: String,
+    telefono: String,
+    correo: String,
+    esCliente: Boolean
   },
-  ciudad: String,
-  telefono: String,
-  correo: String,
-  responsable: String,
+  responsable: {
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    firstName: String,
+    secondName: String,
+    surname: String,
+    secondSurname: String
+  },
   fecha: {
     type: Date,
     required: true
@@ -20,8 +35,11 @@ const CotizacionSchema = new mongoose.Schema({
   productos: [
     {
       producto: {
-        type: mongoose.Schema.Types.ObjectId,  // ✅ Esto es importante
-        ref: 'Product'                        // ✅ Relación con el modelo Producto
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product'
+        },
+        name: String
       },
       descripcion: String,
       cantidad: Number,
@@ -30,6 +48,10 @@ const CotizacionSchema = new mongoose.Schema({
       subtotal: Number
     }
   ],
+  empresa: {
+    nombre: { type: String },
+    direccion: { type: String }
+  },
   clientePotencial: {
     type: Boolean,
     default: false

@@ -10,12 +10,10 @@ export default function HistorialCompras() {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalObservacionesVisible, setModalObservacionesVisible] = useState(false);
   const [observacionesCompra, setObservacionesCompra] = useState('');
-  const [modalProductosVisible, setModalProductosVisible] = useState(false);
-  const [productosCompra, setProductosCompra] = useState([]);
   const [proveedores, setProveedores] = useState([]);
   const [productos, setProductos] = useState([]);
   const [productosFiltrados, setProductosFiltrados] = useState([]);
-  const [compra, setCompra] = useState({ proveedor: '', productos: [], observaciones: '', condicionesPago: '' });
+  const [compra, setCompra] = useState({ proveedor: '', productos: [], observaciones: '' });
   const [productoId, setProductoId] = useState('');
   const [cantidad, setCantidad] = useState(1);
   const [editandoId, setEditandoId] = useState(null);
@@ -50,7 +48,6 @@ export default function HistorialCompras() {
         cantidad: p.cantidad,
         precioUnitario: p.precioUnitario
       })),
-      condicionesPago: compraEdit.condicionesPago || '',
       observaciones: compraEdit.observaciones || ''
     });
     setEditandoId(compraEdit._id);
@@ -103,11 +100,6 @@ export default function HistorialCompras() {
   const abrirObservacionesModal = (observaciones) => {
     setObservacionesCompra(observaciones);
     setModalObservacionesVisible(true);
-  };
-
-  const abrirProductosModal = (productos) => {
-    setProductosCompra(productos);
-    setModalProductosVisible(true);
   };
 
   const handleProveedorChange = (idProveedor) => {
@@ -180,7 +172,7 @@ export default function HistorialCompras() {
       Swal.fire('Éxito', editandoId ? 'Compra actualizada' : 'Compra registrada', 'success');
       fetchCompras();
       setModalVisible(false);
-      setCompra({ proveedor: '', productos: [], condicionesPago: '', observaciones: '' });
+      setCompra({ proveedor: '', productos: [], observaciones: '' });
       setProductosFiltrados([]);
       setEditandoId(null); // ✅ Importante: limpiar estado de edición
     } else {
@@ -218,10 +210,7 @@ export default function HistorialCompras() {
                   <th>Proveedor</th>
                   <th>Total</th>
                   <th>Fecha</th>
-                  <th>Productos</th>
-                  <th>Condiciones de Pago</th>
                   <th>Observaciones</th>
-                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,32 +222,16 @@ export default function HistorialCompras() {
                     <td>{new Date(compra.fechaCompra || compra.fecha).toLocaleDateString()}</td>
                     <td>
                       <button
-                        onClick={() => abrirProductosModal(compra.productos)}
-                        className="btn btn-info btn-sm"
-                      >
-                        Ver Productos
-                      </button>
-                    </td>
-                    <td>{compra.condicionesPago || 'N/A'}</td>
-                    <td>
-                      <button
                         onClick={() => abrirObservacionesModal(compra.observaciones || '')}
                         className="btn btn-secondary btn-sm"
                       >
                         Ver Observaciones
                       </button>
                     </td>
-                    <td>
-                      <button className='btnTransparente' onClick={() => editarCompra(compra)}>
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </button>
-                      <button className='btnTransparente' onClick={() => eliminarCompra(compra._id)}>
-                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />     
-                      </button>
-                    </td>
+                   
                   </tr>
                 ))}
-                {compras.length === 0 && <tr><td colSpan="9">No hay compras registradas</td></tr>}
+                {compras.length === 0 && <tr><td colSpan="6">No hay compras registradas</td></tr>}
               </tbody>
             </table>
           </div>
@@ -292,29 +265,7 @@ export default function HistorialCompras() {
             </div>
           )}
 
-          {/* Modal productos */}
-          {modalProductosVisible && (
-            <div className="modal-overlay">
-              <div className="modal-compact modal-lg">
-                <div className="modal-header">
-                  <h5 className="modal-title">Productos de la Compra</h5>
-                  <button className="modal-close" onClick={() => setModalProductosVisible(false)}>&times;</button>
-                </div>
-                <div className="modal-body">
-                  <ul className="list-group">
-                    {productosCompra.map((p, i) => (
-                      <li key={i} className="list-group-item">
-                        <strong>{p.producto?.name}</strong> – {p.cantidad} x ${p.precioUnitario}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={() => setModalProductosVisible(false)}>Cerrar</button>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* Modal registrar compra */}
           {modalVisible && (
@@ -349,11 +300,6 @@ export default function HistorialCompras() {
                         <li key={i}> {p.producto?.name} - Cant: {p.cantidad} - ${p.precioUnitario} </li>
                       ))}
                     </ul>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Condiciones de Pago:</label>
-                    <textarea value={compra.condicionesPago} onChange={(e) => setCompra({ ...compra, condicionesPago: e.target.value })} />
                   </div>
 
                   <div className="form-group">

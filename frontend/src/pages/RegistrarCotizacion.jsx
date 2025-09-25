@@ -152,6 +152,13 @@ export default function RegistrarCotizacion() {
       return;
     }
 
+    // Validación básica de formato de correo antes de enviar
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(correo)) {
+      Swal.fire('Error', 'El correo del cliente debe tener un formato válido.', 'warning');
+      return;
+    }
+
     if (productosSeleccionados.length === 0) {
       Swal.fire('Error', 'Debes agregar al menos un producto a la cotización.', 'warning');
       return;
@@ -167,25 +174,49 @@ export default function RegistrarCotizacion() {
     const clienteData = { nombre, ciudad, direccion, telefono, correo, esCliente: false };
 
     const datosCotizacion = {
-      cliente: clienteData,
-      ciudad,
-      telefono,
-      correo,
-      responsable: user?.firstName,
+      cliente: {
+        referencia: user?._id, // Si tienes el id del cliente, cámbialo aquí
+        ...clienteData
+      },
+      responsable: {
+        id: user?._id,
+        firstName: user?.firstName,
+        secondName: user?.secondName,
+        surname: user?.surname,
+        secondSurname: user?.secondSurname
+      },
       fecha: obtenerFechaLocal(fecha),
       descripcion: descripcionRef.current?.getContent({ format: 'html' }) || '',
       condicionesPago: condicionesPagoRef.current?.getContent({ format: 'html' }) || '',
-      productos: productosSeleccionados.map(p => ({
-        producto: p.producto,
-        descripcion: p.descripcion,
-        cantidad: parseFloat(p.cantidad || 0),
-        valorUnitario: parseFloat(p.valorUnitario || 0),
-        descuento: parseFloat(p.descuento || 0),
-        valorTotal: parseFloat(p.valorTotal || 0)
-      })),
+      productos: productosSeleccionados.map(p => {
+        const prodObj = productos.find(prod => prod._id === p.producto);
+        return {
+          producto: {
+            id: p.producto,
+            name: prodObj?.name || ''
+          },
+          descripcion: p.descripcion,
+          cantidad: parseFloat(p.cantidad || 0),
+          valorUnitario: parseFloat(p.valorUnitario || 0),
+          descuento: parseFloat(p.descuento || 0),
+          subtotal: parseFloat(p.valorTotal || 0)
+        };
+      }),
       clientePotencial: true,
       enviadoCorreo: enviar
     };
+
+    // Añadir información de la empresa si está disponible en la UI
+    try {
+      const empresaNombreEl = document.getElementById('empresa-nombre');
+      const empresaNombre = empresaNombreEl ? empresaNombreEl.innerText.trim() : '';
+      if (empresaNombre) {
+        datosCotizacion.empresa = { nombre: empresaNombre, direccion: '' };
+      }
+    } catch (err) {
+      // no bloquear si no se puede obtener
+      console.warn('No se pudo obtener información de la empresa desde la UI', err);
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -205,11 +236,74 @@ export default function RegistrarCotizacion() {
         return;
       }
 
-  // Mostrar el formato de cotización en el modal
-  setDatosFormato(datosCotizacion);
-  setMostrarFormato(true);
-  setNotificacion('Cotización guardada');
-  setTimeout(() => setNotificacion(null), 5000);
+      // MARCAR: check if client with this email exists; if not, create as prospect
+      try {
+        const token = localStorage.getItem('token');
+        const clientesRes = await fetch('http://localhost:5000/api/clientes', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const clientes = await clientesRes.json();
+        const existe = Array.isArray(clientes) && clientes.some(c => (c.correo || '').toLowerCase() === correo.toLowerCase());
+        if (!existe) {
+          // crear prospecto (esCliente: false)
+          const nuevoCliente = {
+            nombre,
+            correo,
+            telefono,
+            direccion,
+            ciudad,
+            esCliente: false
+          };
+
+          const createRes = await fetch('http://localhost:5000/api/clientes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(nuevoCliente)
+          });
+
+          if (createRes.ok) {
+            Swal.fire('Prospecto creado', 'El correo no existía en la base de datos y se creó como prospecto.', 'success');
+          } else {
+            const err = await createRes.json();
+            console.warn('No se pudo crear prospecto:', err);
+          }
+        }
+      } catch (err) {
+        console.warn('Error al verificar/crear prospecto:', err);
+      }
+  // Mostrar el formato de cotización en el modal usando la respuesta del servidor
+  // El backend devuelve { message, data: cotizacion }
+  setDatosFormato(result.data || result);
+      setMostrarFormato(true);
+      setNotificacion('Cotización guardada');
+      setTimeout(() => setNotificacion(null), 5000);
+
+      // Limpiar todos los inputs de la vista después de guardar correctamente
+      try {
+        // Limpiar inputs con la clase usada en el formulario
+        const allInputs = document.querySelectorAll('.cuadroTexto');
+        if (allInputs && allInputs.length) {
+          allInputs.forEach(input => {
+            if (input) input.value = '';
+          });
+        }
+
+        // Limpiar productos seleccionados
+        setProductosSeleccionados([]);
+
+        // Limpiar contenidos de los editores (si existen)
+        if (descripcionRef.current) {
+          descripcionRef.current.setContent('');
+        }
+        if (condicionesPagoRef.current) {
+          condicionesPagoRef.current.setContent('');
+        }
+      } catch (err) {
+        console.warn('No se pudieron limpiar todos los campos automáticamente:', err);
+      }
 
     } catch (error) {
       console.error('Error en la solicitud de cotización:', error);
@@ -303,7 +397,7 @@ export default function RegistrarCotizacion() {
                     </td>
                     <td><input type="text" name="descripcion" className='cuadroTexto' value={prod.descripcion} onChange={(e) => handleChange(index, e)} /></td>
                     <td><input type="number" name="cantidad" className='cuadroTexto' value={prod.cantidad} onChange={(e) => handleChange(index, e)} /></td>
-                    <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly/></td>
+                    <td><input type="number" name="valorUnitario" className='cuadroTexto' value={prod.valorUnitario} onChange={(e) => handleChange(index, e)} readOnly /></td>
                     <td><input type="number" name="descuento" className='cuadroTexto' value={prod.descuento} onChange={(e) => handleChange(index, e)} /></td>
                     <td><input type="number" name="subtotal" className='cuadroTexto' value={prod.subtotal} readOnly /></td>
                     <td><button className="btn btn-danger" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
@@ -325,14 +419,15 @@ export default function RegistrarCotizacion() {
               </tbody>
             </table>
             <br />
-            <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
-            {productosSeleccionados.length > 0 && (
-              <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
-                Eliminar Todos
-              </button>
-            )}
-          </div>
 
+          </div>
+          <button className="btn" onClick={agregarProducto}>Agregar Producto</button>
+          {productosSeleccionados.length > 0 && (
+            <button className="btn btn-danger" onClick={eliminarTodosLosProductos} style={{ marginLeft: '10px' }}>
+              Eliminar Todos
+            </button>
+          )}
+          <br />
           <br />
           <label className="labelDOCS">Condiciones de pago</label>
           <br /><br />

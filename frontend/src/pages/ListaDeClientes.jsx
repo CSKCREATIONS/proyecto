@@ -7,6 +7,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import './footer.css'
 
 export default function ListaDeClientes() {
   const [clientes, setClientes] = useState([]);
@@ -214,7 +215,7 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'> 
+          <div className='encabezado-modulo'>
             <div>
               <h3 className='titulo-profesional'>Lista de clientes</h3>
 
@@ -241,7 +242,7 @@ export default function ListaDeClientes() {
                 <span>Exportar a PDF</span>
               </button>
             </div>
-          </div><br/>
+          </div><br />
 
           {/* FILTRO DE BÚSQUEDA */}
           <div className="filtros-tabla">
@@ -314,14 +315,13 @@ export default function ListaDeClientes() {
             ))}
           </div>
         </div>
-        <p className="text-sm text-gray-400 tracking-wide text-center">
-          © 2025{" "}
-          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            PANGEA
-          </span>
-          . Todos los derechos reservados.
-        </p>
+        
       </div>
+      <div className="custom-footer">
+          <p className="custom-footer-text">
+            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+          </p>
+        </div>
     </div>
   );
 }

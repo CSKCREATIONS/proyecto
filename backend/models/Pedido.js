@@ -6,6 +6,14 @@ const PedidoSchema = new mongoose.Schema({
     unique: true,
     required: true
   },
+  cotizacionReferenciada: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cotizacion',
+  },
+  cotizacionCodigo: {
+    type: String,
+    default: ''
+  },
    productos: [{
     product: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,4 +47,3 @@ const PedidoSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.models.Pedido || mongoose.model('Pedido', PedidoSchema);
-

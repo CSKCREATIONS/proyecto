@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import FormatoCotizacion from '../components/FormatoCotizacion';
+import CotizacionPreview from '../components/CotizacionPreview';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom'; // ya lo tienes o debes agregarlo
 
@@ -15,6 +15,7 @@ export default function ListaDeCotizaciones() {
   const [productos, setProductos] = useState([]);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
   const modalRef = useRef();
   const navigate = useNavigate();
 
@@ -256,30 +257,19 @@ export default function ListaDeCotizaciones() {
                 <span>Exportar a PDF</span>
               </button>
 
-              {cotizacionSeleccionada && ReactDOM.createPortal(
-                <FormatoCotizacion
-                  datos={cotizacionSeleccionada}
-                  onClose={() => setCotizacionSeleccionada(null)}
-                />,
-                document.body
-              )}
-
-
-
 
             </div>
           </div>
           <div className="filtros-tabla">
             <div className="filtro-grupo">
+
               <label>Fecha:</label>
               <input type="date" className="filtro-input" value={filtroFecha} onChange={(e) => setFiltroFecha(e.target.value)} />
             </div>
-
-            <br /><br />
             <div className="filtro-grupo">
               <label>Cliente:</label>
               <input type="text" className="filtro-input" placeholder="Buscar cliente..." value={filtroCliente} onChange={(e) => setFiltroCliente(e.target.value)} />
-            </div><br />
+            </div>
             <div className="filtro-grupo"><br></br>
               <label>Enviado:</label>
               <select className="filtro-select" value={filtroEnviado} onChange={(e) => setFiltroEnviado(e.target.value)}>
@@ -305,13 +295,34 @@ export default function ListaDeCotizaciones() {
                 <tbody>
                   {currentItems.map((cot, index) => (
                     <tr key={cot._id}>
-                      <td><a>{cot.codigo}</a></td>
+                      <td>
+                        <a
+                          style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                          onClick={async () => {
+                            try {
+                              const token = localStorage.getItem('token');
+                              const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                              });
+                              if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                              const data = await res.json();
+                              const cotizacionCompleta = data.data || data;
+                              setCotizacionSeleccionada(cotizacionCompleta);
+                              setMostrarPreview(true);
+                            } catch (err) {
+                              Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                            }
+                          }}
+                        >
+                          {cot.codigo}
+                        </a>
+                      </td>
                       <td>{new Date(cot.fecha).toLocaleDateString()}</td>
                       <td>{cot.cliente?.nombre || 'Sin nombre'}</td>
                       <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
                       <td>
                         <button className='btnTransparente' onClick={() => handleEliminarCotizacion(cot._id)}>
-                          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
+                          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} title='Eliminar cotización'/>
                         </button>
                         <button
                           className='btnTransparente'
@@ -329,17 +340,90 @@ export default function ListaDeCotizaciones() {
                             }
                           }}
                         >
-                          <i className="fa-solid fa-pen-to-square"></i>
+                          <i className="fa-solid fa-pen-to-square" title='Editar cotización'></i>
                         </button>
 
 
                         <button
                           className='btnTransparente'
-                          onClick={() => {
-                            if (cot.cliente?._id) {
-                              navigate(`/AgendarVenta/${cot.cliente._id}`);
-                            } else {
-                              Swal.fire('Error', 'Esta cotización no tiene un cliente válido asignado.', 'warning');
+                          onClick={async () => {
+                            try {
+                              const token = localStorage.getItem('token');
+                              // Obtener cotización completa para asegurar productos y cliente
+                              const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                              });
+                              if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                              const data = await res.json();
+                              const cotizacion = data.data || data;
+
+                              const confirm = await Swal.fire({
+                                title: `¿Agendar la cotización '${cotizacion.codigo}' como pedido?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sí, agendar',
+                                cancelButtonText: 'No'
+                              });
+                              if (!confirm.isConfirmed) return;
+                              
+
+                              const clienteId = (
+                                cotizacion?.cliente?.referencia?._id ||
+                                cotizacion?.cliente?.referencia ||
+                                cot?.cliente?._id ||
+                                cot?.cliente?.referencia?._id ||
+                                cot?.cliente?.referencia
+                              );
+
+
+                              // Mapear productos al formato de pedido
+                              const productosPedido = (cotizacion.productos || []).map(p => {
+                                const productId = (p?.producto?.id && (p.producto.id._id || p.producto.id)) || p?.producto;
+                                if (!productId) return null;
+                                const cantidadNum = Number(p?.cantidad);
+                                const precioNum = p?.valorUnitario != null ? Number(p.valorUnitario) : Number(p?.producto?.price);
+                                return {
+                                  product: productId,
+                                  cantidad: Number.isFinite(cantidadNum) && cantidadNum > 0 ? cantidadNum : 1,
+                                  precioUnitario: Number.isFinite(precioNum) ? precioNum : 0,
+                                };
+                              }).filter(Boolean);
+
+                              if (productosPedido.length === 0) {
+                                return Swal.fire('Error', 'La cotización no tiene productos.', 'warning');
+                              }
+
+                              // Fecha de entrega: por ahora 7 días después de la fecha de la cotización o de hoy
+                              const baseDate = cotizacion.fecha ? new Date(cotizacion.fecha) : new Date();
+                              const fechaEntrega = new Date(baseDate.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+                              const crearRes = await fetch('http://localhost:5000/api/pedidos', {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                  cliente: clienteId,
+                                  productos: productosPedido,
+                                  fechaEntrega,
+                                  observacion: `Agendado desde cotización ${cotizacion.codigo}`,
+                                  cotizacionReferenciada: cotizacion._id,
+                                  cotizacionCodigo: cotizacion.codigo
+                                })
+                              });
+
+                              if (!crearRes.ok) {
+                                const errText = await crearRes.text();
+                                throw new Error(errText || 'No se pudo agendar el pedido');
+                              }
+
+                              await crearRes.json();
+                              await Swal.fire('Agendado', 'La cotización fue agendada como pedido.', 'success');
+                              navigate('/PedidosAgendados');
+                            } catch (error) {
+                              console.error(error);
+                              Swal.fire('Error', error.message || 'Hubo un problema al agendar la cotización', 'error');
                             }
                           }}
                         >
@@ -371,8 +455,10 @@ export default function ListaDeCotizaciones() {
       </div>
 
 
+      {mostrarPreview && cotizacionSeleccionada && (
+        <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
+      )}
+
     </div>
-
-
   )
 };

@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const Pedido = require('../models/Pedido');
@@ -26,7 +27,7 @@ router.post('/',
    checkPermission('ventas.crear'),
    async (req, res) => {
   try {
-    const { cliente, productos, fechaEntrega, observacion } = req.body;
+    const { cliente, productos, fechaEntrega, observacion, cotizacionReferenciada, cotizacionCodigo } = req.body;
 
     if (!cliente || !productos || productos.length === 0 || !fechaEntrega) {
       return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
@@ -43,7 +44,9 @@ router.post('/',
         precioUnitario: item.precioUnitario
       })),
       fechaEntrega,
-      observacion
+      observacion,
+      cotizacionReferenciada: cotizacionReferenciada || undefined,
+      cotizacionCodigo: cotizacionCodigo || ''
     });
 
     const pedidoGuardado = await nuevoPedido.save();

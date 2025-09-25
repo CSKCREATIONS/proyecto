@@ -21,7 +21,6 @@ export default function Fijo() {
   const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
   const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
   const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
-  const [puedeVerPedidosDespachados, setPuedeVerPedidosDespachados] = useState(false);
   const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
   const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
   const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
@@ -68,7 +67,6 @@ export default function Fijo() {
         setPuedeRegistrarCotizacion(permissions.includes('cotizaciones.crear'));
         setPuedeVerCotizaciones(permissions.includes('cotizaciones.ver'));
         setPuedeVerVentasAgendadas(permissions.includes('pedidosAgendados.ver'));
-        setPuedeVerPedidosDespachados(permissions.includes('pedidosDespachados.ver'));
         setPuedeVerPedidosEntregados(permissions.includes('pedidosEntregados.ver'));
         setPuedeVerPedidosCancelados(permissions.includes('pedidosCancelados.ver'));
         setPuedeVerPedidosDevueltos(permissions.includes('pedidosDevueltos.ver'));
@@ -237,7 +235,7 @@ export default function Fijo() {
                   </nav>
                 )}
 
-                {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDespachados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
+                {(puedeRegistrarCotizacion || puedeVerCotizaciones || puedeVerListaDeClientes || puedeVerListaDeVentas || puedeVerPedidosCancelados || puedeVerPedidosDevueltos || puedeVerPedidosEntregados || puedeVerProspectos || puedeVerReportesVentas || puedeVerVentasAgendadas) && (
                   <nav>
                     <li style={{ padding: "10px 0" }} onClick={() => toggleSubMenu('submenuVentas')}><i class="fas fa-cash-register"></i> Ventas</li>
                     <ul id="submenuVentas" className="dropdown">
@@ -249,9 +247,6 @@ export default function Fijo() {
                       )}
                       {puedeVerVentasAgendadas && (
                         <Link as={Link} to="/PedidosAgendados"><li><i class="fas fa-calendar-check"></i> Pedidos por despachar</li></Link>
-                      )}
-                      {puedeVerPedidosDespachados && (
-                        <Link as={Link} to="/PedidosDespachados"><li><i class="fas fa-calendar-check"></i> Pedidos despachados</li></Link>
                       )}
                       {puedeVerPedidosEntregados && (
                         <Link as={Link} to="/PedidosEntregados"><li><i class="fas fa-check-circle"></i> Pedidos entregados</li></Link>
