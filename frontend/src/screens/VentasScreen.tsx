@@ -56,7 +56,6 @@ const VentasScreen: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);      
   const [filteredVentas, setFilteredVentas] = useState<Venta[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedEstado, setSelectedEstado] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);                  
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -67,7 +66,7 @@ const VentasScreen: React.FC = () => {
 
   useEffect(() => {
     filterVentas();
-  }, [ventas, searchQuery, selectedEstado]);
+  }, [ventas, searchQuery]);
 
   const filterVentas = () => {
     let filtered = [...ventas];
@@ -78,10 +77,6 @@ const VentasScreen: React.FC = () => {
         return clienteNombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
                venta.observaciones?.toLowerCase().includes(searchQuery.toLowerCase());
       });
-    }
-
-    if (selectedEstado) {
-      filtered = filtered.filter(venta => venta.estado === selectedEstado);
     }
 
     setFilteredVentas(filtered);
@@ -299,7 +294,7 @@ const VentasScreen: React.FC = () => {
           borderRadius: 15,
           paddingHorizontal: 15,
           paddingVertical: 12,
-          marginBottom: 15,
+          marginBottom: 5,
         }}>
           <Ionicons name="search" size={20} color="rgba(255,255,255,0.8)" style={{ marginRight: 10 }} />
           <TextInput
@@ -311,55 +306,7 @@ const VentasScreen: React.FC = () => {
           />
         </View>
 
-        {/* Filtros horizontales por estado */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 5 }}>
-          <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: !selectedEstado ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 20,
-                marginRight: 10,
-                borderWidth: !selectedEstado ? 2 : 1,
-                borderColor: 'rgba(255,255,255,0.3)',
-              }}
-              onPress={() => setSelectedEstado('')}
-            >
-              <Text style={{ 
-                color: 'white', 
-                fontWeight: !selectedEstado ? '600' : '400',
-                fontSize: 14 
-              }}>
-                💰 Todas
-              </Text>
-            </TouchableOpacity>
-            
-            {estadoOptions.map((estado) => (
-              <TouchableOpacity
-                key={estado.value}
-                style={{
-                  backgroundColor: selectedEstado === estado.value ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 20,
-                  marginRight: 10,
-                  borderWidth: selectedEstado === estado.value ? 2 : 1,
-                  borderColor: 'rgba(255,255,255,0.3)',
-                }}
-                onPress={() => setSelectedEstado(selectedEstado === estado.value ? '' : estado.value)}
-              >
-                <Text style={{ 
-                  color: 'white', 
-                  fontWeight: selectedEstado === estado.value ? '600' : '400',
-                  fontSize: 14 
-                }}>
-                  {estado.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+
       </View>
       
       <ScrollView
@@ -376,7 +323,7 @@ const VentasScreen: React.FC = () => {
           <View style={globalStyles.emptyStateContainer}>
             <Text style={globalStyles.titleText}>💰</Text>
             <Text style={globalStyles.emptyStateText}>
-              {searchQuery || selectedEstado ? 'No hay ventas que coincidan' : 'No hay ventas'}
+              {searchQuery ? 'No hay ventas que coincidan con la búsqueda' : 'No hay ventas'}
             </Text>
             <Text style={globalStyles.emptyStateSubtext}>
               No se han creado ventas aún

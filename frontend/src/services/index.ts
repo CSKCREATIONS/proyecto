@@ -98,6 +98,18 @@ export interface ProductDimensions {
   height?: number;
 }
 
+export interface Proveedor {
+  _id: string;
+  nombre: string;
+  email?: string;
+  telefono?: string;
+  direccion?: string;
+  contacto?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -107,10 +119,11 @@ export interface Product {
   sku: string;
   category: Category | string;
   subcategory: Subcategory | string;
+  proveedor?: Proveedor | string;
   price: number;
   comparePrice?: number;
   cost?: number;
-  stock: ProductStock;
+  stock: ProductStock | number;
   dimensions?: ProductDimensions;
   images: ProductImage[];
   tags: string[];
@@ -209,10 +222,11 @@ export interface CreateProductData {
   sku: string;
   category: string;
   subcategory: string;
+  proveedor?: string;
   price: number;
   comparePrice?: number;
   cost?: number;
-  stock?: ProductStock;
+  stock?: ProductStock | number;
   dimensions?: ProductDimensions;
   images?: ProductImage[];
   tags?: string[];
@@ -231,10 +245,11 @@ export interface UpdateProductData {
   sku?: string;
   category?: string;
   subcategory?: string;
+  proveedor?: string;
   price?: number;
   comparePrice?: number;
   cost?: number;
-  stock?: ProductStock;
+  stock?: ProductStock | number;
   dimensions?: ProductDimensions;
   images?: ProductImage[];
   tags?: string[];

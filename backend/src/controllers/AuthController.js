@@ -30,7 +30,7 @@ const login = asyncHandler(async (req,res) => {
                 { username: loginValue },
                 { email: loginValue }
             ]
-        }).populate('role').select('+password');
+        }).populate('role', 'name description permissions enabled').select('+password');
         console.log('DEBUG: usuario encontrado', user ? user.username : 'NINGUNO');
         if (!user) {
             console.log('ERROR - usuario no encontrado');
@@ -102,7 +102,7 @@ const login = asyncHandler(async (req,res) => {
 
 //obtener informacion del usuario encontrado 
 const getMe = asyncHandler(async (req,res) => {
-    const user = await User.findById(req.user._id).populate('role');
+    const user = await User.findById(req.user._id).populate('role', 'name description permissions enabled');
     res.status(200).json({
         success:true,
         data:user

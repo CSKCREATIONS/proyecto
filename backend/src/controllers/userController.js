@@ -34,6 +34,7 @@ const getUsers = asyncHandler(async (req, res) => {
 
     //consulta de paginación
     const users = await User.find(filters)
+    .populate('role', 'name description permissions enabled')
     .populate('createdBy', 'username firstName lastName')
     .sort({createdAt: -1})
     .skip(skip)
@@ -59,6 +60,7 @@ const getUsers = asyncHandler(async (req, res) => {
 //Obtener un usuario por ID
 const getUserById = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id)
+    .populate('role', 'name description permissions enabled')
     .populate('createdBy', 'username firstName lastName');
 
     if (!user) {
@@ -117,6 +119,11 @@ const createUser = asyncHandler(async (req, res) => {
         isActive: isActive !== undefined ? isActive : true,
         createdBy: req.user._id
     });
+
+    // Populate el usuario creado para devolver datos completos
+    await newUser.populate('role', 'name description permissions enabled');
+    await newUser.populate('createdBy', 'username firstName lastName');
+
     res.status(201).json({
         success: true,
         message: 'Usuario creado exitosamente',
@@ -207,6 +214,10 @@ const updateUser = asyncHandler(async (req, res) => {
     user.updatedBy = req.user._id;
 
     await user.save();
+
+    // Populate el usuario actualizado para devolver datos completos
+    await user.populate('role', 'name description permissions enabled');
+    await user.populate('createdBy', 'username firstName lastName');
 
     res.status(200).json({
         success: true,

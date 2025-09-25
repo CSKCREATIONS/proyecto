@@ -2,10 +2,39 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Subcategory = require('../models/Subcategory');
 
+// Función auxiliar para transformar stock según el cliente
+const transformStockForClient = (product, userAgent) => {
+    const isMobileApp = userAgent && (userAgent.includes('Expo') || userAgent.includes('ReactNative'));
+    
+    if (isMobileApp) {
+        // Para móvil: convertir número a objeto
+        if (typeof product.stock === 'number') {
+            return {
+                ...product.toObject(),
+                stock: {
+                    quantity: product.stock,
+                    minStock: 0,
+                    trackStock: true
+                }
+            };
+        }
+    }
+    // Para web: mantener como número
+    return product.toObject();
+};
+
+// Función para transformar array de productos
+const transformProductsForClient = (products, userAgent) => {
+    if (Array.isArray(products)) {
+        return products.map(product => transformStockForClient(product, userAgent));
+    }
+    return transformStockForClient(products, userAgent);
+};
+
 // Crear producto
 exports.createProduct = async (req, res) => {
     try {
-        const { name, description, price, stock, category, subcategory, sku } = req.body;
+        const { name, description, price, stock, category, subcategory, sku, proveedor } = req.body;
 
         if (!name || !description || !price || !category || !subcategory || !sku) {
             return res.status(400).json({
@@ -41,7 +70,8 @@ exports.createProduct = async (req, res) => {
             sku: sku.toUpperCase(),
             category,
             subcategory,
-            stock: stock || { quantity: 0, minstock: 0, trackStock: true }
+            proveedor,
+            stock: stock || 0
         });
 
         if (req.user && req.user._id) {
@@ -52,12 +82,16 @@ exports.createProduct = async (req, res) => {
 
         const productWithDetails = await Product.findById(savedProduct._id)
             .populate('category', 'name')
-            .populate('subcategory', 'name');
+            .populate('subcategory', 'name')
+            .populate('proveedor', 'nombre contacto.correo contacto.telefono');
+
+        // Transformar datos según el cliente
+        const transformedProduct = transformStockForClient(productWithDetails, req.headers['user-agent']);
 
         res.status(201).json({
             success: true,
             message: 'Producto creado exitosamente',
-            data: productWithDetails
+            data: transformedProduct
         });
     } catch (error) {
         console.error('Error en createProduct:', error);
@@ -81,12 +115,16 @@ exports.getProducts = async (req, res) => {
         const products = await Product.find()
             .populate('category', 'name') 
             .populate('subcategory', 'name')
+            .populate('proveedor', 'nombre contacto.correo contacto.telefono')
             .sort({ createdAt: -1 });
+
+        // Transformar datos según el cliente (web o móvil)
+        const transformedProducts = transformProductsForClient(products, req.headers['user-agent']);
 
         res.status(200).json({
             success: true,
             count: products.length,
-            data: products
+            data: transformedProducts
         });
     } catch (error) {
         console.error('Error en getProducts:', error);
@@ -102,7 +140,8 @@ exports.getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id)
             .populate('category', 'name description')
-            .populate('subcategory', 'name description');
+            .populate('subcategory', 'name description')
+            .populate('proveedor', 'nombre contacto.correo contacto.telefono');
 
         if (!product) {
             return res.status(404).json({
@@ -111,9 +150,12 @@ exports.getProductById = async (req, res) => {
             });
         }
 
+        // Transformar datos según el cliente
+        const transformedProduct = transformStockForClient(product, req.headers['user-agent']);
+
         res.status(200).json({
             success: true,
-            data: product
+            data: transformedProduct
         });
     } catch (error) {
         console.error('Error en getProductById:', error);
@@ -127,7 +169,7 @@ exports.getProductById = async (req, res) => {
 // Actualizar producto
 exports.updateProduct = async (req, res) => {
     try {
-        const { name, description, price, stock, category, subcategory, sku } = req.body;
+        const { name, description, price, stock, category, subcategory, sku, proveedor } = req.body;
         const updateData = {};
 
         if (name) updateData.name = name;
@@ -135,6 +177,7 @@ exports.updateProduct = async (req, res) => {
         if (price) updateData.price = price;
         if (stock) updateData.stock = stock;
         if (sku) updateData.sku = sku.toUpperCase();
+        if (proveedor !== undefined) updateData.proveedor = proveedor;
 
         if (category) {
             const categoryExist = await Category.findById(category);
@@ -175,7 +218,8 @@ exports.updateProduct = async (req, res) => {
             }
         )
         .populate('category', 'name')
-        .populate('subcategory', 'name');
+        .populate('subcategory', 'name')
+        .populate('proveedor', 'nombre contacto.correo contacto.telefono');
 
         if (!updatedProduct) {
             return res.status(404).json({

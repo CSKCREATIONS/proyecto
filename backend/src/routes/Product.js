@@ -7,9 +7,9 @@ const { checkPermission } = require('../middleware/role');
 
 const validateProduct = [
     check('name').not().isEmpty().withMessage('el nombre es obligatorio'),
-    check('description').not().isEmpty().withMessage('la descripcion es obligatorio'),
+    check('description').optional(),
     check('price').isFloat({ min: 0 }).withMessage('el precio es obligatorio'),
-    check('stock').isInt({ min: 0 }).withMessage('stock invalido'),
+    check('stock').optional().isInt({ min: 0 }).withMessage('el stock debe ser un número positivo'),
     check('category').not().isEmpty().withMessage('la categoria es requerida'),
     check('subcategory').not().isEmpty().withMessage('la subcategoria es requerida'),
 ];

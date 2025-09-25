@@ -94,7 +94,7 @@ const CotizacionesScreen: React.FC = () => {
       // Filtro por búsqueda
       const codigo = cotizacion.codigo || `COT-${cotizacion._id.slice(-6).toUpperCase()}`;
       const matchesSearch = !searchQuery || 
-        stripHtml(cotizacion.descripcion).toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cleanHtmlText(cotizacion.descripcion).toLowerCase().includes(searchQuery.toLowerCase()) ||
         codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (typeof cotizacion.cliente === 'object' && cotizacion.cliente.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -115,8 +115,17 @@ const CotizacionesScreen: React.FC = () => {
     return option ? option.label : estado;
   };
 
-  const stripHtml = (html: string) => {
-    return html.replace(/<[^>]*>/g, '');
+  const cleanHtmlText = (html: string) => {
+    if (!html) return '';
+    // Remover etiquetas HTML y entidades HTML
+    return html
+      .replace(/<[^>]*>/g, '') // Remover etiquetas HTML
+      .replace(/&nbsp;/g, ' ') // Reemplazar espacios no rompibles
+      .replace(/&amp;/g, '&') // Reemplazar &
+      .replace(/&lt;/g, '<')  // Reemplazar <
+      .replace(/&gt;/g, '>')  // Reemplazar >
+      .replace(/&quot;/g, '"') // Reemplazar "
+      .trim();
   };
 
   const renderCotizacionCard = ({ item }: { item: Cotizacion }) => {
@@ -158,7 +167,7 @@ const CotizacionesScreen: React.FC = () => {
               color: modernTheme.colors.neutral[600],
               marginBottom: modernTheme.spacing.sm,
             }}>
-              {stripHtml(item.descripcion)}
+              {cleanHtmlText(item.descripcion)}
             </Text>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: modernTheme.spacing.sm }}>

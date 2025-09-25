@@ -29,12 +29,12 @@ const ProductsScreen: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [filteredSubcategories, setFilteredSubcategories] = useState<Subcategory[]>([]);
+  const [proveedores, setProveedores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -43,6 +43,7 @@ const ProductsScreen: React.FC = () => {
     sku: '',
     category: '',
     subcategory: '',
+    proveedor: '',
     price: '',
     comparePrice: '',
     cost: '',
@@ -80,10 +81,11 @@ const ProductsScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const [productsResponse, categoriesResponse, subcategoriesResponse] = await Promise.all([
+      const [productsResponse, categoriesResponse, subcategoriesResponse, proveedoresResponse] = await Promise.all([
         apiService.get<Product[]>('/products'),
         apiService.get<Category[]>('/categories'),
-        apiService.get<Subcategory[]>('/subcategories')
+        apiService.get<Subcategory[]>('/subcategories'),
+        apiService.get<any[]>('/proveedores/activos')
       ]);
 
       if (productsResponse.success && productsResponse.data && Array.isArray(productsResponse.data)) {
@@ -96,6 +98,10 @@ const ProductsScreen: React.FC = () => {
 
       if (subcategoriesResponse.success && subcategoriesResponse.data && Array.isArray(subcategoriesResponse.data)) {
         setSubcategories(subcategoriesResponse.data.filter(subcategory => subcategory && subcategory.name));
+      }
+
+      if (proveedoresResponse.success && proveedoresResponse.data && Array.isArray(proveedoresResponse.data)) {
+        setProveedores(proveedoresResponse.data.filter(proveedor => proveedor && proveedor.nombre));
       }
     } catch (error) {
       console.warn('Error cargando datos:', error);
@@ -119,17 +125,7 @@ const ProductsScreen: React.FC = () => {
         (product.sku && product.sku.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      // Filtro por estado
-      let matchesStatus = true;
-      if (statusFilter === 'active') {
-        matchesStatus = product.isActive === true;
-      } else if (statusFilter === 'inactive') {
-        matchesStatus = product.isActive === false;
-      } else if (statusFilter === 'low-stock') {
-        matchesStatus = product.stock.quantity <= (product.stock.minStock || 0);
-      }
-
-      return matchesSearch && matchesStatus;
+      return matchesSearch;
     });
   };
 
@@ -141,6 +137,7 @@ const ProductsScreen: React.FC = () => {
       sku: '',
       category: '',
       subcategory: '',
+      proveedor: '',
       price: '',
       comparePrice: '',
       cost: '',
@@ -190,11 +187,12 @@ const ProductsScreen: React.FC = () => {
       sku: product.sku || '',
       category: typeof product.category === 'object' ? product.category._id : product.category,
       subcategory: typeof product.subcategory === 'object' ? product.subcategory._id : product.subcategory,
+      proveedor: typeof product.proveedor === 'object' ? product.proveedor._id : product.proveedor || '',
       price: product.price.toString(),
       comparePrice: product.comparePrice?.toString() || '',
       cost: product.cost?.toString() || '',
-      stockQuantity: product.stock.quantity.toString(),
-      minStock: product.stock.minStock?.toString() || '',
+      stockQuantity: (typeof product.stock === 'object' ? product.stock.quantity : product.stock).toString(),
+      minStock: (typeof product.stock === 'object' ? product.stock.minStock : 0)?.toString() || '',
       weight: product.dimensions?.weight?.toString() || '',
       length: product.dimensions?.length?.toString() || '',
       width: product.dimensions?.width?.toString() || '',
@@ -258,11 +256,7 @@ const ProductsScreen: React.FC = () => {
         price: parseFloat(formData.price),
         comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
         cost: formData.cost ? parseFloat(formData.cost) : undefined,
-        stock: {
-          quantity: parseInt(formData.stockQuantity) || 0,
-          minStock: formData.minStock ? parseInt(formData.minStock) : 0,
-          trackStock: true,
-        },
+        stock: parseInt(formData.stockQuantity) || 0,
         dimensions: {
           weight: formData.weight ? parseFloat(formData.weight) : undefined,
           length: formData.length ? parseFloat(formData.length) : undefined,
@@ -326,7 +320,9 @@ const ProductsScreen: React.FC = () => {
   };
 
   const renderProductCard = ({ item }: { item: Product }) => {
-    const stockStatus = getStockStatus(item.stock.quantity, item.stock.minStock);
+    const quantity = typeof item.stock === 'object' ? item.stock.quantity : item.stock;
+    const minStock = typeof item.stock === 'object' ? item.stock.minStock : 0;
+    const stockStatus = getStockStatus(quantity, minStock);
     
     return (
       <ModernCard style={{ marginBottom: modernTheme.spacing.md, padding: modernTheme.spacing.lg }}>
@@ -397,10 +393,24 @@ const ProductsScreen: React.FC = () => {
                   marginLeft: modernTheme.spacing.xs,
                   fontWeight: '600'
                 }}>
-                  Stock: {item.stock.quantity}
+                  Stock: {quantity}
                 </Text>
               </View>
             </View>
+
+            {item.proveedor && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: modernTheme.spacing.xs }}>
+                <Ionicons name="business" size={14} color="#9333EA" />
+                <Text style={{
+                  ...modernTheme.typography.body.small,
+                  color: "#9333EA",
+                  marginLeft: modernTheme.spacing.xs,
+                  fontWeight: '600'
+                }}>
+                  Proveedor: {typeof item.proveedor === 'object' ? item.proveedor.nombre : item.proveedor}
+                </Text>
+              </View>
+            )}
 
             <Text style={{
               ...modernTheme.typography.body.small,
@@ -479,7 +489,7 @@ const ProductsScreen: React.FC = () => {
           borderRadius: 15,
           paddingHorizontal: 15,
           paddingVertical: 12,
-          marginBottom: 15,
+          marginBottom: 5,
         }}>
           <Ionicons name="search" size={20} color="rgba(255,255,255,0.8)" style={{ marginRight: 10 }} />
           <TextInput
@@ -499,94 +509,7 @@ const ProductsScreen: React.FC = () => {
           ) : null}
         </View>
 
-        {/* Filtros de estado */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 5 }}>
-          <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: statusFilter === 'all' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 15,
-                marginRight: 8,
-                borderWidth: statusFilter === 'all' ? 1.5 : 1,
-                borderColor: 'rgba(255,255,255,0.4)',
-              }}
-              onPress={() => setStatusFilter('all')}
-            >
-              <Text style={{ 
-                color: 'white', 
-                fontWeight: statusFilter === 'all' ? '600' : '400',
-                fontSize: 12 
-              }}>
-                ⭕ Todos
-              </Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              style={{
-                backgroundColor: statusFilter === 'active' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255,255,255,0.1)',
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 15,
-                marginRight: 8,
-                borderWidth: statusFilter === 'active' ? 1.5 : 1,
-                borderColor: statusFilter === 'active' ? 'rgba(34, 197, 94, 0.6)' : 'rgba(255,255,255,0.4)',
-              }}
-              onPress={() => setStatusFilter('active')}
-            >
-              <Text style={{ 
-                color: 'white', 
-                fontWeight: statusFilter === 'active' ? '600' : '400',
-                fontSize: 12 
-              }}>
-                ✅ Activos
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                backgroundColor: statusFilter === 'inactive' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(255,255,255,0.1)',
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 15,
-                marginRight: 8,
-                borderWidth: statusFilter === 'inactive' ? 1.5 : 1,
-                borderColor: statusFilter === 'inactive' ? 'rgba(239, 68, 68, 0.6)' : 'rgba(255,255,255,0.4)',
-              }}
-              onPress={() => setStatusFilter('inactive')}
-            >
-              <Text style={{ 
-                color: 'white', 
-                fontWeight: statusFilter === 'inactive' ? '600' : '400',
-                fontSize: 12 
-              }}>
-                ❌ Inactivos
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                backgroundColor: statusFilter === 'low-stock' ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255,255,255,0.1)',
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 15,
-                marginRight: 8,
-                borderWidth: statusFilter === 'low-stock' ? 1.5 : 1,
-                borderColor: statusFilter === 'low-stock' ? 'rgba(245, 158, 11, 0.6)' : 'rgba(255,255,255,0.4)',
-              }}
-              onPress={() => setStatusFilter('low-stock')}
-            >
-              <Text style={{ 
-                color: 'white', 
-                fontWeight: statusFilter === 'low-stock' ? '600' : '400',
-                fontSize: 12 
-              }}>
-                ⚠️ Stock Bajo
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
       </View>
 
       {/* Content */}
@@ -653,8 +576,8 @@ const ProductsScreen: React.FC = () => {
                 textAlign: 'center',
                 lineHeight: 20,
               }}>
-                {searchQuery || statusFilter !== 'all'
-                  ? 'No hay productos que coincidan con los filtros aplicados'
+                {searchQuery
+                  ? 'No hay productos que coincidan con la búsqueda'
                   : 'Agrega tu primer producto para empezar'
                 }
               </Text>
@@ -813,6 +736,40 @@ const ProductsScreen: React.FC = () => {
                       key={subcategory._id} 
                       label={subcategory.name} 
                       value={subcategory._id} 
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+
+            {/* Proveedor */}
+            <View style={{ marginBottom: modernTheme.spacing.lg }}>
+              <Text style={{
+                ...modernTheme.typography.body.medium,
+                fontWeight: '600',
+                color: modernTheme.colors.neutral[700],
+                marginBottom: modernTheme.spacing.sm,
+              }}>
+                Proveedor
+              </Text>
+              <View style={{
+                borderWidth: 1,
+                borderColor: modernTheme.colors.neutral[300],
+                borderRadius: modernTheme.radius.md,
+                backgroundColor: modernTheme.colors.neutral.white,
+                overflow: 'hidden',
+              }}>
+                <Picker
+                  selectedValue={formData.proveedor}
+                  onValueChange={(value) => setFormData({ ...formData, proveedor: value })}
+                  style={{ height: 50 }}
+                >
+                  <Picker.Item label="Selecciona un proveedor (opcional)" value="" />
+                  {proveedores.map((proveedor) => (
+                    <Picker.Item 
+                      key={proveedor._id} 
+                      label={proveedor.nombre} 
+                      value={proveedor._id} 
                     />
                   ))}
                 </Picker>
