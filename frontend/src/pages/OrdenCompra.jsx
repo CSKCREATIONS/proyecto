@@ -51,7 +51,8 @@ export default function OrdenCompra() {
     cantidad: 1,
     valorUnitario: 0,
     descuento: 0,
-    index: null
+    index: null,
+    productoId: ''
   });
 
   // Función para obtener órdenes de compra
@@ -238,7 +239,7 @@ export default function OrdenCompra() {
       valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
       descuento: productoTemp.descuento,
       valorTotal: valorTotal,
-      productoId: productoSeleccionado._id
+      productoId: productoSeleccionado._id // Asegurar que siempre esté presente
     };
 
     setNuevaOrden({
@@ -288,7 +289,7 @@ export default function OrdenCompra() {
       valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
       descuento: productoTemp.descuento,
       valorTotal: valorTotal,
-      productoId: productoSeleccionado._id
+      productoId: productoSeleccionado._id // Asegurar que siempre esté presente
     };
 
     setOrdenEditando({
@@ -479,14 +480,47 @@ export default function OrdenCompra() {
     }
   };
 
-  // Función para marcar orden como completada
+  // Función para verificar stock antes de completar
+const verificarStockDisponible = async (productos) => {
+  const verificaciones = await Promise.all(
+    productos.map(async (item) => {
+      const productoId = item.productoId || item.producto?._id || item.producto;
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:5000/api/products/${productoId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const producto = data.product || data.data || data;
+        
+        return {
+          producto: item.producto,
+          stockActual: producto.stock || 0,
+          cantidadOrden: item.cantidad,
+          stockDespues: (producto.stock || 0) + item.cantidad,
+          suficiente: true // Siempre suficiente para órdenes de compra
+        };
+      } catch (error) {
+        return {
+          producto: item.producto,
+          error: error.message,
+          suficiente: false
+        };
+      }
+    })
+  );
+  
+  return verificaciones;
+};
+
+  // Función para marcar orden como completada - CORREGIDA
   const marcarComoCompletada = async (orden) => {
     const confirm = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Esta acción completará la orden ${orden.numeroOrden} y creará una compra en el sistema.`,
+      title: '¿Confirmar orden de compra?',
+      text: `Esta acción completará la orden ${orden.numeroOrden} y actualizará el stock de los productos.`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Sí, completar',
+      confirmButtonText: 'Sí, completar orden',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#28a745',
       cancelButtonColor: '#dc3545'
@@ -496,49 +530,52 @@ export default function OrdenCompra() {
 
     try {
       const token = localStorage.getItem('token');
-      const totales = calcularTotalesOrden(orden.productos);
 
-      const compraData = {
-        numeroOrden: orden.numeroOrden,
-        proveedor: orden.proveedor?._id || orden.proveedor,
-        productos: orden.productos.map(p => ({
-          producto: p.producto?._id || p.producto,
-          descripcion: p.descripcion,
-          cantidad: p.cantidad,
-          precioUnitario: p.valorUnitario || p.precioUnitario
-        })),
-        condicionesPago: orden.condicionesPago,
-        subtotal: totales.subtotal,
-        impuestos: totales.impuestos,
-        total: totales.total,
-        solicitadoPor: orden.solicitadoPor,
-        _fromOrden: true
-      };
-
-      const res = await fetch('http://localhost:5000/api/compras', {
-        method: 'POST',
+      // 1. Completar la orden en el backend (esto actualiza el stock)
+      const resCompletar = await fetch(`http://localhost:5000/api/ordenes-compra/${orden._id}/completar`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(compraData)
+        }
       });
 
-      const data = await res.json();
+      const dataCompletar = await resCompletar.json();
 
-      if (data.success) {
-        await fetch(`http://localhost:5000/api/ordenes-compra/${orden._id}/completar`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
-        });
-
-        Swal.fire('¡Éxito!', 'Orden de compra completada y movida al historial', 'success');
-        fetchOrdenes();
-      } else {
-        Swal.fire('Error', data.message || 'No se pudo completar la orden', 'error');
+      if (!dataCompletar.success) {
+        throw new Error(dataCompletar.message || 'No se pudo completar la orden');
       }
+
+
+      // Mostrar resultado (solo una vez, ya que el backend crea la compra y elimina la orden)
+      Swal.fire({
+        title: '¡Éxito!',
+        html: `
+        <div>
+          <p><strong>✅ Orden de compra completada correctamente</strong></p>
+          <p><strong>Número:</strong> ${orden.numeroOrden}</p>
+          <p><strong>Stock actualizado para ${orden.productos.length} producto(s)</strong></p>
+          <div style="margin-top: 10px; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+            <strong>Productos recibidos:</strong><br>
+            ${orden.productos.map(p => `• ${p.producto}: ${p.cantidad} unidades`).join('<br>')}
+          </div>
+        </div>
+      `,
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+
+      // Actualizar la lista de órdenes
+      fetchOrdenes();
+
     } catch (error) {
-      Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+      console.error('Error al completar la orden:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.message || 'No se pudo completar la orden. Verifica la conexión con el servidor.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 
@@ -613,7 +650,8 @@ export default function OrdenCompra() {
     const producto = ordenEditando.productos[index];
     setProductoEditando({
       ...producto,
-      index: index
+      index: index,
+      productoId: producto.productoId // Asegurar que se mantenga el productoId
     });
   };
 
@@ -630,7 +668,8 @@ export default function OrdenCompra() {
       cantidad: productoEditando.cantidad,
       valorUnitario: productoEditando.valorUnitario,
       descuento: productoEditando.descuento,
-      valorTotal: valorTotal
+      valorTotal: valorTotal,
+      productoId: productoEditando.productoId // Mantener el productoId
     };
 
     const nuevosProductos = [...ordenEditando.productos];
@@ -647,7 +686,8 @@ export default function OrdenCompra() {
       cantidad: 1,
       valorUnitario: 0,
       descuento: 0,
-      index: null
+      index: null,
+      productoId: ''
     });
   };
 
@@ -835,7 +875,8 @@ export default function OrdenCompra() {
       cantidad: 1,
       valorUnitario: 0,
       descuento: 0,
-      index: null
+      index: null,
+      productoId: ''
     });
     setProductosProveedor([]);
     setErrores({});
@@ -1694,7 +1735,7 @@ export default function OrdenCompra() {
             </div>
           )}
 
-          {/* Modal de Detalles */}
+
           {/* Modal de Detalles */}
           {modalDetallesVisible && ordenSeleccionada && (
             <div className="modal-overlay">

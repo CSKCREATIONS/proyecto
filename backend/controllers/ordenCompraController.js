@@ -1,6 +1,7 @@
 // controllers/ordenCompraController.js
 const OrdenCompra = require('../models/ordenCompra');
 const Compra = require('../models/compras'); // Asegúrate de que la ruta es correcta
+const Producto = require('../models/Products'); // Importar modelo de productos
 
 
 // Crear nueva orden
@@ -94,6 +95,16 @@ const completarOrden = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Orden no encontrada' });
     }
 
+    // Actualizar stock de productos
+    for (const item of orden.productos) {
+      // Buscar producto por nombre (ajusta a _id si corresponde)
+      const producto = await Producto.findOne({ name: item.producto });
+      if (producto) {
+        producto.stock = (producto.stock || 0) + item.cantidad;
+        await producto.save();
+      }
+    }
+
     // Crear compra en historial
     const compraData = {
       numeroOrden: orden.numeroOrden,
@@ -139,6 +150,8 @@ const editarOrden = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error en el servidor', error: error.message });
   }
 };
+
+
 
 
 

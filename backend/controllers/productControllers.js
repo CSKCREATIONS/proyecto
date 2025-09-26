@@ -250,3 +250,5 @@ exports.activateProduct = async (req, res) => {
         res.status(500).json({ message: 'Error al activar el producto', error });
     }
 };
+
+

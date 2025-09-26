@@ -263,6 +263,8 @@ const GestionProductos = () => {
     setSubcategorias(Array.isArray(data) ? data : []);
   };
 
+  
+
  
   return (
     <div>
