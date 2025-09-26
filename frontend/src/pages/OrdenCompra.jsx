@@ -239,7 +239,7 @@ export default function OrdenCompra() {
       valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
       descuento: productoTemp.descuento,
       valorTotal: valorTotal,
-      productoId: productoSeleccionado._id // Asegurar que siempre esté presente
+      productoId: productoSeleccionado._id
     };
 
     setNuevaOrden({
@@ -289,7 +289,7 @@ export default function OrdenCompra() {
       valorUnitario: productoSeleccionado.price || productoSeleccionado.precio || 0,
       descuento: productoTemp.descuento,
       valorTotal: valorTotal,
-      productoId: productoSeleccionado._id // Asegurar que siempre esté presente
+      productoId: productoSeleccionado._id
     };
 
     setOrdenEditando({
@@ -651,7 +651,7 @@ const verificarStockDisponible = async (productos) => {
     setProductoEditando({
       ...producto,
       index: index,
-      productoId: producto.productoId // Asegurar que se mantenga el productoId
+      productoId: producto.productoId 
     });
   };
 
@@ -669,7 +669,7 @@ const verificarStockDisponible = async (productos) => {
       valorUnitario: productoEditando.valorUnitario,
       descuento: productoEditando.descuento,
       valorTotal: valorTotal,
-      productoId: productoEditando.productoId // Mantener el productoId
+      productoId: productoEditando.productoId 
     };
 
     const nuevosProductos = [...ordenEditando.productos];
@@ -1734,7 +1734,6 @@ const verificarStockDisponible = async (productos) => {
               </div>
             </div>
           )}
-
 
           {/* Modal de Detalles */}
           {modalDetallesVisible && ordenSeleccionada && (

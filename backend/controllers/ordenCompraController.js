@@ -151,10 +151,6 @@ const editarOrden = async (req, res) => {
   }
 };
 
-
-
-
-
 module.exports = {
   crearOrden,
   listarOrdenes,

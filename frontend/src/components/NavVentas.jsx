@@ -11,7 +11,6 @@ export default function NavVentas() {
   const [puedeRegistrarCotizacion, setPuedeRegistrarCotizacion] = useState(false);
   const [puedeVerCotizaciones, setPuedeVerCotizaciones] = useState(false);
   const [puedeVerVentasAgendadas, setPuedeVerVentasAgendadas] = useState(false);
-  const [puedeVerPedidosDespachados, setPuedeVerPedidosDespachados] = useState(false);
   const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
   const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
   const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
@@ -27,7 +26,6 @@ export default function NavVentas() {
       setPuedeRegistrarCotizacion(usuario.permissions.includes('cotizaciones.crear'));
       setPuedeVerCotizaciones(usuario.permissions.includes('cotizaciones.ver'));
       setPuedeVerVentasAgendadas(usuario.permissions.includes('pedidosAgendados.ver'));
-      setPuedeVerPedidosDespachados(usuario.permissions.includes('pedidosDespachados.ver'));
       setPuedeVerPedidosEntregados(usuario.permissions.includes('pedidosEntregados.ver'));
       setPuedeVerPedidosCancelados(usuario.permissions.includes('pedidosCancelados.ver'));
       setPuedeVerPedidosDevueltos(usuario.permissions.includes('pedidosDevueltos.ver'));

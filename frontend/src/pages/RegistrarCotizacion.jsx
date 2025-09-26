@@ -325,6 +325,7 @@ export default function RegistrarCotizacion() {
           {/* FORMULARIO ORIGINAL A INSERTAR AQUÍ */}
           {/* ... tu formulario completo sigue aquí como ya está construido */}
           <div className="max-width">
+
             <div className="table-container">
               <table>
                 <thead>
@@ -364,7 +365,6 @@ export default function RegistrarCotizacion() {
             />
 
             <br />
-
             <div className="table-container">
               <table>
                 <thead>
@@ -437,50 +437,49 @@ export default function RegistrarCotizacion() {
               onInit={(evt, editor) => (condicionesPagoRef.current = editor)}
               apiKey="bjhw7gemroy70lt4bgmfvl29zid7pmrwyrtx944dmm4jq39w"
               textareaName="Condiciones"
-              init={{ height: 250, menubar: false }}
+              init={{ height: 300, menubar: false }}
             />
+
+            <div className="buttons">
+              <button className="btn btn-primary-cancel" onClick={handleCancelado}>Cancelar</button>
+              <button className="btn btn-primary-guardar" onClick={() => handleGuardarCotizacion(false, true)}>Guardar</button>
+              <button className="btn btn-primary-env">Guardar y Enviar</button>
+            </div>
+
+            {mostrarFormato && datosFormato && (
+              <>
+                <FormatoCotizacion
+                  datos={datosFormato}
+                  onClose={() => setMostrarFormato(false)}
+                />
+                {notificacion && (
+                  <div style={{
+                    position: 'fixed',
+                    top: '5vh',
+                    right: '40dvw',
+                    border: '2px solid #76aafdff',
+                    background: '#d4e3f7ff',
+                    color: '#3041a4ff',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    zIndex: 9999,
+                    fontSize: 'small',
+                    transition: 'opacity 0.3s'
+                  }}>
+                    {notificacion}
+                  </div>
+                )}
+              </>
+            )}
           </div>
-
-
-          <div className="buttons">
-            <button className="btn btn-primary-cancel" onClick={handleCancelado}>Cancelar</button>
-            <button className="btn btn-primary-guardar" onClick={() => handleGuardarCotizacion(false, true)}>Guardar</button>
-            <button className="btn btn-primary-env">Guardar y Enviar</button>
-          </div>
-
-          {mostrarFormato && datosFormato && (
-            <>
-              <FormatoCotizacion
-                datos={datosFormato}
-                onClose={() => setMostrarFormato(false)}
-              />
-              {notificacion && (
-                <div style={{
-                  position: 'fixed',
-                  top: '5vh',
-                  right: '40dvw',
-                  border: '2px solid #76aafdff',
-                  background: '#d4e3f7ff',
-                  color: '#3041a4ff',
-                  padding: '12px 24px',
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                  zIndex: 9999,
-                  fontSize: 'small',
-                  transition: 'opacity 0.3s'
-                }}>
-                  {notificacion}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-      <div className="custom-footer">
+        </div >
+        <div className="custom-footer">
           <p className="custom-footer-text">
             © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
           </p>
         </div>
+      </div >
     </div>
   );
 }

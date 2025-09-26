@@ -59,19 +59,19 @@ export default function ContenedorModuloVentas() {
             <Link to="/PedidosAgendados">
               <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
                 <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos agendados" style={{ width: "80px", height: "80px" }} />
-                <span className="text-sm font-medium">Pedidos por despachar</span>
+                <span className="text-sm font-medium">Pedidos Agendados</span>
               </button>
             </Link>
           )}
 
-          {puedeVerPedidosDespachados && (
+          {/*{puedeVerPedidosDespachados && (
             <Link to="/PedidosDespachados">
               <button className="flex flex-col items-center justify-center w-28 h-28 p-4 rounded-xl bg-gray-800 text-yellow-400 shadow-md hover:scale-105 hover:bg-yellow-500 hover:text-black transition duration-300" style={{ width: "140px", height: "140px", gap: "6px", borderRadius: "15px"}}>
                 <img src="https://cdn-icons-png.freepik.com/256/12155/12155326.png" alt="Pedidos despachados" style={{ width: "80px", height: "80px" }} />
                 <span className="text-sm font-medium">Pedidos despachados</span>
               </button>
             </Link>
-          )}
+          )}*/}
 
           {puedeVerPedidosEntregados && (
             <Link to="/PedidosEntregados">

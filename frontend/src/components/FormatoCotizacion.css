@@ -21,7 +21,7 @@
 .botones-cotizacion {
   gap: 18px !important;
 }
- .modal-cotizacion-overlay {
+.modal-cotizacion-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
@@ -29,8 +29,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
- }
- .modal-cotizacion {
+}
+.modal-cotizacion {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
@@ -48,43 +48,41 @@
   font-size: 2rem;
   cursor: pointer;
 }
- .modal-title {
+.modal-title {
   text-align: left;
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 1rem;
- }
 
- .cotizacion-encabezado{
+.cotizacion-encabezado{
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
  }
- .empresa-info {
+}
+.empresa-info {
   display: flex;
   justify-content: space-around;
   align-items: center;
   text-align: center;
   margin-bottom: 1rem;
- }
- .descripcion-cotizacion {
+}
+.descripcion-cotizacion {
   margin: 1rem 0 1rem 0;
- }
- .tabla-cotizacion {
+}
+.tabla-cotizacion {
   border-collapse: collapse;
   margin-bottom: 1rem;
- }
- .tabla-cotizacion th, .tabla-cotizacion td {
+}
+.tabla-cotizacion th, .tabla-cotizacion td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
- }
-
- .condiciones-pago {
+}
+.condiciones-pago {
   margin-top: 1rem;
- }
- 
+}
 
 /* 🔹 Para impresión */
 @media print {
@@ -92,23 +90,49 @@
     visibility: hidden; /* Oculta todo */
   }
 
+  /* Solo muestra el bloque de cotización o remisión, no ambos */
   #pdf-cotizacion-block,
-  #pdf-cotizacion-block * {
-    visibility: visible; /* Solo muestra este bloque */
+  #pdf-cotizacion-block *,
+  #pdf-formato-cotizacion-block,
+  #pdf-formato-cotizacion-block *,
+  #pdf-remision-block,
+  #pdf-remision-block *,
+  #pdf-cancelado-block,
+  #pdf-cancelado-block *,
+  #pdf-devuelto-block,
+  #pdf-devuelto-block * {
+    visibility: visible;
   }
 
-  #pdf-cotizacion-block {
+  /* Evitar duplicados - solo uno debe existir a la vez */
+  #pdf-cotizacion-block,
+  #pdf-formato-cotizacion-block,
+  #pdf-remision-block,
+  #pdf-cancelado-block,
+  #pdf-devuelto-block {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%; /* Asegura que ocupe toda la página */
-    margin: 0;
-    padding: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding: 15mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
   }
 
-  /* Opcional: márgenes de la página */
+  /* Ocultar botones y elementos de UI en impresión */
+  .botones-cotizacion,
+  .btn-cotizacion,
+  .close-modal,
+  .modal-title {
+    display: none !important;
+  }
+
+  /* Márgenes de la página */
   @page {
-    margin: 15mm;
+    margin: 0;
+    size: A4;
   }
 }
 

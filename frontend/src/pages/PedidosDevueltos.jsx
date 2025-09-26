@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
+import PedidoDevueltoPreview from '../components/PedidoDevueltoPreview';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
@@ -12,21 +13,85 @@ import { saveAs } from 'file-saver';
 export default function PedidosDevueltos() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [datosDevuelto, setDatosDevuelto] = useState(null);
+  const [mostrarDevuelto, setMostrarDevuelto] = useState(false);
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
   };
 
+  const generarFormatoDevuelto = async (pedido) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      console.log('Pedido original:', pedido); // Debug
+
+      // Obtener los datos completos del pedido con productos poblados
+      const resPedido = await fetch(`http://localhost:5000/api/pedidos/${pedido._id}?populate=true`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!resPedido.ok) {
+        throw new Error('No se pudo obtener el pedido completo');
+      }
+
+      const pedidoCompleto = await resPedido.json();
+      console.log('Pedido completo desde API:', pedidoCompleto); // Debug
+
+      // Usar los datos del pedido original si la API no devuelve datos completos
+      const datosParaUsar = pedidoCompleto.data || pedidoCompleto || pedido;
+
+      // Crear objeto de datos para el formato devuelto
+      const datosDevuelto = {
+        numeroPedido: datosParaUsar.numeroPedido || pedido.numeroPedido,
+        fechaEntrega: datosParaUsar.fechaEntrega || pedido.fechaEntrega,
+        fechaAgendamiento: datosParaUsar.createdAt || pedido.createdAt,
+        estado: datosParaUsar.estado || pedido.estado,
+        cliente: datosParaUsar.cliente || pedido.cliente,
+        productos: datosParaUsar.productos || pedido.productos || [],
+        motivoDevolucion: datosParaUsar.motivoDevolucion || datosParaUsar.observacion || pedido.motivoDevolucion || pedido.observacion,
+        empresa: { nombre: 'PANGEA', direccion: 'Dirección empresa' }
+      };
+
+      console.log('Datos devuelto finales:', datosDevuelto); // Debug
+
+      setDatosDevuelto(datosDevuelto);
+      setMostrarDevuelto(true);
+
+    } catch (error) {
+      console.error('Error al generar formato devuelto:', error);
+
+      // Si falla la API, usar los datos del pedido directamente
+      const datosDevuelto = {
+        numeroPedido: pedido.numeroPedido,
+        fechaEntrega: pedido.fechaEntrega,
+        fechaAgendamiento: pedido.createdAt,
+        estado: pedido.estado,
+        cliente: pedido.cliente,
+        productos: pedido.productos || [],
+        motivoDevolucion: pedido.motivoDevolucion || pedido.observacion,
+        empresa: { nombre: 'PANGEA', direccion: 'Dirección empresa' }
+      };
+
+      console.log('Usando datos directos del pedido:', datosDevuelto);
+
+      setDatosDevuelto(datosDevuelto);
+      setMostrarDevuelto(true);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos?populate=true', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
       .then(res => res.json())
       .then(data => {
+        console.log('Datos de pedidos devueltos:', data); // Debug
         const devueltos = data.filter(p => p.estado === 'devuelto');
+        console.log('Pedidos devueltos filtrados:', devueltos); // Debug
         setPedidos(devueltos);
       })
       .catch(err => console.error('Error al cargar pedidos devueltos:', err));
@@ -141,9 +206,8 @@ export default function PedidosDevueltos() {
                 <table id="tabla_pedidos_devueltos">
                   <thead><br />
                     <tr>
-                      <th>No</th>
+                      <th>N°</th>
                       <th>identificador de Pedido</th> {/* 👈 NUEVA COLUMNA */}
-                      <th>Producto</th>
                       <th>F. Agendamiento</th>
                       <th>F. Entrega</th>
                       <th>Cliente</th>
@@ -159,12 +223,13 @@ export default function PedidosDevueltos() {
                     {pedidos.map((pedido, index) => (
                       <tr key={pedido._id}>
                         <td>{index + 1}</td>
-                        <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
-                        <td>
-                          <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                            Productos
-                          </button>
+                        <td
+                          style={{ cursor: 'pointer', color: '#2563eb', textDecoration: 'underline' }}
+                          onClick={() => generarFormatoDevuelto(pedido)}
+                        >
+                          {pedido.numeroPedido || '---'}
                         </td>
+
                         <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
                         <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                         <td>{pedido.cliente?.nombre}</td>
@@ -184,7 +249,7 @@ export default function PedidosDevueltos() {
           </div>
 
         </div>
-        
+
       </div>
       <ModalProductosCotizacion
         visible={!!pedidoSeleccionado}
@@ -192,11 +257,19 @@ export default function PedidosDevueltos() {
         productos={pedidoSeleccionado?.productos || []}
         cotizacionId={pedidoSeleccionado?._id}
       />
+
+      {mostrarDevuelto && datosDevuelto && (
+        <PedidoDevueltoPreview
+          datos={datosDevuelto}
+          onClose={() => setMostrarDevuelto(false)}
+        />
+      )}
+
       <div className="custom-footer">
-          <p className="custom-footer-text">
-            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-          </p>
-        </div>
+        <p className="custom-footer-text">
+          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+        </p>
+      </div>
     </div>
   );
 }

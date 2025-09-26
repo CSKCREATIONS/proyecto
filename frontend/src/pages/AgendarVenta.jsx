@@ -76,14 +76,14 @@ useEffect(() => {
     cliente: id,
     productos: productosCotizacion.map(prod => ({
       product: typeof prod.producto === 'object' ? prod.producto._id : prod.producto,
-      cantidad: prod.cantidad,
-      precioUnitario: prod.valorUnitario  // ✅ Asegúrate de que venga de la cotización
+      cantidad: Number(prod.cantidad),
+      precioUnitario: Number(prod.valorUnitario)  // ✅ Asegurar que sea número
     })),
     fechaEntrega,
     observacion
   };
 
-  console.log('Pedido que se enviará:', pedido); // ✅ revisar en consola
+
 
   try {
     const res = await fetch('http://localhost:5000/api/pedidos', {
@@ -130,9 +130,13 @@ useEffect(() => {
               const idProducto = typeof p.producto === 'object' ? p.producto._id : p.producto;
               return prod._id === idProducto;
             });
+            
+            // Usar el precio de la cotización, no del producto
+            const precioUnitario = p.valorUnitario || productoInfo?.price || 0;
+            
             return {
               ...p,
-              valorUnitario: productoInfo?.price || 0,
+              valorUnitario: precioUnitario,
               producto: {
                 ...productoInfo,
                 _id: p.producto

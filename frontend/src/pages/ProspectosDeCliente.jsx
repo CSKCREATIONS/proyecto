@@ -186,7 +186,6 @@ export default function ListaDeClientes() {
               }}
             />
           </div>
-
           <div className="max-width">
             {/* TABLA */}
             <div className="container-tabla">
@@ -234,62 +233,70 @@ export default function ListaDeClientes() {
                                           }
                                         } catch (err) { console.error(err); }
                                       }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>{c.codigo}</a>
-                                    </div>
-                                  ))}
+                                    </div >
+                                  ))
+                                  }
 
-                                  {list.length > 3 && (
-                                    <div>
-                                      <a href="#" onClick={(e) => { e.preventDefault(); setExpandedEmails(prev => ({ ...prev, [emailKey]: !prev[emailKey] })); }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>
-                                        {isExpanded ? 'mostrar menos' : '...'}
-                                      </a>
-                                    </div>
-                                  )}
-                                </div>
+                                  {
+                                    list.length > 3 && (
+                                      <div>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setExpandedEmails(prev => ({ ...prev, [emailKey]: !prev[emailKey] })); }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>
+                                          {isExpanded ? 'mostrar menos' : '...'}
+                                        </a>
+                                      </div>
+                                    )
+                                  }
+                                </div >
                               );
                             })()}
-                          </td>
+                          </td >
                           <td>{cliente.nombre}</td>
                           <td>{cliente.ciudad}</td>
                           <td>{cliente.telefono}</td>
                           <td>{cliente.correo}</td>
-                        </tr>
+                        </tr >
                       ))
                     )}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
+              </div >
+            </div >
 
 
-          {/* PAGINACIÓN */}
-          <div style={{ marginTop: "15px", display: "flex", justifyContent: "center", gap: "8px" }}>
-            {Array.from({ length: totalPaginas }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPaginaActual(i + 1)}
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                  border: "1px solid #ccc",
-                  background: paginaActual === i + 1 ? "#5a3badff" : "white",
-                  color: paginaActual === i + 1 ? "white" : "#333",
-                  cursor: "pointer"
-                }}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {/* PAGINACIÓN */}
+            < div style={{ marginTop: "15px", display: "flex", justifyContent: "center", gap: "8px" }}>
+              {
+                Array.from({ length: totalPaginas }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPaginaActual(i + 1)}
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      border: "1px solid #ccc",
+                      background: paginaActual === i + 1 ? "#5a3badff" : "white",
+                      color: paginaActual === i + 1 ? "white" : "#333",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {i + 1}
+                  </button>
+                ))
+              }
+            </div >
+          </div >
+          {
+            mostrarPreview && cotizacionSeleccionada && (
+              <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
+            )
+          }
+          <div className="custom-footer">
+            <p className="custom-footer-text">
+              © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+
+            </p>
           </div>
         </div>
-        {mostrarPreview && cotizacionSeleccionada && (
-          <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
-        )}
-      </div>
-      <div className="custom-footer">
-        <p className="custom-footer-text">
-          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-        </p>
       </div>
     </div>
   )

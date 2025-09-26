@@ -142,6 +142,7 @@ useEffect(() => {
                 onChange={e => setFiltroFecha(e.target.value)}
               />
             </div>
+            &nbsp;&nbsp;
             <div className="filtro-grupo">
               <label>Cliente:</label>
               <input
@@ -152,6 +153,7 @@ useEffect(() => {
                 onChange={e => setFiltroCliente(e.target.value)}
               />
             </div>
+            &nbsp;&nbsp;
             <div className="filtro-grupo">
               <label>Estado:</label>
               <select

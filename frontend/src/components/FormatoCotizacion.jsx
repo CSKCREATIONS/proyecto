@@ -47,7 +47,15 @@ export default function FormatoCotizacion({ datos, onClose }) {
               <i className="fa-solid fa-envelope" style={{ fontSize: '1rem', color: '#EA4335', marginRight: '6px' }}></i>
               Enviar
             </button>
-            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => window.print()}>
+            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => {
+              // Asegurar que solo se imprima este componente
+              const printContent = document.getElementById('pdf-formato-cotizacion-block');
+              const originalContents = document.body.innerHTML;
+              document.body.innerHTML = printContent.outerHTML;
+              window.print();
+              document.body.innerHTML = originalContents;
+              window.location.reload(); // Recargar para restaurar funcionalidad
+            }}>
               <i className="fa-solid fa-print" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
             </button>
           </div>
@@ -56,35 +64,27 @@ export default function FormatoCotizacion({ datos, onClose }) {
         {/* Contenido PDF debajo */}
         <div
           className="pdf-cotizacion"
-          id="pdf-cotizacion-block"
+          id="pdf-formato-cotizacion-block"
           style={{ display: 'flex', flexDirection: 'column', background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
           onCopy={e => e.preventDefault()}
         >
           <div className="cotizacion-encabezado">
             <h2>Cotizacion</h2>
             <div className="cot-fecha">
-              <p style={{ fontSize: '0.7rem' }}>{cot.codigo || ''}</p>
-              <p style={{ fontSize: '0.7rem' }}>{
-                (function() {
-                  const f = cot.fecha ? new Date(cot.fecha) : new Date();
-                  const yyyy = f.getFullYear();
-                  const mm = String(f.getMonth() + 1).padStart(2, '0');
-                  const dd = String(f.getDate()).padStart(2, '0');
-                  return `${yyyy}-${mm}-${dd}`;
-                })()
-              }</p>
+              <p style={{ fontSize: '0.7rem' }}>{datos.codigo ? datos.codigo : ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{datos.fecha || ''}</p>
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
             <div>
-              <p>{cot.cliente?.nombre || ''}</p>
-              <p>{cot.cliente?.direccion || ''} - {cot.cliente?.ciudad || ''}</p>
-              <p> {cot.cliente?.telefono || ''}</p>
-              <p> {cot.cliente?.correo || ''}</p>
+              <p>{datos.cliente?.nombre || ''}</p>
+              <p>{datos.cliente?.direccion || ''} - {datos.cliente?.ciudad || ''}</p>
+              <p> {datos.cliente?.telefono || ''}</p>
+              <p> {datos.cliente?.correo || ''}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <p>{cot.empresa?.nombre || empresa.nombre}</p>
-              <p>{cot.empresa?.direccion || empresa.direccion}</p>
+              <p>{datos.empresa?.nombre || empresa.nombre}</p>
+              <p>{datos.empresa?.direccion || empresa.direccion}</p>
               <p>
                 {usuario.firstName || ''} {usuario.surname || ''}
               </p>
@@ -93,7 +93,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
           <hr />
           <div className="descripcion-cotizacion">
             <h4>Descripción cotización</h4>
-            <div dangerouslySetInnerHTML={{ __html: cot.descripcion }} />
+            <div dangerouslySetInnerHTML={{ __html: datos.descripcion }} />
           </div>
           <hr />
           <table className="tabla-cotizacion">
@@ -108,7 +108,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
               </tr>
             </thead>
             <tbody>
-              {(cot.productos || []).map((p, idx) => (
+              {datos.productos.map((p, idx) => (
                 <tr key={idx}>
                   <td>{p.nombre || 'Desconocido'}</td>
                   <td>{p.descripcion}</td>
@@ -125,14 +125,15 @@ export default function FormatoCotizacion({ datos, onClose }) {
                     })()
                   }</td>
                 </tr>
-              ))}
+              ))
+              }
               {/* Fila de total */}
-              {(cot.productos && cot.productos.length > 0) && (
+              {datos.productos.length > 0 && (
                 <tr>
                   <td colSpan={4}></td>
                   <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
                   <td style={{ fontWeight: 'bold' }}>
-                    {(cot.productos || [])
+                    {datos.productos
                       .reduce((acc, p) => {
                         const cantidad = parseFloat(p.cantidad) || 0;
                         const valorUnitario = parseFloat(p.valorUnitario) || 0;
@@ -140,44 +141,47 @@ export default function FormatoCotizacion({ datos, onClose }) {
                         const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
                         return acc + subtotal;
                       }, 0)
-                      .toFixed(2)}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      .toFixed(2)
+                    }
+                  </td >
+                </tr >
+              )
+              }
+            </tbody >
+          </table >
           <hr />
           <div className="condiciones-pago">
             <h4>Condiciones de pago</h4>
-            <div dangerouslySetInnerHTML={{ __html: cot.condicionesPago }} />
-          </div>
+            <div dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
+          </div >
           <br />
           <div>Cotizacion valida por 15 dias</div>
-        </div>
+        </div >
 
-      </div>
+      </div >
 
       {showEnviarModal && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-            <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
-              <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
-              <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
-              <div style={{ marginBottom: '1rem' }}>
-                <label>Correo destinatario:</label>
-                <input type="email" className="cuadroTexto" value={correo} onChange={e => setCorreo(e.target.value)} style={{ width: '100%' }} />
-              </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label>Asunto:</label>
-                <input type="text" className="cuadroTexto" value={asunto} onChange={e => setAsunto(e.target.value)} style={{ width: '100%' }} />
-              </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label>Mensaje:</label>
-                <textarea className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%', minHeight: '80px' }} />
-              </div>
-              <button className="btn-enviar-modal" style={{ width: '100%' }} onClick={() => { }}>Enviar</button>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
+            <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
+            <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Correo destinatario:</label>
+              <input type="email" className="cuadroTexto" value={correo} onChange={e => setCorreo(e.target.value)} style={{ width: '100%' }} />
             </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Asunto:</label>
+              <input type="text" className="cuadroTexto" value={asunto} onChange={e => setAsunto(e.target.value)} style={{ width: '100%' }} />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Mensaje:</label>
+              <textarea className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%', minHeight: '80px' }} />
+            </div>
+            <button className="btn-enviar-modal" style={{ width: '100%' }} onClick={() => { }}>Enviar</button>
           </div>
-        )}
-    </div>
+        </div>
+      )
+      }
+    </div >
   );
 }

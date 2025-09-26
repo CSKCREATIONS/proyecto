@@ -18,6 +18,7 @@ export default function Despachos() {
 
   const navigate = useNavigate();
   const [cotizacionPreview, setCotizacionPreview] = useState(null);
+  const [pedidoPreview, setPedidoPreview] = useState(null);
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
@@ -193,19 +194,19 @@ export default function Despachos() {
           </div>
 
           <div className="max-width">
+
             <div className="container-tabla">
               <div className="table-container">
                 <table id="tabla_despachos">
                   <thead><br />
                     <tr>
                       <th>No</th>
-                      <th>Identificador de Pedido</th>
-                      <th>Cotización</th>
-                      <th>Producto</th>
+                      <th>Número de Pedido</th>
                       <th>F. Agendamiento</th>
                       <th>F. Entrega</th>
                       <th>Cliente</th>
                       <th>Ciudad</th>
+                      <th>Total</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -213,54 +214,80 @@ export default function Despachos() {
                     {currentItems.map((pedido, index) => (
                       <tr key={pedido._id}>
                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                        <td>{pedido.numeroPedido || '---'}</td>
                         <td>
-                          {pedido.cotizacionCodigo ? (
+                          {pedido.numeroPedido ? (
                             <a
-                              style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                              style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline', fontWeight: 'bold' }}
                               onClick={async () => {
                                 try {
                                   const token = localStorage.getItem('token');
                                   const id = pedido.cotizacionReferenciada || pedido.cotizacionId;
-                                  if (!id) return;
+                                  if (!id) {
+                                    Swal.fire('Info', 'No hay cotización asociada a este pedido.', 'info');
+                                    return;
+                                  }
                                   const res = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
                                     headers: { 'Authorization': `Bearer ${token}` }
                                   });
                                   if (!res.ok) throw new Error('No se pudo obtener la cotización');
                                   const data = await res.json();
                                   const cotizacionCompleta = data.data || data;
-                                  setCotizacionPreview(cotizacionCompleta);
+
+                                  // Crear un objeto combinado con datos del pedido y la cotización
+                                  const pedidoConCotizacion = {
+                                    ...cotizacionCompleta,
+                                    // Sobrescribir algunos campos para mostrar información del pedido
+                                    codigo: pedido.numeroPedido,
+                                    tipo: 'pedido',
+                                    estadoPedido: pedido.estado,
+                                    fechaEntrega: pedido.fechaEntrega,
+                                    fechaAgendamiento: pedido.createdAt
+                                  };
+
+                                  setCotizacionPreview(pedidoConCotizacion);
                                   setMostrarPreview(true);
                                 } catch (err) {
-                                  Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                                  Swal.fire('Error', 'No se pudo cargar la información del pedido.', 'error');
                                 }
                               }}
+                              title="Clic para ver información del pedido"
                             >
-                              {pedido.cotizacionCodigo}
+                              {pedido.numeroPedido}
                             </a>
                           ) : '---'}
                         </td>
-                        <td>
-                          <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                            Productos
-                          </button>
-                        </td>
+
                         <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
                         <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                         <td>{pedido.cliente?.nombre}</td>
                         <td>{pedido.cliente?.ciudad}</td>
+                        <td>
+                          <strong style={{ color: '#28a745', fontSize: '14px' }}>
+                            ${(pedido.total || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </strong>
+                        </td>
                         <td className="no-export">
-                          <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
-                            Despachar
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => despacharPedido(pedido._id)}
+                            title="Marcar como entregado"
+                            style={{ marginRight: '5px' }}
+                          >
+                            <i className="fas fa-check-circle" style={{ marginRight: '5px' }}></i>
+                            Entregado
                           </button>
-                          &nbsp;
-                          <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => cancelarPedido(pedido._id)}
+                            title="Marcar como cancelado"
+                          >
+                            <i className="fas fa-times-circle" style={{ marginRight: '5px' }}></i>
                             Cancelar
                           </button>
                         </td>
                       </tr>
                     ))}
-                    {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos disponibles</td></tr>}
+                    {pedidos.length === 0 && <tr><td colSpan="8">No hay pedidos disponibles</td></tr>}
                   </tbody>
                 </table>
 

@@ -29,6 +29,7 @@ import PedidosDevueltos from './pages/PedidosDevueltos';
 import ReporteProveedores from './pages/ReporteProveedores';
 import ReporteProductos from './pages/ReporteProductos';
 import OrdenCompra from './pages/OrdenCompra';
+import RegistrarCompra from './pages/RegistrarCompra';
 
 
 const App = () => {
@@ -96,6 +97,16 @@ const App = () => {
               <PrivateRoute>
                 <PermisoRoute permiso="ordenesCompra.ver">
                   <OrdenCompra />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/RegistrarCompra'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="compras.crear">
+                  <RegistrarCompra />
                 </PermisoRoute>
               </PrivateRoute>
             }
