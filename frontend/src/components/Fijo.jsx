@@ -24,7 +24,6 @@ export default function Fijo() {
   const [puedeVerPedidosEntregados, setPuedeVerPedidosEntregados] = useState(false);
   const [puedeVerPedidosCancelados, setPuedeVerPedidosCancelados] = useState(false);
   const [puedeVerPedidosDevueltos, setPuedeVerPedidosDevueltos] = useState(false);
-  const [puedeVerListaDeVentas, setPuedeVerListaDeVentas] = useState(false);
   const [puedeVerListaDeClientes, setPuedeVerListaDeClientes] = useState(false);
   const [puedeVerProspectos, setPuedeVerProspectos] = useState(false);
   const [puedeVerReportesVentas, setPuedeVerReportesVentas] = useState(false);
@@ -131,6 +130,7 @@ export default function Fijo() {
     <div>
       <div className="fijo">
         <header>
+          
           <div className="izquierda">
             <button onClick={(e) => {
               e.stopPropagation();
