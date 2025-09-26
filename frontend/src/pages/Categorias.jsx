@@ -12,6 +12,7 @@ const CategoriaModal = ({ categoria, onClose, onSave }) => {
   const [description, setDescription] = useState(categoria ? categoria.description : '');
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
 
     if (!name.trim() || !description.trim()) {
