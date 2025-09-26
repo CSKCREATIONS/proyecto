@@ -1,0 +1,1010 @@
+{
+	"info": {
+		"_postman_id": "ae51e9d1-58f1-49fc-afba-52757fa57e6b",
+		"name": "Movil-Pangea",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46568686",
+		"_collection_link": "https://julian-4254454.postman.co/workspace/Julian's-Workspace~3efae81f-3956-46d0-88e4-6174f2244e03/collection/46568686-ae51e9d1-58f1-49fc-afba-52757fa57e6b?action=share&source=collection_link&creator=46568686"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "signin admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"\r",
+									"if (response.token) {\r",
+									"    pm.collectionVariables.set(\"admin_token\", response.token);\r",
+									"    console.log(\"Token de admin guardado\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}auth/login",
+							"host": [
+								"{{base_url}}auth"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todos  los usuarios",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}users/",
+							"host": [
+								"{{base_url}}users"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}users/6858b8ac20e3f48a4674013d",
+							"host": [
+								"{{base_url}}users"
+							],
+							"path": [
+								"6858b8ac20e3f48a4674013d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"johndoe\",\r\n  \"email\": \"johndoe@example.com\",\r\n  \"password\": \"secret123\",\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"role\": \"65123456789abcdef1234567\", \r\n  \"phone\": \"3001234567\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{base_url}}users/",
+							"host": [
+								"{{base_url}}users"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/inactivar usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}users/6858b84e20e3f48a46740133/toggle-status",
+							"host": [
+								"{{base_url}}users"
+							],
+							"path": [
+								"6858b84e20e3f48a46740133",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "crear categoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"name\":\"pepino\",\r\n        \"description\":\"pepino \",\r\n        \"icon\": \"👕\",\r\n        \"sortOrder\":\"3\",\r\n        \"isActive\":\"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}categories/",
+							"host": [
+								"{{base_url}}categories"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar categoría",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"name\":\"lenceria para muebles\"\r\n        \r\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}categories/68d4eb4ea8ee8c37149b3cd1",
+							"host": [
+								"{{base_url}}categories"
+							],
+							"path": [
+								"68d4eb4ea8ee8c37149b3cd1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todas las categorias",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}categories/",
+							"host": [
+								"{{base_url}}categories"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/desactivar categoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}categories/68d4eb4ea8ee8c37149b3cd1/toggle-status",
+							"host": [
+								"{{base_url}}categories"
+							],
+							"path": [
+								"68d4eb4ea8ee8c37149b3cd1",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subcategory",
+			"item": [
+				{
+					"name": "crear subcategoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Zapatos Deportivos\",\r\n  \"description\": \"Subcategoría para calzado deportivo\",\r\n  \"category\": \"684508af28a89e5874b3a632\", \r\n  \"icon\": \"shoe-icon.png\",\r\n  \"color\": \"#FF5733\",\r\n  \"sortOrder\": 1,\r\n  \"createdBy\": \"6700b9876abc56789def0456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}subcategories/",
+							"host": [
+								"{{base_url}}subcategories"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar subcategoría",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"name\":\"asdasdasd\"\r\n        \r\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}subcategories/68d4ecfaa8ee8c37149b3cf4",
+							"host": [
+								"{{base_url}}subcategories"
+							],
+							"path": [
+								"68d4ecfaa8ee8c37149b3cf4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todas las subcateogrias",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}subcategories/",
+							"host": [
+								"{{base_url}}subcategories"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/inactivar subcategoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}subcategories/6868793eccc62f877cbf102e/toggle-status",
+							"host": [
+								"{{base_url}}subcategories"
+							],
+							"path": [
+								"6868793eccc62f877cbf102e",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "proveedor",
+			"item": [
+				{
+					"name": "crear proveedor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Proveedor Latinoamérica\",\r\n  \"contacto\": {\r\n    \"telefono\": \"3157894561\",\r\n    \"correo\": \"ventas@proveedorlatam.com\"\r\n  },\r\n  \"direccion\": {\r\n    \"calle\": \"Av. 80 #45-32\",\r\n    \"pais\": \"Colombia\"\r\n  },\r\n  \"empresa\": \"Latam Supplies S.A.S\",\r\n  \"productos\": []\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}proveedores",
+							"host": [
+								"{{base_url}}proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizar proveedores",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"nombre\":\"asdasdaasdassd\"\r\n        \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}proveedores/6869fcb0f3dacd0f5b9d3883",
+							"host": [
+								"{{base_url}}proveedores"
+							],
+							"path": [
+								"6869fcb0f3dacd0f5b9d3883"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todas los proveedores",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}proveedores",
+							"host": [
+								"{{base_url}}proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/desactivar proveedor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}proveedores/68687a04ccc62f877cbf1034/toggle-status",
+							"host": [
+								"{{base_url}}proveedores"
+							],
+							"path": [
+								"68687a04ccc62f877cbf1034",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "clientes",
+			"item": [
+				{
+					"name": "Editar clientes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Luis Pérez112323\",\r\n  \"ciudad\": \"Bogotá123123\",\r\n  \"direccion\": \"Calle 45 #10-201231\",\r\n  \"telefono\": \"3001234567\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{base_url}}clientes/68d4fcc6a8ee8c37149b3dd2",
+							"host": [
+								"{{base_url}}clientes"
+							],
+							"path": [
+								"68d4fcc6a8ee8c37149b3dd2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todos los clientes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}clientes",
+							"host": [
+								"{{base_url}}clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/desactivar cliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}clientes/68d4fcc6a8ee8c37149b3dd2/toggle-status",
+							"host": [
+								"{{base_url}}clientes"
+							],
+							"path": [
+								"68d4fcc6a8ee8c37149b3dd2",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "crear products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"duseasasd\",\r\n  \"description\": \"Mouse óptico 3600 dpi con luce123123s RGB\",\r\n  \"price\": 2012,\r\n  \"stock\": 5,\r\n  \"category\": \"686c8012de6530b74f744a58\",\r\n  \"subcategory\": \"686c802fde6530b74f744a63\",\r\n  \"images\": [\"https://example.coasasddm/mouse.jpg\"],\r\n  \"sku\": \"Masdasdasd\",\r\n  \"proveedor\": \"68d5041a2c5a5b1a08d3b27e\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}products",
+							"host": [
+								"{{base_url}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"duseasaasdasd\",\r\n  \"description\": \"Mouse óptico 3600 dpi con luce123123s RGB\",\r\n  \"price\": 2012,\r\n  \"stock\": 5\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}products/686c8c7e9022f5feff88760e",
+							"host": [
+								"{{base_url}}products"
+							],
+							"path": [
+								"686c8c7e9022f5feff88760e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver todos los productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}products",
+							"host": [
+								"{{base_url}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar/desactivar productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}products/686c8c7e9022f5feff88760e/toggle-status",
+							"host": [
+								"{{base_url}}products"
+							],
+							"path": [
+								"686c8c7e9022f5feff88760e",
+								"toggle-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "compras",
+			"item": [
+				{
+					"name": "Compras",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}compras",
+							"host": [
+								"{{base_url}}compras"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "pedidos",
+			"item": [
+				{
+					"name": "pedidos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}pedidos",
+							"host": [
+								"{{base_url}}pedidos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cotizaciones",
+			"item": [
+				{
+					"name": "cotizaciones",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}cotizaciones",
+							"host": [
+								"{{base_url}}cotizaciones"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "admin_token",
+			"value": ""
+		}
+	]
+}

@@ -87,8 +87,10 @@ const VentasScreen: React.FC = () => {
       const response = await apiService.get<Venta[]>('/ventas');
       
       if (response.success && response.data && Array.isArray(response.data)) {
-        setVentas(response.data);
-        setFilteredVentas(response.data);
+        // Filtrar solo las ventas completadas (entregadas)
+        const ventasCompletadas = response.data.filter(venta => venta.estado === 'completada');
+        setVentas(ventasCompletadas);
+        setFilteredVentas(ventasCompletadas);
       }
     } catch (error) {
       console.warn('Error cargando ventas:', error);
@@ -267,7 +269,7 @@ const VentasScreen: React.FC = () => {
           <Text style={[
             { fontSize: 20, color: 'white', fontWeight: '700', flex: 1 }
           ]}>
-            Ventas
+            Ventas Entregadas
           </Text>
           <View style={{
             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -323,10 +325,10 @@ const VentasScreen: React.FC = () => {
           <View style={globalStyles.emptyStateContainer}>
             <Text style={globalStyles.titleText}>💰</Text>
             <Text style={globalStyles.emptyStateText}>
-              {searchQuery ? 'No hay ventas que coincidan con la búsqueda' : 'No hay ventas'}
+              {searchQuery ? 'No hay ventas entregadas que coincidan con la búsqueda' : 'No hay ventas entregadas'}
             </Text>
             <Text style={globalStyles.emptyStateSubtext}>
-              No se han creado ventas aún
+              No se han completado ventas aún
             </Text>
           </View>
         ) : (

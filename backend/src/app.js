@@ -12,12 +12,12 @@ const app = express();
 app.use(cors({
     origin: [
         process.env.FRONTEND_URL || 'http://localhost:3000',
-        'exp://192.168.1.3:8081',
-        'exp://192.168.1.3:8082',
-        'exp://192.168.1.3:8083',
-        'http://192.168.1.3:8081',
-        'http://192.168.1.3:8082',
-        'http://192.168.1.3:8083',
+        'exp://172.16.101.238:8081',
+        'exp://172.16.101.238:8082',
+        'exp://172.16.101.238:8083',
+        'http://172.16.101.238:8081',
+        'http://172.16.101.238:8082',
+        'http://172.16.101.238:8083',
         'http://localhost:8081',
         'http://localhost:8082',
         'http://localhost:8083',
@@ -71,7 +71,7 @@ const startServer = async () => {
     try {
         await connectDB();
 
-        const HOST = process.env.HOST || '192.168.1.3';
+        const HOST = process.env.HOST || '0.0.0.0';
 
         app.listen(PORT, HOST, () => {
             console.log(`
@@ -89,6 +89,12 @@ const startServer = async () => {
                 * Get /api/categories - Gestion de categorias
                 * Get /api/subcategories - Gestion de subcategorias
                 * Get /api/products - Gestion de productos
+                * Get /api/clientes - Gestion de clientes
+                * Get /api/proveedores - Gestion de proveedores
+                * Get /api/cotizaciones - Gestion de cotizaciones
+                * Get /api/pedidos - Gestion de pedidos
+                * Get /api/compras - Gestion de compras
+                * Get /api/ventas - Gestion de ventas
                 
                 DOCUMENTACION DE POSTMAN
 

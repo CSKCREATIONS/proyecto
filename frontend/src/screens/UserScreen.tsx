@@ -175,7 +175,7 @@ const UsersScreen: React.FC = () => {
         user.lastName.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesRole = roleFilter === 'all' ||
-        (typeof user.role === 'object' && user.role.name && 
+        (typeof user.role === 'object' && user.role && user.role.name && 
           user.role.name === roleFilter
         );
 
@@ -205,8 +205,8 @@ const UsersScreen: React.FC = () => {
 
   const resetForm = () => {
     // Usar el primer rol no-administrador disponible por defecto
-    const defaultRole = availableRoles.find(role => role.name !== 'Administrador');
-    const defaultRoleId = defaultRole ? defaultRole._id : (availableRoles.length > 0 ? availableRoles[0]._id : '');
+    const defaultRole = availableRoles.find(role => role && role.name !== 'Administrador');
+    const defaultRoleId = defaultRole && defaultRole._id ? defaultRole._id : (availableRoles.length > 0 && availableRoles[0] && availableRoles[0]._id ? availableRoles[0]._id : '');
     
     setFormData({
       username: '',
@@ -230,12 +230,12 @@ const UsersScreen: React.FC = () => {
     
     // Usar directamente el ID del rol del usuario
     let roleId = '';
-    if (typeof user.role === 'object' && user.role._id) {
+    if (typeof user.role === 'object' && user.role && user.role._id) {
       roleId = user.role._id;
     } else if (typeof user.role === 'string') {
       // Si es string, buscar el rol por ID
-      const foundRole = availableRoles.find(role => role._id === user.role);
-      roleId = foundRole ? foundRole._id : user.role;
+      const foundRole = availableRoles.find(role => role && role._id === user.role);
+      roleId = foundRole && foundRole._id ? foundRole._id : user.role;
     }
     
     setFormData({
@@ -265,7 +265,7 @@ const UsersScreen: React.FC = () => {
         return;
       }
 
-      const selectedRole = availableRoles.find(role => role._id === formData.role);
+      const selectedRole = availableRoles.find(role => role && role._id === formData.role);
       if (!selectedRole) {
         Alert.alert('Error', 'El rol seleccionado no es válido. Por favor selecciona otro rol.');
         return;
@@ -356,7 +356,7 @@ const UsersScreen: React.FC = () => {
   // Función para renderizar cada card de usuario
   const renderUserCard = ({ item }: { item: User }) => {
     const getUserRoleColor = (role: any) => {
-      if (typeof role === 'object' && role.name) {
+      if (typeof role === 'object' && role && role.name) {
         switch (role.name) {
           case 'Administrador': return '#EF4444';
           case 'Vendedor': return '#10B981';
@@ -408,7 +408,7 @@ const UsersScreen: React.FC = () => {
                 marginLeft: modernTheme.spacing.xs,
                 fontWeight: '600'
               }}>
-                {typeof item.role === 'object' ? item.role.name : item.role}
+                {typeof item.role === 'object' && item.role ? item.role.name : (item.role || 'Sin rol')}
               </Text>
             </View>
 
@@ -599,7 +599,7 @@ const UsersScreen: React.FC = () => {
             }}>Todos</Text>
           </TouchableOpacity>
 
-          {availableRoles.map((role) => {
+          {availableRoles.filter(role => role && role._id && role.name).map((role) => {
             const isActive = roleFilter === role.name;
             return (
               <TouchableOpacity
@@ -1021,7 +1021,7 @@ const UsersScreen: React.FC = () => {
                       </TouchableOpacity>
                     </View>
                   ) : (
-                    availableRoles.map((role) => (
+                    availableRoles.filter(role => role && role._id).map((role) => (
                       <TouchableOpacity
                         key={role._id}
                         onPress={() => setFormData(prev => ({...prev, role: role._id}))}
