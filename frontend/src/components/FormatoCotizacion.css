@@ -1,0 +1,116 @@
+/* Modern action buttons for cotizacion */
+.btn-cotizacion.moderno {
+  background: linear-gradient(90deg, #f5f6fa 0%, #e9ecef 100%);
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.btn-cotizacion.moderno:hover {
+  background: linear-gradient(90deg, #e2e6ea 0%, #f5f6fa 100%);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+.botones-cotizacion {
+  gap: 18px !important;
+}
+ .modal-cotizacion-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+ .modal-cotizacion {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 850px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  position: relative;
+ }
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+ .modal-title {
+  text-align: left;
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+ }
+
+ .cotizacion-encabezado{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+ }
+ .empresa-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1rem;
+ }
+ .descripcion-cotizacion {
+  margin: 1rem 0 1rem 0;
+ }
+ .tabla-cotizacion {
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+ }
+ .tabla-cotizacion th, .tabla-cotizacion td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+ }
+
+ .condiciones-pago {
+  margin-top: 1rem;
+ }
+ 
+
+/* 🔹 Para impresión */
+@media print {
+  body * {
+    visibility: hidden; /* Oculta todo */
+  }
+
+  #pdf-cotizacion-block,
+  #pdf-cotizacion-block * {
+    visibility: visible; /* Solo muestra este bloque */
+  }
+
+  #pdf-cotizacion-block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%; /* Asegura que ocupe toda la página */
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Opcional: márgenes de la página */
+  @page {
+    margin: 15mm;
+  }
+}
+
+
+

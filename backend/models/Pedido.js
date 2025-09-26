@@ -6,6 +6,14 @@ const PedidoSchema = new mongoose.Schema({
     unique: true,
     required: true
   },
+  cotizacionReferenciada: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cotizacion',
+  },
+  cotizacionCodigo: {
+    type: String,
+    default: ''
+  },
    productos: [{
     product: {
       type: mongoose.Schema.Types.ObjectId,

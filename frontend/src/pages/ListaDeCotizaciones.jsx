@@ -1,62 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo from '../components/EncabezadoModulo';
-import { openModal } from '../funciones/animaciones';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import FormatoCotizacion from '../components/FormatoCotizacion';
+import CotizacionPreview from '../components/CotizacionPreview';
+import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom'; // ya lo tienes o debes agregarlo
-
 
 export default function ListaDeCotizaciones() {
   const [cotizaciones, setCotizaciones] = useState([]);
   const [productos, setProductos] = useState([]);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
   const modalRef = useRef();
   const navigate = useNavigate();
 
- 
 
-  
-const exportarPDF = () => {
-  const input = document.getElementById('tabla_cotizaciones');
-  html2canvas(input).then((canvas) => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 190;
-    const pageHeight = 297;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 10;
 
-    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
 
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
+  const exportarPDF = () => {
+    const input = document.getElementById('tabla_cotizaciones');
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 190;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 10;
+
       pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
-    }
 
-    pdf.save('listaCotizaciones.pdf');
-  });
-};
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save('listaCotizaciones.pdf');
+    });
+  };
 
 
-const exportToExcel = () => {
-  const table = document.getElementById('tabla_cotizaciones');
-  if (!table) return;
-  const workbook = XLSX.utils.table_to_book(table);
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  saveAs(data, 'listaCotizaciones.xlsx');
-};
+  const exportToExcel = () => {
+    const table = document.getElementById('tabla_cotizaciones');
+    if (!table) return;
+    const workbook = XLSX.utils.table_to_book(table);
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'listaCotizaciones.xlsx');
+  };
 
 
   useEffect(() => {
@@ -175,7 +174,7 @@ const exportToExcel = () => {
     return coincideFecha && coincideCliente && coincideEnviado;
   });
 
-   
+
 
   /*** PAGINACIÓN ***/
   const [currentPage, setCurrentPage] = useState(1);
@@ -258,32 +257,19 @@ const exportToExcel = () => {
                 <span>Exportar a PDF</span>
               </button>
 
-              {cotizacionSeleccionada && (
-                <FormatoCotizacion
-                  cotizacion={cotizacionSeleccionada}
-                  setCotizacion={setCotizacionSeleccionada}
-                  onClose={() => setCotizacionSeleccionada(null)}
-                  onEdit={() => setModoEdicion(true)}
-                  onSend={enviarCorreo}
-                  onPrint={imprimir}
-                  onSave={guardarEdicion}
-                  productos={productos}
-                  editable={modoEdicion}
-                />
-              )}
+
             </div>
           </div>
           <div className="filtros-tabla">
             <div className="filtro-grupo">
+
               <label>Fecha:</label>
               <input type="date" className="filtro-input" value={filtroFecha} onChange={(e) => setFiltroFecha(e.target.value)} />
             </div>
-
-              <br/><br/>
             <div className="filtro-grupo">
               <label>Cliente:</label>
               <input type="text" className="filtro-input" placeholder="Buscar cliente..." value={filtroCliente} onChange={(e) => setFiltroCliente(e.target.value)} />
-            </div><br/>
+            </div>
             <div className="filtro-grupo"><br></br>
               <label>Enviado:</label>
               <select className="filtro-select" value={filtroEnviado} onChange={(e) => setFiltroEnviado(e.target.value)}>
@@ -294,269 +280,185 @@ const exportToExcel = () => {
             </div>
           </div>
 
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id='tabla_cotizaciones'>
-                <thead>
-                  <tr>
-                    <th># Cotización</th>
-                    <th>Fecha elaboración</th>
-                    <th>Cliente</th>
-                    <th>Enviado por correo</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-  {currentItems.map((cot, index) => (
-    <tr key={cot._id}>
-      <td><a onClick={() => setCotizacionSeleccionada(cot)}>C-{cot._id.slice(-5)}</a></td>
-      <td>{new Date(cot.fecha).toLocaleDateString()}</td>
-      <td>{cot.cliente?.nombre || 'Sin nombre'}</td>
-      <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
-      <td>
-        <button className='btnTransparente' onClick={() => handleEliminarCotizacion(cot._id)}>
-          <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
-        </button>
-        <button className='btnTransparente' onClick={() => {
-          setCotizacionSeleccionada(cot);
-          setModoEdicion(true);
-        }}>
-          <i className="fa-solid fa-pen-to-square"></i>
-        </button>
-        <button
-          className='btnTransparente'
-          onClick={() => {
-            if (cot.cliente?._id) {
-              navigate(`/AgendarVenta/${cot.cliente._id}`);
-            } else {
-              Swal.fire('Error', 'Esta cotización no tiene un cliente válido asignado.', 'warning');
-            }
-          }}
-        >
-          <i className="fa-solid fa-calendar-plus" style={{ color: '#28a745' }} title="Agendar venta" />
-        </button>
-      </td>
-    </tr>
-  ))}
-  {cotizaciones.length === 0 && <tr><td colSpan="9">No hay cotizaciones disponibles</td></tr>}
-</tbody>
-
-              </table>
-             
-            </div>
-             {/* PAGINACIÓN */}
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => paginate(i + 1)}
-            className={currentPage === i + 1 ? 'active-page' : ''}
-          >
-            {i + 1}
-          </button>
-        ))}
-      </div>
-          </div>
-        </div>
-      </div>
-
-      {cotizacionSeleccionada && (
-        <div className="modal-overlay">
-          <div className="modal-content modal-lg" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-
-            <div className="modal-content modal-lg">
-              <div className="modal-header">
-                <h5 className="modal-title">Editar Cotización</h5>
-                <button className="modal-close" onClick={() => setCotizacionSeleccionada(null)}>&times;</button>
-              </div>
-              <div className="modal-body">
-                <div style={{ backgroundColor: '#d9d9d9', padding: '1rem', borderRadius: '10px', marginBottom: '1rem' }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div style={{ flex: '1 1 200px' }}>
-                      <label><strong>Cliente:</strong></label>
-                      <br />
-                      <input
-                        type="text"
-                        className="input-estilo"
-                        placeholder="Nombre del cliente"
-                        value={cotizacionSeleccionada.cliente?.nombre || ''}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            cliente: { ...cotizacionSeleccionada.cliente, nombre: e.target.value }
-                          })
-                        }
-                      />
-                    </div>
-
-                    <div style={{ flex: '1 1 200px' }}>
-                      <label><strong>Teléfono:</strong></label>
-                      <input
-                        type="text"
-                        className="input-estilo"
-                        placeholder="Teléfono"
-                        value={cotizacionSeleccionada.cliente?.telefono || ''}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            cliente: { ...cotizacionSeleccionada.cliente, telefono: e.target.value }
-                          })
-                        }
-                      />
-                    </div>
-
-                    <div style={{ flex: '1 1 200px' }}>
-                      <label><strong>Ciudad:</strong></label>
-                      <br />
-                      <input
-                        type="text"
-                        className="input-estilo"
-                        placeholder="Ciudad"
-                        value={cotizacionSeleccionada.cliente?.ciudad || ''}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            cliente: { ...cotizacionSeleccionada.cliente, ciudad: e.target.value }
-                          })
-                        }
-                      />
-                    </div>
-
-                    <div style={{ flex: '1 1 200px' }}>
-                      <label><strong>Email:</strong></label>
-                      <br />
-                      <input
-                        type="email"
-                        className="input-estilo"
-                        placeholder="Correo electrónico"
-                        value={cotizacionSeleccionada.cliente?.correo || ''}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            cliente: { ...cotizacionSeleccionada.cliente, correo: e.target.value }
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem' }}>
-                    <div style={{ flex: '1 1 300px' }}>
-                      <label><strong>Descripción:</strong></label>
-                      <br />
-                      <input
-                        type="text"
-                        className="input-estilo"
-                        placeholder="Descripción"
-                        value={limpiarHTML(cotizacionSeleccionada.descripcion || '')}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            descripcion: e.target.value
-                          })
-                        }
-                      />
-                    </div>
-
-                    <div style={{ flex: '1 1 300px' }}>
-                      <label><strong>Condiciones de pago:</strong></label>
-                      <br />
-                      <textarea
-                        className="input-estilo"
-                        rows="1"
-                        placeholder="Condiciones de pago"
-                        value={limpiarHTML(cotizacionSeleccionada.condicionesPago || '')}
-                        onChange={(e) =>
-                          setCotizacionSeleccionada({
-                            ...cotizacionSeleccionada,
-                            condicionesPago: e.target.value
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-                <table>
+          <div className="max-width">
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id='tabla_cotizaciones'>
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Producto</th>
-                      <th>Descripción</th>
-                      <th>Cantidad</th>
-                      <th>Valor Unitario</th>
-                      <th>Descuento</th>
-                      <th>Valor Total</th>
-                      <th>Acción</th>
+                      <th># Cotización</th>
+                      <th>Fecha elaboración</th>
+                      <th>Cliente</th>
+                      <th>Enviado por correo</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {cotizacionSeleccionada.productos.map((p, idx) => {
-                      const productoInfo = productos.find(prod => prod._id === p.producto);
-                      return (
-                        <tr key={idx}>
-                          <td>{idx + 1}</td>
-                          <td>
-                            <select
-                              className="cuadroTexto"
-                              value={p.producto}
-                              onChange={(e) => {
-                                const actualizado = [...cotizacionSeleccionada.productos];
-                                actualizado[idx].producto = e.target.value;
-                                setCotizacionSeleccionada({ ...cotizacionSeleccionada, productos: actualizado });
-                              }}
-                            >
-                              <option value="">Seleccione un producto</option>
-                              {productos.map(prod => (
-                                <option key={prod._id} value={prod._id}>{prod.name}</option>
-                              ))}
-                            </select>
-                          </td>
-                          <td><input type="text" value={productoInfo?.description || ''} disabled /></td>
-                          <td>
-                            <input
-                              type="number"
-                              value={p.cantidad || ''}
-                              onChange={(e) => {
-                                const actualizado = [...cotizacionSeleccionada.productos];
-                                actualizado[idx].cantidad = e.target.value;
-                                setCotizacionSeleccionada({ ...cotizacionSeleccionada, productos: actualizado });
-                              }}
-                            />
-                          </td>
-                          <td><input type="number" value={productoInfo?.price || ''} disabled /></td>
-                          <td>
-                            <input
-                              type="number"
-                              value={p.descuento || ''}
-                              onChange={(e) => {
-                                const actualizado = [...cotizacionSeleccionada.productos];
-                                actualizado[idx].descuento = e.target.value;
-                                setCotizacionSeleccionada({ ...cotizacionSeleccionada, productos: actualizado });
-                              }}
-                            />
-                          </td>
-                          <td>{((parseFloat(productoInfo?.price || 0) * parseFloat(p.cantidad || 0)) * (1 - parseFloat(p.descuento || 0) / 100)).toFixed(2)}</td>
-                          <td><button className="btn btn-danger" onClick={() => eliminarProducto(idx)}>Eliminar</button></td>
-                        </tr>
-                      );
-                    })}
+                    {currentItems.map((cot, index) => (
+                      <tr key={cot._id}>
+                        <td>
+                          <a
+                            style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                            onClick={async () => {
+                              try {
+                                const token = localStorage.getItem('token');
+                                const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                  headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                const data = await res.json();
+                                const cotizacionCompleta = data.data || data;
+                                setCotizacionSeleccionada(cotizacionCompleta);
+                                setMostrarPreview(true);
+                              } catch (err) {
+                                Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                              }
+                            }}
+                          >
+                            {cot.codigo}
+                          </a>
+                        </td>
+                        <td>{new Date(cot.fecha).toLocaleDateString()}</td>
+                        <td>{cot.cliente?.nombre || 'Sin nombre'}</td>
+                        <td>{cot.enviadoCorreo ? 'Sí' : 'No'}</td>
+                        <td>
+                          <button className='btnTransparente' onClick={() => handleEliminarCotizacion(cot._id)}>
+                            <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} title='Eliminar cotización' />
+                          </button>
+                          <button
+                            className='btnTransparente'
+                            onClick={async () => {
+                              try {
+                                const token = localStorage.getItem('token');
+                                const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                  headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                const cotizacionCompleta = await res.json();
+                                setCotizacionSeleccionada(cotizacionCompleta);
+                              } catch (err) {
+                                Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                              }
+                            }}
+                          >
+                            <i className="fa-solid fa-pen-to-square" title='Editar cotización'></i>
+                          </button>
+
+
+                          <button
+                            className='btnTransparente'
+                            onClick={async () => {
+                              try {
+                                const token = localStorage.getItem('token');
+                                // Obtener cotización completa para asegurar productos y cliente
+                                const res = await fetch(`http://localhost:5000/api/cotizaciones/${cot._id}`, {
+                                  headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                const data = await res.json();
+                                const cotizacion = data.data || data;
+
+                                const confirm = await Swal.fire({
+                                  title: `¿Agendar la cotización '${cotizacion.codigo}' como pedido?`,
+                                  icon: 'question',
+                                  showCancelButton: true,
+                                  confirmButtonText: 'Sí, agendar',
+                                  cancelButtonText: 'No'
+                                });
+                                if (!confirm.isConfirmed) return;
+
+
+                                const clienteId = (
+                                  cotizacion?.cliente?.referencia?._id ||
+                                  cotizacion?.cliente?.referencia ||
+                                  cot?.cliente?._id ||
+                                  cot?.cliente?.referencia?._id ||
+                                  cot?.cliente?.referencia
+                                );
+
+
+                                // Mapear productos al formato de pedido
+                                const productosPedido = (cotizacion.productos || []).map(p => {
+                                  const productId = (p?.producto?.id && (p.producto.id._id || p.producto.id)) || p?.producto;
+                                  if (!productId) return null;
+                                  const cantidadNum = Number(p?.cantidad);
+                                  const precioNum = p?.valorUnitario != null ? Number(p.valorUnitario) : Number(p?.producto?.price);
+                                  return {
+                                    product: productId,
+                                    cantidad: Number.isFinite(cantidadNum) && cantidadNum > 0 ? cantidadNum : 1,
+                                    precioUnitario: Number.isFinite(precioNum) ? precioNum : 0,
+                                  };
+                                }).filter(Boolean);
+
+                                if (productosPedido.length === 0) {
+                                  return Swal.fire('Error', 'La cotización no tiene productos.', 'warning');
+                                }
+
+                                // Fecha de entrega: por ahora 7 días después de la fecha de la cotización o de hoy
+                                const baseDate = cotizacion.fecha ? new Date(cotizacion.fecha) : new Date();
+                                const fechaEntrega = new Date(baseDate.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+                                const crearRes = await fetch('http://localhost:5000/api/pedidos', {
+                                  method: 'POST',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                  },
+                                  body: JSON.stringify({
+                                    cliente: clienteId,
+                                    productos: productosPedido,
+                                    fechaEntrega,
+                                    observacion: `Agendado desde cotización ${cotizacion.codigo}`,
+                                    cotizacionReferenciada: cotizacion._id,
+                                    cotizacionCodigo: cotizacion.codigo
+                                  })
+                                });
+
+                                if (!crearRes.ok) {
+                                  const errText = await crearRes.text();
+                                  throw new Error(errText || 'No se pudo agendar el pedido');
+                                }
+
+                                await crearRes.json();
+                                await Swal.fire('Agendado', 'La cotización fue agendada como pedido.', 'success');
+                                navigate('/PedidosAgendados');
+                              } catch (error) {
+                                console.error(error);
+                                Swal.fire('Error', error.message || 'Hubo un problema al agendar la cotización', 'error');
+                              }
+                            }}
+                          >
+                            <i className="fa-solid fa-calendar-plus" style={{ color: '#28a745' }} title="Agendar venta" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {cotizaciones.length === 0 && <tr><td colSpan="9">No hay cotizaciones disponibles</td></tr>}
                   </tbody>
+
                 </table>
-                
-                <br />
-                <button className="btn btn-success mt-2" onClick={agregarProducto}>Agregar Producto</button>
+
               </div>
-              <div className="modal-content modal-lg" ref={modalRef} style={{ maxHeight: '85vh', overflowY: 'auto' }}>
-                <div className="modal-footer">
-                  <button className="btn btn-cancel" onClick={() => setCotizacionSeleccionada(null)}>Cancelar</button>
-                  <button className="btn btn-save" onClick={guardarEdicion}>Guardar</button>
-                </div>
+              {/* PAGINACIÓN */}
+              <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => paginate(i + 1)}
+                    className={currentPage === i + 1 ? 'active-page' : ''}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
-          
         </div>
-        
+      </div>
+
+
+      {mostrarPreview && cotizacionSeleccionada && (
+        <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
       )}
       <div className="custom-footer">
           <p className="custom-footer-text">
@@ -564,7 +466,5 @@ const exportToExcel = () => {
           </p>
         </div>
     </div>
-
-
   )
 };

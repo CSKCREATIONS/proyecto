@@ -53,8 +53,9 @@ export default function CambiarContrasena() {
         <h2 >Bienvenido al Sistema de JLA Global Company</h2>
         <h3 >Por favor cambie su contraseña</h3>
 
-        <div className="input-container">
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
           <input
+            className='entrada'
             type="password"
             id="nueva"
             required
@@ -65,8 +66,9 @@ export default function CambiarContrasena() {
           <label htmlFor="nueva">Nueva contraseña</label>
         </div>
 
-        <div className="input-container">
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: '1rem', alignItems: 'center' }}>
           <input
+            className='entrada'
             type="password"
             id="confirmar"
             required

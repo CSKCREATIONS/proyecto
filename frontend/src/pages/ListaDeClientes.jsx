@@ -214,7 +214,7 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'> 
+          <div className='encabezado-modulo'>
             <div>
               <h3 className='titulo-profesional'>Lista de clientes</h3>
 
@@ -241,7 +241,7 @@ export default function ListaDeClientes() {
                 <span>Exportar a PDF</span>
               </button>
             </div>
-          </div><br/>
+          </div><br />
 
           {/* FILTRO DE BÚSQUEDA */}
           <div className="filtros-tabla">
@@ -260,46 +260,50 @@ export default function ListaDeClientes() {
             </div>
           </div>
 
-          <div className="table-container">
-            <table id='tabla_clientes'>
-              <thead>
-                <tr>
-                  <th>Clientes</th>
-                  <th>Ciudad</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((cliente) => (
-                  <tr key={cliente._id}>
-                    <td>{cliente.nombre || cliente.clienteInfo?.nombre || 'Sin nombre'}</td>
-                    <td>{cliente.ciudad || cliente.clienteInfo?.ciudad || 'N/A'}</td>
-                    <td>{cliente.telefono || cliente.clienteInfo?.telefono || 'N/A'}</td>
-                    <td>{cliente.correo || cliente.clienteInfo?.correo || 'N/A'}</td>
-                    <td>
-                      <button className='btnTransparente' onClick={() => {
-                        setClienteSeleccionado(cliente);
-                        setMostrarModal(true);
-                      }}>
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </button>
-                    </td>
+          <div className="max-width">
+            <div className="table-container">
+              <table id='tabla_clientes'>
+                <thead>
+                  <tr>
+                    <th>Clientes</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-                {currentItems.length === 0 && <tr><td colSpan="9">No hay clientes disponibles</td></tr>}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {currentItems.map((cliente) => (
+                    <tr key={cliente._id}>
+                      <td>{cliente.nombre || cliente.clienteInfo?.nombre || 'Sin nombre'}</td>
+                      <td>{cliente.ciudad || cliente.clienteInfo?.ciudad || 'N/A'}</td>
+                      <td>{cliente.telefono || cliente.clienteInfo?.telefono || 'N/A'}</td>
+                      <td>{cliente.correo || cliente.clienteInfo?.correo || 'N/A'}</td>
+                      <td>
+                        <button className='btnTransparente' onClick={() => {
+                          setClienteSeleccionado(cliente);
+                          setMostrarModal(true);
+                        }}>
+                          <i className="fa-solid fa-pen-to-square"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {currentItems.length === 0 && <tr><td colSpan="9">No hay clientes disponibles</td></tr>}
+                </tbody>
+              </table>
 
-            {mostrarModal && clienteSeleccionado && (
-              <ModalEditarCliente
-                cliente={clienteSeleccionado}
-                onClose={() => setMostrarModal(false)}
-                onSave={handleGuardar}
-              />
-            )}
+              {mostrarModal && clienteSeleccionado && (
+                <ModalEditarCliente
+                  cliente={clienteSeleccionado}
+                  onClose={() => setMostrarModal(false)}
+                  onSave={handleGuardar}
+                />
+              )}
+            </div>
           </div>
+
+
 
           {/* PAGINACIÓN */}
           <div className="pagination">

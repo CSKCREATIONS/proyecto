@@ -8,12 +8,12 @@ export default function PrivateRoute({ children }) {
 
   // Si no ha iniciado sesión
   if (!token || !user) {
-    return <Navigate to="/Login" />;
+    return <Navigate to="/" />;
   }
 
   // Si el usuario está inhabilitado
   if (user.enabled === false) {
-    return <Navigate to="/Login" />;
+    return <Navigate to="/" />;
   }
 
   return children;

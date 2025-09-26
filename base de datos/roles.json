@@ -52,7 +52,11 @@
     "proveedores.editar",
     "proveedores.inactivar",
     "reportesCompras.ver",
-    "ordenes.generar"
+    "ordenes.generar",
+    "ordenesCompra.ver",
+    "ordenes.editar",
+    "ordenes.eliminar",
+    "ordenes.aprobar"
   ],
   "enabled": true,
   "createdAt": {
@@ -107,14 +111,19 @@
     "proveedores.ver",
     "proveedores.crear",
     "proveedores.editar",
-    "proveedores.inactivar"
+    "proveedores.inactivar",
+    "ordenesCompra.ver",
+    "ordenes.generar",
+    "ordenes.editar",
+    "ordenes.eliminar",
+    "ordenes.aprobar"
   ],
   "enabled": true,
   "createdAt": {
     "$date": "2025-07-07T01:19:52.210Z"
   },
   "updatedAt": {
-    "$date": "2025-07-07T01:19:52.210Z"
+    "$date": "2025-09-25T05:39:15.741Z"
   },
   "__v": 0
 },

@@ -11,7 +11,7 @@ export default function PedidosCancelados() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
 
-const mostrarProductos = (pedido) => {
+  const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
   };
 
@@ -46,38 +46,38 @@ const mostrarProductos = (pedido) => {
   };
 
   const ModalProductosCotizacion = ({ visible, onClose, productos, cotizacionId }) => {
-  if (!visible) return null;
+    if (!visible) return null;
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-compact modal-lg">
-        <div className="modal-header">
-          <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
-          <button className="modal-close" onClick={onClose}>&times;</button>
-        </div>
-        <div className="modal-body">
-          {productos && productos.length > 0 ? (
-            <ul className="list-group">
-              {productos.map((prod, idx) => (
-                <li key={idx} className="list-group-item">
-                  <strong>{prod?.product?.name  || 'Producto desconocido'}</strong><br />
-                  Cantidad: {prod?.cantidad}<br />
-                  Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
-                  <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
-                </li> 
-              ))}
-            </ul>
-          ) : (
-            <p>No hay productos asociados a este pedido.</p>
-          )}
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+    return (
+      <div className="modal-overlay">
+        <div className="modal-compact modal-lg">
+          <div className="modal-header">
+            <h5 className="modal-title">Productos del Pedido #{cotizacionId?.slice(-5)}</h5>
+            <button className="modal-close" onClick={onClose}>&times;</button>
+          </div>
+          <div className="modal-body">
+            {productos && productos.length > 0 ? (
+              <ul className="list-group">
+                {productos.map((prod, idx) => (
+                  <li key={idx} className="list-group-item">
+                    <strong>{prod?.product?.name || 'Producto desconocido'}</strong><br />
+                    Cantidad: {prod?.cantidad}<br />
+                    Precio unitario: ${prod?.precioUnitario?.toFixed(2) || 0}<br />
+                    <em>Total: ${(prod?.cantidad * prod?.precioUnitario).toFixed(2)}</em>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay productos asociados a este pedido.</p>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-cancel" onClick={onClose}>Cerrar</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   return (
     <div>
@@ -112,43 +112,47 @@ const mostrarProductos = (pedido) => {
               </button>
             </div>
           </div>
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id="tabla_cancelados">
-                <thead><br />
-                  <tr>
-                    <th>No</th>
-                    <th># Pedido</th> {/* 👈 NUEVA COLUMNA */}
-                    <th>Producto</th>
-                    <th>F. Agendamiento</th>
-                    <th>F. Entrega</th>
-                    <th>Cliente</th>
-                    <th>Ciudad</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pedidos.map((pedido, index) => (
-                    <tr key={pedido._id}>
-                      <td>{index + 1}</td>
-                       <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
-                      <td>
-                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                          Productos
-                        </button>
-                      </td>
-                      <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
-                      <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
-                      <td>{pedido.cliente?.nombre}</td>
-                      <td>{pedido.cliente?.ciudad}</td>
-                      <td>{pedido.estado}</td>
+
+          <div className="max-width">
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id="tabla_cancelados">
+                  <thead><br />
+                    <tr>
+                      <th>No</th>
+                      <th># Pedido</th> {/* 👈 NUEVA COLUMNA */}
+                      <th>Producto</th>
+                      <th>F. Agendamiento</th>
+                      <th>F. Entrega</th>
+                      <th>Cliente</th>
+                      <th>Ciudad</th>
+                      <th>Estado</th>
                     </tr>
-                  ))}
-                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos cancelados disponibles</td></tr>}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {pedidos.map((pedido, index) => (
+                      <tr key={pedido._id}>
+                        <td>{index + 1}</td>
+                        <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
+                        <td>
+                          <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
+                            Productos
+                          </button>
+                        </td>
+                        <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
+                        <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
+                        <td>{pedido.cliente?.nombre}</td>
+                        <td>{pedido.cliente?.ciudad}</td>
+                        <td>{pedido.estado}</td>
+                      </tr>
+                    ))}
+                    {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos cancelados disponibles</td></tr>}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+
         </div>
         
       </div>

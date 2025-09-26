@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
-import EncabezadoModulo from '../components/EncabezadoModulo';
 import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { openModal } from '../funciones/animaciones';
 import EditarPedido from '../components/EditarPedido';
+import CotizacionPreview from '../components/CotizacionPreview';
 
 export default function Despachos() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
+  const [cotizacionPreview, setCotizacionPreview] = useState(null);
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
@@ -25,7 +25,7 @@ export default function Despachos() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -69,7 +69,7 @@ export default function Despachos() {
   const despacharPedido = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/estado`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ estado: 'despachado' })
@@ -103,7 +103,7 @@ export default function Despachos() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos/${id}/cancelar`, {
+      const res = await fetch(`http://localhost:5000/api/pedidos/${id}/cancelar`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       });
@@ -191,53 +191,82 @@ export default function Despachos() {
               </button>
             </div>
           </div>
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id="tabla_despachos">
-                <thead><br />
-                  <tr>
-                    <th>No</th>
-                    <th>Identificador de Pedido</th>
-                    <th>Producto</th>
-                    <th>F. Agendamiento</th>
-                    <th>F. Entrega</th>
-                    <th>Cliente</th>
-                    <th>Ciudad</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems.map((pedido, index) => (
-                    <tr key={pedido._id}>
-                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td>{pedido.numeroPedido || '---'}</td>
-                      <td>
-                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                          Productos
-                        </button>
-                      </td>
-                      <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
-                      <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
-                      <td>{pedido.cliente?.nombre}</td>
-                      <td>{pedido.cliente?.ciudad}</td>
-                      <td className="no-export">
-                        <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
-                          Despachar
-                        </button>
-                        &nbsp;
-                        <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
-                          Cancelar
-                        </button>
-                      </td>
+
+          <div className="max-width">
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id="tabla_despachos">
+                  <thead><br />
+                    <tr>
+                      <th>No</th>
+                      <th>Identificador de Pedido</th>
+                      <th>Cotización</th>
+                      <th>Producto</th>
+                      <th>F. Agendamiento</th>
+                      <th>F. Entrega</th>
+                      <th>Cliente</th>
+                      <th>Ciudad</th>
+                      <th>Acciones</th>
                     </tr>
-                  ))}
-                  {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos disponibles</td></tr>}
-                </tbody>
-              </table>
-              
-              <EditarPedido />
-            </div>
-            <div className="pagination">
+                  </thead>
+                  <tbody>
+                    {currentItems.map((pedido, index) => (
+                      <tr key={pedido._id}>
+                        <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                        <td>{pedido.numeroPedido || '---'}</td>
+                        <td>
+                          {pedido.cotizacionCodigo ? (
+                            <a
+                              style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
+                              onClick={async () => {
+                                try {
+                                  const token = localStorage.getItem('token');
+                                  const id = pedido.cotizacionReferenciada || pedido.cotizacionId;
+                                  if (!id) return;
+                                  const res = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                  });
+                                  if (!res.ok) throw new Error('No se pudo obtener la cotización');
+                                  const data = await res.json();
+                                  const cotizacionCompleta = data.data || data;
+                                  setCotizacionPreview(cotizacionCompleta);
+                                  setMostrarPreview(true);
+                                } catch (err) {
+                                  Swal.fire('Error', 'No se pudo cargar la cotización completa.', 'error');
+                                }
+                              }}
+                            >
+                              {pedido.cotizacionCodigo}
+                            </a>
+                          ) : '---'}
+                        </td>
+                        <td>
+                          <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
+                            Productos
+                          </button>
+                        </td>
+                        <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
+                        <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
+                        <td>{pedido.cliente?.nombre}</td>
+                        <td>{pedido.cliente?.ciudad}</td>
+                        <td className="no-export">
+                          <button className="btn btn-danger btn-sm" onClick={() => despacharPedido(pedido._id)}>
+                            Despachar
+                          </button>
+                          &nbsp;
+                          <button className="btn btn-danger btn-sm" onClick={() => cancelarPedido(pedido._id)}>
+                            Cancelar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos disponibles</td></tr>}
+                  </tbody>
+                </table>
+
+                <EditarPedido />
+              </div>
+              <div className="pagination">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i + 1}
@@ -248,7 +277,10 @@ export default function Despachos() {
                   </button>
                 ))}
               </div>
+            </div>
           </div>
+
+
         </div>
       </div>
       <ModalProductosCotizacion
@@ -257,11 +289,17 @@ export default function Despachos() {
         productos={pedidoSeleccionado?.productos || []}
         cotizacionId={pedidoSeleccionado?._id}
       />
+      {mostrarPreview && cotizacionPreview && (
+        <CotizacionPreview
+          datos={cotizacionPreview}
+          onClose={() => { setMostrarPreview(false); setCotizacionPreview(null); }}
+        />
+      )}
       <div className="custom-footer">
-          <p className="custom-footer-text">
-            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-          </p>
-        </div>
+        <p className="custom-footer-text">
+          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+        </p>
+      </div>
     </div>
   );
 }

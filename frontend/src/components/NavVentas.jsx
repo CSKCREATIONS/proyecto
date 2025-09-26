@@ -42,12 +42,14 @@ export default function NavVentas() {
   const allLinks = useMemo(() => [
     { path: "/RegistrarCotizacion", label: "Registrar cotización", visible: puedeRegistrarCotizacion },
     { path: "/ListaDeCotizaciones", label: "Lista de cotizaciones", visible: puedeVerCotizaciones },
-    { path: "/PedidosAgendados", label: "Pedidos", visible: puedeVerVentasAgendadas },
-    { path: "/PedidosDespachados", label: "Pedidos despachados", visible: puedeVerPedidosDespachados },
+    { path: "/PedidosAgendados", label: "Pedidos agendados", visible: puedeVerVentasAgendadas },
+
     { path: "/PedidosEntregados", label: "Pedidos Entregados", visible: puedeVerPedidosEntregados },
+
     { path: "/PedidosCancelados", label: "Pedidos cancelados", visible: puedeVerPedidosCancelados },
+
     { path: "/PedidosDevueltos", label: "Pedidos devueltos", visible: puedeVerPedidosDevueltos },
-    { path: "/Ventas", label: "Lista de ventas", visible: puedeVerListaDeVentas },
+    
     { path: "/ListaDeClientes", label: "Lista de clientes", visible: puedeVerListaDeClientes },
     { path: "/ProspectosDeClientes", label: "Prospectos de clientes", visible: puedeVerProspectos },
     { path: "/ReportessVentas", label: "Reportes", visible: puedeVerReportesVentas }
@@ -55,7 +57,6 @@ export default function NavVentas() {
     puedeRegistrarCotizacion,
     puedeVerCotizaciones,
     puedeVerVentasAgendadas,
-    puedeVerPedidosDespachados,
     puedeVerPedidosEntregados,
     puedeVerPedidosCancelados,
     puedeVerPedidosDevueltos,

@@ -1,186 +1,183 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './FormatoCotizacion.css';
 
-const Cotizacion = () => {
-  // Estados del formulario
-  const [empresa, setEmpresa] = useState('');
-  const [para, setPara] = useState('');
-  const [paraError, setParaError] = useState(''); // Nuevo estado para error del campo Para
-  const [nit, setNit] = useState('');
-  const [cantidad, setCantidad] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [fechaError, setFechaError] = useState('');
-  const [fechaActual, setFechaActual] = useState('');
+export default function FormatoCotizacion({ datos, onClose }) {
+  const navigate = useNavigate();
+  // Obtener usuario logueado
+  const usuario = JSON.parse(localStorage.getItem('user') || '{}');
+  const [showEnviarModal, setShowEnviarModal] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [asunto, setAsunto] = useState('');
+  const [mensaje, setMensaje] = useState('');
 
-  // Función para bloquear caracteres no permitidos en el NIT
-  const handleNitKeyPress = (e) => {
-    const allowedChars = /[0-9.-]/;
-    if (!allowedChars.test(e.key)) {
-      e.preventDefault(); // Cancela la entrada si no es número, guión o punto
-    }
+
+  // Datos de empresa (puedes cambiar por los reales)
+  const empresa = {
+    nombre: 'JLA GLOBAL COMPANY S.A.S.',
+    direccion: 'Cra 123 #45-67, Bogotá',
   };
 
-  // Obtener fecha actual al cargar el componente
-  useEffect(() => {
-    const hoy = new Date();
-    const fechaFormateada = hoy.toISOString().split('T')[0];
-    setFechaActual(fechaFormateada);
-    setFecha(fechaFormateada); // Establecer fecha actual como valor inicial
-  }, []);
+  // Normalize datos (accept { data: cot } or cot)
+  const cot = datos && datos.data ? datos.data : datos || {};
 
-  // Validar fecha al cambiar
-  const handleFechaChange = (e) => {
-    const selectedDate = e.target.value;
-    setFecha(selectedDate);
-    
-    if (selectedDate < fechaActual) {
-      setFechaError('No se puede seleccionar una fecha pasada');
-    } else {
-      setFechaError('');
-    }
-  };
+  // Obtener lista de productos para mostrar el nombre
+  const productosLista = cot.productosLista || cot.productos || [];
 
-  // Validar campo Para que contenga @
-  const validatePara = (value) => {
-    if (!value.includes('@')) {
-      setParaError('El campo debe terminar en: @exaple.com');
-      return false;
-    }
-    setParaError('');
-    return true;
-  };
 
-  // Manejar cambio en campo Para
-  const handleParaChange = (e) => {
-    const value = e.target.value;
-    setPara(value);
-    validatePara(value);
-  };
-
-  // Manejar envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Validación del campo Para
-    const isParaValid = validatePara(para);
-    
-    // Validación final de fecha
-    if (fecha < fechaActual) {
-      setFechaError('No se puede enviar una cotización con fecha pasada');
-      return;
-    }
-    
-    // Si hay errores, no enviar 
-    if (fechaError || !isParaValid) {
-      return;
-    }
-
-    alert(`Cotización enviada para: ${para}\nFecha: ${formatFechaDisplay(fecha)}`);
-    // Aquí iría la lógica para enviar los datos
-  };
-
-  // Función para formatear la fecha visualmente (DD/MM/AAAA)
-  const formatFechaDisplay = (dateString) => {
-    if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
-    return `${day}/${month}/${year}`;
-  };
-
-  // Función para imprimir
-  const handlePrint = () => {
-    window.print();
-  };
+  console.log("productosLista:", productosLista);
 
   return (
-    <div className="cotizacion-container">
-      <form onSubmit={handleSubmit}>
-        <div className="cotizacion-header">
-          <h1>Cotización N.1</h1>
-          <div className="action-buttons">
-            <button type="button" className="edit-btn">Editar</button>
-            <button type="button" className="cancel-btn">Cancelar</button>
-            <button type="submit" className="send-btn">Enviar</button>
-            <button type="button" onClick={handlePrint} className="print-btn">Imprimir</button>
+
+    <div className="modal-cotizacion-overlay">
+      <div className="modal-cotizacion">
+        <button className="close-modal" onClick={onClose}>×</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span className='modal-title'>{datos.codigo ? datos.codigo : ''}</span>
+          <div className="botones-cotizacion" style={{ display: 'flex', gap: '18px', justifyContent: 'center', marginBottom: '1rem' }}>
+            <button className="btn-cotizacion moderno" title="Editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>
+              <i className="fa-solid fa-pen" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+              Editar
+            </button>
+            <button className="btn-cotizacion moderno" title="Remisionar" onClick={() => { }}>
+              <i className="fa-solid fa-file-invoice" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+              Remisionar
+            </button>
+            <button className="btn-cotizacion moderno" title="Enviar" onClick={() => setShowEnviarModal(true)}>
+              <i className="fa-solid fa-envelope" style={{ fontSize: '1rem', color: '#EA4335', marginRight: '6px' }}></i>
+              Enviar
+            </button>
+            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => window.print()}>
+              <i className="fa-solid fa-print" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+            </button>
           </div>
         </div>
 
-        <div className="cotizacion-body">
-          <div className="company-info">
-            <div className="company-name">
-              <label htmlFor="empresa">Nombre empresa</label>
-              <input
-                type="text"
-                id="empresa"
-                value={empresa}
-                onChange={(e) => setEmpresa(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="company-logo">
-              <label>JLA</label>
-              <div className="logo-placeholder">
-                {empresa ? empresa.charAt(0).toUpperCase() : 'Logo'}
-              </div>
-            </div>
-          </div>
-
-          <div className="recipient-info">
-            <div className="info-row">
-              <label htmlFor="para">Para</label>
-              <input
-                type="text"
-                id="para"
-                value={para}
-                onChange={handleParaChange}  // llama la función para que nesesite el @ obligatorio
-                required
-              />
-              {paraError && <div className="error-message">{paraError}</div>}  {/* Mensaje de error */}
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="nit">NIT</label>
-              <input
-                type="text"
-                id="nit"
-                value={nit}
-                onChange={(e) => setNit(e.target.value)}
-                onKeyPress={handleNitKeyPress} // se utiliza para que la funcion no deje entrar otros caracteres que no sean "0-9.-"
-                required
-              />
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="cantidad">Cantidad</label>
-              <input
-                type="number"
-                id="cantidad"
-                value={cantidad}
-                onChange={(e) => setCantidad(e.target.value)}
-                min="1"
-                required
-              />
-            </div>
-
-            <div className="info-row">
-              <label htmlFor="fecha">Fecha</label>
-              <input
-                type="date"
-                id="fecha"
-                value={fecha}
-                onChange={handleFechaChange}
-                min={fechaActual}
-                required
-              />
-              {fechaError && <div className="error-message">{fechaError}</div>}
-              <div className="fecha-display">
-                {formatFechaDisplay(fecha)}
-              </div>
+        {/* Contenido PDF debajo */}
+        <div
+          className="pdf-cotizacion"
+          id="pdf-cotizacion-block"
+          style={{ display: 'flex', flexDirection: 'column', background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
+          onCopy={e => e.preventDefault()}
+        >
+          <div className="cotizacion-encabezado">
+            <h2>Cotizacion</h2>
+            <div className="cot-fecha">
+              <p style={{ fontSize: '0.7rem' }}>{cot.codigo || ''}</p>
+              <p style={{ fontSize: '0.7rem' }}>{
+                (function() {
+                  const f = cot.fecha ? new Date(cot.fecha) : new Date();
+                  const yyyy = f.getFullYear();
+                  const mm = String(f.getMonth() + 1).padStart(2, '0');
+                  const dd = String(f.getDate()).padStart(2, '0');
+                  return `${yyyy}-${mm}-${dd}`;
+                })()
+              }</p>
             </div>
           </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
+            <div>
+              <p>{cot.cliente?.nombre || ''}</p>
+              <p>{cot.cliente?.direccion || ''} - {cot.cliente?.ciudad || ''}</p>
+              <p> {cot.cliente?.telefono || ''}</p>
+              <p> {cot.cliente?.correo || ''}</p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <p>{cot.empresa?.nombre || empresa.nombre}</p>
+              <p>{cot.empresa?.direccion || empresa.direccion}</p>
+              <p>
+                {usuario.firstName || ''} {usuario.surname || ''}
+              </p>
+            </div>
+          </div>
+          <hr />
+          <div className="descripcion-cotizacion">
+            <h4>Descripción cotización</h4>
+            <div dangerouslySetInnerHTML={{ __html: cot.descripcion }} />
+          </div>
+          <hr />
+          <table className="tabla-cotizacion">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Valor Unitario</th>
+                <th>% Descuento</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(cot.productos || []).map((p, idx) => (
+                <tr key={idx}>
+                  <td>{p.nombre || 'Desconocido'}</td>
+                  <td>{p.descripcion}</td>
+                  <td>{p.cantidad}</td>
+                  <td>{p.valorUnitario}</td>
+                  <td>{p.descuento}</td>
+                  <td>{
+                    (() => {
+                      const cantidad = parseFloat(p.cantidad) || 0;
+                      const valorUnitario = parseFloat(p.valorUnitario) || 0;
+                      const descuento = parseFloat(p.descuento) || 0;
+                      const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
+                      return subtotal.toFixed(2);
+                    })()
+                  }</td>
+                </tr>
+              ))}
+              {/* Fila de total */}
+              {(cot.productos && cot.productos.length > 0) && (
+                <tr>
+                  <td colSpan={4}></td>
+                  <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
+                  <td style={{ fontWeight: 'bold' }}>
+                    {(cot.productos || [])
+                      .reduce((acc, p) => {
+                        const cantidad = parseFloat(p.cantidad) || 0;
+                        const valorUnitario = parseFloat(p.valorUnitario) || 0;
+                        const descuento = parseFloat(p.descuento) || 0;
+                        const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
+                        return acc + subtotal;
+                      }, 0)
+                      .toFixed(2)}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <hr />
+          <div className="condiciones-pago">
+            <h4>Condiciones de pago</h4>
+            <div dangerouslySetInnerHTML={{ __html: cot.condicionesPago }} />
+          </div>
+          <br />
+          <div>Cotizacion valida por 15 dias</div>
         </div>
-      </form>
+
+      </div>
+
+      {showEnviarModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+            <div className="modal-cotizacion" style={{ maxWidth: 400 }}>
+              <button className="close-modal" onClick={() => setShowEnviarModal(false)}>×</button>
+              <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>Enviar cotización</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Correo destinatario:</label>
+                <input type="email" className="cuadroTexto" value={correo} onChange={e => setCorreo(e.target.value)} style={{ width: '100%' }} />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Asunto:</label>
+                <input type="text" className="cuadroTexto" value={asunto} onChange={e => setAsunto(e.target.value)} style={{ width: '100%' }} />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label>Mensaje:</label>
+                <textarea className="cuadroTexto" value={mensaje} onChange={e => setMensaje(e.target.value)} style={{ width: '100%', minHeight: '80px' }} />
+              </div>
+              <button className="btn-enviar-modal" style={{ width: '100%' }} onClick={() => { }}>Enviar</button>
+            </div>
+          </div>
+        )}
     </div>
   );
-};
-
-export default Cotizacion;
+}

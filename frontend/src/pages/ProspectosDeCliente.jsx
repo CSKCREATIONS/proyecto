@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import React, { useState, useEffect } from 'react';
+import CotizacionPreview from '../components/CotizacionPreview';
 
 /**** Funcion para exportar a pdf ***/
 const exportarPDF = () => {
@@ -16,8 +17,8 @@ const exportarPDF = () => {
     const pdf = new jsPDF('p', 'mm', 'a4');
 
     const imgWidth = 190;
-    const pageHeight = 297; 
-    const imgHeight = (canvas.height * imgWidth) / canvas.width; 
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     let heightLeft = imgHeight;
     let position = 10;
@@ -50,6 +51,10 @@ const exportToExcel = () => {
 
 export default function ListaDeClientes() {
   const [prospectos, setProspectos] = useState([]);
+  const [cotizacionesMap, setCotizacionesMap] = useState({});
+  const [mostrarPreview, setMostrarPreview] = useState(false);
+  const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
+  const [expandedEmails, setExpandedEmails] = useState({});
   const [filtroTexto, setFiltroTexto] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const registrosPorPagina = 10;
@@ -59,11 +64,48 @@ export default function ListaDeClientes() {
   const fetchProspectos = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/clientes?esCliente=false', {
-        headers: { Authorization: `Bearer ${token}` }
+      // avoid cached 304 responses by forcing no-store and adding a cache-buster
+      const url = `http://localhost:5000/api/clientes?esCliente=false&t=${Date.now()}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+        method: 'GET'
       });
+
+      if (!res.ok) {
+        console.error('Error fetching prospectos:', res.status, res.statusText);
+        setProspectos([]);
+        return;
+      }
+
       const data = await res.json();
-      setProspectos(data);
+      // controller returns array of clientes
+      const listaProspectos = Array.isArray(data) ? data : (data.data || []);
+      setProspectos(listaProspectos);
+
+      // Also fetch cotizaciones once and build a map by client email
+      try {
+        const cotRes = await fetch(`http://localhost:5000/api/cotizaciones?t=${Date.now()}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        if (cotRes.ok) {
+          const cotData = await cotRes.json();
+          const cotList = Array.isArray(cotData) ? cotData : (cotData.data || []);
+          const map = {};
+          cotList.forEach(cot => {
+            const email = (cot.cliente?.correo || '').toLowerCase();
+            if (!email) return;
+            if (!map[email]) map[email] = [];
+            if (cot.codigo) map[email].push({ codigo: cot.codigo, id: cot._id });
+          });
+          setCotizacionesMap(map);
+        } else {
+          console.warn('No se pudieron cargar cotizaciones para el listado de prospectos');
+        }
+      } catch (err) {
+        console.error('Error al cargar cotizaciones:', err);
+      }
     } catch (err) {
       console.error('Error al cargar prospectos', err);
     }
@@ -132,9 +174,9 @@ export default function ListaDeClientes() {
               type="text"
               placeholder="Buscar cliente..."
               value={filtroTexto}
-              onChange={(e) => { 
-                setFiltroTexto(e.target.value); 
-                setPaginaActual(1); 
+              onChange={(e) => {
+                setFiltroTexto(e.target.value);
+                setPaginaActual(1);
               }}
               style={{
                 padding: "8px 12px",
@@ -145,37 +187,80 @@ export default function ListaDeClientes() {
             />
           </div>
 
-          {/* TABLA */}
-          <div className="container-tabla">
-            <div className="table-container">
-              <table id='tabla_prospectos'>
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>Ciudad</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {prospectosPaginados.length === 0 ? (
+          <div className="max-width">
+            {/* TABLA */}
+            <div className="container-tabla">
+              <div className="table-container">
+                <table id='tabla_prospectos'>
+                  <thead>
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'center' }}>No hay prospectos registrados.</td>
+                      <th>Cotización</th>
+                      <th>Cliente</th>
+                      <th>Ciudad</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
                     </tr>
-                  ) : (
-                    prospectosPaginados.map((cliente, index) => (
-                      <tr key={index}>
-                        <td>{cliente.nombre}</td>
-                        <td>{cliente.ciudad}</td>
-                        <td>{cliente.telefono}</td>
-                        <td>{cliente.correo}</td>
+                  </thead>
+                  <tbody>
+                    {prospectosPaginados.length === 0 ? (
+                      <tr>
+                        <td colSpan="4" style={{ textAlign: 'center' }}>No hay prospectos registrados.</td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      prospectosPaginados.map((cliente, index) => (
+                        <tr key={index}>
+                          <td style={{ whiteSpace: 'nowrap' }}>
+                            {(() => {
+                              const emailKey = (cliente.correo || '').toLowerCase();
+                              const list = cotizacionesMap[emailKey] || [];
+                              const isExpanded = !!expandedEmails[emailKey];
+                              const toShow = isExpanded ? list : list.slice(0, 3);
+
+                              return (
+                                <div>
+                                  {toShow.map((c) => (
+                                    <div key={c.id} style={{ display: 'block', marginBottom: 6 }}>
+                                      <a href="#" onClick={async (e) => {
+                                        e.preventDefault();
+                                        try {
+                                          const token = localStorage.getItem('token');
+                                          const res = await fetch(`http://localhost:5000/api/cotizaciones/${c.id}`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+                                          if (res.ok) {
+                                            const data = await res.json();
+                                            setCotizacionSeleccionada(data);
+                                            setMostrarPreview(true);
+                                          } else {
+                                            console.warn('No se pudo cargar la cotización');
+                                          }
+                                        } catch (err) { console.error(err); }
+                                      }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>{c.codigo}</a>
+                                    </div>
+                                  ))}
+
+                                  {list.length > 3 && (
+                                    <div>
+                                      <a href="#" onClick={(e) => { e.preventDefault(); setExpandedEmails(prev => ({ ...prev, [emailKey]: !prev[emailKey] })); }} style={{ color: '#1f6feb', cursor: 'pointer', textDecoration: 'underline' }}>
+                                        {isExpanded ? 'mostrar menos' : '...'}
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()}
+                          </td>
+                          <td>{cliente.nombre}</td>
+                          <td>{cliente.ciudad}</td>
+                          <td>{cliente.telefono}</td>
+                          <td>{cliente.correo}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+
 
           {/* PAGINACIÓN */}
           <div style={{ marginTop: "15px", display: "flex", justifyContent: "center", gap: "8px" }}>
@@ -197,13 +282,15 @@ export default function ListaDeClientes() {
             ))}
           </div>
         </div>
-        
+        {mostrarPreview && cotizacionSeleccionada && (
+          <CotizacionPreview datos={cotizacionSeleccionada} onClose={() => { setMostrarPreview(false); setCotizacionSeleccionada(null); }} />
+        )}
       </div>
       <div className="custom-footer">
-          <p className="custom-footer-text">
-            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
-          </p>
-        </div>
+        <p className="custom-footer-text">
+          © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+        </p>
+      </div>
     </div>
   )
 }

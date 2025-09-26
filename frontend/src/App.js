@@ -26,8 +26,6 @@ import ReportessVentas from './pages/ReportessVentas';
 import PrivateRoute from './routes/PrivateRoute';
 import PermisoRoute from './routes/PermisoRoute';
 import PedidosDevueltos from './pages/PedidosDevueltos';
-import PedidosDespachados from './pages/PedidosDespachados';
-import Ventas from './pages/Ventas';
 import ReporteProveedores from './pages/ReporteProveedores';
 import ReporteProductos from './pages/ReporteProductos';
 import OrdenCompra from './pages/OrdenCompra';
@@ -224,16 +222,6 @@ const App = () => {
             }
           />
 
-          <Route
-            path='/PedidosDespachados'
-            element={
-              <PrivateRoute>
-                <PermisoRoute permiso="pedidosDespachados.ver">
-                  <PedidosDespachados />
-                </PermisoRoute>
-              </PrivateRoute>
-            }
-          />
 
           <Route
             path='/PedidosEntregados'
@@ -268,16 +256,6 @@ const App = () => {
             }
           />
 
-          <Route
-            path='/Ventas'
-            element={
-              <PrivateRoute>
-                <PermisoRoute permiso="listaDeVentas.ver">
-                  <Ventas />
-                </PermisoRoute>
-              </PrivateRoute>
-            }
-          />
 
           <Route
             path='/ListaDeClientes'
