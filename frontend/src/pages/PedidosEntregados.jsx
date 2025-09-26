@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
+import RemisionPreview from '../components/RemisionPreview';
 import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -12,9 +13,75 @@ import '../App.css'; // Asegúrate que incluya los estilos de modal que ya usas
 export default function PedidosEntregados() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [mostrarRemision, setMostrarRemision] = useState(false);
+  const [datosRemision, setDatosRemision] = useState(null);
 
   const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
+  };
+
+  const generarRemision = async (pedido) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Primero obtener los datos completos del pedido con productos poblados
+      const resPedido = await fetch(`http://localhost:5000/api/pedidos/${pedido._id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!resPedido.ok) {
+        throw new Error('No se pudo obtener el pedido completo');
+      }
+      
+      const pedidoCompleto = await resPedido.json();
+      console.log('Datos del pedido para remisión:', pedidoCompleto); // Debug para verificar datos
+      
+      // Intentar obtener la cotización si existe referencia
+      let cotizacionData = null;
+      if (pedidoCompleto.cotizacionReferenciada || pedidoCompleto.cotizacionId) {
+        try {
+          const id = pedidoCompleto.cotizacionReferenciada || pedidoCompleto.cotizacionId;
+          const resCotizacion = await fetch(`http://localhost:5000/api/cotizaciones/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (resCotizacion.ok) {
+            const data = await resCotizacion.json();
+            cotizacionData = data.data || data;
+          }
+        } catch (err) {
+          // No se pudo obtener cotización, continuar solo con datos del pedido
+        }
+      }
+      
+      // Crear objeto de remisión
+      const datosRemision = {
+        // Datos básicos del pedido
+        numeroPedido: pedidoCompleto.numeroPedido,
+        fechaEntrega: pedidoCompleto.fechaEntrega,
+        fechaAgendamiento: pedidoCompleto.createdAt,
+        estado: pedidoCompleto.estado,
+        cliente: pedidoCompleto.cliente,
+        productos: pedidoCompleto.productos || [],
+        observacion: pedidoCompleto.observacion || 'Entrega de productos según pedido',
+        numeroRemision: `REM-${pedidoCompleto.numeroPedido?.slice(-6) || Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        
+        // Si hay cotización, agregar datos adicionales
+        ...(cotizacionData && {
+          numeroCotizacion: cotizacionData.numeroCotizacion || cotizacionData.numero,
+          descripcion: cotizacionData.descripcion,
+          condicionesPago: cotizacionData.condicionesPago,
+          empresa: cotizacionData.empresa
+        })
+      };
+      
+      setDatosRemision(datosRemision);
+      setMostrarRemision(true);
+      
+    } catch (error) {
+      console.error('Error al generar remisión:', error);
+      Swal.fire('Error', 'No se pudo generar la remisión: ' + error.message, 'error');
+    }
   };
 
   useEffect(() => {
@@ -182,11 +249,11 @@ export default function PedidosEntregados() {
                   <tr>
                     <th>No</th>
                     <th># Pedido</th>
-                    <th className="no-export">Productos</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
                     <th>Cliente</th>
                     <th>Ciudad</th>
+                    <th>Total</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -195,24 +262,44 @@ export default function PedidosEntregados() {
                   {pedidos.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{index + 1}</td>
-                      <td>{pedido.numeroPedido || `PED-${index + 1}`}</td>
-                      <td className="no-export">
-                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                          Productos
-                        </button>
+                      <td>
+                        <a
+                          style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline', fontWeight: 'bold' }}
+                          onClick={() => generarRemision(pedido)}
+                          title="Clic para ver remisión"
+                        >
+                          {pedido.numeroPedido || `PED-${index + 1}`}
+                        </a>
                       </td>
                       <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
                       <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                       <td>{pedido.cliente?.nombre}</td>
                       <td>{pedido.cliente?.ciudad}</td>
-                      <td>{pedido.estado}</td>
                       <td>
+                        <strong style={{ color: '#28a745', fontSize: '14px' }}>
+                          ${(pedido.total || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </strong>
+                      </td>
+                      <td>
+                        <span style={{
+                          backgroundColor: '#d4edda',
+                          color: '#155724',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}>
+                          {pedido.estado.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="no-export">
                         <button
-                          className="btnTransparente"
+                          className="btn btn-warning btn-sm"
                           onClick={() => handleDevolver(pedido._id)}
                           title="Devolver pedido"
                         >
-                          <i className="fa-solid fa-rotate-left" style={{ color: '#007bff' }}></i>
+                          <i className="fa-solid fa-rotate-left" style={{ marginRight: '5px' }}></i>
+                          Devolver
                         </button>
                       </td>
                     </tr>
@@ -238,6 +325,13 @@ export default function PedidosEntregados() {
         productos={pedidoSeleccionado?.productos || []}
         cotizacionId={pedidoSeleccionado?._id}
       />
+      
+      {mostrarRemision && datosRemision && (
+        <RemisionPreview
+          datos={datosRemision}
+          onClose={() => { setMostrarRemision(false); setDatosRemision(null); }}
+        />
+      )}
     </div>
   );
 }

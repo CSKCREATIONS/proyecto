@@ -21,6 +21,447 @@ h3 {
 }
 
 
+/**Orden de compra*/
+/* Estilos para modales más realistas */
+.modal-realista {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: none;
+  overflow: hidden;
+}
+
+.modal-header-realista {
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+  color: white;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header-realista h5 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.modal-close-realista {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.modal-close-realista:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilos para formularios profesionales */
+.form-group-profesional {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-profesional {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input-profesional {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+  background: #fafafa;
+}
+
+.form-input-profesional:focus {
+  outline: none;
+  border-color: #3498db;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Estilos para tablas mejoradas */
+.table-profesional {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.table-profesional th {
+  background: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-profesional td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.table-profesional tr:hover {
+  background: #f8f9fa;
+}
+
+/* Badges profesionales */
+.badge-profesional {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-pendiente {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-completada {
+  background: #d1edff;
+  color: #004085;
+}
+
+/* Botones mejorados */
+.btn-profesional {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary-profesional {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn-primary-profesional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-success-profesional {
+  background: linear-gradient(135deg, #27ae60, #219a52);
+  color: white;
+}
+
+.btn-success-profesional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+}
+
+.btn-danger-profesional {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.btn-danger-profesional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* Grid para formularios */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Secciones del modal */
+.modal-section {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #3498db;
+}
+
+.modal-section h6 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Totales destacados */
+.totales-destacados {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.totales-destacados strong {
+  font-size: 1.1rem;
+}
+
+
+/* Estilos específicos para el modal de editar */
+.highlighted-row {
+  background: linear-gradient(135deg, #fffbf0, #fff3cd) !important;
+  border-left: 4px solid #f39c12 !important;
+}
+
+.btn-warning-profesional {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.btn-warning-profesional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+}
+
+.btn-warning-profesional:disabled {
+  background: #bdc3c7;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-danger-profesional:disabled {
+  background: #bdc3c7;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Estados de carga */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .modal-realista {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+}
+
+/**/
+/* Estilos para la orden de compra profesional */
+.badge-profesional {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.badge-completada {
+  background: #d1edff;
+  color: #004085;
+  border: 1px solid #a3d5ff;
+}
+
+/* Mejoras para la tabla profesional */
+.table-profesional {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.table-profesional th {
+  background: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dee2e6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+}
+
+.table-profesional td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.table-profesional tr:hover {
+  background: #f8f9fa;
+}
+
+/* Estilos de impresión */
+@media print {
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+  }
+
+  .modal-realista {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .modal-close-realista,
+  .modal-footer {
+    display: none !important;
+    cursor: move;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-realista {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+.modal-md {
+  max-width: 700px;
+  width: 90%;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+/* Estilos para el scroll personalizado */
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.table-responsive {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Mantener el header fijo durante el scroll */
+.table-profesional thead th {
+  position: sticky;
+  top: 0;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Mejorar el botón de cerrar */
+.modal-close-realista:hover {
+  background: #e74c3c !important;
+  color: white !important;
+  border-radius: 60%;
+}
+
+
+
+
+
+.modal-confirmacion {
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.btn-profesional {
+  transition: all 0.3s ease;
+}
+
+.btn-profesional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary-profesional:hover {
+  background: linear-gradient(135deg, #219653, #27ae60) !important;
+}
+
 /**********Estilos para el componente Fijo (header y menu lateral)*************/
 /***** CSS COMPLETO AJUSTADO *****
   Cambios:
@@ -31,7 +472,8 @@ h3 {
 
 /* Header */
 header {
-  background-color: #2c3e50; /* azul principal */
+  background-color: #2c3e50;
+  /* azul principal */
   display: flex;
   justify-content: space-between;
   padding: 1% 1rem;
@@ -109,24 +551,53 @@ header {
   box-shadow: 0 6px 14px rgba(230, 57, 70, 0.4);
 }
 
+
+
+.logout-container {
+  margin-top: auto; /* lo manda al fondo */
+  padding: 20px; /* espacio alrededor */
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #1d4ed8;
+}
 /***** Menu lateral (ajustado) *****/
 .menu {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* alineado arriba */
-  align-items: flex-start;     /* alineado a la izquierda */
-  text-align: left;            /* texto alineado a la izquierda */
-  background-color: #2c3e50;   /* azul principal */
+  justify-content: flex-start;
+  /* alineado arriba */
+  align-items: flex-start;
+  /* alineado a la izquierda */
+  text-align: left;
+  /* texto alineado a la izquierda */
+  background-color: #2c3e50;
+  /* azul principal */
   position: fixed;
   top: 0;
   width: 250px;
   height: 100vh;
-  left: -250px;                /* oculto por defecto */
+  left: -250px;
+  /* oculto por defecto */
   transition: left .3s;
   overflow-y: auto;
-  scrollbar-width: none;       /* firefox */
-  -ms-overflow-style: none;    /* IE 10+ */
+  scrollbar-width: none;
+  /* firefox */
+  -ms-overflow-style: none;
+  /* IE 10+ */
   padding-bottom: 2.5rem;
 }
 
@@ -162,13 +633,15 @@ li {
   padding: 5vh 15px 2vh;
   display: flex;
   align-items: center;
-  border-bottom: none; /* quitar línea */
+  border-bottom: none;
+  /* quitar línea */
 }
 
 /* Hover para usuario y items del menu */
 .preview-usuario:hover,
 .menu li:hover {
-  background-color: #34495e; /* tono más claro de azul para hover */
+  background-color: #34495e;
+  /* tono más claro de azul para hover */
   cursor: pointer;
 }
 
@@ -177,15 +650,33 @@ li {
   text-align: left;
 }
 
+.modulos-menu {
+  padding-left: 10px;   /* desplaza todo el bloque a la derecha */
+}
+
+.modulos-menu nav li {
+  list-style: none;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modulos-menu nav li:hover {
+  color: #ffffff;
+}
+
+
 /* Contenedor modulos: quitar borders/divisores */
 .modulos-menu nav {
-  border-bottom: none; /* quitar línea separadora */
+  border-bottom: none;
+  /* quitar línea separadora */
   width: 100%;
 }
 
 /* Items principales del menú */
 .menu .modulos-menu nav li {
-  padding: 12px 30px;   /* más espacio a la izquierda */
+  padding: 12px 30px;
+  /* más espacio a la izquierda */
   color: #ecf0f1;
   width: 100%;
   text-align: left;
@@ -193,7 +684,8 @@ li {
   border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 10px; /* espacio entre icono y texto */
+  gap: 10px;
+  /* espacio entre icono y texto */
   font-size: 15px;
   transition: background 0.3s;
 }
@@ -206,12 +698,14 @@ li {
 /* Íconos y texto del menú */
 .menu .modulos-menu nav li i {
   font-size: 16px;
-  color: #bdc3c7; /* gris clarito */
+  color: #bdc3c7;
+  /* gris clarito */
 }
 
 .menu .modulos-menu nav li span {
   flex: 1;
-  color: #fff; /* texto blanco */
+  color: #fff;
+  /* texto blanco */
 }
 
 
@@ -220,37 +714,70 @@ li {
 /* Botón cerrar sesión (abajo) */
 .logout {
   width: 100%;
-  border-top: none; /* quitar línea superior */
   display: flex;
   justify-content: center;
   padding: 1rem 0;
+  margin-top: auto;
+  /* lo manda al final */
 }
 
 .logout-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #FF4C4C, #E63946); /* degradado rojo */
-  padding: 12px 20px;
-  border-radius: 10px;
-  margin: 25px 20px;  /* espacio para que no quede pegado */
+  width: 80%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  /* azul degradado */
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .logout-btn:hover {
-  background: linear-gradient(135deg, #39b5e6, #D62828);
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  /* azul más intenso */
   transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(230, 57, 70, 0.4);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
+
 
 /* Mostrar submenú cuando tenga la clase "visible" */
 .dropdown.visible {
   display: block;
 }
+
+.custom-footer {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: auto;
+  /* para que quede al final si usas layout flex */
+}
+
+.custom-footer-text {
+  font-size: 0.7rem;
+  /* letra pequeña */
+  color: #9ca3af;
+  /* gris suave */
+  margin: 0;
+}
+
+.custom-highlight {
+  color: #54a8c2;
+  /* amarillo */
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.custom-highlight:hover {
+  color: #54a8c2;
+  filter: brightness(1.2);
+}
+
 
 /* Usuario pequeño en header */
 .user {
@@ -278,10 +805,12 @@ li {
   .menu {
     width: 220px;
   }
+
   .close-menu {
     display: block;
     left: 13.5rem;
   }
+
   .fijo .izquierda #empresa-nombre {
     font-size: 1.25rem;
   }
@@ -294,15 +823,18 @@ li {
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
-  color: #9cc5c3;   /* gris verdoso para diferenciarlo */
+  color: #9cc5c3;
+  /* gris verdoso para diferenciarlo */
   letter-spacing: 1px;
   cursor: default;
-  background-color: #243342; /* tono distinto al menú */
+  background-color: #243342;
+  /* tono distinto al menú */
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .menu-title:hover {
-  background-color: #2c3e50; /* no cambia al hover */
+  background-color: #2c3e50;
+  /* no cambia al hover */
 }
 
 /*********Estilos para el Login **********/
@@ -320,9 +852,17 @@ li {
 }
 
 @keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Animación de entrada */
@@ -331,6 +871,7 @@ li {
     opacity: 0;
     transform: translateY(40px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -355,7 +896,8 @@ li {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   font-weight: bold;
-  color: #001f54; /* azul rey */
+  color: #001f54;
+  /* azul rey */
   text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -382,7 +924,8 @@ li {
 
 .login-input-container input:focus {
   border: 1px solid #004aad;
-  box-shadow: 0 0 8px #87cefa; /* azul clarito */
+  box-shadow: 0 0 8px #87cefa;
+  /* azul clarito */
   background: #fff;
 }
 
@@ -522,8 +1065,9 @@ li {
   scrollbar-width: thin;
   margin: 0 auto;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  background-color: transparent; /* ya no fuerza fondo blanco */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: transparent;
+  /* ya no fuerza fondo blanco */
 }
 
 /* Tabla */
@@ -531,7 +1075,8 @@ li {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 600px; /* evita que se achique demasiado */
+  min-width: 600px;
+  /* evita que se achique demasiado */
 }
 
 /* Encabezado */
@@ -547,8 +1092,13 @@ th {
   white-space: nowrap;
 }
 
-th:first-child { border-top-left-radius: 10px; }
-th:last-child { border-top-right-radius: 10px; }
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+th:last-child {
+  border-top-right-radius: 10px;
+}
 
 /* Filas "zebra" dinámicas */
 tr:nth-child(even) td {
@@ -577,7 +1127,8 @@ td {
   white-space: nowrap;
   font-size: 12.5px;
   transition: background 0.2s ease;
-  background-color: inherit; /* hereda el color de zebra */
+  background-color: inherit;
+  /* hereda el color de zebra */
 }
 
 /* Celdas multilinea */
@@ -593,19 +1144,19 @@ td {
 .btn-agregar {
   cursor: pointer;
   padding: 0.5rem 1rem;
-  background-color: #5c571a;
+  background-color: #4166ac;
   border-radius: 8px;
   color: white;
   font-size: 14px;
   font-weight: 600;
-  border: 1.5px solid #43805a;
+  border: 1.5px solid #5e8bc5;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
 .btn-agregar:hover {
-  background-color: #777e1b;
-  border-color: #356948;
+  background-color: #4166ac;
+  border-color: #5e8bc5;
   transform: scale(1.06);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -642,16 +1193,17 @@ td {
   padding: 7px 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  background-color: #f9fafb; 
+  background-color: #f9fafb;
   cursor: pointer;
   font-size: 13px;
-  color: #374151; 
+  color: #374151;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .pagination button:hover {
-  background-color: #e5e7eb; /* gris hover */
+  background-color: #e5e7eb;
+  /* gris hover */
   transform: scale(1.05);
 }
 
@@ -685,71 +1237,121 @@ td {
 
 .modal {
   display: none;
-  position: absolute;
+  position: fixed;
+  /* mejor que absolute, así se centra siempre */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
-  background: white;
-  padding: 2rem 3rem;
+  background: #ffffff;
+  padding: 2rem;
   max-width: 600px;
-  width: 100vw;
-  overflow-y: scroll;
+  width: 90%;
   max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  /* esquinas redondeadas */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1000;
 }
 
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
 
 .form-group {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
 }
 
 .entrada {
   flex: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 7px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.entrada:focus {
+  outline: none;
+  border-color: #2563eb;
+  /* azul elegante */
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
 }
 
 .buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
+  gap: 12px;
   margin-top: 20px;
 }
 
 .btn {
-  padding: 12px;
+  padding: 10px 18px;
   cursor: pointer;
   border: none;
-  border-radius: 5px;
-  box-shadow: 3px 5px 5px 0px rgba(0, 0, 0, 0.3);
-  transition: all .2s;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .btn:active {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 
 .btn-primary-cancel {
-  background: rgb(231, 59, 59);
-  color: white;
+  background: #ef4444;
+  /* rojo moderno */
+  color: #fff;
+}
+
+.btn-primary-cancel:hover {
+  background: #dc2626;
 }
 
 .btn-primary-env {
-  background: rgb(43, 99, 57);
-  color: white;
+  background: #16a34a;
+  /* verde elegante */
+  color: #fff;
+}
+
+.btn-primary-env:hover {
+  background: #15803d;
 }
 
 .btn-primary-guardar {
-  background: rgb(42, 88, 105);
-  color: white;
+  background: #2563eb;
+  /* azul */
+  color: #fff;
+}
+
+.btn-primary-guardar:hover {
+  background: #1e40af;
 }
 
 .btn-secondary {
-  background: gray;
-  color: white;
+  background: #6b7280;
+  /* gris neutro */
+  color: #fff;
 }
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
 
 /***/
 
@@ -1105,7 +1707,6 @@ button:hover {
   color: darkslategray;
   text-decoration: none;
   font-size: 0.8rem;
-  flex-wrap: nowrap;
 }
 
 .dropdown-item:hover {
@@ -1299,14 +1900,17 @@ select:focus {
 .filtro-input {
   padding: 10px 14px;
   border: 1px solid #ddd;
-  border-radius: 12px;       /* bordes redondeados */
+  border-radius: 12px;
+  /* bordes redondeados */
   background: hsl(0, 0%, 100%);
   width: 100%;
-  max-width: 350px;          /* no se estira demasiado */
-  margin: 0 auto;            /* ayuda a centrar */
+  max-width: 350px;
+  /* no se estira demasiado */
+  margin: 0 auto;
+  /* ayuda a centrar */
   font-size: 14px;
   color: #111827;
-  display: block;            
+  display: block;
   transition: all 0.3s ease;
   gap: 10px;
 }
@@ -1316,14 +1920,16 @@ select:focus {
 }
 
 .filtro-input:focus {
-  border-color: #593dad;       /* borde verde al escribir */
-  box-shadow: 0 0 0 3px rgba(67,128,90,0.25); 
+  border-color: #593dad;
+  /* borde verde al escribir */
+  box-shadow: 0 0 0 3px rgba(67, 128, 90, 0.25);
   outline: none;
 }
 
 
 .filtro-select {
-  appearance: none; /* Quita el estilo por defecto */
+  appearance: none;
+  /* Quita el estilo por defecto */
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: #fff;
@@ -1334,7 +1940,7 @@ select:focus {
   font-size: 14px;
   color: #333;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2343805a' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -1417,25 +2023,36 @@ select:focus {
 /*Diseño filtros de lista de cotizaciones*/
 .filtros-tabla {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 12px;
   padding: 12px 16px;
   margin-bottom: 18px;
   align-items: center;
-  justify-content: center; /* centra los inputs dentro */
+  justify-content: center;
+  /* centra los inputs dentro */
   border-radius: 10px;
   align-content: center;
 }
 
 .filtro-grupo {
   display: flex;
-  justify-content: center; /* centra cada grupo */
+  justify-content: center;
+  /* centra cada grupo */
   align-items: center;
   gap: 8px;
-  width: 100%; /* hace que ocupe todo y se pueda centrar */
+  width: 100%;
+  /* hace que ocupe todo y se pueda centrar */
 }
 
-
+.filtro-input {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  width: 230px;
+  text-align: center;
+}
 
 .filtro-input:focus {
   outline: none;
@@ -1445,11 +2062,11 @@ select:focus {
 
 @media (max-width: 768px) {
   .filtros-tabla {
-    flex-direction: column; 
-    align-items: stretch; 
+    flex-direction: column;
+    align-items: stretch;
     gap: 10px;
   }
-  
+
   .filtro-grupo {
     width: 100%;
   }
@@ -1457,11 +2074,11 @@ select:focus {
 
 @media (min-width: 992px) {
   .filtros-tabla {
-    justify-content: flex-start; 
+    justify-content: flex-start;
   }
-  
+
   .filtro-grupo {
-    max-width: 220px; 
+    max-width: 220px;
   }
 }
 
@@ -1474,7 +2091,8 @@ select:focus {
 
 
 .p-4 {
-  padding: 1rem; /* ya hace parte de Tailwind, pero lo dejamos por claridad */
+  padding: 1rem;
+  /* ya hace parte de Tailwind, pero lo dejamos por claridad */
   background-color: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -1622,6 +2240,7 @@ select:focus {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1750,7 +2369,7 @@ select:focus {
   transition: var(--transition);
 }
 
-.checkbox-input:checked ~ .checkbox-custom {
+.checkbox-input:checked~.checkbox-custom {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
 }
@@ -1768,7 +2387,7 @@ select:focus {
   transform: rotate(45deg);
 }
 
-.checkbox-input:checked ~ .checkbox-custom::after {
+.checkbox-input:checked~.checkbox-custom::after {
   display: block;
 }
 
@@ -1816,11 +2435,11 @@ select:focus {
     max-width: 95%;
     margin: 0 10px;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-group.full-width {
     grid-column: span 1;
   }
@@ -1853,7 +2472,7 @@ select:focus {
   padding: 10px 18px;
   border-radius: 10px;
   font-weight: 500;
-  box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
   border: none;
   transition: background-color 0.3s ease;
 }
@@ -2032,7 +2651,8 @@ select:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5); /* Fondo oscuro */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fondo oscuro */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2047,7 +2667,7 @@ select:focus {
   max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .modal-contenido table {
@@ -2056,7 +2676,8 @@ select:focus {
   margin-top: 10px;
 }
 
-.modal-contenido th, .modal-contenido td {
+.modal-contenido th,
+.modal-contenido td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
@@ -2067,25 +2688,30 @@ select:focus {
   background: white;
   border-radius: 10px;
   padding: 40px;
-  width: 95%;                /* antes 90% */
-  max-width: 1100px;         /* antes 900px o 950px */
+  width: 95%;
+  /* antes 90% */
+  max-width: 1100px;
+  /* antes 900px o 950px */
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
 .modal-lg {
-  max-width: 1100px !important;  /* Asegura ancho mayor incluso si otra clase intenta limitarlo */
+  max-width: 1100px !important;
+  /* Asegura ancho mayor incluso si otra clase intenta limitarlo */
 }
 
 .modal-body table th,
 .modal-body table td {
   border: 1px solid #ccc;
-  padding: 10px 12px;            /* Más espacio interno para que no se vea tan comprimido */
+  padding: 10px 12px;
+  /* Más espacio interno para que no se vea tan comprimido */
   font-size: 15px;
 }
 
 .modal-body table {
-  table-layout: fixed;           /* Acomoda automáticamente los anchos */
+  table-layout: fixed;
+  /* Acomoda automáticamente los anchos */
   word-wrap: break-word;
 }
 
@@ -2107,7 +2733,8 @@ select:focus {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   font-size: 14px;
   background-color: white;
-  resize: none; /* evita que se estire el textarea */
+  resize: none;
+  /* evita que se estire el textarea */
 }
 
 
@@ -2179,12 +2806,9 @@ select:focus {
   .nav-modulo {
     font-size: .6rem;
   }
-  .nav-dropdown-menu {
-  min-width: 150px;
-}
 
   .nav-dropdown-menu .dropdown-item {
-    font-size: 0.6rem;
+    font-size: 15rem;
   }
 
   .labelDOCS {
@@ -2192,3 +2816,195 @@ select:focus {
   }
 
 }
+
+
+/**modal ver productos desde historial de compras*/
+/* Estilos para el modal de compras */
+.modal-realista {
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border: none;
+    border-radius: 12px;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.table-profesional {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-profesional th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-profesional td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table-profesional tr:hover {
+    background: #f8f9fa;
+}
+
+.btn-profesional {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary-profesional {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.btn-profesional:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+
+/****Modal de proveedores*/
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.stock {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.empty-text {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e5e5e5;
+  text-align: right;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-close {
+  background: #007bff;
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.btn-close:hover {
+  background: #0056b3;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Estilos específicos para el modal de edición de cotizaciones movidos a cotizaciones-modal.css */
+
+
+
+
+
+
+

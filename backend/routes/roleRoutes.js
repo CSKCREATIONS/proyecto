@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Role = require('../models/Role');
 const roleController = require('../controllers/roleController');
 const { verifyToken } = require('../middlewares/authJwt');
 const { checkPermission } = require('../middlewares/role');

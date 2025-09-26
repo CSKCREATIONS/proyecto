@@ -334,8 +334,8 @@ const GestionProductos = () => {
                     <td>{prod.subcategory?.name || '-'}</td>
                     <td>{prod.proveedor?.nombre || '-'}</td>
                     <td>
-                      <button className="btn btn-success btn-sm me-1" onClick={() => handleEdit(prod)}>
-                        <i className="fa-solid fa-pen"></i>
+                      <button className="btnTransparente" onClick={() => handleEdit(prod)}>
+                        <i className="fa-solid fa-pen-to-square"></i>
                       </button>
                       <button
                         className={`btn btn-${prod.activo ? 'warning' : 'info'} btn-sm me-1`}
@@ -343,8 +343,8 @@ const GestionProductos = () => {
                       >
                         {prod.activo ? <i className="fa-solid fa-ban"></i> : <i className="fa-solid fa-check"></i>}
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(prod._id)}>
-                        <i className="fa-solid fa-trash"></i>
+                      <button className="btnTransparente" onClick={() => handleDelete(prod._id)}>
+                        <i className="fa-solid fa-trash fa-xl" style={{ color: '#dc3545' }} />
                       </button>
                     </td>
                   </tr>
@@ -377,14 +377,13 @@ const GestionProductos = () => {
           </div>
             
         </div>
-        <p className="text-sm text-gray-400 tracking-wide text-center">
-          © 2025{" "}
-          <span className="text-yellow-400 font-semibold transition duration-300 hover:text-yellow-300 hover:brightness-125">
-            PANGEA
-          </span>
-          . Todos los derechos reservados.
-        </p>
+        
       </div>
+      <div className="custom-footer">
+          <p className="custom-footer-text">
+            © 2025 <span className="custom-highlight">PANGEA</span>. Todos los derechos reservados.
+          </p>
+        </div>
     </div>
   );
 };

@@ -22,25 +22,39 @@ export default function FormatoCotizacion({ datos, onClose }) {
 
   return (
 
-    <div className="modal-cotizacion-overlay">
-      <div className="modal-cotizacion">
+    <div className="modal-cotizacion-overlay" style={{ alignItems: 'flex-start', paddingTop: '50px', overflow: 'auto' }}>
+      <div className="modal-cotizacion" style={{ maxWidth: '95vw', maxHeight: 'none', width: '900px', height: 'auto', marginBottom: '50px' }}>
         <button className="close-modal" onClick={onClose}>×</button>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className='modal-title'>{datos.codigo ? datos.codigo : ''}</span>
+          <span className='modal-title'>
+            {datos.tipo === 'pedido' ? 'Pedido Agendado' : (datos.codigo ? datos.codigo : '')}
+          </span>
           <div className="botones-cotizacion" style={{ display: 'flex', gap: '18px', justifyContent: 'center', marginBottom: '1rem' }}>
-            <button className="btn-cotizacion moderno" title="Editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>
-              <i className="fa-solid fa-pen" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
-              Editar
-            </button>
-            <button className="btn-cotizacion moderno" title="Remisionar" onClick={() => { }}>
-              <i className="fa-solid fa-file-invoice" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
-              Remisionar
-            </button>
+            {datos.tipo !== 'pedido' && (
+              <button className="btn-cotizacion moderno" title="Editar" onClick={() => { onClose(); navigate('/RegistrarCotizacion', { state: { datos } }); }}>
+                <i className="fa-solid fa-pen" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+                Editar
+              </button>
+            )}
+            {datos.tipo !== 'pedido' && (
+              <button className="btn-cotizacion moderno" title="Remisionar" onClick={() => { }}>
+                <i className="fa-solid fa-file-invoice" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
+                Remisionar
+              </button>
+            )}
             <button className="btn-cotizacion moderno" title="Enviar" onClick={() => setShowEnviarModal(true)}>
               <i className="fa-solid fa-envelope" style={{ fontSize: '1rem', color: '#EA4335', marginRight: '6px' }}></i>
               Enviar
             </button>
-            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => window.print()}>
+            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => {
+              // Asegurar que solo se imprima este componente
+              const printContent = document.getElementById('pdf-cotizacion-block');
+              const originalContents = document.body.innerHTML;
+              document.body.innerHTML = printContent.outerHTML;
+              window.print();
+              document.body.innerHTML = originalContents;
+              window.location.reload(); // Recargar para restaurar funcionalidad
+            }}>
               <i className="fa-solid fa-print" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
             </button>
           </div>
@@ -50,94 +64,199 @@ export default function FormatoCotizacion({ datos, onClose }) {
         <div
           className="pdf-cotizacion"
           id="pdf-cotizacion-block"
-          style={{ display: 'flex', flexDirection: 'column', background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
+          style={{ 
+            background: '#fff', 
+            padding: '1.5rem', 
+            borderRadius: '8px', 
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)', 
+            marginTop: '0.5rem', 
+            userSelect: 'none', 
+            WebkitUserSelect: 'none', 
+            MozUserSelect: 'none', 
+            msUserSelect: 'none', 
+            fontSize: '0.9rem',
+            maxHeight: '85vh',
+            overflowY: 'auto'
+          }}
           onCopy={e => e.preventDefault()}
         >
           <div className="cotizacion-encabezado">
-            <h2>Cotizacion</h2>
-            <div className="cot-fecha">
-              <p style={{ fontSize: '0.7rem' }}>{datos.codigo ? datos.codigo : ''}</p>
-              <p style={{ fontSize: '0.7rem' }}>{datos.fecha || ''}</p>
-            </div>
+            <h2 style={{ color: '#2563eb', fontWeight: 'bold', fontSize: '1.5rem', margin: '0 0 0.5rem 0' }}>
+              {datos.tipo === 'pedido' ? 'PEDIDO AGENDADO' : 'COTIZACIÓN'}
+            </h2>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
-            <div>
-              <p>{datos.cliente?.nombre || ''}</p>
-              <p>{datos.cliente?.direccion || ''} - {datos.cliente?.ciudad || ''}</p>
-              <p> {datos.cliente?.telefono || ''}</p>
-              <p> {datos.cliente?.correo || ''}</p>
+          {/* Información del cliente y empresa */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '0.8rem', marginBottom: '0.75rem' }}>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ color: '#374151', marginBottom: '0.3rem', fontSize: '0.85rem' }}>
+                {datos.tipo === 'pedido' ? 'ENTREGAR A:' : 'CLIENTE:'}
+              </h4>
+              <div style={{ backgroundColor: '#f9fafb', padding: '0.5rem', borderRadius: '4px', border: '1px solid #e5e7eb' }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.15rem', fontSize: '0.8rem' }}>
+                  {datos.cliente?.nombre || 'Cliente no especificado'}
+                </p>
+                <p style={{ marginBottom: '0.15rem', fontSize: '0.75rem' }}>
+                  {datos.cliente?.direccion || 'Dirección no especificada'}
+                </p>
+                <p style={{ marginBottom: '0.15rem', fontSize: '0.75rem' }}>
+                  {datos.cliente?.ciudad || 'Ciudad no especificada'}
+                </p>
+                <p style={{ marginBottom: '0.15rem', fontSize: '0.75rem' }}>
+                  Tel: {datos.cliente?.telefono || 'No especificado'}
+                </p>
+                <p style={{ fontSize: '0.75rem' }}>
+                  {datos.cliente?.correo || 'Sin correo'}
+                </p>
+              </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <p>{datos.empresa?.nombre || ''}</p>
-              <p>{datos.empresa?.direccion || ''}</p>
-              <p>
-                {usuario.firstName || ''} {usuario.surname || ''}
-              </p>
+            
+            <div style={{ flex: 1, marginLeft: '1rem' }}>
+              <h4 style={{ color: '#374151', marginBottom: '0.3rem', fontSize: '0.85rem' }}>
+                {datos.tipo === 'pedido' ? 'REMITE:' : 'EMPRESA:'}
+              </h4>
+              <div style={{ backgroundColor: '#f9fafb', padding: '0.5rem', borderRadius: '4px', border: '1px solid #e5e7eb' }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.15rem', fontSize: '0.8rem' }}>
+                  {datos.empresa?.nombre || 'PANGEA'}
+                </p>
+                <p style={{ marginBottom: '0.15rem', fontSize: '0.75rem' }}>
+                  {datos.empresa?.direccion || ''}
+                </p>
+                <p style={{ marginBottom: '0.15rem', fontSize: '0.75rem' }}>
+                  Responsable: {usuario.firstName || ''} {usuario.surname || ''}
+                </p>
+                {datos.codigo && (
+                  <p style={{ marginBottom: '0.15rem', color: '#6b7280', fontSize: '0.75rem' }}>
+                    Ref. {datos.tipo === 'pedido' ? 'Pedido' : 'Cotización'}: {datos.codigo}
+                  </p>
+                )}
+                {datos.fechaEntrega && (
+                  <p style={{ marginBottom: '0.15rem', color: '#6b7280', fontSize: '0.75rem' }}>
+                    F. Entrega: {new Date(datos.fechaEntrega).toLocaleDateString('es-ES')}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           <hr />
-          <div className="descripcion-cotizacion">
-            <h4>Descripción cotización</h4>
-            <div dangerouslySetInnerHTML={{ __html: datos.descripcion }} />
-          </div>
-          <hr />
-          <table className="tabla-cotizacion">
+          {/* Descripción */}
+          {datos.descripcion && (
+            <div style={{ marginBottom: '0.75rem' }}>
+              <h4 style={{ color: '#374151', fontSize: '0.85rem', marginBottom: '0.3rem' }}>
+                {datos.tipo === 'pedido' ? 'Descripción del pedido:' : 'Descripción de la cotización:'}
+              </h4>
+              <div style={{ backgroundColor: '#fffbeb', padding: '0.5rem', borderRadius: '4px', border: '1px solid #fed7aa' }}>
+                <div style={{ margin: 0, fontSize: '0.75rem' }} dangerouslySetInnerHTML={{ __html: datos.descripcion }} />
+              </div>
+              {datos.tipo === 'pedido' && datos.estadoPedido && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Estado del pedido: </span>
+                  <span style={{ 
+                    backgroundColor: datos.estadoPedido === 'pendiente' ? '#fef3c7' : 
+                                   datos.estadoPedido === 'completado' ? '#d4edda' : '#f8d7da',
+                    color: datos.estadoPedido === 'pendiente' ? '#f59e0b' : 
+                           datos.estadoPedido === 'completado' ? '#155724' : '#721c24',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '4px',
+                    fontSize: '0.75rem',
+                    fontWeight: 'bold'
+                  }}>
+                    {datos.estadoPedido.charAt(0).toUpperCase() + datos.estadoPedido.slice(1)}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          {/* Tabla de productos */}
+          <table className="tabla-cotizacion" style={{ fontSize: '0.8rem', width: '100%', marginBottom: '1rem' }}>
             <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Valor Unitario</th>
-                <th>% Descuento</th>
-                <th>Subtotal</th>
+              <tr style={{ backgroundColor: '#f3f4f6' }}>
+                <th style={{ textAlign: 'left', padding: '0.6rem', fontSize: '0.8rem' }}>Cant.</th>
+                <th style={{ textAlign: 'left', padding: '0.6rem', fontSize: '0.8rem' }}>Producto</th>
+                <th style={{ textAlign: 'left', padding: '0.6rem', fontSize: '0.8rem' }}>Descripción</th>
+                <th style={{ textAlign: 'right', padding: '0.6rem', fontSize: '0.8rem' }}>Valor Unit.</th>
+                <th style={{ textAlign: 'right', padding: '0.6rem', fontSize: '0.8rem' }}>% Desc.</th>
+                <th style={{ textAlign: 'right', padding: '0.6rem', fontSize: '0.8rem' }}>Total</th>
               </tr>
             </thead>
             <tbody>
-              {datos.productos.map((p, idx) => (
-                <tr key={idx}>
-                  <td>{p.producto?.name || p.nombre || 'Desconocido'}</td>
-                  <td>{p.descripcion}</td>
-                  <td>{p.cantidad}</td>
-                  <td>{p.valorUnitario}</td>
-                  <td>{p.descuento}</td>
-                  <td>{
-                    (() => {
+              {datos.productos && datos.productos.length > 0 ? datos.productos.map((p, idx) => (
+                <tr key={idx} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <td style={{ padding: '0.6rem', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                    {p.cantidad || 0}
+                  </td>
+                  <td style={{ padding: '0.6rem', fontSize: '0.8rem' }}>
+                    {p.producto?.name || p.nombre || 'Producto sin nombre'}
+                  </td>
+                  <td style={{ padding: '0.6rem', fontSize: '0.8rem', color: '#6b7280' }}>
+                    {p.producto?.description || p.descripcion || 'Sin descripción'}
+                  </td>
+                  <td style={{ padding: '0.6rem', textAlign: 'right', fontSize: '0.8rem' }}>
+                    ${(p.valorUnitario || 0).toLocaleString('es-CO')}
+                  </td>
+                  <td style={{ padding: '0.6rem', textAlign: 'right', fontSize: '0.8rem' }}>
+                    {p.descuento || 0}%
+                  </td>
+                  <td style={{ padding: '0.6rem', textAlign: 'right', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                    ${(() => {
                       const cantidad = parseFloat(p.cantidad) || 0;
                       const valorUnitario = parseFloat(p.valorUnitario) || 0;
                       const descuento = parseFloat(p.descuento) || 0;
                       const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
-                      return subtotal.toFixed(2);
-                    })()
-                  }</td>
+                      return subtotal.toLocaleString('es-CO');
+                    })()}
+                  </td>
                 </tr>
-              ))}
-              {/* Fila de total */}
-              {datos.productos.length > 0 && (
+              )) : (
                 <tr>
-                  <td colSpan={4}></td>
-                  <td style={{ fontWeight: 'bold', textAlign: 'right' }}>Total</td>
-                  <td style={{ fontWeight: 'bold' }}>
-                    {datos.productos
-                      .reduce((acc, p) => {
-                        const cantidad = parseFloat(p.cantidad) || 0;
-                        const valorUnitario = parseFloat(p.valorUnitario) || 0;
-                        const descuento = parseFloat(p.descuento) || 0;
-                        const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
-                        return acc + subtotal;
-                      }, 0)
-                      .toFixed(2)}
+                  <td colSpan={6} style={{ padding: '1rem', textAlign: 'center', fontSize: '0.8rem', color: '#6b7280' }}>
+                    No hay productos disponibles
                   </td>
                 </tr>
               )}
             </tbody>
+            <tfoot>
+              <tr style={{ backgroundColor: '#f9fafb', fontWeight: 'bold' }}>
+                <td colSpan={5} style={{ padding: '0.75rem', textAlign: 'right', fontSize: '0.9rem' }}>
+                  TOTAL {datos.tipo === 'pedido' ? 'PEDIDO' : 'COTIZACIÓN'}:
+                </td>
+                <td style={{ padding: '0.75rem', textAlign: 'right', fontSize: '1rem', color: '#059669' }}>
+                  ${datos.productos && datos.productos.length > 0 ? datos.productos
+                    .reduce((acc, p) => {
+                      const cantidad = parseFloat(p.cantidad) || 0;
+                      const valorUnitario = parseFloat(p.valorUnitario) || 0;
+                      const descuento = parseFloat(p.descuento) || 0;
+                      const subtotal = cantidad * valorUnitario * (1 - descuento / 100);
+                      return acc + subtotal;
+                    }, 0)
+                    .toLocaleString('es-CO') : '0'}
+                </td>
+              </tr>
+            </tfoot>
           </table>
-          <hr />
-          <div className="condiciones-pago">
-            <h4>Condiciones de pago</h4>
-            <div dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
-          </div>
-          <br />
-          <div>Cotizacion valida por 15 dias</div>
+          {/* Condiciones de pago */}
+          {datos.condicionesPago && (
+            <div style={{ marginBottom: '0.75rem' }}>
+              <h4 style={{ color: '#374151', fontSize: '0.85rem', marginBottom: '0.3rem' }}>Condiciones de pago:</h4>
+              <div style={{ backgroundColor: '#f0f9ff', padding: '0.5rem', borderRadius: '4px', border: '1px solid #bfdbfe' }}>
+                <div style={{ margin: 0, fontSize: '0.75rem' }} dangerouslySetInnerHTML={{ __html: datos.condicionesPago }} />
+              </div>
+            </div>
+          )}
+
+          {/* Validez de cotización */}
+          {datos.tipo !== 'pedido' && (
+            <div style={{ 
+              marginTop: '1rem', 
+              padding: '0.75rem', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '6px', 
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, textAlign: 'center', fontStyle: 'italic' }}>
+                Cotización válida por 15 días
+              </p>
+            </div>
+          )}
         </div>
 
       </div>

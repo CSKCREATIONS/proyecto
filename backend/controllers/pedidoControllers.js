@@ -2,6 +2,7 @@
 const Pedido = require('../models/Pedido');
 const Venta = require('../models/venta'); // Asegúrate de tener el modelo importado
 const Product = require('../models/Products'); // para calcular precios
+const Cotizacion = require('../models/cotizaciones');
 
 
 
@@ -11,7 +12,22 @@ exports.getPedidos = async (req, res) => {
     const { estado } = req.query;
     const filtro = estado ? { estado } : {};
     const pedidos = await Pedido.find(filtro).populate('cliente').populate('productos.product');
-    res.json(pedidos);
+    
+    // Calcular el total para cada pedido
+    const pedidosConTotal = pedidos.map(pedido => {
+      const total = pedido.productos.reduce((sum, prod) => {
+        const cantidad = prod.cantidad || 0;
+        const precio = prod.precioUnitario || 0;
+        return sum + (cantidad * precio);
+      }, 0);
+      
+      return {
+        ...pedido.toObject(),
+        total
+      };
+    });
+    
+    res.json(pedidosConTotal);
   } catch (err) {
     console.error('Error al obtener pedidos:', err);
     res.status(500).json({ message: 'Error al obtener pedidos' });
@@ -22,16 +38,41 @@ exports.getPedidos = async (req, res) => {
 // Crear pedido
 exports.createPedido = async (req, res) => {
   try {
-    const { cliente, productos, fechaEntrega, observacion } = req.body;
+    const { cliente, productos, fechaEntrega, observacion, cotizacionReferenciada, cotizacionCodigo } = req.body;
+
+    // Generar número de pedido único
+    const count = await Pedido.countDocuments();
+    const numeroPedido = `PED-${String(count + 1).padStart(4, '0')}`;
 
     const nuevoPedido = new Pedido({
+      numeroPedido,
       cliente,
       productos,
       fechaEntrega,
-      observacion
+      observacion,
+      cotizacionReferenciada,
+      cotizacionCodigo
     });
 
     const pedidoGuardado = await nuevoPedido.save();
+
+    // Si el pedido se creó desde una cotización, marcarla como agendada
+    if (cotizacionReferenciada) {
+      try {
+        await Cotizacion.findByIdAndUpdate(
+          cotizacionReferenciada,
+          { 
+            agendada: true,
+            pedidoReferencia: pedidoGuardado._id
+          }
+        );
+        console.log(`✅ Cotización ${cotizacionCodigo} marcada como agendada`);
+      } catch (cotError) {
+        console.error('⚠️ Error al marcar cotización como agendada:', cotError);
+        // No fallar el pedido por este error
+      }
+    }
+
     res.status(201).json(pedidoGuardado);
   } catch (err) {
     console.error('❌ Error al crear pedido:', err);
@@ -51,7 +92,19 @@ exports.getPedidoById = async (req, res) => {
       return res.status(404).json({ message: 'Pedido no encontrado' });
     }
 
-    res.status(200).json(pedido);
+    // Calcular el total del pedido
+    const total = pedido.productos.reduce((sum, prod) => {
+      const cantidad = prod.cantidad || 0;
+      const precio = prod.precioUnitario || 0;
+      return sum + (cantidad * precio);
+    }, 0);
+
+    const pedidoConTotal = {
+      ...pedido.toObject(),
+      total
+    };
+
+    res.status(200).json(pedidoConTotal);
   } catch (error) {
     console.error('❌ Error al obtener pedido por ID:', error);
     res.status(500).json({ message: 'Error al obtener el pedido', error });

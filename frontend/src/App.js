@@ -26,10 +26,12 @@ import ReportessVentas from './pages/ReportessVentas';
 import PrivateRoute from './routes/PrivateRoute';
 import PermisoRoute from './routes/PermisoRoute';
 import PedidosDevueltos from './pages/PedidosDevueltos';
+import PedidosDespachados from './pages/PedidosDespachados';
 import Ventas from './pages/Ventas';
 import ReporteProveedores from './pages/ReporteProveedores';
 import ReporteProductos from './pages/ReporteProductos';
-
+import OrdenCompra from './pages/OrdenCompra';
+import RegistrarCompra from './pages/RegistrarCompra';
 
 
 const App = () => {
@@ -91,6 +93,27 @@ const App = () => {
           <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
 
           {/***Rutas modulo compras ****/}
+          <Route
+            path='/OrdenCompra'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="ordenesCompra.ver">
+                  <OrdenCompra />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/RegistrarCompra'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="compras.crear">
+                  <RegistrarCompra />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path='/HistorialCompras'
@@ -213,6 +236,16 @@ const App = () => {
             }
           />
 
+          <Route
+            path='/PedidosDespachados'
+            element={
+              <PrivateRoute>
+                <PermisoRoute permiso="pedidosDespachados.ver">
+                  <PedidosDespachados />
+                </PermisoRoute>
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path='/PedidosEntregados'

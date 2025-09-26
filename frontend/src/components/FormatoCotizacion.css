@@ -90,23 +90,49 @@
     visibility: hidden; /* Oculta todo */
   }
 
+  /* Solo muestra el bloque de cotización o remisión, no ambos */
   #pdf-cotizacion-block,
-  #pdf-cotizacion-block * {
-    visibility: visible; /* Solo muestra este bloque */
+  #pdf-cotizacion-block *,
+  #pdf-formato-cotizacion-block,
+  #pdf-formato-cotizacion-block *,
+  #pdf-remision-block,
+  #pdf-remision-block *,
+  #pdf-cancelado-block,
+  #pdf-cancelado-block *,
+  #pdf-devuelto-block,
+  #pdf-devuelto-block * {
+    visibility: visible;
   }
 
-  #pdf-cotizacion-block {
+  /* Evitar duplicados - solo uno debe existir a la vez */
+  #pdf-cotizacion-block,
+  #pdf-formato-cotizacion-block,
+  #pdf-remision-block,
+  #pdf-cancelado-block,
+  #pdf-devuelto-block {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%; /* Asegura que ocupe toda la página */
-    margin: 0;
-    padding: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding: 15mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
   }
 
-  /* Opcional: márgenes de la página */
+  /* Ocultar botones y elementos de UI en impresión */
+  .botones-cotizacion,
+  .btn-cotizacion,
+  .close-modal,
+  .modal-title {
+    display: none !important;
+  }
+
+  /* Márgenes de la página */
   @page {
-    margin: 15mm;
+    margin: 0;
+    size: A4;
   }
 }
 

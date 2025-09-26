@@ -1,6 +1,7 @@
 const Cotizacion = require('../models/cotizaciones');
 const Cliente = require('../models/Cliente');
 const Producto = require('../models/Products');
+const Product = require('../models/Products'); // Ensure both references work
 
 const { validationResult } = require('express-validator');
 
@@ -144,13 +145,61 @@ exports.createCotizacion = async (req, res) => {
 // Obtener todas las cotizaciones
 exports.getCotizaciones = async (req, res) => {
   try {
-    const cotizaciones = await Cotizacion
-      .find()
-      .populate('cliente.referencia', 'nombre correo telefono ciudad esCliente');
+    // First, try to get cotizaciones without populate to avoid casting errors
+    let cotizaciones;
+    
+    try {
+      cotizaciones = await Cotizacion.find()
+        .populate('cliente.referencia', 'nombre correo telefono ciudad esCliente')
+        .populate({
+          path: 'productos.producto.id',
+          model: 'Product',
+          select: 'name price description',
+          options: { strictPopulate: false } // Allow population even if some refs are missing
+        })
+        .sort({ createdAt: -1 });
+    } catch (populateError) {
+      console.warn('Error with populate, fetching without product population:', populateError.message);
+      
+      // Fallback: get cotizaciones without product population
+      cotizaciones = await Cotizacion.find()
+        .populate('cliente.referencia', 'nombre correo telefono ciudad esCliente')
+        .sort({ createdAt: -1 });
+    }
 
-    res.json(cotizaciones);
+    // Process each cotization to ensure product data is properly structured
+    const processedCotizaciones = cotizaciones.map(cotizacion => {
+      const cotObj = cotizacion.toObject();
+      if (Array.isArray(cotObj.productos)) {
+        cotObj.productos = cotObj.productos.map(p => {
+          if (p.producto && p.producto.id) {
+            // Handle both populated and non-populated product data
+            if (typeof p.producto.id === 'object' && p.producto.id.name) {
+              // Populated data
+              p.producto.name = p.producto.id.name || p.producto.name;
+              p.producto.price = p.producto.id.price || p.producto.price;
+              p.producto.description = p.producto.id.description || p.producto.description;
+            }
+            // If not populated or missing, keep original name
+          }
+          return p;
+        });
+      }
+      return cotObj;
+    });
+
+    res.json(processedCotizaciones);
   } catch (err) {
     console.error('[ERROR getCotizaciones]', err);
+    
+    // Handle specific casting errors
+    if (err.name === 'CastError' && err.kind === 'ObjectId') {
+      return res.status(400).json({ 
+        message: 'Error en formato de datos de las cotizaciones',
+        error: 'CAST_ERROR'
+      });
+    }
+    
     res.status(500).json({ message: 'Error al obtener cotizaciones' });
   }
 };
@@ -163,10 +212,18 @@ exports.getCotizaciones = async (req, res) => {
 // Obtener cotización por ID
 exports.getCotizacionById = async (req, res) => {
   try {
+    // Validate ObjectId format first
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'ID de cotización inválido' });
+    }
+
     let cotizacion = await Cotizacion.findById(req.params.id)
       .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente')
-      .populate('proveedor', 'nombre')
-      .populate('productos.producto.id', 'name price');
+      .populate({
+        path: 'productos.producto.id',
+        model: 'Product',
+        select: 'name price description'
+      });
 
     if (!cotizacion) {
       return res.status(404).json({ message: 'Cotización no encontrada' });
@@ -179,6 +236,7 @@ exports.getCotizacionById = async (req, res) => {
         if (p.producto && p.producto.id) {
           p.producto.name = p.producto.id.name || p.producto.name;
           p.producto.price = p.producto.id.price || p.producto.price;
+          p.producto.description = p.producto.id.description || p.producto.description;
         }
         return p;
       });
@@ -186,6 +244,7 @@ exports.getCotizacionById = async (req, res) => {
 
     res.status(200).json({ data: cotObj });
   } catch (error) {
+    console.error('Error al obtener cotización por ID:', error);
     res.status(500).json({ message: 'Error al obtener cotización', error: error.message });
   }
 };
@@ -249,9 +308,18 @@ exports.getUltimaCotizacionPorCliente = async (req, res) => {
   const { cliente } = req.query;
 
   try {
+    // Validate ObjectId format first
+    if (!cliente || !cliente.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'ID de cliente inválido' });
+    }
+
     let cotizacion = await Cotizacion.findOne({ 'cliente.referencia': cliente })
       .sort({ createdAt: -1 })
-      .populate('productos.producto.id', 'name price')
+      .populate({
+        path: 'productos.producto.id',
+        model: 'Product',
+        select: 'name price description'
+      })
       .populate('cliente.referencia', 'nombre correo ciudad telefono esCliente');
 
     if (!cotizacion) return res.status(404).json({ message: 'No hay cotización' });
@@ -262,6 +330,7 @@ exports.getUltimaCotizacionPorCliente = async (req, res) => {
         if (p.producto && p.producto.id) {
           p.producto.name = p.producto.id.name || p.producto.name;
           p.producto.price = p.producto.id.price || p.producto.price;
+          p.producto.description = p.producto.id.description || p.producto.description;
         }
         return p;
       });

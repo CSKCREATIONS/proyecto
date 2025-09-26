@@ -3,7 +3,6 @@ const router = express.Router();
 const { check } = require('express-validator');
 const proveedorController = require('../controllers/proveedorControllers');
 const { verifyToken } = require('../middlewares/authJwt');
-const { checkRole } = require('../middlewares/role');
 const { checkPermission } = require('../middlewares/role');
 
 // Validaciones para crear o editar proveedor

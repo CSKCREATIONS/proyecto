@@ -59,6 +59,14 @@ const CotizacionSchema = new mongoose.Schema({
   enviadoCorreo: {
     type: Boolean,
     default: false
+  },
+  agendada: {
+    type: Boolean,
+    default: false
+  },
+  pedidoReferencia: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pedido'
   }
 }, {
   timestamps: true

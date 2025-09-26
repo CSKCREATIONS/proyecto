@@ -20,8 +20,7 @@ const cotizacionRoutes = require('./routes/cotizacionRoutes');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const ventasRoutes = require('./routes/ventasRoutes');
 const reportesRoutes = require('./routes/reportesRoutes');
-    
-
+const ordenCompraRoutes = require('./routes/ordenCompraRoutes');
 
 
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
@@ -57,6 +56,7 @@ app.use('/api/compras', comprasRoutes); // Ruta base para compras
 app.use('/api/cotizaciones', cotizacionRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/reportes', reportesRoutes);
+app.use('/api/ordenes-compra', ordenCompraRoutes);
 
 //Inicio del servidor
 const PORT = process.env.PORT || 5000;

@@ -44,7 +44,15 @@ export default function FormatoCotizacion({ datos, onClose }) {
               <i className="fa-solid fa-envelope" style={{ fontSize: '1rem', color: '#EA4335', marginRight: '6px' }}></i>
               Enviar
             </button>
-            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => window.print()}>
+            <button className="btn-cotizacion moderno" title="Imprimir" onClick={() => {
+              // Asegurar que solo se imprima este componente
+              const printContent = document.getElementById('pdf-formato-cotizacion-block');
+              const originalContents = document.body.innerHTML;
+              document.body.innerHTML = printContent.outerHTML;
+              window.print();
+              document.body.innerHTML = originalContents;
+              window.location.reload(); // Recargar para restaurar funcionalidad
+            }}>
               <i className="fa-solid fa-print" style={{ fontSize: '1.2rem', marginRight: '8px' }}></i>
             </button>
           </div>
@@ -53,7 +61,7 @@ export default function FormatoCotizacion({ datos, onClose }) {
         {/* Contenido PDF debajo */}
         <div
           className="pdf-cotizacion"
-          id="pdf-cotizacion-block"
+          id="pdf-formato-cotizacion-block"
           style={{ display: 'flex', flexDirection: 'column', background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginTop: '1rem', userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', justifyContent: 'center' }}
           onCopy={e => e.preventDefault()}
         >

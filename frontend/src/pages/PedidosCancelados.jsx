@@ -2,28 +2,97 @@ import React, { useEffect, useState } from 'react';
 import Fijo from '../components/Fijo';
 import NavVentas from '../components/NavVentas';
 import EncabezadoModulo from '../components/EncabezadoModulo';
+import PedidoCanceladoPreview from '../components/PedidoCanceladoPreview';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import Swal from 'sweetalert2';
 
 export default function PedidosCancelados() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+  const [datosCancelado, setDatosCancelado] = useState(null);
+  const [mostrarCancelado, setMostrarCancelado] = useState(false);
 
-const mostrarProductos = (pedido) => {
+  const mostrarProductos = (pedido) => {
     setPedidoSeleccionado(pedido);
+  };
+
+  const generarFormatoCancelado = async (pedido) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      console.log('Pedido original:', pedido); // Debug
+      
+      // Obtener los datos completos del pedido con productos poblados
+      const resPedido = await fetch(`http://localhost:5000/api/pedidos/${pedido._id}?populate=true`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!resPedido.ok) {
+        throw new Error('No se pudo obtener el pedido completo');
+      }
+      
+      const pedidoCompleto = await resPedido.json();
+      console.log('Pedido completo desde API:', pedidoCompleto); // Debug
+      
+      // Usar los datos del pedido original si la API no devuelve datos completos
+      const datosParaUsar = pedidoCompleto.data || pedidoCompleto || pedido;
+      
+      // Crear objeto de datos para el formato cancelado
+      const datosCancelado = {
+        numeroPedido: datosParaUsar.numeroPedido || pedido.numeroPedido,
+        fechaEntrega: datosParaUsar.fechaEntrega || pedido.fechaEntrega,
+        fechaAgendamiento: datosParaUsar.createdAt || pedido.createdAt,
+        estado: datosParaUsar.estado || pedido.estado,
+        cliente: datosParaUsar.cliente || pedido.cliente,
+        productos: datosParaUsar.productos || pedido.productos || [],
+        motivoCancelacion: datosParaUsar.motivoCancelacion || datosParaUsar.observacion || pedido.motivoCancelacion || pedido.observacion,
+        empresa: { nombre: 'PANGEA', direccion: 'Dirección empresa' }
+      };
+      
+      console.log('Datos cancelado finales:', datosCancelado); // Debug
+      
+      setDatosCancelado(datosCancelado);
+      setMostrarCancelado(true);
+      
+    } catch (error) {
+      console.error('Error al generar formato cancelado:', error);
+      
+      // Si falla la API, usar los datos del pedido directamente
+      const datosCancelado = {
+        numeroPedido: pedido.numeroPedido,
+        fechaEntrega: pedido.fechaEntrega,
+        fechaAgendamiento: pedido.createdAt,
+        estado: pedido.estado,
+        cliente: pedido.cliente,
+        productos: pedido.productos || [],
+        motivoCancelacion: pedido.motivoCancelacion || pedido.observacion,
+        empresa: { nombre: 'PANGEA', direccion: 'Dirección empresa' }
+      };
+      
+      console.log('Usando datos directos del pedido:', datosCancelado);
+      
+      setDatosCancelado(datosCancelado);
+      setMostrarCancelado(true);
+    }
   };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5000/api/pedidos', {
+    fetch('http://localhost:5000/api/pedidos?populate=true', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
       .then(res => res.json())
-      .then(data => setPedidos(data.filter(p => p.estado === 'cancelado')))
+      .then(data => {
+        console.log('Datos de pedidos cancelados:', data); // Debug
+        const cancelados = data.filter(p => p.estado === 'cancelado');
+        console.log('Pedidos cancelados filtrados:', cancelados); // Debug
+        setPedidos(cancelados);
+      })
       .catch(err => console.error('Error al cargar pedidos cancelados:', err));
   }, []);
 
@@ -118,8 +187,7 @@ const mostrarProductos = (pedido) => {
                 <thead><br />
                   <tr>
                     <th>No</th>
-                    <th># Pedido</th> {/* 👈 NUEVA COLUMNA */}
-                    <th>Producto</th>
+                    <th># Pedido</th>
                     <th>F. Agendamiento</th>
                     <th>F. Entrega</th>
                     <th>Cliente</th>
@@ -131,17 +199,18 @@ const mostrarProductos = (pedido) => {
                   {pedidos.map((pedido, index) => (
                     <tr key={pedido._id}>
                       <td>{index + 1}</td>
-                       <td>{pedido.numeroPedido || '---'}</td> {/* 👈 Muestra el número PED-xxxxx */}
-                      <td>
-                        <button className="btn btn-info" onClick={() => mostrarProductos(pedido)}>
-                          Productos
-                        </button>
+                      <td 
+                        style={{ cursor: 'pointer', color: '#2563eb', textDecoration: 'underline' }}
+                        onClick={() => generarFormatoCancelado(pedido)}
+                      >
+                        {pedido.numeroPedido || '---'}
                       </td>
                       <td>{new Date(pedido.createdAt).toLocaleDateString()}</td>
                       <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                       <td>{pedido.cliente?.nombre}</td>
                       <td>{pedido.cliente?.ciudad}</td>
                       <td>{pedido.estado}</td>
+                      
                     </tr>
                   ))}
                   {pedidos.length === 0 && <tr><td colSpan="9">No hay pedidos cancelados disponibles</td></tr>}
@@ -164,6 +233,13 @@ const mostrarProductos = (pedido) => {
         productos={pedidoSeleccionado?.productos || []}
         cotizacionId={pedidoSeleccionado?._id}
       />
+      
+      {mostrarCancelado && datosCancelado && (
+        <PedidoCanceladoPreview 
+          datos={datosCancelado}
+          onClose={() => setMostrarCancelado(false)}
+        />
+      )}
     </div>
   );
 }

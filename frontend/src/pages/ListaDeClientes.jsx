@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../App.css';
@@ -7,7 +8,6 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import './footer.css'
 
 export default function ListaDeClientes() {
   const [clientes, setClientes] = useState([]);
@@ -215,7 +215,7 @@ export default function ListaDeClientes() {
       <div className="content">
         <NavVentas />
         <div className="contenido-modulo">
-          <div className='encabezado-modulo'>
+          <div className='encabezado-modulo'> 
             <div>
               <h3 className='titulo-profesional'>Lista de clientes</h3>
 
@@ -242,7 +242,7 @@ export default function ListaDeClientes() {
                 <span>Exportar a PDF</span>
               </button>
             </div>
-          </div><br />
+          </div><br/>
 
           {/* FILTRO DE BÚSQUEDA */}
           <div className="filtros-tabla">
