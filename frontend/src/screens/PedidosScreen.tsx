@@ -29,7 +29,7 @@ interface Cliente {
 interface Pedido {
   _id: string;
   numeroPedido: string;
-  cliente: Cliente | string;
+  cliente: Cliente | string | null; // Puede venir null desde el backend
   productos: Array<{
     product: string;
     cantidad: number;
@@ -101,7 +101,13 @@ const PedidosScreen: React.FC = () => {
   // Función para filtrar pedidos
   const getFilteredPedidos = () => {
     return pedidos.filter(pedido => {
-      const clienteNombre = typeof pedido.cliente === 'object' ? pedido.cliente.nombre : '';
+      // Manejar casos donde cliente puede ser null, string o un objeto sin nombre
+      const clienteNombre = (
+        pedido.cliente &&
+        typeof pedido.cliente === 'object' &&
+        'nombre' in pedido.cliente &&
+        typeof (pedido.cliente as any).nombre === 'string'
+      ) ? (pedido.cliente as any).nombre : '';
       const matchesSearch = searchQuery === '' || 
         clienteNombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
         pedido.estado.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -120,7 +126,12 @@ const PedidosScreen: React.FC = () => {
   // Función para obtener clientes únicos
   const getUniqueClientes = () => {
     const nombres = pedidos
-      .map(pedido => typeof pedido.cliente === 'object' ? pedido.cliente.nombre : '')
+      .map(pedido => (
+        pedido.cliente &&
+        typeof pedido.cliente === 'object' &&
+        'nombre' in pedido.cliente &&
+        typeof (pedido.cliente as any).nombre === 'string'
+      ) ? (pedido.cliente as any).nombre : '')
       .filter(Boolean);
     return [...new Set(nombres)].sort();
   };
@@ -165,7 +176,12 @@ const PedidosScreen: React.FC = () => {
       ]).start();
     }, []);
 
-    const clienteNombre = typeof pedido.cliente === 'object' ? pedido.cliente.nombre : 'Cliente no encontrado';
+    const clienteNombre = (
+      pedido.cliente &&
+      typeof pedido.cliente === 'object' &&
+      'nombre' in pedido.cliente &&
+      typeof (pedido.cliente as any).nombre === 'string'
+    ) ? (pedido.cliente as any).nombre : 'Cliente no disponible';
     
     return (
       <Animated.View

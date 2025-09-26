@@ -25,7 +25,7 @@ interface Cliente {
 interface Cotizacion {
   _id: string;
   codigo?: string;
-  cliente: Cliente | string;
+  cliente: Cliente | string | null; // Puede venir null desde el backend
   descripcion: string;
   montoTotal: number;
   fechaCreacion: string;
@@ -96,7 +96,13 @@ const CotizacionesScreen: React.FC = () => {
       const matchesSearch = !searchQuery || 
         cleanHtmlText(cotizacion.descripcion).toLowerCase().includes(searchQuery.toLowerCase()) ||
         codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (typeof cotizacion.cliente === 'object' && cotizacion.cliente.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
+        (
+          cotizacion.cliente &&
+          typeof cotizacion.cliente === 'object' &&
+          'nombre' in cotizacion.cliente &&
+          typeof (cotizacion.cliente as any).nombre === 'string' &&
+          (cotizacion.cliente as any).nombre.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
       return matchesSearch;
     });
@@ -159,7 +165,12 @@ const CotizacionesScreen: React.FC = () => {
               color: modernTheme.colors.neutral[800],
               marginBottom: modernTheme.spacing.xs,
             }}>
-              {typeof item.cliente === 'object' ? item.cliente.nombre : 'Cliente no encontrado'}
+              {(
+                item.cliente &&
+                typeof item.cliente === 'object' &&
+                'nombre' in item.cliente &&
+                typeof (item.cliente as any).nombre === 'string'
+              ) ? (item.cliente as any).nombre : 'Cliente no disponible'}
             </Text>
             
             <Text style={{

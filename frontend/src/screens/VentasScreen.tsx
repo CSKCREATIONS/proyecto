@@ -26,7 +26,7 @@ interface Cliente {
 
 interface Venta {
   _id: string;
-  cliente: Cliente | string;
+  cliente: Cliente | string | null; // Puede venir null desde el backend
   productos: string[];
   fechaVenta: string;
   metodoPago: 'efectivo' | 'tarjeta' | 'transferencia' | 'credito';
@@ -73,7 +73,12 @@ const VentasScreen: React.FC = () => {
 
     if (searchQuery && searchQuery.trim()) {
       filtered = filtered.filter(venta => {
-        const clienteNombre = typeof venta.cliente === 'object' ? venta.cliente.nombre : 'Cliente';
+        const clienteNombre = (
+          venta.cliente &&
+          typeof venta.cliente === 'object' &&
+          'nombre' in venta.cliente &&
+          typeof (venta.cliente as any).nombre === 'string'
+        ) ? (venta.cliente as any).nombre : 'Cliente';
         return clienteNombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
                venta.observaciones?.toLowerCase().includes(searchQuery.toLowerCase());
       });
@@ -140,7 +145,12 @@ const VentasScreen: React.FC = () => {
   };
 
   const VentaCard: React.FC<{ venta: Venta }> = ({ venta }) => {
-    const clienteNombre = typeof venta.cliente === 'object' ? venta.cliente.nombre : 'Cliente no encontrado';
+    const clienteNombre = (
+      venta.cliente &&
+      typeof venta.cliente === 'object' &&
+      'nombre' in venta.cliente &&
+      typeof (venta.cliente as any).nombre === 'string'
+    ) ? (venta.cliente as any).nombre : 'Cliente no disponible';
     const montoFinal = (venta.montoTotal || 0) - (venta.descuento || 0);
     
     return (

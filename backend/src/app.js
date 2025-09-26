@@ -12,12 +12,12 @@ const app = express();
 app.use(cors({
     origin: [
         process.env.FRONTEND_URL || 'http://localhost:3000',
-        'exp://172.16.101.238:8081',
-        'exp://172.16.101.238:8082',
-        'exp://172.16.101.238:8083',
-        'http://172.16.101.238:8081',
-        'http://172.16.101.238:8082',
-        'http://172.16.101.238:8083',
+        'exp://192.168.137.21:8081',
+        'exp://192.168.137.21:8082',
+        'exp://192.168.137.21:8083',
+        'http://192.168.137.21:8081',
+        'http://192.168.137.21:8082',
+        'http://192.168.137.21:8083',
         'http://localhost:8081',
         'http://localhost:8082',
         'http://localhost:8083',
@@ -71,7 +71,7 @@ const startServer = async () => {
     try {
         await connectDB();
 
-        const HOST = process.env.HOST || '0.0.0.0';
+        const HOST = process.env.HOST || '192.168.137.21';
 
         app.listen(PORT, HOST, () => {
             console.log(`
