@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { apiService } from '../services/api';
 
 interface ProductStats {
   totalProducts: number;
@@ -60,42 +61,132 @@ const ProductReportsScreen: React.FC = () => {
 
   const loadReports = async () => {
     try {
-      // Simular carga de datos - aquí irían las llamadas reales a la API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Cargar datos reales de la BD pangea1
+      const [productosResponse, categoriesResponse, subcategoriesResponse, ventasResponse] = await Promise.all([
+        apiService.get('/products'),
+        apiService.get('/categories'),
+        apiService.get('/subcategories'),
+        apiService.get('/ventas')
+      ]);
+
+      const productos = Array.isArray(productosResponse.data) ? productosResponse.data : [];
+      const categorias = Array.isArray(categoriesResponse.data) ? categoriesResponse.data : [];
+      const subcategorias = Array.isArray(subcategoriesResponse.data) ? subcategoriesResponse.data : [];
+      const ventas = Array.isArray(ventasResponse.data) ? ventasResponse.data : [];
+
+      // Calcular estadísticas reales de productos
+      const totalProducts = productos.length;
+      const totalCategories = categorias.length;
+      const totalSubcategories = subcategorias.length;
       
-      // Datos simulados
+      // Productos con stock bajo (asumiendo que stock menor a 10 es bajo)
+      const lowStockProducts = productos.filter((p: any) => {
+        const stock = typeof p.stock === 'object' ? p.stock.quantity : p.stock;
+        return stock <= 10 && stock > 0;
+      }).length;
+      
+      // Productos sin stock
+      const outOfStockProducts = productos.filter((p: any) => {
+        const stock = typeof p.stock === 'object' ? p.stock.quantity : p.stock;
+        return stock === 0;
+      }).length;
+
       setStats({
-        totalProducts: 245,
-        totalCategories: 15,
-        totalSubcategories: 48,
-        lowStockProducts: 12,
-        outOfStockProducts: 3
+        totalProducts,
+        totalCategories,
+        totalSubcategories,
+        lowStockProducts,
+        outOfStockProducts
       });
 
-      setCategoryReports([
-        { _id: '1', name: 'Electrónicos', productCount: 45, totalValue: 125000 },
-        { _id: '2', name: 'Ropa', productCount: 78, totalValue: 89000 },
-        { _id: '3', name: 'Hogar', productCount: 32, totalValue: 56000 },
-        { _id: '4', name: 'Deportes', productCount: 28, totalValue: 34000 },
-        { _id: '5', name: 'Libros', productCount: 62, totalValue: 18000 }
-      ]);
+      // Calcular reportes por categoría con datos reales
+      const categoryReportsData = categorias.map((categoria: any) => {
+        const productosEnCategoria = productos.filter((p: any) => 
+          p.category?._id === categoria._id || p.category === categoria._id
+        );
+        
+        const totalValue = productosEnCategoria.reduce((sum: number, p: any) => {
+          const stock = typeof p.stock === 'object' ? p.stock.quantity : p.stock;
+          return sum + (stock * (p.price || 0));
+        }, 0);
 
-      setTopProducts([
-        { _id: '1', name: 'iPhone 15', category: 'Electrónicos', subcategory: 'Smartphones', stock: 25, sold: 45, revenue: 67500 },
-        { _id: '2', name: 'Camiseta Nike', category: 'Ropa', subcategory: 'Deportiva', stock: 120, sold: 89, revenue: 4450 },
-        { _id: '3', name: 'Laptop HP', category: 'Electrónicos', subcategory: 'Computadoras', stock: 8, sold: 23, revenue: 34500 },
-        { _id: '4', name: 'Zapatillas Adidas', category: 'Ropa', subcategory: 'Calzado', stock: 45, sold: 67, revenue: 10050 }
-      ]);
+        return {
+          _id: categoria._id,
+          name: categoria.name,
+          productCount: productosEnCategoria.length,
+          totalValue: totalValue
+        };
+      }).sort((a, b) => b.productCount - a.productCount);
 
-      setLowStockProducts([
-        { _id: '1', name: 'MacBook Pro', stock: 2, minStock: 5, category: 'Electrónicos' },
-        { _id: '2', name: 'Samsung TV', stock: 1, minStock: 3, category: 'Electrónicos' },
-        { _id: '3', name: 'Sofá 3 plazas', stock: 0, minStock: 2, category: 'Hogar' }
-      ]);
+      setCategoryReports(categoryReportsData);
 
-    } catch (error) {
-      console.error('Error cargando reportes:', error);
-      Alert.alert('Error', 'No se pudieron cargar los reportes');
+      // Calcular productos más vendidos basado en ventas reales
+      const productSales: { [key: string]: any } = {};
+      ventas.forEach((venta: any) => {
+        if (venta.productos && Array.isArray(venta.productos)) {
+          venta.productos.forEach((item: any) => {
+            const productId = item.producto?._id || item.producto;
+            if (productId) {
+              if (!productSales[productId]) {
+                productSales[productId] = {
+                  sold: 0,
+                  revenue: 0,
+                  productInfo: item.producto
+                };
+              }
+              productSales[productId].sold += item.cantidad || 0;
+              productSales[productId].revenue += (item.cantidad || 0) * (item.precioUnitario || 0);
+            }
+          });
+        }
+      });
+
+      const topProductsData = Object.entries(productSales)
+        .map(([productId, data]) => {
+          const productInfo = data.productInfo || productos.find((p: any) => p._id === productId);
+          const stock = typeof productInfo?.stock === 'object' ? productInfo?.stock.quantity : productInfo?.stock;
+          
+          return {
+            _id: productId,
+            name: productInfo?.name || 'Producto Desconocido',
+            category: productInfo?.category?.name || 'Sin Categoría',
+            subcategory: productInfo?.subcategory?.name || 'Sin Subcategoría',
+            stock: stock || 0,
+            sold: data.sold,
+            revenue: data.revenue
+          };
+        })
+        .sort((a, b) => b.sold - a.sold)
+        .slice(0, 4);
+
+      setTopProducts(topProductsData);
+
+      // Calcular productos con stock bajo usando datos reales
+      const lowStockProductsData = productos
+        .filter((producto: any) => {
+          const stock = typeof producto.stock === 'object' ? producto.stock.quantity : producto.stock;
+          return stock <= 10; // Stock bajo o sin stock
+        })
+        .map((producto: any) => {
+          const stock = typeof producto.stock === 'object' ? producto.stock.quantity : producto.stock;
+          const minStock = typeof producto.stock === 'object' ? producto.stock.minStock : 5;
+          
+          return {
+            _id: producto._id,
+            name: producto.name,
+            stock: stock,
+            minStock: minStock || 5,
+            category: producto.category?.name || 'Sin Categoría'
+          };
+        })
+        .sort((a, b) => a.stock - b.stock)
+        .slice(0, 10); // Mostrar los 10 con menor stock
+
+      setLowStockProducts(lowStockProductsData);
+
+    } catch (error: any) {
+      console.error('Error cargando reportes de productos:', error);
+      Alert.alert('Error', 'No se pudieron cargar los reportes de productos: ' + (error?.message || 'Error desconocido'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -253,7 +344,8 @@ const ProductReportsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>📊 Reportes de Productos</Text>
+        <Text style={styles.headerTitle}>📊 REPORTES DE PRODUCTOS BD PANGEA1</Text>
+        <Text style={styles.headerSubtitle}>Datos en tiempo real de inventario</Text>
       </View>
       
       <View style={styles.segmentContainer}>
@@ -291,6 +383,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
   },
   segmentContainer: {
     flexDirection: 'row',

@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,  
   Platform,              
   ScrollView,          
-  ActivityIndicator,     
+  ActivityIndicator,
+  Image     
 } from 'react-native';
 
 import { useAuth } from '../contexts/authContext';    
@@ -87,9 +88,16 @@ const LoginScreen: React.FC = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={globalStyles.loginLogoContainer}>
-          <Text style={globalStyles.loginLogoText}>📱</Text>
-          <Text style={globalStyles.loginAppTitle}>Mi App</Text>
-          <Text style={globalStyles.loginSubtitle}>Sistema de Gestión</Text>
+          <Image
+              source={require('../assets/images/logo.png')}
+              style={{
+                width: 120,
+                height: 120,
+                marginBottom: 20,
+                borderRadius: 60, // Para imagen circular
+              }}
+              resizeMode="contain"
+            />
         </View>
 
         <View style={globalStyles.loginFormContainer}>

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { apiService } from '../services/api';
 
 interface SalesStats {
   totalSales: number;
@@ -19,6 +20,8 @@ interface SalesStats {
   totalCustomers: number;
   completedSales: number;
   returnedSales: number;
+  deliveredOrders: number;
+  pendingOrders: number;
 }
 
 interface PeriodSales {
@@ -52,6 +55,16 @@ interface SellerPerformance {
   averageOrderValue: number;
 }
 
+interface DeliveredOrder {
+  _id: string;
+  numeroPedido: string;
+  cliente: string;
+  total: number;
+  fechaEntrega: string;
+  productos: number;
+  estado: string;
+}
+
 const SalesReportsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -61,6 +74,7 @@ const SalesReportsScreen: React.FC = () => {
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
   const [topCustomers, setTopCustomers] = useState<CustomerStats[]>([]);
   const [sellerPerformance, setSellerPerformance] = useState<SellerPerformance[]>([]);
+  const [deliveredOrders, setDeliveredOrders] = useState<DeliveredOrder[]>([]);
 
   useEffect(() => {
     loadReports();
@@ -68,51 +82,204 @@ const SalesReportsScreen: React.FC = () => {
 
   const loadReports = async () => {
     try {
-      // Simular carga de datos - aquí irían las llamadas reales a la API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Cargar datos reales de la BD pangea1
+      const [ventasResponse, clientesResponse, productosResponse, usersResponse, pedidosResponse] = await Promise.all([
+        apiService.get('/ventas'),
+        apiService.get('/clientes'),
+        apiService.get('/products'),
+        apiService.get('/users'),
+        apiService.get('/pedidos')
+      ]);
+
+      const ventas = Array.isArray(ventasResponse.data) ? ventasResponse.data : [];
+      const clientes = Array.isArray(clientesResponse.data) ? clientesResponse.data : [];
+      const productos = Array.isArray(productosResponse.data) ? productosResponse.data : [];
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+      const pedidos = Array.isArray(pedidosResponse.data) ? pedidosResponse.data : [];
+
+      // Calcular estadísticas reales de ventas (todas las ventas)
+      const totalSales = ventas.length;
+      const totalRevenue = ventas.reduce((sum: number, venta: any) => sum + (venta.total || 0), 0);
+      const averageOrderValue = totalSales > 0 ? totalRevenue / totalSales : 0;
+      const totalCustomers = clientes.length;
+      const completedSales = ventas.filter((v: any) => v.estado === 'completado').length;
+      const returnedSales = ventas.filter((v: any) => v.estado === 'devuelta').length;
       
-      // Datos simulados específicos para ventas - VERSIÓN COMPLETA
+      // Calcular estadísticas de pedidos
+      const deliveredOrders = pedidos.filter((p: any) => p.estado === 'entregado').length;
+      const pendingOrders = pedidos.filter((p: any) => ['agendado', 'despachado'].includes(p.estado)).length;
+
       setStats({
-        totalSales: 1248,
-        totalRevenue: 24567800,
-        averageOrderValue: 196800,
-        totalCustomers: 456,
-        completedSales: 1180,
-        returnedSales: 68
+        totalSales,
+        totalRevenue,
+        averageOrderValue,
+        totalCustomers,
+        completedSales,
+        returnedSales,
+        deliveredOrders,
+        pendingOrders
       });
 
-      setPeriodSales([
-        { period: 'Enero', sales: 98, revenue: 1980000, growth: 12.5 },
-        { period: 'Febrero', sales: 112, revenue: 2340000, growth: 18.2 },
-        { period: 'Marzo', sales: 134, revenue: 2890000, growth: 23.5 },
-        { period: 'Abril', sales: 156, revenue: 3120000, growth: 16.4 },
-        { period: 'Mayo', sales: 143, revenue: 2845000, growth: -8.8 }
-      ]);
+      // Calcular ventas por período (últimos 5 meses)
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const currentDate = new Date();
+      const periodSalesData = [];
 
-      setTopProducts([
-        { _id: '1', name: 'iPhone 15 Pro', unitsSold: 45, revenue: 67500000, category: 'Electrónicos' },
-        { _id: '2', name: 'MacBook Pro M3', unitsSold: 23, revenue: 34500000, category: 'Electrónicos' },
-        { _id: '3', name: 'Samsung Galaxy S24', unitsSold: 67, revenue: 40200000, category: 'Electrónicos' },
-        { _id: '4', name: 'iPad Air', unitsSold: 34, revenue: 17000000, category: 'Electrónicos' }
-      ]);
+      for (let i = 4; i >= 0; i--) {
+        const periodDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+        const nextPeriodDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i + 1, 1);
+        
+        const periodVentas = ventas.filter((venta: any) => {
+          const ventaDate = new Date(venta.fecha);
+          return ventaDate >= periodDate && ventaDate < nextPeriodDate;
+        });
 
-      setTopCustomers([
-        { _id: '1', name: 'Empresa ABC S.A.S', totalPurchases: 23, totalSpent: 4560000, lastPurchase: '2025-09-20' },
-        { _id: '2', name: 'Juan Pérez', totalPurchases: 15, totalSpent: 2890000, lastPurchase: '2025-09-19' },
-        { _id: '3', name: 'María González', totalPurchases: 12, totalSpent: 2340000, lastPurchase: '2025-09-18' },
-        { _id: '4', name: 'Corporación XYZ', totalPurchases: 8, totalSpent: 1980000, lastPurchase: '2025-09-17' }
-      ]);
+        const periodRevenue = periodVentas.reduce((sum: number, venta: any) => sum + (venta.total || 0), 0);
+        const periodSalesCount = periodVentas.length;
+        
+        // Calcular crecimiento comparado con período anterior
+        const prevPeriodDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i - 1, 1);
+        const prevNextPeriodDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+        const prevPeriodVentas = ventas.filter((venta: any) => {
+          const ventaDate = new Date(venta.fecha);
+          return ventaDate >= prevPeriodDate && ventaDate < prevNextPeriodDate;
+        });
+        const prevPeriodRevenue = prevPeriodVentas.reduce((sum: number, venta: any) => sum + (venta.total || 0), 0);
+        const growth = prevPeriodRevenue > 0 ? ((periodRevenue - prevPeriodRevenue) / prevPeriodRevenue) * 100 : 0;
 
-      setSellerPerformance([
-        { sellerId: '1', sellerName: 'Carlos Rodríguez', salesCount: 156, revenue: 8900000, averageOrderValue: 570500 },
-        { sellerId: '2', sellerName: 'Ana Martínez', salesCount: 134, revenue: 7650000, averageOrderValue: 571000 },
-        { sellerId: '3', sellerName: 'Luis García', salesCount: 98, revenue: 5420000, averageOrderValue: 553000 },
-        { sellerId: '4', sellerName: 'Sandra López', salesCount: 87, revenue: 4890000, averageOrderValue: 562000 }
-      ]);
+        periodSalesData.push({
+          period: monthNames[periodDate.getMonth()],
+          sales: periodSalesCount,
+          revenue: periodRevenue,
+          growth: growth
+        });
+      }
+
+      setPeriodSales(periodSalesData);
+
+      // Calcular productos más vendidos basado en ventas reales
+      const productSales: { [key: string]: any } = {};
+      ventas.forEach((venta: any) => {
+        if (venta.productos && Array.isArray(venta.productos)) {
+          venta.productos.forEach((item: any) => {
+            const productId = item.producto?._id || item.producto;
+            if (productId) {
+              if (!productSales[productId]) {
+                productSales[productId] = {
+                  unitsSold: 0,
+                  revenue: 0,
+                  productInfo: item.producto
+                };
+              }
+              productSales[productId].unitsSold += item.cantidad || 0;
+              productSales[productId].revenue += (item.cantidad || 0) * (item.precioUnitario || 0);
+            }
+          });
+        }
+      });
+
+      const topProductsData = Object.entries(productSales)
+        .map(([productId, data]) => {
+          const productInfo = data.productInfo || productos.find((p: any) => p._id === productId);
+          return {
+            _id: productId,
+            name: productInfo?.name || 'Producto Desconocido',
+            unitsSold: data.unitsSold,
+            revenue: data.revenue,
+            category: productInfo?.category?.name || 'Sin Categoría'
+          };
+        })
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 4);
+
+      setTopProducts(topProductsData);
+
+      // Calcular mejores clientes basado en ventas reales
+      const customerStats: { [key: string]: any } = {};
+      ventas.forEach((venta: any) => {
+        const clienteId = venta.cliente?._id || venta.cliente;
+        if (clienteId) {
+          if (!customerStats[clienteId]) {
+            customerStats[clienteId] = {
+              totalPurchases: 0,
+              totalSpent: 0,
+              lastPurchase: venta.fecha,
+              clienteInfo: venta.cliente
+            };
+          }
+          customerStats[clienteId].totalPurchases++;
+          customerStats[clienteId].totalSpent += venta.total || 0;
+          if (new Date(venta.fecha) > new Date(customerStats[clienteId].lastPurchase)) {
+            customerStats[clienteId].lastPurchase = venta.fecha;
+          }
+        }
+      });
+
+      const topCustomersData = Object.entries(customerStats)
+        .map(([clienteId, data]) => {
+          const clienteInfo = data.clienteInfo || clientes.find((c: any) => c._id === clienteId);
+          return {
+            _id: clienteId,
+            name: clienteInfo?.nombre || clienteInfo?.name || 'Cliente Desconocido',
+            totalPurchases: data.totalPurchases,
+            totalSpent: data.totalSpent,
+            lastPurchase: data.lastPurchase
+          };
+        })
+        .sort((a, b) => b.totalSpent - a.totalSpent)
+        .slice(0, 4);
+
+      setTopCustomers(topCustomersData);
+
+      // Calcular rendimiento de vendedores basado en usuarios con rol de vendedor
+      const vendedores = users.filter((user: any) => 
+        user.role?.name?.toLowerCase().includes('vendedor') || 
+        user.role?.name?.toLowerCase().includes('ventas') ||
+        user.role?.name?.toLowerCase().includes('seller')
+      );
+
+      const sellerPerformanceData = vendedores.map((vendedor: any) => {
+        const vendedorVentas = ventas.filter((venta: any) => 
+          venta.vendedor === vendedor._id || 
+          venta.createdBy === vendedor._id
+        );
+        
+        const salesCount = vendedorVentas.length;
+        const revenue = vendedorVentas.reduce((sum: number, venta: any) => sum + (venta.total || 0), 0);
+        const averageOrderValue = salesCount > 0 ? revenue / salesCount : 0;
+
+        return {
+          sellerId: vendedor._id,
+          sellerName: vendedor.nombre || vendedor.name || 'Vendedor',
+          salesCount,
+          revenue,
+          averageOrderValue
+        };
+      }).sort((a, b) => b.revenue - a.revenue);
+
+      setSellerPerformance(sellerPerformanceData);
+
+      // Calcular pedidos entregados más recientes
+      const deliveredOrdersData = pedidos
+        .filter((pedido: any) => pedido.estado === 'entregado')
+        .map((pedido: any) => ({
+          _id: pedido._id,
+          numeroPedido: pedido.numeroPedido || `PED-${pedido._id.slice(-6)}`,
+          cliente: pedido.cliente?.nombre || pedido.cliente?.name || 'Cliente Desconocido',
+          total: pedido.total || 0,
+          fechaEntrega: pedido.fechaEntrega || pedido.updatedAt,
+          productos: pedido.productos?.length || 0,
+          estado: pedido.estado
+        }))
+        .sort((a: any, b: any) => new Date(b.fechaEntrega).getTime() - new Date(a.fechaEntrega).getTime())
+        .slice(0, 10); // Mostrar los 10 más recientes
+
+      setDeliveredOrders(deliveredOrdersData);
 
     } catch (error) {
       console.error('Error cargando reportes de ventas:', error);
-      Alert.alert('Error', 'No se pudieron cargar los reportes de ventas');
+      const errorMessage = (error instanceof Error && error.message) ? error.message : String(error);
+      Alert.alert('Error', 'No se pudieron cargar los reportes de ventas: ' + errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -204,6 +371,14 @@ const SalesReportsScreen: React.FC = () => {
           <StatCard icon="return-up-back-outline" value={stats?.returnedSales || 0} label="Devoluciones" color="#E74C3C" />
         </View>
       </View>
+      <View style={styles.statsRow}>
+        <View style={styles.statContainer}>
+          <StatCard icon="cube-outline" value={stats?.deliveredOrders || 0} label="Pedidos Entregados" color="#3498DB" />
+        </View>
+        <View style={styles.statContainer}>
+          <StatCard icon="time-outline" value={stats?.pendingOrders || 0} label="Pedidos Pendientes" color="#F39C12" />
+        </View>
+      </View>
     </View>
   );
 
@@ -283,6 +458,33 @@ const SalesReportsScreen: React.FC = () => {
     </View>
   );
 
+  const renderOrders = () => (
+    <View>
+      {deliveredOrders.map((order, index) => (
+        <ReportCard key={order._id} title={order.numeroPedido} badge="Entregado">
+          <View style={styles.orderInfo}>
+            <View style={styles.orderDetails}>
+              <Text style={styles.orderClient}>Cliente: {order.cliente}</Text>
+              <Text style={styles.orderProducts}>Productos: {order.productos} items</Text>
+              <Text style={styles.orderTotal}>Total: {formatCurrency(order.total)}</Text>
+              <Text style={styles.orderDate}>Fecha entrega: {formatDate(order.fechaEntrega)}</Text>
+            </View>
+            <View style={styles.orderStatus}>
+              <Ionicons name="checkmark-circle" size={24} color="#27AE60" />
+              <Text style={styles.orderStatusText}>Entregado</Text>
+            </View>
+          </View>
+        </ReportCard>
+      ))}
+      {deliveredOrders.length === 0 && (
+        <View style={styles.emptyState}>
+          <Ionicons name="cube-outline" size={48} color="#999" />
+          <Text style={styles.emptyStateText}>No hay pedidos entregados</Text>
+        </View>
+      )}
+    </View>
+  );
+
   const SegmentButton = ({ value, title, isActive }: { value: string; title: string; isActive: boolean }) => (
     <TouchableOpacity
       style={[styles.segmentButton, isActive && styles.segmentButtonActive]}
@@ -315,6 +517,8 @@ const SalesReportsScreen: React.FC = () => {
         return renderTopCustomers();
       case 'sellers':
         return renderSellers();
+      case 'orders':
+        return renderOrders();
       default:
         return renderOverview();
     }
@@ -323,7 +527,8 @@ const SalesReportsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>💰 REPORTES DE VENTAS COMPLETO</Text>
+        <Text style={styles.headerTitle}>💰 REPORTES DE VENTAS BD PANGEA1</Text>
+        <Text style={styles.headerSubtitle}>Datos en tiempo real de la base de datos</Text>
       </View>
       
       <View style={styles.segmentContainer}>
@@ -331,6 +536,7 @@ const SalesReportsScreen: React.FC = () => {
         <SegmentButton value="periods" title="Períodos" isActive={selectedSegment === 'periods'} />
         <SegmentButton value="top-products" title="Top Productos" isActive={selectedSegment === 'top-products'} />
         <SegmentButton value="customers" title="Clientes" isActive={selectedSegment === 'customers'} />
+        <SegmentButton value="orders" title="Pedidos" isActive={selectedSegment === 'orders'} />
         <SegmentButton value="sellers" title="Vendedores" isActive={selectedSegment === 'sellers'} />
       </View>
 
@@ -362,6 +568,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
   },
   segmentContainer: {
     flexDirection: 'row',
@@ -577,6 +788,52 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 2,
+  },
+  orderInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  orderDetails: {
+    flex: 1,
+  },
+  orderClient: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+  },
+  orderProducts: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  orderTotal: {
+    fontSize: 12,
+    color: '#34C759',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  orderDate: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  orderStatus: {
+    alignItems: 'center',
+  },
+  orderStatusText: {
+    fontSize: 11,
+    color: '#27AE60',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#999',
+    marginTop: 10,
   },
 });
 

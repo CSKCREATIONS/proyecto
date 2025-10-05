@@ -29,7 +29,7 @@ interface Cliente {
 interface Pedido {
   _id: string;
   numeroPedido: string;
-  cliente: Cliente | string;
+  cliente: Cliente | string | null;
   productos: Array<{
     product: string;
     cantidad: number;
@@ -101,7 +101,7 @@ const PedidosScreen: React.FC = () => {
   // Función para filtrar pedidos
   const getFilteredPedidos = () => {
     return pedidos.filter(pedido => {
-      const clienteNombre = typeof pedido.cliente === 'object' ? pedido.cliente.nombre : '';
+      const clienteNombre = (pedido.cliente && typeof pedido.cliente === 'object') ? pedido.cliente.nombre : '';
       const matchesSearch = searchQuery === '' || 
         clienteNombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
         pedido.estado.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -120,7 +120,7 @@ const PedidosScreen: React.FC = () => {
   // Función para obtener clientes únicos
   const getUniqueClientes = () => {
     const nombres = pedidos
-      .map(pedido => typeof pedido.cliente === 'object' ? pedido.cliente.nombre : '')
+      .map(pedido => (pedido.cliente && typeof pedido.cliente === 'object') ? pedido.cliente.nombre : '')
       .filter(Boolean);
     return [...new Set(nombres)].sort();
   };
@@ -165,7 +165,7 @@ const PedidosScreen: React.FC = () => {
       ]).start();
     }, []);
 
-    const clienteNombre = typeof pedido.cliente === 'object' ? pedido.cliente.nombre : 'Cliente no encontrado';
+    const clienteNombre = (pedido.cliente && typeof pedido.cliente === 'object') ? pedido.cliente.nombre : 'Cliente no encontrado';
     
     return (
       <Animated.View

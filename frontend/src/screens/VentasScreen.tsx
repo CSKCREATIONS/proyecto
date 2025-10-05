@@ -24,14 +24,21 @@ interface Cliente {
   esCliente?: boolean;
 }
 
-interface Venta {
+interface Pedido {
   _id: string;
-  cliente: Cliente | string;
-  productos: string[];
-  fechaVenta: string;
-  metodoPago: 'efectivo' | 'tarjeta' | 'transferencia' | 'credito';
-  estado: 'pendiente' | 'completada' | 'anulada';
-  montoTotal: number;
+  numeroPedido: string;
+  cliente: Cliente | string | null;
+  productos: Array<{
+    producto: any;
+    cantidad: number;
+    precioUnitario: number;
+  }>;
+  total: number;
+  fechaEntrega?: string;
+  fecha?: string;
+  metodoPago?: 'efectivo' | 'tarjeta' | 'transferencia' | 'credito';
+  estado: 'agendado' | 'despachado' | 'entregado' | 'cancelado' | 'devuelto';
+  montoTotal?: number;
   descuento?: number;
   observaciones?: string;
   createdAt: string;
@@ -48,52 +55,57 @@ const metodoPagoOptions = [
 const estadoOptions = [
   { value: 'pendiente', label: '⏳ Pendiente' },
   { value: 'completada', label: '✅ Completada' },
+  { value: 'completado', label: '✅ Completada' },
   { value: 'anulada', label: '❌ Anulada' },
 ];
 
 const VentasScreen: React.FC = () => {
-  const [ventas, setVentas] = useState<Venta[]>([]);      
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);      
   const [clientes, setClientes] = useState<Cliente[]>([]);      
-  const [filteredVentas, setFilteredVentas] = useState<Venta[]>([]);
+  const [filteredPedidos, setFilteredPedidos] = useState<Pedido[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);                  
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    loadVentas();
+    loadPedidos();
     loadClientes();
   }, []);
 
   useEffect(() => {
-    filterVentas();
-  }, [ventas, searchQuery]);
+    filterPedidos();
+  }, [pedidos, searchQuery]);
 
-  const filterVentas = () => {
-    let filtered = [...ventas];
+  const filterPedidos = () => {
+    let filtered = [...pedidos];
 
     if (searchQuery && searchQuery.trim()) {
-      filtered = filtered.filter(venta => {
-        const clienteNombre = typeof venta.cliente === 'object' ? venta.cliente.nombre : 'Cliente';
+      filtered = filtered.filter(pedido => {
+        const clienteNombre = (pedido.cliente && typeof pedido.cliente === 'object') ? pedido.cliente.nombre : 
+                              (typeof pedido.cliente === 'string' ? pedido.cliente : 'Cliente no encontrado');
         return clienteNombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-               venta.observaciones?.toLowerCase().includes(searchQuery.toLowerCase());
+               pedido.observaciones?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               pedido.numeroPedido?.toLowerCase().includes(searchQuery.toLowerCase());
       });
     }
 
-    setFilteredVentas(filtered);
+    setFilteredPedidos(filtered);
   };
 
-  const loadVentas = async () => {
+  const loadPedidos = async () => {
     try {
-      const response = await apiService.get<Venta[]>('/ventas');
+      const response = await apiService.get<Pedido[]>('/pedidos');
       
       if (response.success && response.data && Array.isArray(response.data)) {
-        // Filtrar solo las ventas completadas (entregadas)
-        const ventasCompletadas = response.data.filter(venta => venta.estado === 'completada');
-        setVentas(ventasCompletadas);
-        setFilteredVentas(ventasCompletadas);
+        // SOLO mostrar pedidos entregados
+        const pedidosEntregados = response.data.filter(pedido => 
+          pedido.estado === 'entregado'
+        );
+        setPedidos(pedidosEntregados);
+        setFilteredPedidos(pedidosEntregados);
       }
     } catch (error) {
-      console.warn('Error cargando ventas:', error);
+      console.warn('Error cargando pedidos:', error);
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -113,7 +125,7 @@ const VentasScreen: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    loadVentas();
+    loadPedidos();
   };
 
   const getEstadoLabel = (estado: string) => {
@@ -121,27 +133,17 @@ const VentasScreen: React.FC = () => {
     return estadoOption ? estadoOption.label : estado;
   };
 
-  const getEstadoColor = (estado: string) => {
-    switch (estado) {
-      case 'pendiente':
-        return '#ffc107';
-      case 'completada':
-        return '#28a745';
-      case 'anulada':
-        return '#dc3545';
-      default:
-        return '#6c757d';
-    }
-  };
-
-  const getMetodoPagoLabel = (metodoPago: string) => {
+  const getMetodoPagoLabel = (metodoPago?: string) => {
+    if (!metodoPago) return 'Sin método de pago';
     const metodoOption = metodoPagoOptions.find(option => option.value === metodoPago);
     return metodoOption ? metodoOption.label : metodoPago;
   };
 
-  const VentaCard: React.FC<{ venta: Venta }> = ({ venta }) => {
-    const clienteNombre = typeof venta.cliente === 'object' ? venta.cliente.nombre : 'Cliente no encontrado';
-    const montoFinal = (venta.montoTotal || 0) - (venta.descuento || 0);
+  const PedidoCard: React.FC<{ pedido: Pedido }> = ({ pedido }) => {
+    const clienteNombre = (pedido.cliente && typeof pedido.cliente === 'object') ? pedido.cliente.nombre : 
+                          (typeof pedido.cliente === 'string' ? pedido.cliente : 'Cliente no encontrado');
+    const montoFinal = (pedido.total || pedido.montoTotal || 0) - (pedido.descuento || 0);
+    const fechaEntrega = pedido.fechaEntrega || pedido.fecha || pedido.createdAt;
     
     return (
       <ModernCard style={{ margin: 16, marginBottom: 12 }} variant="glass">
@@ -151,7 +153,7 @@ const VentasScreen: React.FC = () => {
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                 <View style={{
-                  backgroundColor: modernTheme.colors.primary[100],
+                  backgroundColor: modernTheme.colors.success[100],
                   width: 40,
                   height: 40,
                   borderRadius: 20,
@@ -159,7 +161,7 @@ const VentasScreen: React.FC = () => {
                   justifyContent: 'center',
                   marginRight: 12,
                 }}>
-                  <Text style={{ fontSize: 18 }}>👤</Text>
+                  <Text style={{ fontSize: 18 }}>📦</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{
@@ -170,13 +172,18 @@ const VentasScreen: React.FC = () => {
                   }}>
                     {clienteNombre}
                   </Text>
-                  <ModernBadge 
-                    text={getEstadoLabel(venta.estado)} 
-                    variant={
-                      venta.estado === 'completada' ? 'success' :
-                      venta.estado === 'anulada' ? 'danger' : 'warning'
-                    }
-                  />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <ModernBadge 
+                      text={getEstadoLabel(pedido.estado)} 
+                      variant="success"
+                    />
+                    <View style={{ marginLeft: 8 }}>
+                      <ModernBadge 
+                        text={`� ${pedido.numeroPedido}`} 
+                        variant="info"
+                      />
+                    </View>
+                  </View>
                 </View>
               </View>
 
@@ -188,9 +195,9 @@ const VentasScreen: React.FC = () => {
                   marginBottom: 8,
                 }}>
                   💰 ${(montoFinal || 0).toLocaleString('es-CO')}
-                  {venta.descuento && venta.descuento > 0 && (
+                  {pedido.descuento && pedido.descuento > 0 && (
                     <Text style={{ fontSize: 14, color: modernTheme.colors.danger[600] }}>
-                      {' '}(Desc: ${(venta.descuento || 0).toLocaleString('es-CO')})
+                      {' '}(Desc: ${(pedido.descuento || 0).toLocaleString('es-CO')})
                     </Text>
                   )}
                 </Text>
@@ -200,7 +207,7 @@ const VentasScreen: React.FC = () => {
                   color: modernTheme.colors.neutral[600],
                   marginBottom: 4,
                 }}>
-                  {getMetodoPagoLabel(venta.metodoPago)}
+                  {getMetodoPagoLabel(pedido.metodoPago)}
                 </Text>
                 
                 <Text style={{
@@ -208,16 +215,26 @@ const VentasScreen: React.FC = () => {
                   color: modernTheme.colors.neutral[600],
                   marginBottom: 4,
                 }}>
-                  📅 {new Date(venta.fechaVenta).toLocaleDateString()}
+                  📅 {new Date(fechaEntrega).toLocaleDateString()}
                 </Text>
                 
-                {venta.observaciones && (
+                {pedido.productos && Array.isArray(pedido.productos) && (
                   <Text style={{
                     fontSize: 14,
                     color: modernTheme.colors.neutral[600],
                     marginBottom: 4,
                   }}>
-                    📝 {venta.observaciones}
+                    📦 {pedido.productos.length} producto{pedido.productos.length !== 1 ? 's' : ''}
+                  </Text>
+                )}
+                
+                {pedido.observaciones && (
+                  <Text style={{
+                    fontSize: 14,
+                    color: modernTheme.colors.neutral[600],
+                    marginBottom: 4,
+                  }}>
+                    📝 {pedido.observaciones}
                   </Text>
                 )}
                 
@@ -226,7 +243,7 @@ const VentasScreen: React.FC = () => {
                   color: modernTheme.colors.neutral[400],
                   marginTop: 8,
                 }}>
-                  Creada: {new Date(venta.createdAt).toLocaleDateString()}
+                  Creado: {new Date(pedido.createdAt).toLocaleDateString()}
                 </Text>
               </View>
             </View>
@@ -240,7 +257,7 @@ const VentasScreen: React.FC = () => {
     return (
       <View style={globalStyles.loadingContainer}>
         <ActivityIndicator size="large" color="#4ECDC4" />
-        <Text style={globalStyles.loadingText}>Cargando ventas...</Text>
+        <Text style={globalStyles.loadingText}>Cargando pedidos entregados...</Text>
       </View>
     );
   }
@@ -264,12 +281,12 @@ const VentasScreen: React.FC = () => {
             borderRadius: 12,
             marginRight: 12,
           }}>
-            <Ionicons name="cash" size={24} color="white" />
+            <Ionicons name="checkmark-circle" size={24} color="white" />
           </View>
           <Text style={[
             { fontSize: 20, color: 'white', fontWeight: '700', flex: 1 }
           ]}>
-            Ventas Entregadas
+            Ventas
           </Text>
           <View style={{
             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -285,7 +302,7 @@ const VentasScreen: React.FC = () => {
               fontWeight: '600',
               color: 'white',
               marginLeft: 4,
-            }}>{filteredVentas.length}</Text>
+            }}>{filteredPedidos.length}</Text>
           </View>
         </View>
 
@@ -301,14 +318,12 @@ const VentasScreen: React.FC = () => {
           <Ionicons name="search" size={20} color="rgba(255,255,255,0.8)" style={{ marginRight: 10 }} />
           <TextInput
             style={{ flex: 1, color: 'white', fontSize: 16 }}
-            placeholder="Buscar por cliente..."
+            placeholder="Buscar por cliente o número de pedido..."
             placeholderTextColor="rgba(255,255,255,0.7)"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
         </View>
-
-
       </View>
       
       <ScrollView
@@ -321,23 +336,22 @@ const VentasScreen: React.FC = () => {
           />
         }
       >
-        {filteredVentas.length === 0 ? (
+        {filteredPedidos.length === 0 ? (
           <View style={globalStyles.emptyStateContainer}>
-            <Text style={globalStyles.titleText}>💰</Text>
+            <Text style={globalStyles.titleText}>�</Text>
             <Text style={globalStyles.emptyStateText}>
-              {searchQuery ? 'No hay ventas entregadas que coincidan con la búsqueda' : 'No hay ventas entregadas'}
+              {searchQuery ? 'No hay pedidos entregados que coincidan con la búsqueda' : 'No hay pedidos entregados'}
             </Text>
             <Text style={globalStyles.emptyStateSubtext}>
-              No se han completado ventas aún
+              Aquí aparecerán los pedidos cuando cambien a estado "entregado"
             </Text>
           </View>
         ) : (
-          filteredVentas.map((venta) => (
-            <VentaCard key={venta._id} venta={venta} />
+          filteredPedidos.map((pedido) => (
+            <PedidoCard key={pedido._id} pedido={pedido} />
           ))
         )}
       </ScrollView>
-
     </View>
   );
 };

@@ -28,6 +28,7 @@ interface Cliente {
   telefono: string;
   correo: string;
   esCliente: boolean;
+  activo: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -50,6 +51,7 @@ const ClientesScreen: React.FC = () => {
     telefono: '',
     correo: '',
     esCliente: true,
+    activo: true,
   });
 
   useEffect(() => {
@@ -133,6 +135,7 @@ const ClientesScreen: React.FC = () => {
       telefono: '',
       correo: '',
       esCliente: true,
+      activo: true,
     });
     setEditingCliente(null);
   };
@@ -146,6 +149,7 @@ const ClientesScreen: React.FC = () => {
       telefono: cliente.telefono,
       correo: cliente.correo,
       esCliente: cliente.esCliente,
+      activo: cliente.activo,
     });
     setIsModalVisible(true);
   };
@@ -278,11 +282,18 @@ const ClientesScreen: React.FC = () => {
           </View>
 
           <View style={{ alignItems: 'flex-end' }}>
-            <ModernBadge
-              text={item.esCliente ? 'Cliente' : 'Potencial'}
-              variant={item.esCliente ? 'success' : 'warning'}
-              size="sm"
-            />
+            <View style={{ flexDirection: 'row', gap: modernTheme.spacing.xs, marginBottom: modernTheme.spacing.xs }}>
+              <ModernBadge
+                text={item.esCliente ? 'Cliente' : 'Potencial'}
+                variant={item.esCliente ? 'success' : 'warning'}
+                size="sm"
+              />
+              <ModernBadge
+                text={item.activo ? 'Activo' : 'Inactivo'}
+                variant={item.activo ? 'success' : 'danger'}
+                size="sm"
+              />
+            </View>
             
             <View style={{ marginTop: modernTheme.spacing.sm }}>
               <CrudActions

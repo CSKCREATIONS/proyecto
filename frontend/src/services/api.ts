@@ -5,7 +5,7 @@ import { ApiResponse } from '../services';
 
 class ApiService {
   private instance: AxiosInstance; 
-  private baseURL: string = 'http://172.16.101.238:5000/api'; 
+  private baseURL: string = 'http://10.93.224.121:5000/api'; 
 
   constructor() {
     

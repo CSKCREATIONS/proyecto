@@ -483,8 +483,8 @@ const HomeScreen: React.FC = () => {
                   switch (item.screen) {
                     case 'Categories': return hasPermission('categorias.ver');
                     case 'Subcategories': return hasPermission('subcategorias.ver');
-                    case 'Products':
-                    case 'ProductReports': return hasPermission('productos.ver');
+                    case 'Products': return hasPermission('productos.ver');
+                    case 'ProductReports': return hasPermission('reportesProductos.ver');
                     default: return true;
                   }
                 })}
@@ -501,8 +501,8 @@ const HomeScreen: React.FC = () => {
                   { title: "Reportes de compras", screen: "PurchaseReports", icon: "document-text" }
                 ].filter(item => {
                   switch (item.screen) {
-                    case 'Compras':
-                    case 'PurchaseReports': return hasPermission('compras.ver');
+                    case 'Compras': return hasPermission('hcompras.ver');
+                    case 'PurchaseReports': return hasPermission('reportesCompras.ver');
                     case 'Proveedores': return hasPermission('proveedores.ver');
                     default: return true;
                   }

@@ -2,7 +2,8 @@ import React from 'react';
 import {
     View,
     Text,
-    ActivityIndicator
+    ActivityIndicator,
+    Image
 } from 'react-native';
 import { globalStyles, colors } from '../styles';
 
@@ -11,7 +12,16 @@ const LoadingScreen: React.FC = () => {
         <View style={globalStyles.loadingScreenContainer}>
             {/* Logo y nombre de la app */}
             <View style={globalStyles.loadingContent}>
-                <Text style={globalStyles.appLogo}>Logo</Text>
+                <Image
+                source={require('../assets/images/logo.png')}
+                style={{
+                    width: 120,
+                    height: 120,
+                    marginBottom: 20,
+                    borderRadius: 60, // Para imagen circular
+                }}
+                resizeMode="contain"
+                />
                 <Text style={globalStyles.appName}>PANGEA</Text>
                 <Text style={globalStyles.appSubtitle}>JLA Global Company</Text>
             </View>
